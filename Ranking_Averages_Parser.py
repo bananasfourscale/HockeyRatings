@@ -1,43 +1,6 @@
-
-from asyncio.windows_events import NULL
 import csv
 import datetime
-from turtle import home
-
-strength_of_schedule = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+from asyncio.windows_events import NULL
 
 ranking_averages = {
     'Anaheim Ducks' : [],
@@ -74,34 +37,30 @@ ranking_averages = {
     'Winnipeg Jets' : [],
 }
 
-ranking_dates = [
-    datetime.date(2021, 10, 16), # 0
-    datetime.date(2021, 10, 23), # 1
-    datetime.date(2021, 10, 30), # 2
-    datetime.date(2021, 11, 6),  # 3
-    datetime.date(2021, 11, 13), # 4
-    NULL,                        # 5
-    datetime.date(2021, 11, 20), # 6
-    NULL,                        # 7
-    datetime.date(2021, 11, 27), # 8
-    datetime.date(2021, 12, 4),  # 9
-    datetime.date(2021, 12, 11), # 10
-    datetime.date(2022, 1, 1),   # 11
-    NULL,                        # 12
-    datetime.date(2022, 1, 2),   # 13
-    datetime.date(2022, 1, 8),   # 14
-    NULL,                        # 15
-    datetime.date(2022, 1, 13),  # 16
-]
+ranking_dates = []
 
+average_ratings_header = []
 
 def parse_average_ratings(file_name : str = "") -> None:
+    current_rating = 0
+    empty_columns = 0
+
+    # open the average rating file
     with open(file_name, newline='') as csv_data_file:
         ratings = csv.reader(csv_data_file, delimiter = '\t')
-        current_rating = 1
 
         # loop through the lines of file
         for rating in ratings:
+
+            # remove all empty comlumns
+            empty_columns = rating.count('')
+            while empty_columns > 0:
+                rating.remove('')
+                empty_columns -= 1
+            
+            if current_rating == 0:
+                average_ratings_header.extend(rating)
+
             if current_rating == 1:
                 ranking_averages['Anaheim Ducks'] = rating
 
@@ -199,86 +158,25 @@ def parse_average_ratings(file_name : str = "") -> None:
                 ranking_averages['Winnipeg Jets'] = rating
             
             current_rating += 1
-        #print(ranking_averages)
+        # print(ranking_averages)
+        # print(average_ratings_header)
 
 
-def determine_winner_loser(home_team : str = "", home_score : int = 0,
-                           away_team : str = "", away_score : int = 0) \
-                           -> tuple((str, str)):
-        if home_score > away_score:
-            return (home_team, away_team, home_score - away_score)
-        else:
-            return (away_team, home_team, away_score - home_score)
-
-
-def update_strength_of_schedule(winning_team : str = "", losing_team : str = "",
-                                game_date : datetime.date = None) -> None:
-    winner_rating = 0
-    loser_rating = 0
-
-    total_weeks = len(ranking_dates)-1
-    print(total_weeks)
-
-    try:
-        
-        # loop through all rating points until the most recent before the date of the game is found
-        while (total_weeks > 0):
-            if (ranking_dates[total_weeks] is not NULL) and (game_date > ranking_dates[total_weeks]):
-                winner_rating = float(ranking_averages[winning_team][total_weeks])
-                loser_rating = float(ranking_averages[losing_team][total_weeks])
-                break
-
-            # if we havent found the most recent date, go back one more point
-            total_weeks -= 1
-
-        # if we didn't find the ranking point closest at all, there might not have been
-        # any ranking data available at the time of the game. Just use a default which will
-        # grant no points to either team.
-        if total_weeks == 0:
-            winner_rating = 0
-            loser_rating = 33
-
-        # adjust the ranking based on the score difference
-
-        strength_of_schedule[winning_team] += (33 - loser_rating)
-        strength_of_schedule[losing_team] -= (winner_rating)
-
-    except Exception as e:
-        print(winning_team, losing_team)
-        raise e
-
-
-def parse_matches(file_name : str = "") -> None:
-    header_row = True
-    with open(file_name, newline='') as csv_data_file:
-        match_list = csv.reader(csv_data_file, delimiter = ',')
-
-        # loop through the lines of file
-        for game in match_list:
-            if header_row :
-                header_row = False
-                continue
-
-            date = game[0].split("-")
-            date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
-            home_team = game[1]
-            home_score = int(game[2])
-            away_team = game[3]
-            away_score = int(game[4])
-            extra_time = game[5]
-
-            # fill out a 3ple with the winner and loser of the game as well as
-            # the scoring difference between the teams
-            (winner, loser, score_difference) = \
-                determine_winner_loser(home_team, home_score, away_team, away_score)
-
-            # now given the winner, loser, and difference, update the SOS score.
-            update_strength_of_schedule(winner, loser, date, score_difference)
-
-        for team in strength_of_schedule.keys():
-            print("{} : {}".format(team, strength_of_schedule[team]))
+def parse_average_rating_header_row(header_row : list = []) -> None:
+    if len(header_row) == 0:
+        return
+    for column in header_row:
+        if column == 'Team':
+            continue
+        if column == 'N/A':
+            continue
+        header_line = column.split(" ")
+        date = header_line[0].split("/")
+        ranking_dates.append(datetime.date(int(date[2]), int(date[1]),
+            int(date[0])))
+    #print(ranking_dates)
 
 
 if __name__ == "__main__":
-    parse_average_ratings('AverageRatings.csv')
-    parse_matches('Matches2021_2022.csv')
+    parse_average_ratings("Input_Files/AverageRatings.csv")
+    parse_average_rating_header_row(average_ratings_header)
