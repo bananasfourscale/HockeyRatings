@@ -1,5 +1,4 @@
 import csv
-from asyncio.windows_events import NULL
 from enum import *
 
 team_summary_data = {
@@ -40,7 +39,29 @@ team_summary_data = {
 class summary_indecies(Enum):
     TEAM = 0
     SEASON = 1
-    GAMES_PLAYED = 2
+    GP = 2
+    W = 3
+    L = 4
+    T = 5
+    OT = 6
+    PTS = 7
+    PTS_PER = 8
+    RW = 9
+    ROW = 10
+    SOW = 11
+    GF = 12
+    GA = 13
+    GF_GP = 14
+    GA_GP = 15
+    PP_PER = 16
+    PK_PER = 17
+    NET_PP = 18
+    NET_PK = 19
+    SHF_GP = 20
+    SHA_GP = 21
+    FOW_PER = 22
+
+
 
 def parse_team_summary(file_name : str = "") -> None:
     current_rating = 0

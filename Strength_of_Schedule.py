@@ -148,20 +148,12 @@ def read_matches(match_list : list = []) -> None:
 def strength_of_schedule_scale_by_game() -> None:
     for team in strength_of_schedule.keys():
         strength_of_schedule[team] /= float(team_summary_data[team][
-            summary_indecies.GAMES_PLAYED.value])
+            summary_indecies.GP.value])
 
 def strength_of_schedule_apply_sigmoid() -> None:
     for team in strength_of_schedule.keys():
         strength_of_schedule[team] = \
             1/(1 + math.exp(-(0.53466 * (strength_of_schedule[team]-5))))
-
-def strength_of_schedule_write_out() -> None:
-    with open("Output_Files/StengthOfSchedule.csv", 'w', newline='') as csv_data_file:
-        sos_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
-            quoting=csv.QUOTE_MINIMAL)
-        sos_writer.writerow(["Team", "Strength of Schedule"])
-        for key in strength_of_schedule.keys():
-            sos_writer.writerow([key, str(strength_of_schedule[key])])
 
 
 if __name__ == "__main__":
@@ -171,4 +163,3 @@ if __name__ == "__main__":
     parse_team_summary('Input_Files/TeamSummary.csv')
     read_matches(matches)
     strength_of_schedule_scale_by_game()
-    strength_of_schedule_write_out()
