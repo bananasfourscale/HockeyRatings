@@ -39,6 +39,12 @@ strength_of_schedule = {
     'Winnipeg Jets' : 0,
 }
 
+class strength_of_schedule_weights(Enum):
+    FOR_OR_MORE = 1.0
+    THREE_GOALS = 0.85
+    TWO_OR_ONE = 0.75
+    OT_GAME = 0.5
+    SO_GAME = 0.33
 
 def determine_winner_loser(home_team : str = "", home_score : int = 0,
                            away_team : str = "", away_score : int = 0) \
@@ -97,21 +103,25 @@ def scale_game_rating(winner_rating : float = 0.0, loser_rating : float = 0.0,
 
     # a win by 3 goals is slightly closer and might have an ENG so slightly less
     if (score_difference == 3):
-        return (winner_rating * 0.85, loser_rating * 0.85)
+        return (winner_rating * strength_of_schedule_weights.THREE_GOALS.value,
+            loser_rating * strength_of_schedule_weights.THREE_GOALS.value)
 
     # a win by 1/2 goals is generally a close game with an ENG likely majority
     # credit but not full
     if (score_difference >= 1 and extra_time == ""):
-        return (winner_rating * 0.75, loser_rating * 0.75)
+        return (winner_rating * strength_of_schedule_weights.TWO_OR_ONE.value,
+            loser_rating * strength_of_schedule_weights.TWO_OR_ONE.value)
 
     # if you had to go to OT then it was a really close win
     if (extra_time == "OT"):
-        return (winner_rating * 0.5, loser_rating * 0.5)
+        return (winner_rating * strength_of_schedule_weights.OT_GAME.value,
+            loser_rating * strength_of_schedule_weights.OT_GAME.value)
 
     # shootouts are basically just luck on some level and have little
     # correlation to how good the actual team is
     else:
-        return (winner_rating * 0.33, loser_rating * 0.33)
+        return (winner_rating * strength_of_schedule_weights.SO_GAME.value,
+            loser_rating * strength_of_schedule_weights.SO_GAME.value)
 
 
 def read_matches(match_list : list = []) -> None:
@@ -149,6 +159,7 @@ def strength_of_schedule_scale_by_game() -> None:
     for team in strength_of_schedule.keys():
         strength_of_schedule[team] /= float(team_summary_data[team][
             summary_indecies.GP.value])
+
 
 def strength_of_schedule_apply_sigmoid() -> None:
     for team in strength_of_schedule.keys():

@@ -1,5 +1,4 @@
 from Team_Summary_Parser import *
-from enum import *
 import math
 
 scoring_difference = {
@@ -112,13 +111,13 @@ def scoring_rating_calc_goal_diff() -> None:
     for team in team_summary_data.keys():
 
         # reassign the data values just to make it easier to use
-        games_played = team_summary_data[team][summary_indecies.GP.value]
-        goals_for = team_summary_data[team][summary_indecies.GF.value]
-        goals_against = team_summary_data[team][summary_indecies.GA.value]
+        games_played = float(team_summary_data[team][summary_indecies.GP.value])
+        goals_for = float(team_summary_data[team][summary_indecies.GF.value])
+        goals_against = float(
+            team_summary_data[team][summary_indecies.GA.value])
 
         # calculate scoring diff
-        scoring_difference[team] = \
-            (float(goals_for) - float(goals_against)) / float(games_played)
+        scoring_difference[team] = (goals_for - goals_against) / games_played
         # print("{} : {}".format(team, scoring_difference[team]))
 
 
@@ -133,15 +132,14 @@ def scoring_rating_calc_shooting_diff() -> None:
     for team in team_summary_data.keys():
 
         # reassign the data values just to make it easier to use
-        games_played = team_summary_data[team][summary_indecies.GP.value]
-        shots_for_per_game = team_summary_data[team][
-            summary_indecies.SHF_GP.value]
-        shots_against_per_game = team_summary_data[team][
-            summary_indecies.SHA_GP.value]
+        shots_for_per_game = float(
+                team_summary_data[team][summary_indecies.SHF_GP.value])
+        shots_against_per_game = float(
+            team_summary_data[team][summary_indecies.SHA_GP.value])
 
         # calculate shooting diff
         shooting_difference[team] = \
-            (float(shots_for_per_game) - float(shots_against_per_game))
+            (shots_for_per_game - shots_against_per_game)
         # print()
         # print("{} : SF/GP={}, SA/GP={}".format(team, shots_for_per_game,
         #     shots_against_per_game))
@@ -154,6 +152,16 @@ def scoring_rating_apply_sigmoid_shooting_diff() -> None:
             1/(1 + math.exp(-(0.46 * (shooting_difference[team]))))
         # print("{} : {}".format(team, shooting_difference[team]))
 
+
+def scoring_rating_combine_factors() -> None:
+    for team in scoring_rating.keys():
+        scoring_rating[team] = (scoring_difference[team] * 0.75) + \
+            (shooting_difference[team] * 0.25)
+
 if __name__ == "__main__":
-    parse_team_summary('Input_Files/TeamSummary.csv')
-    pass
+    parse_team_summary("Input_Files/TeamSummary.csv")
+    scoring_rating_calc_goal_diff()
+    scoring_rating_apply_sigmoid_goal_diff()
+    scoring_rating_calc_shooting_diff()
+    scoring_rating_apply_sigmoid_shooting_diff()
+    scoring_rating_combine_factors()

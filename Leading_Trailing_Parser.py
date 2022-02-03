@@ -1,7 +1,7 @@
 import csv
 from enum import Enum
 
-team_summary_data = {
+leading_trailing_data = {
     'Anaheim Ducks' : [],
     'Arizona Coyotes' : [],
     'Boston Bruins' : [],
@@ -36,135 +36,141 @@ team_summary_data = {
     'Winnipeg Jets' : [],
 }
 
-class summary_indecies(Enum):
+class leading_trailing_indecies(Enum):
     TEAM = 0
     SEASON = 1
     GP = 2
-    W = 3
-    L = 4
-    T = 5
-    OT = 6
-    PTS = 7
-    PTS_PER = 8
-    RW = 9
-    ROW = 10
-    SOW = 11
-    GF = 12
-    GA = 13
-    GF_GP = 14
-    GA_GP = 15
-    PP_PER = 16
-    PK_PER = 17
-    NET_PP = 18
-    NET_PK = 19
-    SHF_GP = 20
-    SHA_GP = 21
-    FOW_PER = 22
+    PTS_PER = 3
+    GF_P1 = 4
+    GA_P1 = 5
+    GF_P2 = 6
+    GA_P2 = 7
+    W_LEAD_1 = 8
+    L_LEAD_1 = 9
+    T_LEAD_1 = 10
+    OT_LEAD_1 = 11
+    W_PER_LEAD_1 = 12
+    W_LEAD_2 = 13
+    L_LEAD_2 = 14
+    T_LEAD_2 = 15
+    OT_LEAD_2 = 16
+    W_PER_LEAD_2 = 17
+    W_TRAIL_1 = 18
+    L_TRAIL_1 = 19
+    T_TRAIL_1 = 20
+    OT_TRAIL_1 = 21
+    W_PER_TRAIL_1 = 22
+    W_TRAIL_2 = 23
+    L_TRAIL_2 = 24
+    T_TRAIL_2 = 25
+    OT_TRAIL_2 = 26
+    W_PER_TRAIL_2 = 27
 
 
-def parse_team_summary(file_name : str = "") -> None:
+def parse_leading_trailing(file_name : str = "") -> None:
     current_rating = 0
     with open(file_name, newline='') as csv_data_file:
         summaries = csv.reader(csv_data_file, delimiter = ',')
         for summary in summaries:
             if current_rating == 1:
-                team_summary_data['Anaheim Ducks'] = summary
+                leading_trailing_data['Anaheim Ducks'] = summary
 
             if current_rating == 2:
-                team_summary_data['Arizona Coyotes'] = summary
+                leading_trailing_data['Arizona Coyotes'] = summary
                 
             if current_rating == 3:
-                team_summary_data['Boston Bruins'] = summary
+                leading_trailing_data['Boston Bruins'] = summary
                 
             if current_rating == 4:
-                team_summary_data['Buffalo Sabres'] = summary
+                leading_trailing_data['Buffalo Sabres'] = summary
                 
             if current_rating == 5:
-                team_summary_data['Calgary Flames'] = summary
+                leading_trailing_data['Calgary Flames'] = summary
                 
             if current_rating == 6:
-                team_summary_data['Carolina Hurricanes'] = summary
+                leading_trailing_data['Carolina Hurricanes'] = summary
                 
             if current_rating == 7:
-                team_summary_data['Chicago Blackhawks'] = summary
+                leading_trailing_data['Chicago Blackhawks'] = summary
                 
             if current_rating == 8:
-                team_summary_data['Colorado Avalanche'] = summary
+                leading_trailing_data['Colorado Avalanche'] = summary
                 
             if current_rating == 9:
-                team_summary_data['Columbus Blue Jackets'] = summary
+                leading_trailing_data['Columbus Blue Jackets'] = summary
                 
             if current_rating == 10:
-                team_summary_data['Dallas Stars'] = summary
+                leading_trailing_data['Dallas Stars'] = summary
                 
             if current_rating == 11:
-                team_summary_data['Detroit Red Wings'] = summary
+                leading_trailing_data['Detroit Red Wings'] = summary
                 
             if current_rating == 12:
-                team_summary_data['Edmonton Oilers'] = summary
+                leading_trailing_data['Edmonton Oilers'] = summary
                 
             if current_rating == 13:
-                team_summary_data['Florida Panthers'] = summary
+                leading_trailing_data['Florida Panthers'] = summary
                 
             if current_rating == 14:
-                team_summary_data['Los Angeles Kings'] = summary
+                leading_trailing_data['Los Angeles Kings'] = summary
                 
             if current_rating == 15:
-                team_summary_data['Minnesota Wild'] = summary
+                leading_trailing_data['Minnesota Wild'] = summary
                 
             if current_rating == 16:
-                team_summary_data['Montreal Canadiens'] = summary
+                leading_trailing_data['Montreal Canadiens'] = summary
                 
             if current_rating == 17:
-                team_summary_data['Nashville Predators'] = summary
+                leading_trailing_data['Nashville Predators'] = summary
                 
             if current_rating == 18:
-                team_summary_data['New Jersey Devils'] = summary
+                leading_trailing_data['New Jersey Devils'] = summary
                 
             if current_rating == 19:
-                team_summary_data['New York Islanders'] = summary
+                leading_trailing_data['New York Islanders'] = summary
                 
             if current_rating == 20:
-                team_summary_data['New York Rangers'] = summary
+                leading_trailing_data['New York Rangers'] = summary
                 
             if current_rating == 21:
-                team_summary_data['Ottawa Senators'] = summary
+                leading_trailing_data['Ottawa Senators'] = summary
                 
             if current_rating == 22:
-                team_summary_data['Philadelphia Flyers'] = summary
+                leading_trailing_data['Philadelphia Flyers'] = summary
                 
             if current_rating == 23:
-                team_summary_data['Pittsburgh Penguins'] = summary
+                leading_trailing_data['Pittsburgh Penguins'] = summary
                 
             if current_rating == 24:
-                team_summary_data['San Jose Sharks'] = summary
+                leading_trailing_data['San Jose Sharks'] = summary
                 
             if current_rating == 25:
-                team_summary_data['Seattle Kraken'] = summary
+                leading_trailing_data['Seattle Kraken'] = summary
                 
             if current_rating == 26:
-                team_summary_data['St. Louis Blues'] = summary
+                leading_trailing_data['St. Louis Blues'] = summary
                 
             if current_rating == 27:
-                team_summary_data['Tampa Bay Lightning'] = summary
+                leading_trailing_data['Tampa Bay Lightning'] = summary
                 
             if current_rating == 28:
-                team_summary_data['Toronto Maple Leafs'] = summary
+                leading_trailing_data['Toronto Maple Leafs'] = summary
                 
             if current_rating == 29:
-                team_summary_data['Vancouver Canucks'] = summary
+                leading_trailing_data['Vancouver Canucks'] = summary
                 
             if current_rating == 30:
-                team_summary_data['Vegas Golden Knights'] = summary
+                leading_trailing_data['Vegas Golden Knights'] = summary
                 
             if current_rating == 31:
-                team_summary_data['Washington Capitals'] = summary
+                leading_trailing_data['Washington Capitals'] = summary
                 
             if current_rating == 32:
-                team_summary_data['Winnipeg Jets'] = summary
+                leading_trailing_data['Winnipeg Jets'] = summary
             
             current_rating += 1
 
+
 if __name__ == "__main__":
-    parse_team_summary("Input_Files/TeamSummary.csv")
-    print(team_summary_data)
+    parse_leading_trailing("Input_Files/LeadingTrailing.csv")
+    print(leading_trailing_data)

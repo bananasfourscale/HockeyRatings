@@ -1,6 +1,5 @@
 import csv
-from asyncio.windows_events import NULL
-from enum import *
+from enum import Enum
 
 matches = []
 
