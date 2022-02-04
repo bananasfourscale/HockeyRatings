@@ -266,23 +266,50 @@ def combine_all_factors() -> None:
     write_out_file("Output_Files/TotalRating.csv", ["Team", "Total Rating"],
         total_rating)
     plot_data_set("Output_Files/TotalRating.csv", ["Team", "Total Rating"],
-        1.0, 0.0, sigmiod_ticks, "Graphs/total_rating.png", True)
+        1.0, 0.0, sigmiod_ticks, "Graphs/total_rating.png", False)
 
 
 if __name__ == "__main__":
+    
+    # get a command from the user
+    command = input("Welcome, Enter Command:\n\t" + "(r)ecent\n\t" +
+        "(st)rength\n\t" + "(w)ins\n\t" + "(sc)oring\n\t" + "(c)lutch\n\t" +
+        "(sp)ecial\n\t" + "(a)ll\n\t" "(e)xit\n" + ">")
 
+    # regardless of command parse the input files
     parse_all_data_files()
 
-    calculate_strenght_of_schedule()
+    while (command != "e"):
+    
+        # handle the user command
+        if command == 'r':
+            calculate_recent_form()
+        
+        elif command == 'st':
+            calculate_strenght_of_schedule()
 
-    calculate_win_rating()
+        elif command == 'w':
+            calculate_win_rating()
 
-    calculate_scoring_rating()
+        elif command == 'sc':
+            calculate_scoring_rating()
 
-    calculate_special_teams_rating()
+        elif command == 'c':
+            calculate_clutch_rating()
 
-    calculate_clutch_rating()
+        elif command == 'sp':
+            calculate_special_teams_rating()
 
-    calculate_recent_form()
+        elif command == 'a':
+            calculate_recent_form()
+            calculate_strenght_of_schedule()
+            calculate_win_rating()
+            calculate_scoring_rating()
+            calculate_clutch_rating()
+            calculate_special_teams_rating()
+            combine_all_factors()
 
-    combine_all_factors()
+        elif command == 'e':
+            exit()
+
+        command = input(">")

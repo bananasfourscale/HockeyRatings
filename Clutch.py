@@ -54,7 +54,6 @@ def clutch_calculate_lead_protection() -> None:
 
 
 def clutch_calculated_trail_comeback() -> None:
-    print()
     for team in leading_trailing_data.keys():
 
         # reassign the data values just to make it easier to use
