@@ -73,10 +73,10 @@ total_rating = {
     'Winnipeg Jets' : 0,
 }
 
+
 def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
-                  tick_set : list = [], image_file : str = "", label = False) \
-                                                                        -> None:
+                  tick_set : list = [], image_file : str = "") -> None:
     plot_data = pd.read_csv(csv_file, delimiter='\t')
     sns.set_theme()
     team_palette = sns.color_palette(colors)
@@ -85,14 +85,6 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     plot.set(xticks=range(len(colors)))
     plot.set_xticklabels(plot.get_xticklabels(), rotation=90,
         horizontalalignment='center')
-    if label:
-        pass
-        # for index, row in plot_data.iterrows():
-        #     plot.text(row.name, round(row[1],2), round(row[1],2),
-        #         color='black', ha="center")
-
-        #for row in plot_data:
-
     plotter.tight_layout()
     plotter.ylim(lower_bound, upper_bound)
     if len(tick_set) > 0:
@@ -100,9 +92,9 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     plotter.savefig(image_file)
     plotter.clf()
 
+
 def parse_all_data_files() -> None:
     parse_average_ratings('Input_Files/AverageRatings.csv')
-    parse_average_rating_header_row(average_ratings_header)
     parse_matches('Input_Files/Matches2021_2022.csv')
     read_matches(matches)
     parse_team_summary('Input_Files/TeamSummary.csv')
@@ -117,7 +109,7 @@ def calculate_strenght_of_schedule() -> None:
         ["Team", "Strength of Schedule"], strength_of_schedule)
     plot_data_set("Output_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], 500, -500, [],
-        "Graphs/Strength_of_Schedule/sos_base.png", False)
+        "Graphs/Strength_of_Schedule/sos_base.png")
 
     # scale the strength of schedule by game, write out again, and graph
     strength_of_schedule_scale_by_game()
@@ -125,7 +117,7 @@ def calculate_strenght_of_schedule() -> None:
         ["Team", "Strength of Schedule"], strength_of_schedule)
     plot_data_set("Output_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], 15.0, -15.0, [],
-        "Graphs/Strength_of_Schedule/sos_game_scale.png", False)
+        "Graphs/Strength_of_Schedule/sos_game_scale.png")
 
     # apply sigmoid correction, write out again, and graph
     strength_of_schedule_apply_sigmoid()
@@ -133,7 +125,7 @@ def calculate_strenght_of_schedule() -> None:
         ["Team", "Strength of Schedule"], strength_of_schedule)
     plot_data_set("Output_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Strength_of_Schedule/sos_sigmoid_corrected.png", False)
+        "Graphs/Strength_of_Schedule/sos_sigmoid_corrected.png")
 
 
 def calculate_win_rating() -> None:
@@ -143,7 +135,7 @@ def calculate_win_rating() -> None:
     write_out_file("Output_Files/WinRating.csv", ["Team", "Win Rating"],
         win_rating)
     plot_data_set("Output_Files/WinRating.csv", ["Team", "Win Rating"], 1.0,
-        0.0, sigmiod_ticks, "Graphs/Win_Rating/win_rating.png", False)
+        0.0, sigmiod_ticks, "Graphs/Win_Rating/win_rating.png")
 
 
 def calculate_scoring_rating() -> None:
@@ -154,7 +146,7 @@ def calculate_scoring_rating() -> None:
         ["Team", "Scoring Difference"], scoring_difference)
     plot_data_set("Output_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], 2.0, -2.0, [],
-        "Graphs/Scoring_Rating/scoring_diff_base.png", False)
+        "Graphs/Scoring_Rating/scoring_diff_base.png")
 
     # apply a sigmoid correction and graph again
     scoring_rating_apply_sigmoid_goal_diff()
@@ -162,7 +154,7 @@ def calculate_scoring_rating() -> None:
         ["Team", "Scoring Difference"], scoring_difference)
     plot_data_set("Output_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Scoring_Rating/shooting_diff.png", False)
+        "Graphs/Scoring_Rating/shooting_diff.png")
 
     # calculate the shooting diff and graph
     scoring_rating_calc_shooting_diff()
@@ -170,7 +162,7 @@ def calculate_scoring_rating() -> None:
         ["Team", "Shooting Difference"], shooting_difference)
     plot_data_set("Output_Files/ShootingDiff.csv",
         ["Team", "Shooting Difference"], 12.0, -12.0, [],
-        "Graphs/Scoring_Rating/shooting_diff_base.png", False)
+        "Graphs/Scoring_Rating/shooting_diff_base.png")
 
     # apply a signmoid correction and graph again
     scoring_rating_apply_sigmoid_shooting_diff()
@@ -178,15 +170,14 @@ def calculate_scoring_rating() -> None:
         ["Team", "Shooting Difference"], shooting_difference)
     plot_data_set("Output_Files/ShootingDiff.csv",
         ["Team", "Shooting Difference"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Scoring_Rating/shooting_diff.png", False)
+        "Graphs/Scoring_Rating/shooting_diff.png")
 
     # combine the scoring rating factors and graph again
     scoring_rating_combine_factors()
     write_out_file("Output_Files/ScoringRating.csv", ["Team", "Scoring Rating"],
         scoring_rating)
     plot_data_set("Output_Files/ScoringRating.csv", ["Team", "Scoring Rating"],
-        1.0, 0.0, sigmiod_ticks, "Graphs/Scoring_Rating/scoring_rating.png",
-        False)
+        1.0, 0.0, sigmiod_ticks, "Graphs/Scoring_Rating/scoring_rating.png")
 
 
 def calculate_special_teams_rating() -> None:
@@ -197,7 +188,7 @@ def calculate_special_teams_rating() -> None:
         ["Team", "Special Teams"], special_teams)
     plot_data_set("Output_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], 130, 50, [],
-        "Graphs/Special_Teams/special_teams_combined.png", False)
+        "Graphs/Special_Teams/special_teams_combined.png")
 
     # apply sigmoid correction and plot
     special_teams_apply_sigmoid()
@@ -205,7 +196,7 @@ def calculate_special_teams_rating() -> None:
         ["Team", "Special Teams"], special_teams)
     plot_data_set("Output_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Special_Teams/special_teams_corrected.png", False)
+        "Graphs/Special_Teams/special_teams_corrected.png")
 
 
 def calculate_clutch_rating() -> None:
@@ -222,7 +213,7 @@ def calculate_clutch_rating() -> None:
         clutch_rating)
     plot_data_set("Output_Files/ClutchRating.csv", ["Team", "Clutch Rating"],
         1.0, 0.0, sigmiod_ticks,
-        "Graphs/ClutchRating/clutch_rating_corrected.png", False)
+        "Graphs/ClutchRating/clutch_rating_corrected.png")
 
 
 def calculate_recent_form() -> None:
@@ -233,15 +224,14 @@ def calculate_recent_form() -> None:
         recent_form_rating)
     plot_data_set("Output_Files/RecentForm.csv", ["Team", "Recent Form"],
         10.0, 0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "Graphs/FormRating/recent_form_base.png", False)
+        "Graphs/FormRating/recent_form_base.png")
 
     # now apply the sigmoid correction and plot
     form_apply_sigmoid()
     write_out_file("Output_Files/RecentForm.csv", ["Team", "Recent Form"],
         recent_form_rating)
     plot_data_set("Output_Files/RecentForm.csv", ["Team", "Recent Form"],
-        1.0, 0.0, sigmiod_ticks, "Graphs/FormRating/recent_form_corrected.png",
-        False)
+        1.0, 0.0, sigmiod_ticks, "Graphs/FormRating/recent_form_corrected.png")
 
 
 def combine_all_factors() -> None:
@@ -266,7 +256,22 @@ def combine_all_factors() -> None:
     write_out_file("Output_Files/TotalRating.csv", ["Team", "Total Rating"],
         total_rating)
     plot_data_set("Output_Files/TotalRating.csv", ["Team", "Total Rating"],
-        1.0, 0.0, sigmiod_ticks, "Graphs/total_rating.png", False)
+        1.0, 0.0, sigmiod_ticks, "Graphs/total_rating.png")
+
+
+def average_rankings() -> None:
+    plot_data = pd.read_csv("Input_Files/AverageRatings.csv", delimiter=',')
+    sns.set_theme()
+    plotter.figure(figsize=(25, 10), dpi=100)
+    team_palette = sns.color_palette(colors)
+    plot = sns.lineplot(data=plot_data, x="Rating Date", y="Average Ranking",
+        hue="Team", style="Division",palette=team_palette, marker='s')
+    plot.set(yticks=range(1, 33, 1))
+    plotter.tick_params(axis='x', which='major', labelsize=8)
+    plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    plotter.ylim(33, 0)
+    plotter.savefig("Graphs/Trends/average_ranking.png", bbox_inches='tight')
+    plotter.clf()
 
 
 if __name__ == "__main__":
@@ -274,7 +279,8 @@ if __name__ == "__main__":
     # get a command from the user
     command = input("Welcome, Enter Command:\n\t" + "(r)ecent\n\t" +
         "(st)rength\n\t" + "(w)ins\n\t" + "(sc)oring\n\t" + "(c)lutch\n\t" +
-        "(sp)ecial\n\t" + "(a)ll\n\t" "(e)xit\n" + ">")
+        "(sp)ecial\n\t" + "(u)pdate (a)verage\n\t" + "(a)ll\n\t" "(e)xit\n" +
+        ">")
 
     # regardless of command parse the input files
     parse_all_data_files()
@@ -299,6 +305,9 @@ if __name__ == "__main__":
 
         elif command == 'sp':
             calculate_special_teams_rating()
+
+        elif command == 'ua':
+            average_rankings()
 
         elif command == 'a':
             calculate_recent_form()

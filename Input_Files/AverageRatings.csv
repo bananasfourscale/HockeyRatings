@@ -1,33 +1,513 @@
-Team	16/10/2021 (THG)	23/10/2021 (THG)	30/10/2021 (THG)	6/11/2021 (THG)	13/11/2021 (THG)	N/A	20/11/2021 (v1.0)	N/A	27/11/2021 (v2.0)	4/12/2021 (v2.1)	11/12/2021 (v2.2)	1/1/2022 (v2.3)	N/A	2/1/2022 (v3.0)	8/1/2022 (v3.0)	N/A	13/1/2022 (v4.0)	15/1/2022 (v4.1)	22/1/2022 (v4.5)
-Anaheim Ducks	26	26.5	25.33333333	24.25	22		20.66666667		19.71428571	19.375	19	18.7		18.45454545	18.41666667		18.46153846	18.78571429	18.86666667
-Arizona Coyotes	32	32	31.66666667	31.75	32		31.66666667		31.71428571	31.75	31.77777778	31.7		31.63636364	31.58333333		31.53846154	31.42857143	31.26666667
-Boston Bruins	9	8	8.666666667	9.75	10		9.5		9.285714286	8.875	9.222222222	9.4		9.545454545	9.416666667		9.307692308	9	8.733333333
-Buffalo Sabres	24	20	21.33333333	22	23		23.16666667		23.85714286	24.625	25.11111111	25.5		25.90909091	26.25		26.53846154	26.71428571	26.8
-Calgary Flames	17	11	9	9.5	9		8.333333333		8.142857143	9.125	9.777777778	10.1		10.36363636	11.08333333		11.61538462	12.07142857	12.33333333
-Carolina Hurricanes	3	2	2.333333333	2	2		1.666666667		1.714285714	1.625	1.555555556	1.5		1.454545455	1.416666667		1.384615385	1.357142857	1.333333333
-Chicago Blackhawks	31	31	31.33333333	30.5	30		29.5		29.14285714	29.125	29.22222222	29.3		29.18181818	29.16666667		29.15384615	28.78571429	28.6
-Colorado Avalanche	10	9	12	13	13		12.5		12.42857143	11.75	10.88888889	10.2		9.545454545	8.916666667		8.384615385	8	7.666666667
-Columbus Blue Jackets	25	25	21.33333333	20.75	20		18.83333333		18.71428571	18.875	19.11111111	19.7		20.27272727	20.83333333		21.23076923	21.64285714	21.73333333
-Dallas Stars	12	17.5	19	20.75	21		21.66666667		20.85714286	20.625	20.44444444	20.4		20.36363636	20.08333333		19.69230769	19.42857143	19
-Detroit Red Wings	23	20.5	22.33333333	22.5	23		23.33333333		23	23	23	23.1		23.18181818	23.41666667		23.69230769	23.85714286	23.93333333
-Edmonton Oilers	2	2.5	2.333333333	2.5	3		2.833333333		2.571428571	3.25	3.666666667	4.7		6.181818182	7.5		8.538461538	9.428571429	9.933333333
-Florida Panthers	1	1.5	1.333333333	1.5	2		1.666666667		1.857142857	2	2.444444444	2.5		2.636363636	2.833333333		2.923076923	2.857142857	2.8
-Los Angeles Kings	28	28.5	27.33333333	24	23		22		22	21.875	21.66666667	21.4		20.81818182	20.33333333		19.84615385	19.28571429	19
-Minnesota Wild	5	7.5	7.333333333	7.25	7		7.833333333		7.428571429	7.125	7.444444444	8.2		8.727272727	9.083333333		9.307692308	9.571428571	9.666666667
-Montréal Canadiens	30	30	30	29.25	29		29.5		29.71428571	29.875	30	30.2		30.36363636	30.5		30.61538462	30.71428571	30.8
-Nashville Predators	27	25.5	24	23.5	23		22.16666667		21.14285714	19.875	18.22222222	17.3		16.36363636	15.5		14.69230769	14.35714286	14.06666667
-New Jersey Devils	21	19	19.33333333	19.5	19		19.5		20	20.25	21	21.5		22	22.16666667		22.30769231	22.5	22.6
-New York Islanders	14	13	12.33333333	13	15		16.83333333		18.57142857	19.5	20.22222222	20.4		20.54545455	20.58333333		20.69230769	20.64285714	20.46666667
-New York Rangers	8	10.5	12.33333333	12.25	12		12.5		11.57142857	10.625	9.777777778	9.8		10	10.08333333		10.15384615	10.07142857	9.866666667
-Ottawa Senators	20	21	23.33333333	24.75	25		26.33333333		26.85714286	27	27.11111111	27.2		27	26.83333333		26.69230769	26.35714286	26.4
-Philadelphia Flyers	16	12.5	10.33333333	9.75	10		11.83333333		13.71428571	15	16	16.7		17.27272727	17.75		18.15384615	18.85714286	19.6
-Pittsburgh Penguins	13	16	17	19	20		19.5		19.57142857	18.875	18.33333333	17.3		16.45454545	15.41666667		14.69230769	14.07142857	13.53333333
-San Jose Sharks	11	12.5	12.66666667	14	15		16.16666667		16.28571429	16.125	16.22222222	16.3		16.54545455	16.83333333		17.07692308	17.07142857	17.33333333
-Seattle Kraken	29	27.5	28	28.75	29		28.83333333		28.14285714	27.75	27.44444444	27.4		27.54545455	27.58333333		27.61538462	27.85714286	28.06666667
-St. Louis Blues	4	4	4	4.25	7		7		7.857142857	8.125	8.666666667	8.3		8	7.916666667		7.846153846	7.785714286	7.8
-Tampa Bay Lightning	7	9	9	8.25	8		8.166666667		8.285714286	8.875	8.888888889	9.2		9.272727273	9.333333333		9.384615385	9.285714286	9.266666667
-Toronto Maple Leafs	15	18	14.66666667	12	11		10		9.142857143	8.25	7.555555556	7		6.545454545	6.25		6	5.857142857	5.733333333
-Vancouver Canucks	22	25	25.66666667	26.75	27		27.16666667		27	27	26.44444444	25.9		25.09090909	24.16666667		23.53846154	23.21428571	23.13333333
-Vegas Golden Knights	19	19.5	18.66666667	18.25	17		16.83333333		16	15.5	14.66666667	13.8		13.09090909	12.75		12.46153846	12.35714286	12.33333333
-Washington Capitals	6	6	8	8.25	7		7		7.428571429	7.625	8	7.9		8	8.333333333		8.692307692	9.071428571	9.4
-Winnipeg Jets	18	16.5	16	14.5	13		13.5		14.28571429	14.75	15.11111111	15.4		15.63636364	15.66666667		15.76923077	15.71428571	15.93333333
+Rating Date,Team,Division,Average Ranking
+16/10/2021 (THG),Anaheim Ducks,PAC,26.000
+16/10/2021 (THG),Arizona Coyotes,CEN,32.000
+16/10/2021 (THG),Boston Bruins,ATL,9.000
+16/10/2021 (THG),Buffalo Sabres,ATL,24.000
+16/10/2021 (THG),Calgary Flames,CEN,17.000
+16/10/2021 (THG),Carolina Hurricanes,MET,3.000
+16/10/2021 (THG),Chicago Blackhawks,CEN,31.000
+16/10/2021 (THG),Colorado Avalanche,CEN,10.000
+16/10/2021 (THG),Columbus Blue Jackets,MET,25.000
+16/10/2021 (THG),Dallas Stars,CEN,12.000
+16/10/2021 (THG),Detroit Red Wings,ATL,23.000
+16/10/2021 (THG),Edmonton Oilers,PAC,2.000
+16/10/2021 (THG),Florida Panthers,ATL,1.000
+16/10/2021 (THG),Los Angeles Kings,PAC,28.000
+16/10/2021 (THG),Minnesota Wild,CEN,5.000
+16/10/2021 (THG),Montréal Canadiens,ATL,30.000
+16/10/2021 (THG),Nashville Predators,CEN,27.000
+16/10/2021 (THG),New Jersey Devils,MET,21.000
+16/10/2021 (THG),New York Islanders,MET,14.000
+16/10/2021 (THG),New York Rangers,MET,8.000
+16/10/2021 (THG),Ottawa Senators,ATL,20.000
+16/10/2021 (THG),Philadelphia Flyers,MET,16.000
+16/10/2021 (THG),Pittsburgh Penguins,MET,13.000
+16/10/2021 (THG),San Jose Sharks,PAC,11.000
+16/10/2021 (THG),Seattle Kraken,PAC,29.000
+16/10/2021 (THG),St. Louis Blues,CEN,4.000
+16/10/2021 (THG),Tampa Bay Lightning,ATL,7.000
+16/10/2021 (THG),Toronto Maple Leafs,ATL,15.000
+16/10/2021 (THG),Vancouver Canucks,PAC,22.000
+16/10/2021 (THG),Vegas Golden Knights,PAC,19.000
+16/10/2021 (THG),Washington Capitals,MET,6.000
+16/10/2021 (THG),Winnipeg Jets,CEN,18.000
+23/10/2021 (THG),Anaheim Ducks,PAC,26.500
+23/10/2021 (THG),Arizona Coyotes,CEN,32.000
+23/10/2021 (THG),Boston Bruins,ATL,8.000
+23/10/2021 (THG),Buffalo Sabres,ATL,20.000
+23/10/2021 (THG),Calgary Flames,CEN,11.000
+23/10/2021 (THG),Carolina Hurricanes,MET,2.000
+23/10/2021 (THG),Chicago Blackhawks,CEN,31.000
+23/10/2021 (THG),Colorado Avalanche,CEN,9.000
+23/10/2021 (THG),Columbus Blue Jackets,MET,25.000
+23/10/2021 (THG),Dallas Stars,CEN,17.500
+23/10/2021 (THG),Detroit Red Wings,ATL,20.500
+23/10/2021 (THG),Edmonton Oilers,PAC,2.500
+23/10/2021 (THG),Florida Panthers,ATL,1.500
+23/10/2021 (THG),Los Angeles Kings,PAC,28.500
+23/10/2021 (THG),Minnesota Wild,CEN,7.500
+23/10/2021 (THG),Montréal Canadiens,ATL,30.000
+23/10/2021 (THG),Nashville Predators,CEN,25.500
+23/10/2021 (THG),New Jersey Devils,MET,19.000
+23/10/2021 (THG),New York Islanders,MET,13.000
+23/10/2021 (THG),New York Rangers,MET,10.500
+23/10/2021 (THG),Ottawa Senators,ATL,21.000
+23/10/2021 (THG),Philadelphia Flyers,MET,12.500
+23/10/2021 (THG),Pittsburgh Penguins,MET,16.000
+23/10/2021 (THG),San Jose Sharks,PAC,12.500
+23/10/2021 (THG),Seattle Kraken,PAC,27.500
+23/10/2021 (THG),St. Louis Blues,CEN,4.000
+23/10/2021 (THG),Tampa Bay Lightning,ATL,9.000
+23/10/2021 (THG),Toronto Maple Leafs,ATL,18.000
+23/10/2021 (THG),Vancouver Canucks,PAC,25.000
+23/10/2021 (THG),Vegas Golden Knights,PAC,19.500
+23/10/2021 (THG),Washington Capitals,MET,6.000
+23/10/2021 (THG),Winnipeg Jets,CEN,16.500
+30/10/2021 (THG),Anaheim Ducks,PAC,25.333
+30/10/2021 (THG),Arizona Coyotes,CEN,31.667
+30/10/2021 (THG),Boston Bruins,ATL,8.667
+30/10/2021 (THG),Buffalo Sabres,ATL,21.333
+30/10/2021 (THG),Calgary Flames,CEN,9.000
+30/10/2021 (THG),Carolina Hurricanes,MET,2.333
+30/10/2021 (THG),Chicago Blackhawks,CEN,31.333
+30/10/2021 (THG),Colorado Avalanche,CEN,12.000
+30/10/2021 (THG),Columbus Blue Jackets,MET,21.333
+30/10/2021 (THG),Dallas Stars,CEN,19.000
+30/10/2021 (THG),Detroit Red Wings,ATL,22.333
+30/10/2021 (THG),Edmonton Oilers,PAC,2.333
+30/10/2021 (THG),Florida Panthers,ATL,1.333
+30/10/2021 (THG),Los Angeles Kings,PAC,27.333
+30/10/2021 (THG),Minnesota Wild,CEN,7.333
+30/10/2021 (THG),Montréal Canadiens,ATL,30.000
+30/10/2021 (THG),Nashville Predators,CEN,24.000
+30/10/2021 (THG),New Jersey Devils,MET,19.333
+30/10/2021 (THG),New York Islanders,MET,12.333
+30/10/2021 (THG),New York Rangers,MET,12.333
+30/10/2021 (THG),Ottawa Senators,ATL,23.333
+30/10/2021 (THG),Philadelphia Flyers,MET,10.333
+30/10/2021 (THG),Pittsburgh Penguins,MET,17.000
+30/10/2021 (THG),San Jose Sharks,PAC,12.667
+30/10/2021 (THG),Seattle Kraken,PAC,28.000
+30/10/2021 (THG),St. Louis Blues,CEN,4.000
+30/10/2021 (THG),Tampa Bay Lightning,ATL,9.000
+30/10/2021 (THG),Toronto Maple Leafs,ATL,14.667
+30/10/2021 (THG),Vancouver Canucks,PAC,25.667
+30/10/2021 (THG),Vegas Golden Knights,PAC,18.667
+30/10/2021 (THG),Washington Capitals,MET,8.000
+30/10/2021 (THG),Winnipeg Jets,CEN,16.000
+6/11/2021 (THG),Anaheim Ducks,PAC,24.250
+6/11/2021 (THG),Arizona Coyotes,CEN,31.750
+6/11/2021 (THG),Boston Bruins,ATL,9.750
+6/11/2021 (THG),Buffalo Sabres,ATL,22.000
+6/11/2021 (THG),Calgary Flames,CEN,9.500
+6/11/2021 (THG),Carolina Hurricanes,MET,2.000
+6/11/2021 (THG),Chicago Blackhawks,CEN,30.500
+6/11/2021 (THG),Colorado Avalanche,CEN,13.000
+6/11/2021 (THG),Columbus Blue Jackets,MET,20.750
+6/11/2021 (THG),Dallas Stars,CEN,20.750
+6/11/2021 (THG),Detroit Red Wings,ATL,22.500
+6/11/2021 (THG),Edmonton Oilers,PAC,2.500
+6/11/2021 (THG),Florida Panthers,ATL,1.500
+6/11/2021 (THG),Los Angeles Kings,PAC,24.000
+6/11/2021 (THG),Minnesota Wild,CEN,7.250
+6/11/2021 (THG),Montréal Canadiens,ATL,29.250
+6/11/2021 (THG),Nashville Predators,CEN,23.500
+6/11/2021 (THG),New Jersey Devils,MET,19.500
+6/11/2021 (THG),New York Islanders,MET,13.000
+6/11/2021 (THG),New York Rangers,MET,12.250
+6/11/2021 (THG),Ottawa Senators,ATL,24.750
+6/11/2021 (THG),Philadelphia Flyers,MET,9.750
+6/11/2021 (THG),Pittsburgh Penguins,MET,19.000
+6/11/2021 (THG),San Jose Sharks,PAC,14.000
+6/11/2021 (THG),Seattle Kraken,PAC,28.750
+6/11/2021 (THG),St. Louis Blues,CEN,4.250
+6/11/2021 (THG),Tampa Bay Lightning,ATL,8.250
+6/11/2021 (THG),Toronto Maple Leafs,ATL,12.000
+6/11/2021 (THG),Vancouver Canucks,PAC,26.750
+6/11/2021 (THG),Vegas Golden Knights,PAC,18.250
+6/11/2021 (THG),Washington Capitals,MET,8.250
+6/11/2021 (THG),Winnipeg Jets,CEN,14.500
+13/11/2021 (THG),Anaheim Ducks,PAC,22.200
+13/11/2021 (THG),Arizona Coyotes,CEN,31.600
+13/11/2021 (THG),Boston Bruins,ATL,10.000
+13/11/2021 (THG),Buffalo Sabres,ATL,23.000
+13/11/2021 (THG),Calgary Flames,CEN,9.400
+13/11/2021 (THG),Carolina Hurricanes,MET,1.800
+13/11/2021 (THG),Chicago Blackhawks,CEN,29.600
+13/11/2021 (THG),Colorado Avalanche,CEN,13.400
+13/11/2021 (THG),Columbus Blue Jackets,MET,20.200
+13/11/2021 (THG),Dallas Stars,CEN,21.400
+13/11/2021 (THG),Detroit Red Wings,ATL,23.000
+13/11/2021 (THG),Edmonton Oilers,PAC,2.600
+13/11/2021 (THG),Florida Panthers,ATL,1.600
+13/11/2021 (THG),Los Angeles Kings,PAC,22.600
+13/11/2021 (THG),Minnesota Wild,CEN,7.400
+13/11/2021 (THG),Montréal Canadiens,ATL,29.400
+13/11/2021 (THG),Nashville Predators,CEN,23.200
+13/11/2021 (THG),New Jersey Devils,MET,19.400
+13/11/2021 (THG),New York Islanders,MET,14.600
+13/11/2021 (THG),New York Rangers,MET,12.200
+13/11/2021 (THG),Ottawa Senators,ATL,25.400
+13/11/2021 (THG),Philadelphia Flyers,MET,9.800
+13/11/2021 (THG),Pittsburgh Penguins,MET,19.800
+13/11/2021 (THG),San Jose Sharks,PAC,15.200
+13/11/2021 (THG),Seattle Kraken,PAC,29.400
+13/11/2021 (THG),St. Louis Blues,CEN,6.600
+13/11/2021 (THG),Tampa Bay Lightning,ATL,7.600
+13/11/2021 (THG),Toronto Maple Leafs,ATL,10.800
+13/11/2021 (THG),Vancouver Canucks,PAC,27.200
+13/11/2021 (THG),Vegas Golden Knights,PAC,17.200
+13/11/2021 (THG),Washington Capitals,MET,7.400
+13/11/2021 (THG),Winnipeg Jets,CEN,13.000
+20/11/2021 (v1.0),Anaheim Ducks,PAC,20.667
+20/11/2021 (v1.0),Arizona Coyotes,CEN,31.667
+20/11/2021 (v1.0),Boston Bruins,ATL,9.500
+20/11/2021 (v1.0),Buffalo Sabres,ATL,23.167
+20/11/2021 (v1.0),Calgary Flames,CEN,8.333
+20/11/2021 (v1.0),Carolina Hurricanes,MET,1.667
+20/11/2021 (v1.0),Chicago Blackhawks,CEN,29.500
+20/11/2021 (v1.0),Colorado Avalanche,CEN,12.500
+20/11/2021 (v1.0),Columbus Blue Jackets,MET,18.833
+20/11/2021 (v1.0),Dallas Stars,CEN,21.667
+20/11/2021 (v1.0),Detroit Red Wings,ATL,23.333
+20/11/2021 (v1.0),Edmonton Oilers,PAC,2.833
+20/11/2021 (v1.0),Florida Panthers,ATL,1.667
+20/11/2021 (v1.0),Los Angeles Kings,PAC,22.000
+20/11/2021 (v1.0),Minnesota Wild,CEN,7.833
+20/11/2021 (v1.0),Montréal Canadiens,ATL,29.500
+20/11/2021 (v1.0),Nashville Predators,CEN,22.167
+20/11/2021 (v1.0),New Jersey Devils,MET,19.500
+20/11/2021 (v1.0),New York Islanders,MET,16.833
+20/11/2021 (v1.0),New York Rangers,MET,12.500
+20/11/2021 (v1.0),Ottawa Senators,ATL,26.333
+20/11/2021 (v1.0),Philadelphia Flyers,MET,11.833
+20/11/2021 (v1.0),Pittsburgh Penguins,MET,19.500
+20/11/2021 (v1.0),San Jose Sharks,PAC,16.167
+20/11/2021 (v1.0),Seattle Kraken,PAC,28.833
+20/11/2021 (v1.0),St. Louis Blues,CEN,7.000
+20/11/2021 (v1.0),Tampa Bay Lightning,ATL,8.167
+20/11/2021 (v1.0),Toronto Maple Leafs,ATL,10.000
+20/11/2021 (v1.0),Vancouver Canucks,PAC,27.167
+20/11/2021 (v1.0),Vegas Golden Knights,PAC,16.833
+20/11/2021 (v1.0),Washington Capitals,MET,7.000
+20/11/2021 (v1.0),Winnipeg Jets,CEN,13.500
+27/11/2021 (v2.0),Anaheim Ducks,PAC,19.714
+27/11/2021 (v2.0),Arizona Coyotes,CEN,31.714
+27/11/2021 (v2.0),Boston Bruins,ATL,9.286
+27/11/2021 (v2.0),Buffalo Sabres,ATL,23.857
+27/11/2021 (v2.0),Calgary Flames,CEN,8.143
+27/11/2021 (v2.0),Carolina Hurricanes,MET,1.714
+27/11/2021 (v2.0),Chicago Blackhawks,CEN,29.143
+27/11/2021 (v2.0),Colorado Avalanche,CEN,12.429
+27/11/2021 (v2.0),Columbus Blue Jackets,MET,18.714
+27/11/2021 (v2.0),Dallas Stars,CEN,20.857
+27/11/2021 (v2.0),Detroit Red Wings,ATL,23.000
+27/11/2021 (v2.0),Edmonton Oilers,PAC,2.571
+27/11/2021 (v2.0),Florida Panthers,ATL,1.857
+27/11/2021 (v2.0),Los Angeles Kings,PAC,22.000
+27/11/2021 (v2.0),Minnesota Wild,CEN,7.429
+27/11/2021 (v2.0),Montréal Canadiens,ATL,29.714
+27/11/2021 (v2.0),Nashville Predators,CEN,21.143
+27/11/2021 (v2.0),New Jersey Devils,MET,20.000
+27/11/2021 (v2.0),New York Islanders,MET,18.571
+27/11/2021 (v2.0),New York Rangers,MET,11.571
+27/11/2021 (v2.0),Ottawa Senators,ATL,26.857
+27/11/2021 (v2.0),Philadelphia Flyers,MET,13.714
+27/11/2021 (v2.0),Pittsburgh Penguins,MET,19.571
+27/11/2021 (v2.0),San Jose Sharks,PAC,16.286
+27/11/2021 (v2.0),Seattle Kraken,PAC,28.143
+27/11/2021 (v2.0),St. Louis Blues,CEN,7.857
+27/11/2021 (v2.0),Tampa Bay Lightning,ATL,8.286
+27/11/2021 (v2.0),Toronto Maple Leafs,ATL,9.143
+27/11/2021 (v2.0),Vancouver Canucks,PAC,27.000
+27/11/2021 (v2.0),Vegas Golden Knights,PAC,16.000
+27/11/2021 (v2.0),Washington Capitals,MET,7.429
+27/11/2021 (v2.0),Winnipeg Jets,CEN,14.286
+4/12/2021 (v2.1),Anaheim Ducks,PAC,19.375
+4/12/2021 (v2.1),Arizona Coyotes,CEN,31.750
+4/12/2021 (v2.1),Boston Bruins,ATL,8.875
+4/12/2021 (v2.1),Buffalo Sabres,ATL,24.625
+4/12/2021 (v2.1),Calgary Flames,CEN,9.125
+4/12/2021 (v2.1),Carolina Hurricanes,MET,1.625
+4/12/2021 (v2.1),Chicago Blackhawks,CEN,29.125
+4/12/2021 (v2.1),Colorado Avalanche,CEN,11.750
+4/12/2021 (v2.1),Columbus Blue Jackets,MET,18.875
+4/12/2021 (v2.1),Dallas Stars,CEN,20.625
+4/12/2021 (v2.1),Detroit Red Wings,ATL,23.000
+4/12/2021 (v2.1),Edmonton Oilers,PAC,3.250
+4/12/2021 (v2.1),Florida Panthers,ATL,2.000
+4/12/2021 (v2.1),Los Angeles Kings,PAC,21.875
+4/12/2021 (v2.1),Minnesota Wild,CEN,7.125
+4/12/2021 (v2.1),Montréal Canadiens,ATL,29.875
+4/12/2021 (v2.1),Nashville Predators,CEN,19.875
+4/12/2021 (v2.1),New Jersey Devils,MET,20.250
+4/12/2021 (v2.1),New York Islanders,MET,19.500
+4/12/2021 (v2.1),New York Rangers,MET,10.625
+4/12/2021 (v2.1),Ottawa Senators,ATL,27.000
+4/12/2021 (v2.1),Philadelphia Flyers,MET,15.000
+4/12/2021 (v2.1),Pittsburgh Penguins,MET,18.875
+4/12/2021 (v2.1),San Jose Sharks,PAC,16.125
+4/12/2021 (v2.1),Seattle Kraken,PAC,27.750
+4/12/2021 (v2.1),St. Louis Blues,CEN,8.125
+4/12/2021 (v2.1),Tampa Bay Lightning,ATL,8.875
+4/12/2021 (v2.1),Toronto Maple Leafs,ATL,8.250
+4/12/2021 (v2.1),Vancouver Canucks,PAC,27.000
+4/12/2021 (v2.1),Vegas Golden Knights,PAC,15.500
+4/12/2021 (v2.1),Washington Capitals,MET,7.625
+4/12/2021 (v2.1),Winnipeg Jets,CEN,14.750
+11/12/2021 (v2.2),Anaheim Ducks,PAC,19.000
+11/12/2021 (v2.2),Arizona Coyotes,CEN,31.778
+11/12/2021 (v2.2),Boston Bruins,ATL,9.222
+11/12/2021 (v2.2),Buffalo Sabres,ATL,25.111
+11/12/2021 (v2.2),Calgary Flames,CEN,9.778
+11/12/2021 (v2.2),Carolina Hurricanes,MET,1.556
+11/12/2021 (v2.2),Chicago Blackhawks,CEN,29.222
+11/12/2021 (v2.2),Colorado Avalanche,CEN,10.889
+11/12/2021 (v2.2),Columbus Blue Jackets,MET,19.111
+11/12/2021 (v2.2),Dallas Stars,CEN,20.444
+11/12/2021 (v2.2),Detroit Red Wings,ATL,23.000
+11/12/2021 (v2.2),Edmonton Oilers,PAC,3.667
+11/12/2021 (v2.2),Florida Panthers,ATL,2.444
+11/12/2021 (v2.2),Los Angeles Kings,PAC,21.667
+11/12/2021 (v2.2),Minnesota Wild,CEN,7.444
+11/12/2021 (v2.2),Montréal Canadiens,ATL,30.000
+11/12/2021 (v2.2),Nashville Predators,CEN,18.222
+11/12/2021 (v2.2),New Jersey Devils,MET,21.000
+11/12/2021 (v2.2),New York Islanders,MET,20.222
+11/12/2021 (v2.2),New York Rangers,MET,9.778
+11/12/2021 (v2.2),Ottawa Senators,ATL,27.111
+11/12/2021 (v2.2),Philadelphia Flyers,MET,16.000
+11/12/2021 (v2.2),Pittsburgh Penguins,MET,18.333
+11/12/2021 (v2.2),San Jose Sharks,PAC,16.222
+11/12/2021 (v2.2),Seattle Kraken,PAC,27.444
+11/12/2021 (v2.2),St. Louis Blues,CEN,8.667
+11/12/2021 (v2.2),Tampa Bay Lightning,ATL,8.889
+11/12/2021 (v2.2),Toronto Maple Leafs,ATL,7.556
+11/12/2021 (v2.2),Vancouver Canucks,PAC,26.444
+11/12/2021 (v2.2),Vegas Golden Knights,PAC,14.667
+11/12/2021 (v2.2),Washington Capitals,MET,8.000
+11/12/2021 (v2.2),Winnipeg Jets,CEN,15.111
+1/1/2022 (v2.3),Anaheim Ducks,PAC,18.700
+1/1/2022 (v2.3),Arizona Coyotes,CEN,31.700
+1/1/2022 (v2.3),Boston Bruins,ATL,9.400
+1/1/2022 (v2.3),Buffalo Sabres,ATL,25.500
+1/1/2022 (v2.3),Calgary Flames,CEN,10.100
+1/1/2022 (v2.3),Carolina Hurricanes,MET,1.500
+1/1/2022 (v2.3),Chicago Blackhawks,CEN,29.300
+1/1/2022 (v2.3),Colorado Avalanche,CEN,10.200
+1/1/2022 (v2.3),Columbus Blue Jackets,MET,19.700
+1/1/2022 (v2.3),Dallas Stars,CEN,20.400
+1/1/2022 (v2.3),Detroit Red Wings,ATL,23.100
+1/1/2022 (v2.3),Edmonton Oilers,PAC,4.700
+1/1/2022 (v2.3),Florida Panthers,ATL,2.500
+1/1/2022 (v2.3),Los Angeles Kings,PAC,21.400
+1/1/2022 (v2.3),Minnesota Wild,CEN,8.200
+1/1/2022 (v2.3),Montréal Canadiens,ATL,30.200
+1/1/2022 (v2.3),Nashville Predators,CEN,17.300
+1/1/2022 (v2.3),New Jersey Devils,MET,21.500
+1/1/2022 (v2.3),New York Islanders,MET,20.400
+1/1/2022 (v2.3),New York Rangers,MET,9.800
+1/1/2022 (v2.3),Ottawa Senators,ATL,27.200
+1/1/2022 (v2.3),Philadelphia Flyers,MET,16.700
+1/1/2022 (v2.3),Pittsburgh Penguins,MET,17.300
+1/1/2022 (v2.3),San Jose Sharks,PAC,16.300
+1/1/2022 (v2.3),Seattle Kraken,PAC,27.400
+1/1/2022 (v2.3),St. Louis Blues,CEN,8.300
+1/1/2022 (v2.3),Tampa Bay Lightning,ATL,9.200
+1/1/2022 (v2.3),Toronto Maple Leafs,ATL,7.000
+1/1/2022 (v2.3),Vancouver Canucks,PAC,25.900
+1/1/2022 (v2.3),Vegas Golden Knights,PAC,13.800
+1/1/2022 (v2.3),Washington Capitals,MET,7.900
+1/1/2022 (v2.3),Winnipeg Jets,CEN,15.400
+2/1/2022 (v3.0),Anaheim Ducks,PAC,18.455
+2/1/2022 (v3.0),Arizona Coyotes,CEN,31.636
+2/1/2022 (v3.0),Boston Bruins,ATL,9.545
+2/1/2022 (v3.0),Buffalo Sabres,ATL,25.909
+2/1/2022 (v3.0),Calgary Flames,CEN,10.364
+2/1/2022 (v3.0),Carolina Hurricanes,MET,1.455
+2/1/2022 (v3.0),Chicago Blackhawks,CEN,29.182
+2/1/2022 (v3.0),Colorado Avalanche,CEN,9.545
+2/1/2022 (v3.0),Columbus Blue Jackets,MET,20.273
+2/1/2022 (v3.0),Dallas Stars,CEN,20.364
+2/1/2022 (v3.0),Detroit Red Wings,ATL,23.182
+2/1/2022 (v3.0),Edmonton Oilers,PAC,6.182
+2/1/2022 (v3.0),Florida Panthers,ATL,2.636
+2/1/2022 (v3.0),Los Angeles Kings,PAC,20.818
+2/1/2022 (v3.0),Minnesota Wild,CEN,8.727
+2/1/2022 (v3.0),Montréal Canadiens,ATL,30.364
+2/1/2022 (v3.0),Nashville Predators,CEN,16.364
+2/1/2022 (v3.0),New Jersey Devils,MET,22.000
+2/1/2022 (v3.0),New York Islanders,MET,20.545
+2/1/2022 (v3.0),New York Rangers,MET,10.000
+2/1/2022 (v3.0),Ottawa Senators,ATL,27.000
+2/1/2022 (v3.0),Philadelphia Flyers,MET,17.273
+2/1/2022 (v3.0),Pittsburgh Penguins,MET,16.455
+2/1/2022 (v3.0),San Jose Sharks,PAC,16.545
+2/1/2022 (v3.0),Seattle Kraken,PAC,27.545
+2/1/2022 (v3.0),St. Louis Blues,CEN,8.000
+2/1/2022 (v3.0),Tampa Bay Lightning,ATL,9.273
+2/1/2022 (v3.0),Toronto Maple Leafs,ATL,6.545
+2/1/2022 (v3.0),Vancouver Canucks,PAC,25.091
+2/1/2022 (v3.0),Vegas Golden Knights,PAC,13.091
+2/1/2022 (v3.0),Washington Capitals,MET,8.000
+2/1/2022 (v3.0),Winnipeg Jets,CEN,15.636
+8/1/2022 (v3.0),Anaheim Ducks,PAC,18.417
+8/1/2022 (v3.0),Arizona Coyotes,CEN,31.583
+8/1/2022 (v3.0),Boston Bruins,ATL,9.417
+8/1/2022 (v3.0),Buffalo Sabres,ATL,26.250
+8/1/2022 (v3.0),Calgary Flames,CEN,11.083
+8/1/2022 (v3.0),Carolina Hurricanes,MET,1.417
+8/1/2022 (v3.0),Chicago Blackhawks,CEN,29.167
+8/1/2022 (v3.0),Colorado Avalanche,CEN,8.917
+8/1/2022 (v3.0),Columbus Blue Jackets,MET,20.833
+8/1/2022 (v3.0),Dallas Stars,CEN,20.083
+8/1/2022 (v3.0),Detroit Red Wings,ATL,23.417
+8/1/2022 (v3.0),Edmonton Oilers,PAC,7.500
+8/1/2022 (v3.0),Florida Panthers,ATL,2.833
+8/1/2022 (v3.0),Los Angeles Kings,PAC,20.333
+8/1/2022 (v3.0),Minnesota Wild,CEN,9.083
+8/1/2022 (v3.0),Montréal Canadiens,ATL,30.500
+8/1/2022 (v3.0),Nashville Predators,CEN,15.500
+8/1/2022 (v3.0),New Jersey Devils,MET,22.167
+8/1/2022 (v3.0),New York Islanders,MET,20.583
+8/1/2022 (v3.0),New York Rangers,MET,10.083
+8/1/2022 (v3.0),Ottawa Senators,ATL,26.833
+8/1/2022 (v3.0),Philadelphia Flyers,MET,17.750
+8/1/2022 (v3.0),Pittsburgh Penguins,MET,15.417
+8/1/2022 (v3.0),San Jose Sharks,PAC,16.833
+8/1/2022 (v3.0),Seattle Kraken,PAC,27.583
+8/1/2022 (v3.0),St. Louis Blues,CEN,7.917
+8/1/2022 (v3.0),Tampa Bay Lightning,ATL,9.333
+8/1/2022 (v3.0),Toronto Maple Leafs,ATL,6.250
+8/1/2022 (v3.0),Vancouver Canucks,PAC,24.167
+8/1/2022 (v3.0),Vegas Golden Knights,PAC,12.750
+8/1/2022 (v3.0),Washington Capitals,MET,8.333
+8/1/2022 (v3.0),Winnipeg Jets,CEN,15.667
+13/1/2022 (v4.0),Anaheim Ducks,PAC,18.462
+13/1/2022 (v4.0),Arizona Coyotes,CEN,31.538
+13/1/2022 (v4.0),Boston Bruins,ATL,9.308
+13/1/2022 (v4.0),Buffalo Sabres,ATL,26.538
+13/1/2022 (v4.0),Calgary Flames,CEN,11.615
+13/1/2022 (v4.0),Carolina Hurricanes,MET,1.385
+13/1/2022 (v4.0),Chicago Blackhawks,CEN,29.154
+13/1/2022 (v4.0),Colorado Avalanche,CEN,8.385
+13/1/2022 (v4.0),Columbus Blue Jackets,MET,21.231
+13/1/2022 (v4.0),Dallas Stars,CEN,19.692
+13/1/2022 (v4.0),Detroit Red Wings,ATL,23.692
+13/1/2022 (v4.0),Edmonton Oilers,PAC,8.538
+13/1/2022 (v4.0),Florida Panthers,ATL,2.923
+13/1/2022 (v4.0),Los Angeles Kings,PAC,19.846
+13/1/2022 (v4.0),Minnesota Wild,CEN,9.308
+13/1/2022 (v4.0),Montréal Canadiens,ATL,30.615
+13/1/2022 (v4.0),Nashville Predators,CEN,14.692
+13/1/2022 (v4.0),New Jersey Devils,MET,22.308
+13/1/2022 (v4.0),New York Islanders,MET,20.692
+13/1/2022 (v4.0),New York Rangers,MET,10.154
+13/1/2022 (v4.0),Ottawa Senators,ATL,26.692
+13/1/2022 (v4.0),Philadelphia Flyers,MET,18.154
+13/1/2022 (v4.0),Pittsburgh Penguins,MET,14.692
+13/1/2022 (v4.0),San Jose Sharks,PAC,17.077
+13/1/2022 (v4.0),Seattle Kraken,PAC,27.615
+13/1/2022 (v4.0),St. Louis Blues,CEN,7.846
+13/1/2022 (v4.0),Tampa Bay Lightning,ATL,9.385
+13/1/2022 (v4.0),Toronto Maple Leafs,ATL,6.000
+13/1/2022 (v4.0),Vancouver Canucks,PAC,23.538
+13/1/2022 (v4.0),Vegas Golden Knights,PAC,12.462
+13/1/2022 (v4.0),Washington Capitals,MET,8.692
+13/1/2022 (v4.0),Winnipeg Jets,CEN,15.769
+15/1/2022 (v4.1),Anaheim Ducks,PAC,18.786
+15/1/2022 (v4.1),Arizona Coyotes,CEN,31.429
+15/1/2022 (v4.1),Boston Bruins,ATL,9.000
+15/1/2022 (v4.1),Buffalo Sabres,ATL,26.714
+15/1/2022 (v4.1),Calgary Flames,CEN,12.071
+15/1/2022 (v4.1),Carolina Hurricanes,MET,1.357
+15/1/2022 (v4.1),Chicago Blackhawks,CEN,28.786
+15/1/2022 (v4.1),Colorado Avalanche,CEN,8.000
+15/1/2022 (v4.1),Columbus Blue Jackets,MET,21.643
+15/1/2022 (v4.1),Dallas Stars,CEN,19.429
+15/1/2022 (v4.1),Detroit Red Wings,ATL,23.857
+15/1/2022 (v4.1),Edmonton Oilers,PAC,9.429
+15/1/2022 (v4.1),Florida Panthers,ATL,2.857
+15/1/2022 (v4.1),Los Angeles Kings,PAC,19.286
+15/1/2022 (v4.1),Minnesota Wild,CEN,9.571
+15/1/2022 (v4.1),Montréal Canadiens,ATL,30.714
+15/1/2022 (v4.1),Nashville Predators,CEN,14.357
+15/1/2022 (v4.1),New Jersey Devils,MET,22.500
+15/1/2022 (v4.1),New York Islanders,MET,20.643
+15/1/2022 (v4.1),New York Rangers,MET,10.071
+15/1/2022 (v4.1),Ottawa Senators,ATL,26.357
+15/1/2022 (v4.1),Philadelphia Flyers,MET,18.857
+15/1/2022 (v4.1),Pittsburgh Penguins,MET,14.071
+15/1/2022 (v4.1),San Jose Sharks,PAC,17.071
+15/1/2022 (v4.1),Seattle Kraken,PAC,27.857
+15/1/2022 (v4.1),St. Louis Blues,CEN,7.786
+15/1/2022 (v4.1),Tampa Bay Lightning,ATL,9.286
+15/1/2022 (v4.1),Toronto Maple Leafs,ATL,5.857
+15/1/2022 (v4.1),Vancouver Canucks,PAC,23.214
+15/1/2022 (v4.1),Vegas Golden Knights,PAC,12.357
+15/1/2022 (v4.1),Washington Capitals,MET,9.071
+15/1/2022 (v4.1),Winnipeg Jets,CEN,15.714
+22/1/2022 (v4.5),Anaheim Ducks,PAC,18.867
+22/1/2022 (v4.5),Arizona Coyotes,CEN,31.267
+22/1/2022 (v4.5),Boston Bruins,ATL,8.733
+22/1/2022 (v4.5),Buffalo Sabres,ATL,26.800
+22/1/2022 (v4.5),Calgary Flames,CEN,12.333
+22/1/2022 (v4.5),Carolina Hurricanes,MET,1.333
+22/1/2022 (v4.5),Chicago Blackhawks,CEN,28.600
+22/1/2022 (v4.5),Colorado Avalanche,CEN,7.667
+22/1/2022 (v4.5),Columbus Blue Jackets,MET,21.733
+22/1/2022 (v4.5),Dallas Stars,CEN,19.000
+22/1/2022 (v4.5),Detroit Red Wings,ATL,23.933
+22/1/2022 (v4.5),Edmonton Oilers,PAC,9.933
+22/1/2022 (v4.5),Florida Panthers,ATL,2.800
+22/1/2022 (v4.5),Los Angeles Kings,PAC,19.000
+22/1/2022 (v4.5),Minnesota Wild,CEN,9.667
+22/1/2022 (v4.5),Montréal Canadiens,ATL,30.800
+22/1/2022 (v4.5),Nashville Predators,CEN,14.067
+22/1/2022 (v4.5),New Jersey Devils,MET,22.600
+22/1/2022 (v4.5),New York Islanders,MET,20.467
+22/1/2022 (v4.5),New York Rangers,MET,9.867
+22/1/2022 (v4.5),Ottawa Senators,ATL,26.400
+22/1/2022 (v4.5),Philadelphia Flyers,MET,19.600
+22/1/2022 (v4.5),Pittsburgh Penguins,MET,13.533
+22/1/2022 (v4.5),San Jose Sharks,PAC,17.333
+22/1/2022 (v4.5),Seattle Kraken,PAC,28.067
+22/1/2022 (v4.5),St. Louis Blues,CEN,7.800
+22/1/2022 (v4.5),Tampa Bay Lightning,ATL,9.267
+22/1/2022 (v4.5),Toronto Maple Leafs,ATL,5.733
+22/1/2022 (v4.5),Vancouver Canucks,PAC,23.133
+22/1/2022 (v4.5),Vegas Golden Knights,PAC,12.333
+22/1/2022 (v4.5),Washington Capitals,MET,9.400
+22/1/2022 (v4.5),Winnipeg Jets,CEN,15.933
+29/1/2022 (v4.5),Anaheim Ducks,PAC,18.750
+29/1/2022 (v4.5),Arizona Coyotes,CEN,31.250
+29/1/2022 (v4.5),Boston Bruins,ATL,8.500
+29/1/2022 (v4.5),Buffalo Sabres,ATL,26.938
+29/1/2022 (v4.5),Calgary Flames,CEN,12.375
+29/1/2022 (v4.5),Carolina Hurricanes,MET,1.313
+29/1/2022 (v4.5),Chicago Blackhawks,CEN,28.438
+29/1/2022 (v4.5),Colorado Avalanche,CEN,7.313
+29/1/2022 (v4.5),Columbus Blue Jackets,MET,21.813
+29/1/2022 (v4.5),Dallas Stars,CEN,18.688
+29/1/2022 (v4.5),Detroit Red Wings,ATL,23.938
+29/1/2022 (v4.5),Edmonton Oilers,PAC,10.250
+29/1/2022 (v4.5),Florida Panthers,ATL,2.813
+29/1/2022 (v4.5),Los Angeles Kings,PAC,18.813
+29/1/2022 (v4.5),Minnesota Wild,CEN,9.625
+29/1/2022 (v4.5),Montréal Canadiens,ATL,30.875
+29/1/2022 (v4.5),Nashville Predators,CEN,13.875
+29/1/2022 (v4.5),New Jersey Devils,MET,22.875
+29/1/2022 (v4.5),New York Islanders,MET,20.438
+29/1/2022 (v4.5),New York Rangers,MET,9.875
+29/1/2022 (v4.5),Ottawa Senators,ATL,26.313
+29/1/2022 (v4.5),Philadelphia Flyers,MET,20.250
+29/1/2022 (v4.5),Pittsburgh Penguins,MET,13.125
+29/1/2022 (v4.5),San Jose Sharks,PAC,17.438
+29/1/2022 (v4.5),Seattle Kraken,PAC,28.063
+29/1/2022 (v4.5),St. Louis Blues,CEN,7.813
+29/1/2022 (v4.5),Tampa Bay Lightning,ATL,9.063
+29/1/2022 (v4.5),Toronto Maple Leafs,ATL,5.625
+29/1/2022 (v4.5),Vancouver Canucks,PAC,23.063
+29/1/2022 (v4.5),Vegas Golden Knights,PAC,12.313
+29/1/2022 (v4.5),Washington Capitals,MET,9.938
+29/1/2022 (v4.5),Winnipeg Jets,CEN,16.250

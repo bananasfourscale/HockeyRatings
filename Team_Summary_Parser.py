@@ -78,6 +78,7 @@ def parse_team_summary(file_name : str = "") -> None:
             # special case for the Habs french spelling
             if summary[summary_indecies.TEAM.value] == 'MontÃ©al Canadiens':
                 team_summary_data['Montreal Canadiens'] = summary
+                continue
 
             # use the team name to sort the row data into the dictionary
             team_summary_data[summary[summary_indecies.TEAM.value]] = summary

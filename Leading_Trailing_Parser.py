@@ -84,6 +84,7 @@ def parse_leading_trailing(file_name : str = "") -> None:
             if summary[leading_trailing_indecies.TEAM.value] == \
                 'MontÃ©al Canadiens':
                 leading_trailing_data['Montreal Canadiens'] = summary
+                continue
 
             # use the team name to sort the row data into the dictionary
             leading_trailing_data[summary[
