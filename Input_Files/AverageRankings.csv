@@ -14,7 +14,7 @@ Rating Date,Team,Division,Average Ranking
 16/10/2021 (THG),Florida Panthers,ATL,1.000
 16/10/2021 (THG),Los Angeles Kings,PAC,28.000
 16/10/2021 (THG),Minnesota Wild,CEN,5.000
-16/10/2021 (THG),Montréal Canadiens,ATL,30.000
+16/10/2021 (THG),Montreal Canadiens,ATL,30.000
 16/10/2021 (THG),Nashville Predators,CEN,27.000
 16/10/2021 (THG),New Jersey Devils,MET,21.000
 16/10/2021 (THG),New York Islanders,MET,14.000
@@ -46,7 +46,7 @@ Rating Date,Team,Division,Average Ranking
 23/10/2021 (THG),Florida Panthers,ATL,1.500
 23/10/2021 (THG),Los Angeles Kings,PAC,28.500
 23/10/2021 (THG),Minnesota Wild,CEN,7.500
-23/10/2021 (THG),Montréal Canadiens,ATL,30.000
+23/10/2021 (THG),Montreal Canadiens,ATL,30.000
 23/10/2021 (THG),Nashville Predators,CEN,25.500
 23/10/2021 (THG),New Jersey Devils,MET,19.000
 23/10/2021 (THG),New York Islanders,MET,13.000
@@ -78,7 +78,7 @@ Rating Date,Team,Division,Average Ranking
 30/10/2021 (THG),Florida Panthers,ATL,1.333
 30/10/2021 (THG),Los Angeles Kings,PAC,27.333
 30/10/2021 (THG),Minnesota Wild,CEN,7.333
-30/10/2021 (THG),Montréal Canadiens,ATL,30.000
+30/10/2021 (THG),Montreal Canadiens,ATL,30.000
 30/10/2021 (THG),Nashville Predators,CEN,24.000
 30/10/2021 (THG),New Jersey Devils,MET,19.333
 30/10/2021 (THG),New York Islanders,MET,12.333
@@ -110,7 +110,7 @@ Rating Date,Team,Division,Average Ranking
 6/11/2021 (THG),Florida Panthers,ATL,1.500
 6/11/2021 (THG),Los Angeles Kings,PAC,24.000
 6/11/2021 (THG),Minnesota Wild,CEN,7.250
-6/11/2021 (THG),Montréal Canadiens,ATL,29.250
+6/11/2021 (THG),Montreal Canadiens,ATL,29.250
 6/11/2021 (THG),Nashville Predators,CEN,23.500
 6/11/2021 (THG),New Jersey Devils,MET,19.500
 6/11/2021 (THG),New York Islanders,MET,13.000
@@ -142,7 +142,7 @@ Rating Date,Team,Division,Average Ranking
 13/11/2021 (THG),Florida Panthers,ATL,1.600
 13/11/2021 (THG),Los Angeles Kings,PAC,22.600
 13/11/2021 (THG),Minnesota Wild,CEN,7.400
-13/11/2021 (THG),Montréal Canadiens,ATL,29.400
+13/11/2021 (THG),Montreal Canadiens,ATL,29.400
 13/11/2021 (THG),Nashville Predators,CEN,23.200
 13/11/2021 (THG),New Jersey Devils,MET,19.400
 13/11/2021 (THG),New York Islanders,MET,14.600
@@ -174,7 +174,7 @@ Rating Date,Team,Division,Average Ranking
 20/11/2021 (v1.0),Florida Panthers,ATL,1.667
 20/11/2021 (v1.0),Los Angeles Kings,PAC,22.000
 20/11/2021 (v1.0),Minnesota Wild,CEN,7.833
-20/11/2021 (v1.0),Montréal Canadiens,ATL,29.500
+20/11/2021 (v1.0),Montreal Canadiens,ATL,29.500
 20/11/2021 (v1.0),Nashville Predators,CEN,22.167
 20/11/2021 (v1.0),New Jersey Devils,MET,19.500
 20/11/2021 (v1.0),New York Islanders,MET,16.833
@@ -206,7 +206,7 @@ Rating Date,Team,Division,Average Ranking
 27/11/2021 (v2.0),Florida Panthers,ATL,1.857
 27/11/2021 (v2.0),Los Angeles Kings,PAC,22.000
 27/11/2021 (v2.0),Minnesota Wild,CEN,7.429
-27/11/2021 (v2.0),Montréal Canadiens,ATL,29.714
+27/11/2021 (v2.0),Montreal Canadiens,ATL,29.714
 27/11/2021 (v2.0),Nashville Predators,CEN,21.143
 27/11/2021 (v2.0),New Jersey Devils,MET,20.000
 27/11/2021 (v2.0),New York Islanders,MET,18.571
@@ -238,7 +238,7 @@ Rating Date,Team,Division,Average Ranking
 4/12/2021 (v2.1),Florida Panthers,ATL,2.000
 4/12/2021 (v2.1),Los Angeles Kings,PAC,21.875
 4/12/2021 (v2.1),Minnesota Wild,CEN,7.125
-4/12/2021 (v2.1),Montréal Canadiens,ATL,29.875
+4/12/2021 (v2.1),Montreal Canadiens,ATL,29.875
 4/12/2021 (v2.1),Nashville Predators,CEN,19.875
 4/12/2021 (v2.1),New Jersey Devils,MET,20.250
 4/12/2021 (v2.1),New York Islanders,MET,19.500
@@ -270,7 +270,7 @@ Rating Date,Team,Division,Average Ranking
 11/12/2021 (v2.2),Florida Panthers,ATL,2.444
 11/12/2021 (v2.2),Los Angeles Kings,PAC,21.667
 11/12/2021 (v2.2),Minnesota Wild,CEN,7.444
-11/12/2021 (v2.2),Montréal Canadiens,ATL,30.000
+11/12/2021 (v2.2),Montreal Canadiens,ATL,30.000
 11/12/2021 (v2.2),Nashville Predators,CEN,18.222
 11/12/2021 (v2.2),New Jersey Devils,MET,21.000
 11/12/2021 (v2.2),New York Islanders,MET,20.222
@@ -302,7 +302,7 @@ Rating Date,Team,Division,Average Ranking
 1/1/2022 (v2.3),Florida Panthers,ATL,2.500
 1/1/2022 (v2.3),Los Angeles Kings,PAC,21.400
 1/1/2022 (v2.3),Minnesota Wild,CEN,8.200
-1/1/2022 (v2.3),Montréal Canadiens,ATL,30.200
+1/1/2022 (v2.3),Montreal Canadiens,ATL,30.200
 1/1/2022 (v2.3),Nashville Predators,CEN,17.300
 1/1/2022 (v2.3),New Jersey Devils,MET,21.500
 1/1/2022 (v2.3),New York Islanders,MET,20.400
@@ -334,7 +334,7 @@ Rating Date,Team,Division,Average Ranking
 2/1/2022 (v3.0),Florida Panthers,ATL,2.636
 2/1/2022 (v3.0),Los Angeles Kings,PAC,20.818
 2/1/2022 (v3.0),Minnesota Wild,CEN,8.727
-2/1/2022 (v3.0),Montréal Canadiens,ATL,30.364
+2/1/2022 (v3.0),Montreal Canadiens,ATL,30.364
 2/1/2022 (v3.0),Nashville Predators,CEN,16.364
 2/1/2022 (v3.0),New Jersey Devils,MET,22.000
 2/1/2022 (v3.0),New York Islanders,MET,20.545
@@ -366,7 +366,7 @@ Rating Date,Team,Division,Average Ranking
 8/1/2022 (v3.0),Florida Panthers,ATL,2.833
 8/1/2022 (v3.0),Los Angeles Kings,PAC,20.333
 8/1/2022 (v3.0),Minnesota Wild,CEN,9.083
-8/1/2022 (v3.0),Montréal Canadiens,ATL,30.500
+8/1/2022 (v3.0),Montreal Canadiens,ATL,30.500
 8/1/2022 (v3.0),Nashville Predators,CEN,15.500
 8/1/2022 (v3.0),New Jersey Devils,MET,22.167
 8/1/2022 (v3.0),New York Islanders,MET,20.583
@@ -398,7 +398,7 @@ Rating Date,Team,Division,Average Ranking
 13/1/2022 (v4.0),Florida Panthers,ATL,2.923
 13/1/2022 (v4.0),Los Angeles Kings,PAC,19.846
 13/1/2022 (v4.0),Minnesota Wild,CEN,9.308
-13/1/2022 (v4.0),Montréal Canadiens,ATL,30.615
+13/1/2022 (v4.0),Montreal Canadiens,ATL,30.615
 13/1/2022 (v4.0),Nashville Predators,CEN,14.692
 13/1/2022 (v4.0),New Jersey Devils,MET,22.308
 13/1/2022 (v4.0),New York Islanders,MET,20.692
@@ -430,7 +430,7 @@ Rating Date,Team,Division,Average Ranking
 15/1/2022 (v4.1),Florida Panthers,ATL,2.857
 15/1/2022 (v4.1),Los Angeles Kings,PAC,19.286
 15/1/2022 (v4.1),Minnesota Wild,CEN,9.571
-15/1/2022 (v4.1),Montréal Canadiens,ATL,30.714
+15/1/2022 (v4.1),Montreal Canadiens,ATL,30.714
 15/1/2022 (v4.1),Nashville Predators,CEN,14.357
 15/1/2022 (v4.1),New Jersey Devils,MET,22.500
 15/1/2022 (v4.1),New York Islanders,MET,20.643
@@ -462,7 +462,7 @@ Rating Date,Team,Division,Average Ranking
 22/1/2022 (v4.5),Florida Panthers,ATL,2.800
 22/1/2022 (v4.5),Los Angeles Kings,PAC,19.000
 22/1/2022 (v4.5),Minnesota Wild,CEN,9.667
-22/1/2022 (v4.5),Montréal Canadiens,ATL,30.800
+22/1/2022 (v4.5),Montreal Canadiens,ATL,30.800
 22/1/2022 (v4.5),Nashville Predators,CEN,14.067
 22/1/2022 (v4.5),New Jersey Devils,MET,22.600
 22/1/2022 (v4.5),New York Islanders,MET,20.467
@@ -494,7 +494,7 @@ Rating Date,Team,Division,Average Ranking
 29/1/2022 (v4.5),Florida Panthers,ATL,2.813
 29/1/2022 (v4.5),Los Angeles Kings,PAC,18.813
 29/1/2022 (v4.5),Minnesota Wild,CEN,9.625
-29/1/2022 (v4.5),Montréal Canadiens,ATL,30.875
+29/1/2022 (v4.5),Montreal Canadiens,ATL,30.875
 29/1/2022 (v4.5),Nashville Predators,CEN,13.875
 29/1/2022 (v4.5),New Jersey Devils,MET,22.875
 29/1/2022 (v4.5),New York Islanders,MET,20.438

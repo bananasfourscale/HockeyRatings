@@ -1,6 +1,6 @@
 import csv
 import datetime
-from asyncio.windows_events import NULL
+from Weights import VERSION_MAJOR, VERSION_MINOR, divisions
 
 ranking_averages = {
     'Anaheim Ducks' : [],
@@ -39,7 +39,7 @@ ranking_averages = {
 
 ranking_dates = []
 
-def parse_average_ratings(file_name : str = "") -> None:
+def average_rankings_parse(file_name : str = "") -> None:
     header_row = True
 
     # open the average rating file
@@ -50,6 +50,9 @@ def parse_average_ratings(file_name : str = "") -> None:
         for rating in ratings:
             if header_row:
                 header_row = False
+                continue
+
+            if len(rating) == 0:
                 continue
             
             # take the ranking and extract the date
@@ -70,8 +73,54 @@ def parse_average_ratings(file_name : str = "") -> None:
             ranking_averages[rating[1]].append(float(rating[3]))
 
 
+def average_rankings_update(total_ratings : dict = {},
+                            average_rankings : dict = {}) -> None:
+    tuple_list = []
+    for team, rating in total_ratings.items():
+        tuple_list.append(tuple((team, rating)))
+    tuple_list.sort(key = lambda x: x[1], reverse=True)
+
+    # print("Before")
+    # for team in ranking_averages.keys():
+    #     print("{} : {}".format(team, ranking_averages[team]))
+    # print()
+
+    for count in range(1, len(tuple_list)+1, 1):
+        sum = 0
+        team = tuple_list[count-1][0]
+        for rank in average_rankings[team]:
+            sum += rank
+        sum /= len(average_rankings[team])
+        ranking_averages[team].append(sum)
+
+    # print("After")
+    # for team in ranking_averages.keys():
+    #     print("{} : {}".format(team, ranking_averages[team]))
+    # print()
+
+
+def average_rankings_write_out() -> None:
+    date = str(datetime.datetime.now())
+    date_split = date.split(" ")
+    date_split = date_split[0].split("-")
+
+    # get the current date and version for that column
+    date_rating = date_split[2] + "/" + date_split[1] + "/" + date_split[0] + \
+        " (v" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + ")"
+
+    print(ranking_averages)
+    with open("Input_Files/AverageRankings.csv", 'a', newline='') as csv_date_file:
+        csv_writer = csv.writer(csv_date_file, delimiter=',', quotechar='|',
+            quoting=csv.QUOTE_MINIMAL)
+
+        # for each team print the rating with this timestamp
+        for team in ranking_averages.keys():
+            csv_writer.writerow([date_rating, team, divisions[team],
+                int(ranking_averages[team][len(ranking_averages[team])-1])])
+
+
 if __name__ == "__main__":
-    parse_average_ratings("Input_Files/AverageRatings.csv")
+    average_rankings_parse("Input_Files/AverageRankings.csv")
     for date in ranking_dates:
         print(date)
     for team in ranking_averages.keys():
