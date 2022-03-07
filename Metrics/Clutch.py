@@ -1,4 +1,4 @@
-from Leading_Trailing_Parser import *
+from Parsers.Leading_Trailing_Parser import *
 import math
 
 clutch_rating = {

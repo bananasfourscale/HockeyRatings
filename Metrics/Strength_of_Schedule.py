@@ -1,6 +1,6 @@
-from Average_Ranking_Parser import *
-from Matches_Parser import *
-from Team_Summary_Parser import *
+from Parsers.Average_Ranking_Parser import *
+from Parsers.Matches_Parser import *
+from Parsers.Team_Summary_Parser import *
 from asyncio.windows_events import NULL
 import math
 
@@ -168,7 +168,7 @@ def strength_of_schedule_apply_sigmoid() -> None:
 
 
 if __name__ == "__main__":
-    parse_average_ratings('Input_Files/AverageRankings.csv')
+    average_rankings_parse('Input_Files/AverageRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
     parse_team_summary('Input_Files/TeamSummary.csv')
     read_matches(matches)

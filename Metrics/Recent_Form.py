@@ -1,4 +1,4 @@
-from Last_Ten_Parser import *
+from Parsers.Last_Ten_Parser import *
 import math
 
 recent_form_rating = {

@@ -1,3 +1,5 @@
+from enum import *
+
 divisions = {
     'Anaheim Ducks' : "PAC",
     'Arizona Coyotes' : "CEN",
@@ -28,7 +30,7 @@ divisions = {
     'Tampa Bay Lightning' : "ATL",
     'Toronto Maple Leafs' : "ATL",
     'Vancouver Canucks' : "PAC",
-    'Vegas Golden Knights' : "CEN",
+    'Vegas Golden Knights' : "PAC",
     'Washington Capitals' : "MET",
     'Winnipeg Jets' : "CEN",
 }
@@ -36,3 +38,11 @@ divisions = {
 
 VERSION_MAJOR = 5
 VERSION_MINOR = 0
+
+class total_rating_weights(Enum):
+    WIN_RATING_WEIGHT = 0.5
+    SCORING_RATING_WEIGHT = 0.05
+    SPECIAL_TEAMS_RATING_WEIGHT = 0.08
+    CLUTCH_RATING_WEIGHT = 0.12
+    FORM_RATING_WEIGHT = 0.12
+    SOS_RATING_WEIGHT = 0.13

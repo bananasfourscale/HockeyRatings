@@ -1,4 +1,4 @@
-from Team_Summary_Parser import *
+from Parsers.Team_Summary_Parser import *
 from enum import Enum
 
 win_rating = {

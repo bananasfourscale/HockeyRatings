@@ -99,28 +99,8 @@ def average_rankings_update(total_ratings : dict = {},
     # print()
 
 
-def average_rankings_write_out() -> None:
-    date = str(datetime.datetime.now())
-    date_split = date.split(" ")
-    date_split = date_split[0].split("-")
-
-    # get the current date and version for that column
-    date_rating = date_split[2] + "/" + date_split[1] + "/" + date_split[0] + \
-        " (v" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + ")"
-
-    print(ranking_averages)
-    with open("Input_Files/AverageRankings.csv", 'a', newline='') as csv_date_file:
-        csv_writer = csv.writer(csv_date_file, delimiter=',', quotechar='|',
-            quoting=csv.QUOTE_MINIMAL)
-
-        # for each team print the rating with this timestamp
-        for team in ranking_averages.keys():
-            csv_writer.writerow([date_rating, team, divisions[team],
-                int(ranking_averages[team][len(ranking_averages[team])-1])])
-
-
 if __name__ == "__main__":
-    average_rankings_parse("Input_Files/AverageRankings.csv")
+    average_rankings_parse("Trend_Files/AverageRankings.csv")
     for date in ranking_dates:
         print(date)
     for team in ranking_averages.keys():

@@ -38,28 +38,28 @@ team_summary_data = {
 
 class summary_indecies(Enum):
     TEAM = 0
-    SEASON = 1
-    GP = 2
-    W = 3
-    L = 4
-    T = 5
-    OT = 6
-    PTS = 7
-    PTS_PER = 8
-    RW = 9
-    ROW = 10
-    SOW = 11
-    GF = 12
-    GA = 13
-    GF_GP = 14
-    GA_GP = 15
-    PP_PER = 16
-    PK_PER = 17
-    NET_PP = 18
-    NET_PK = 19
-    SHF_GP = 20
-    SHA_GP = 21
-    FOW_PER = 22
+    # SEASON = 1
+    GP = 1
+    W = 2
+    L = 3
+    T = 4
+    OT = 5
+    PTS = 6
+    PTS_PER = 7
+    RW = 8
+    ROW = 9
+    SOW = 10
+    GF = 11
+    GA = 12
+    GF_GP = 13
+    GA_GP = 14
+    PP_PER = 15
+    PK_PER = 16
+    NET_PP = 17
+    NET_PK = 18
+    SHF_GP = 19
+    SHA_GP = 20
+    FOW_PER = 21
 
 
 def parse_team_summary(file_name : str = "") -> None:
@@ -81,7 +81,8 @@ def parse_team_summary(file_name : str = "") -> None:
                 continue
 
             # use the team name to sort the row data into the dictionary
-            team_summary_data[summary[summary_indecies.TEAM.value]] = summary
+            else:
+                team_summary_data[summary[summary_indecies.TEAM.value]] = summary
 
 
 if __name__ == "__main__":

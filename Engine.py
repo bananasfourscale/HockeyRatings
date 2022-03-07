@@ -2,33 +2,25 @@
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plotter
-from enum import Enum
 
 # import all custom modules for parsing
-from Average_Ranking_Parser import *
-from Absolute_Ranking_Parser import *
-from Rating_Score_Parser import *
-from Team_Summary_Parser import *
-from Matches_Parser import *
-from Leading_Trailing_Parser import *
-from Last_Ten_Parser import *
+from Parsers.Average_Ranking_Parser import *
+from Parsers.Absolute_Ranking_Parser import *
+from Parsers.Team_Summary_Parser import *
+from Parsers.Matches_Parser import *
+from Parsers.Leading_Trailing_Parser import *
+from Parsers.Last_Ten_Parser import *
 from CSV_Writer import *
 
 # import all custom modules for statistical analysis
-from Strength_of_Schedule import *
-from Win_Rating import *
-from Scoring_Rating import *
-from Special_Teams import *
-from Clutch import *
-from Recent_Form import *
+from Metrics.Strength_of_Schedule import *
+from Metrics.Win_Rating import *
+from Metrics.Scoring_Rating import *
+from Metrics.Special_Teams import *
+from Metrics.Clutch import *
+from Metrics.Recent_Form import *
 
-class total_rating_weights(Enum):
-    WIN_RATING_WEIGHT = 0.5
-    SCORING_RATING_WEIGHT = 0.05
-    SPECIAL_TEAMS_RATING_WEIGHT = 0.08
-    CLUTCH_RATING_WEIGHT = 0.12
-    FORM_RATING_WEIGHT = 0.12
-    SOS_RATING_WEIGHT = 0.13
+from Weights import *
 
 
 colors = [
@@ -96,38 +88,26 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     plotter.clf()
 
 
-def plot_absolute_rankings():
-    plot_data = pd.read_csv("Input_Files/AbsoluteRankings.csv", delimiter=',')
+def plot_trend_set(csv_file : str = "", axis : list = [],
+                   upper_bound : float = 0.0, lower_bound : float = 0.0,
+                   tick_set : list = [], image_file : str = "") -> None:
+    plot_data = pd.read_csv(csv_file, delimiter=',')
     sns.set_theme()
     plotter.figure(figsize=(25, 10), dpi=100)
     team_palette = sns.color_palette(colors)
-    plot = sns.lineplot(data=plot_data, x="Rating Date", y="Absolute Ranking",
+    plot = sns.lineplot(data=plot_data, x=axis[0], y=axis[1],
         hue="Team", style="Division",palette=team_palette, marker='s')
-    plot.set(yticks=range(1, 33, 1))
+    plot.set(yticks=tick_set)
     plotter.tick_params(axis='x', which='major', labelsize=8)
     plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
-    plotter.ylim(33, 0)
-    plotter.savefig("Graphs/Trends/absolute_ranking.png", bbox_inches='tight')
+    plotter.ylim(lower_bound, upper_bound)
+    plotter.savefig(image_file, bbox_inches='tight')
     plotter.clf()
 
-
-def plot_average_rankings():
-    plot_data = pd.read_csv("Input_Files/AverageRankings.csv", delimiter=',')
-    sns.set_theme()
-    plotter.figure(figsize=(25, 10), dpi=100)
-    team_palette = sns.color_palette(colors)
-    plot = sns.lineplot(data=plot_data, x="Rating Date", y="Average Ranking",
-        hue="Team", style="Division",palette=team_palette, marker='s')
-    plot.set(yticks=range(1, 33, 1))
-    plotter.tick_params(axis='x', which='major', labelsize=8)
-    plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
-    plotter.ylim(33, 0)
-    plotter.savefig("Graphs/Trends/average_ranking.png", bbox_inches='tight')
-    plotter.clf()
 
 def parse_all_data_files() -> None:
-    average_rankings_parse('Input_Files/AverageRankings.csv')
-    absolute_rankings_parse('Input_Files/AbsoluteRankings.csv')
+    average_rankings_parse('Trend_Files/AverageRankings.csv')
+    absolute_rankings_parse('Trend_Files/AbsoluteRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
     read_matches(matches)
     parse_team_summary('Input_Files/TeamSummary.csv')
@@ -187,7 +167,7 @@ def calculate_scoring_rating() -> None:
         ["Team", "Scoring Difference"], scoring_difference)
     plot_data_set("Output_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Scoring_Rating/shooting_diff.png")
+        "Graphs/Scoring_Rating/scoring_diff.png")
 
     # calculate the shooting diff and graph
     scoring_rating_calc_shooting_diff()
@@ -321,28 +301,13 @@ def absolute_ranking_trends() -> None:
     absolute_rankings_update(total_rating)
 
 
-def ratings_score_trends() -> None:
-    plot_data = pd.read_csv("Input_Files/RatingScore.csv", delimiter=',')
-    sns.set_theme()
-    plotter.figure(figsize=(25, 10), dpi=100)
-    team_palette = sns.color_palette(colors)
-    plot = sns.lineplot(data=plot_data, x="Rating Date", y="Rating Score",
-        hue="Team", style="Division",palette=team_palette, marker='s')
-    plot.set(yticks=sigmiod_ticks)
-    plotter.tick_params(axis='x', which='major', labelsize=8)
-    plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
-    plotter.ylim(0, 1)
-    plotter.savefig("Graphs/Trends/rating_score.png", bbox_inches='tight')
-    plotter.clf()
-
-
 if __name__ == "__main__":
     
     # get a command from the user
     command = input("Welcome, Enter Command:\n\t" + "(re)cent\n\t" +
         "(st)rength\n\t" + "(w)ins\n\t" + "(sc)oring\n\t" + "(c)lutch\n\t" +
         "(sp)ecial\n\t" + "(av)erage ranking\n\t" + "(ab)solute ranking\n\t" +
-        "(ra)ting score\n\t" + "(a)ll\n\t" "(e)xit\n" + ">")
+        "(a)ll\n\t" + "(e)xit\n" + ">")
 
     # regardless of command parse the input files
     parse_all_data_files()
@@ -374,9 +339,6 @@ if __name__ == "__main__":
         elif command == 'ab':
             absolute_ranking_trends()
 
-        elif command == 'ra':
-            ratings_score_trends()
-
         elif command == 'a':
 
             # calculate all the elements of the score and plot them
@@ -390,21 +352,70 @@ if __name__ == "__main__":
             # combine all factors and plot the total rankings
             combine_all_factors()
 
-            # update the hardfile with all the ratings over time and plot
-            rating_score_write_out(total_rating)
-            ratings_score_trends()
+            # write out and plot all trend files\
+            # ratings score
+            update_trend_file("Trend_Files/RatingScore.csv", total_rating)
+            plot_trend_set("Trend_Files/RatingScore.csv",
+                ["Rating Date", "Rating Score"], 1, 0, sigmiod_ticks,
+                "Graphs/Trends/rating_score.png")
 
-            # update the hardfile with absolute rankings and plot
+            # absolute rating
             absolute_rankings_update(total_rating)
-            absolute_rankings_write_out()
-            plot_absolute_rankings()
+            update_trend_file("Trend_Files/AbsoluteRankings.csv",
+                ranking_absolutes)
+            plot_trend_set("Trend_Files/AbsoluteRankings.csv",
+                ["Rating Date", "Absolute Ranking"], 0, 33, range(1, 33, 1),
+                "Graphs/Trends/absolute_ranking.png")
 
-            # update the hardfile with average rankings and plot
+            # average rankings
             average_rankings_update(total_rating, ranking_absolutes)
-            average_rankings_write_out()
-            plot_average_rankings()
+            update_trend_file("Trend_Files/AverageRankings.csv",
+                ranking_averages)
+            plot_trend_set("Trend_Files/AverageRankings.csv",
+                ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
+                "Graphs/Trends/average_ranking.png")
 
+            # strength of schedule
+            update_trend_file("Trend_Files/StrengthOfSchedule.csv",
+                strength_of_schedule)
+            plot_trend_set("Trend_Files/StrengthOfSchedule.csv",
+                ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/strength_of_schedule.png")
 
+            # special teams
+            update_trend_file("Trend_Files/SpecialTeams.csv",
+                special_teams)
+            plot_trend_set("Trend_Files/SpecialTeams.csv",
+                ["Rating Date", "Special Teams"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/special_teams.png")
+
+            # clutch rating
+            update_trend_file("Trend_Files/ClutchRating.csv",
+                clutch_rating)
+            plot_trend_set("Trend_Files/ClutchRating.csv",
+                ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/clutch_rating.png")
+
+            # win rating
+            update_trend_file("Trend_Files/WinRating.csv",
+                win_rating)
+            plot_trend_set("Trend_Files/WinRating.csv",
+                ["Rating Date", "Win Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/win_rating.png")
+
+            # scoring rating
+            update_trend_file("Trend_Files/ScoringRating.csv",
+                scoring_rating)
+            plot_trend_set("Trend_Files/ScoringRating.csv",
+                ["Rating Date", "Scoring Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/scoring_rating.png")
+
+            # recent form
+            update_trend_file("Trend_Files/RecentForm.csv",
+                recent_form_rating)
+            plot_trend_set("Trend_Files/RecentForm.csv",
+                ["Rating Date", "Recent Form"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Trends/recent_form.png")
         elif command == 'e':
             exit()
 
