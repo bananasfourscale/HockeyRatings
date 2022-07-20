@@ -37,14 +37,14 @@ recent_form_rating = {
 }
 
 
-def split_game_results(results : str = "") -> tuple((int, int, int)):
+def split_game_results(results : str = "") -> tuple((int, int)):
     game_result = results.split("-")
-    return (game_result[0], game_result[1], game_result[2])
+    return (game_result[0], game_result[2])
 
 
 def form_calculate_rating() -> None:
     for team in last_ten_data.keys():
-        (wins, loses, ot) = split_game_results(
+        (wins,  ot) = split_game_results(
             last_ten_data[team][last_ten_indecies.LAST_TEN.value])
         recent_form_rating[team] = float(wins) + (float(ot) * 0.333)
 

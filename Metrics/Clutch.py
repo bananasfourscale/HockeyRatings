@@ -49,7 +49,7 @@ def clutch_calculate_lead_protection() -> None:
                 leading_trailing_indecies.W_PER_LEAD_2.value])
         
         # calculate the positive clutch portion based on keeping leads
-        clutch_rating[team] = (win_lead_1 * 5) + (win_lead_2 * 10)
+        clutch_rating[team] += (win_lead_1 * 5) + (win_lead_2 * 10)
         # print("{} : {}".format(team, clutch_rating[team]))
 
 
