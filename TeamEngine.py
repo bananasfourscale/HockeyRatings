@@ -9,7 +9,6 @@ from Parsers.Absolute_Ranking_Parser import *
 from Parsers.Team_Summary_Parser import *
 from Parsers.Matches_Parser import *
 from Parsers.Leading_Trailing_Parser import *
-from Parsers.Last_Ten_Parser import *
 from CSV_Writer import *
 
 # import all custom modules for statistical analysis
@@ -32,6 +31,41 @@ team_color_hex_codes = [
 ]
 
 sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+team_codes = {
+    'Anaheim Ducks' : 24,
+    'Arizona Coyotes' : 53,
+    'Boston Bruins' : 6,
+    'Buffalo Sabres' : 7,
+    'Calgary Flames' : 20,
+    'Carolina Hurricanes' : 12,
+    'Chicago Blackhawks' : 16,
+    'Colorado Avalanche' : 21,
+    'Columbus Blue Jackets' : 29,
+    'Dallas Stars' : 25,
+    'Detroit Red Wings' : 17,
+    'Edmonton Oilers' : 22,
+    'Florida Panthers' : 13,
+    'Los Angeles Kings' : 26,
+    'Minnesota Wild' : 30,
+    'Montreal Canadiens' : 8,
+    'Nashville Predators' : 18,
+    'New Jersey Devils' : 1,
+    'New York Islanders' : 2,
+    'New York Rangers' : 3,
+    'Ottawa Senators' : 9,
+    'Philadelphia Flyers' : 4,
+    'Pittsburgh Penguins' : 5,
+    'San Jose Sharks' : 28,
+    'Seattle Kraken' : 55,
+    'St. Louis Blues' : 19,
+    'Tampa Bay Lightning' : 14,
+    'Toronto Maple Leafs' : 10,
+    'Vancouver Canucks' : 23,
+    'Vegas Golden Knights' : 54,
+    'Washington Capitals' : 15,
+    'Winnipeg Jets' : 52,
+}
 
 total_rating = {
     'Anaheim Ducks' : 0,
@@ -116,7 +150,7 @@ def parse_all_data_files() -> None:
     read_matches(matches)
     parse_team_summary('Input_Files/TeamSummary.csv')
     parse_leading_trailing('Input_Files/LeadingTrailing.csv')
-    parse_last_ten("Input_Files/Last10Games.csv")
+    parse_last_ten()
 
 '''
 Helper functions that calculate the various factors used to create the final
