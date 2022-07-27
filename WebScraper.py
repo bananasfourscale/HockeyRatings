@@ -1,14 +1,26 @@
-import requests
-import json
-url1 = 'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+from ast import Del
+from time import sleep
+from selenium import webdriver
+import time
+from bs4 import BeautifulSoup
 
-if __name__ == "__main__":
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
-    web_data = requests.get(records_url)
-    last_ten_data = {}
-    parsed_data = json.loads(web_data.content)
-    for record in parsed_data["records"]:
-        for team in record["teamRecords"]:
-            with open("test_file.txt", 'w', encoding="utf-8") as file:
-                file.write(str(team))
+driver = webdriver.Chrome("C:\\Users\\lindb\\Documents\\chromedriver_win32\\chromedriver.exe")
+driver.get("https://www.nhl.com/stats/teams")
+time.sleep(5)
+pageSource = driver.page_source
+soup = BeautifulSoup(pageSource, 'html.parser')
+# print(soup.prettify)
+driver.close()
+fileToWrite = open("test_file.txt", "w", encoding="utf-8")
+source_str = soup.prettify()
+table_index = source_str.find('''<div class="rt-tbody" role="rowgroup" style="min-width: 1244px;">''')
+print(table_index)
+source_str_trimmed = source_str[table_index:-1]
+# fileToWrite.write(soup.prettify())
+# fileToWrite.write(str(soup.find_all('div')))
+fileToWrite.write(source_str_trimmed)
+del source_str
+del soup
+del pageSource
+del driver
+fileToWrite.close()
