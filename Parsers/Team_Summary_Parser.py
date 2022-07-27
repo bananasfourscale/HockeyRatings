@@ -1,5 +1,8 @@
 import csv
 from enum import Enum
+from selenium import webdriver
+from time import sleep
+from bs4 import BeautifulSoup
 
 team_summary_data = {
     'Anaheim Ducks' : [],
@@ -38,29 +41,54 @@ team_summary_data = {
 
 class summary_indecies(Enum):
     TEAM = 0
-    SEASON = 1
-    GP = 2
-    W = 3
-    L = 4
-    T = 5
-    OT = 6
-    PTS = 7
-    PTS_PER = 8
-    RW = 9
-    ROW = 10
-    SOW = 11
-    GF = 12
-    GA = 13
-    GF_GP = 14
-    GA_GP = 15
-    PP_PER = 16
-    PK_PER = 17
-    NET_PP = 18
-    NET_PK = 19
-    SHF_GP = 20
-    SHA_GP = 21
-    FOW_PER = 22
+    SEASON = 4
+    GP = 8
+    W = 11
+    L = 14
+    T = 17
+    OT = 20
+    PTS = 23
+    PTS_PER = 26
+    RW = 29
+    ROW = 32
+    SOW = 35
+    GF = 38
+    GA = 41
+    GF_GP = 44
+    GA_GP = 47
+    PP_PER = 50
+    PK_PER = 53
+    NET_PP = 56
+    NET_PK = 59
+    SHF_GP = 62
+    SHA_GP = 65
+    FOW_PER = 68
 
+
+def scrap_team_summary() -> dict:
+    driver = webdriver.Chrome("P:\\chromedriver.exe")
+    driver.get("https://www.nhl.com/stats/teams")
+    sleep(10)
+    pageSource = driver.page_source
+    soup = BeautifulSoup(pageSource, 'html.parser')
+    driver.close()
+    source_str = soup.prettify()
+    table_index = source_str.find(
+        '''<div class="rt-tbody" role="rowgroup" style="min-width: 1244px;">''')
+    source_str_trimmed = source_str[table_index:-1]
+    table_index = source_str_trimmed.find(
+        '''<button class="prev-button" disabled="">''')
+    source_str_trimmed = source_str_trimmed[0:table_index]
+    source_str_trimmed = source_str_trimmed.split('\n')
+    index = 0
+    for row in source_str_trimmed:
+        if row.strip() in team_summary_data.keys():
+            print(row)
+    del source_str_trimmed
+    del source_str
+    del soup
+    del pageSource
+    del driver
 
 def parse_team_summary(file_name : str = "") -> None:
     header_row = True
@@ -86,5 +114,6 @@ def parse_team_summary(file_name : str = "") -> None:
 
 
 if __name__ == "__main__":
-    parse_team_summary("Input_Files/TeamSummary.csv")
-    print(team_summary_data)
+    # parse_team_summary("Input_Files/TeamSummary.csv")
+    # print(team_summary_data)
+    scrap_team_summary()
