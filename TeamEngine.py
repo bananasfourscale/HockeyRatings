@@ -150,6 +150,7 @@ def parse_all_data_files() -> None:
     read_matches(matches)
     scrape_team_summary()
     parse_leading_trailing('Input_Files/LeadingTrailing.csv')
+    parse_last_ten()
 
 '''
 Helper functions that calculate the various factors used to create the final
@@ -277,7 +278,7 @@ def calculate_clutch_rating() -> None:
 def calculate_recent_form() -> None:
     
     # first calculate the recent form raw rating and plot
-    recent_form_calculate_rating()
+    form_calculate_rating()
     write_out_file("Output_Files/Instance_Files/RecentForm.csv",
         ["Team", "Recent Form"], recent_form_rating)
     plot_data_set("Output_Files/Instance_Files/RecentForm.csv",
@@ -286,7 +287,7 @@ def calculate_recent_form() -> None:
         "Graphs/Recent_Form/recent_form_base.png")
 
     # now apply the sigmoid correction and plot
-    recent_form_apply_sigmoid()
+    form_apply_sigmoid()
     write_out_file("Output_Files/Instance_Files/RecentForm.csv",
         ["Team", "Recent Form"], recent_form_rating)
     plot_data_set("Output_Files/Instance_Files/RecentForm.csv",

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 from math import exp
+=======
+from Parsers.Team_Summary_Parser import *
+import math
+>>>>>>> parent of e601379 (Update Special Teams Rating to use web API as well)
 
 special_teams = {
     'Anaheim Ducks' : 0,
@@ -16,7 +21,7 @@ special_teams = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
+    'Montreal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -36,12 +41,20 @@ special_teams = {
 }
 
 
-def special_teams_combine(team_name: str='', net_pp: float=0.0,
-                          net_pk: float=0.0) -> None:
-    special_teams[team_name] = net_pp + net_pk
+def special_teams_combine() -> None:
+    for team in special_teams.keys():
+        net_pp = float(team_summary_data[team][summary_indecies.NET_PP.value])
+        net_pk = float(team_summary_data[team][summary_indecies.NET_PK.value])
+        special_teams[team] = net_pp + net_pk
 
 
 def special_teams_apply_sigmoid() -> None:
     for team in special_teams.keys():
         special_teams[team] = \
-            1/(1 + exp(-(0.23 * (special_teams[team] - 100))))
+            1/(1 + math.exp(-(0.23 * (special_teams[team] - 100))))
+
+
+if __name__ == "__main__":
+    parse_team_summary('Input_Files/TeamSummary.csv')
+    special_teams_combine()
+    special_teams_apply_sigmoid()
