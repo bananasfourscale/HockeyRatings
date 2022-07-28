@@ -37,47 +37,12 @@ recent_form_rating = {
     'Winnipeg Jets' : 0,
 }
 
-last_ten_data = {
-    'Anaheim Ducks' : [],
-    'Arizona Coyotes' : [],
-    'Boston Bruins' : [],
-    'Buffalo Sabres' : [],
-    'Calgary Flames' : [],
-    'Carolina Hurricanes' : [],
-    'Chicago Blackhawks' : [],
-    'Colorado Avalanche' : [],
-    'Columbus Blue Jackets' : [],
-    'Dallas Stars' : [],
-    'Detroit Red Wings' : [],
-    'Edmonton Oilers' : [],
-    'Florida Panthers' : [],
-    'Los Angeles Kings' : [],
-    'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
-    'Nashville Predators' : [],
-    'New Jersey Devils' : [],
-    'New York Islanders' : [],
-    'New York Rangers' : [],
-    'Ottawa Senators' : [],
-    'Philadelphia Flyers' : [],
-    'Pittsburgh Penguins' : [],
-    'San Jose Sharks' : [],
-    'Seattle Kraken' : [],
-    'St. Louis Blues' : [],
-    'Tampa Bay Lightning' : [],
-    'Toronto Maple Leafs' : [],
-    'Vancouver Canucks' : [],
-    'Vegas Golden Knights' : [],
-    'Washington Capitals' : [],
-    'Winnipeg Jets' : [],
-}
 
-records_url = \
-    'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
-
-def parse_last_ten() -> None:
+def recent_form_get_data() -> dict:
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
     web_data = requests.get(records_url)
-
+    last_ten_data = {}
     parsed_data = json.loads(web_data.content)
     for record in parsed_data["records"]:
         for team in record["teamRecords"]:
@@ -86,28 +51,32 @@ def parse_last_ten() -> None:
             # use the team name to sort the row data into the dictionary
             last_ten_data[team["team"]["name"]] = "{}-{}-{}".format(
                 last_10["wins"], last_10["losses"], last_10["ot"])
+    return last_ten_data
 
-def split_game_results(results : str = "") -> tuple((int, int)):
+
+def recent_form_split_game_results(results : str = "") -> tuple((int, int)):
     game_result = results.split("-")
     return (game_result[0], game_result[2])
 
 
-def form_calculate_rating() -> None:
+def recent_form_calculate_rating() -> None:
+    last_ten_data = recent_form_get_data()
+
     for team in last_ten_data.keys():
-        (wins,  ot) = split_game_results(
+        (wins,  ot) = recent_form_split_game_results(
             last_ten_data[team])
         recent_form_rating[team] = float(wins) + (float(ot) * 0.333)
 
 
-def form_apply_sigmoid() -> None:
+def recent_form_apply_sigmoid() -> None:
     for team in recent_form_rating.keys():
         recent_form_rating[team] = \
             1/(1 + math.exp(-(0.92 * (recent_form_rating[team] - 5))))
 
 
 if __name__ == "__main__":
-    parse_last_ten()
-    form_calculate_rating()
-    form_apply_sigmoid()
+    recent_form_calculate_rating()
+    recent_form_apply_sigmoid()
     for team in recent_form_rating.keys() :
-        print("{}: {}".format(team, recent_form_rating[team]))
+        print("{}: Recent Form Rating = {}".format(
+            team, recent_form_rating[team]))
