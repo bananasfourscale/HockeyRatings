@@ -1,6 +1,4 @@
-import math
-import requests
-import json
+from math import exp
 
 special_teams = {
     'Anaheim Ducks' : 0,
@@ -38,37 +36,12 @@ special_teams = {
 }
 
 
-def special_teams_get_data() -> dict:
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
-    web_data = requests.get(records_url)
-    special_teams_data = {}
-    parsed_data = json.loads(web_data.content)
-    for team in parsed_data["teams"]:
-        PPper = team["teamStats"][0]["splits"][0]["stat"]["powerPlayPercentage"]
-        PKper = team["teamStats"][0]["splits"][0]["stat"][
-            "penaltyKillPercentage"]
-        special_teams_data[
-            team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
-    return special_teams_data            
-
-
-def special_teams_combine() -> None:
-    special_teams_data = special_teams_get_data()
-    for team in special_teams_data.keys():
-        net_pp = float(special_teams_data[team][0])
-        net_pk = float(special_teams_data[team][1])
-        special_teams[team] = net_pp + net_pk
+def special_teams_combine(team_name: str='', net_pp: float=0.0,
+                          net_pk: float=0.0) -> None:
+    special_teams[team_name] = net_pp + net_pk
 
 
 def special_teams_apply_sigmoid() -> None:
     for team in special_teams.keys():
         special_teams[team] = \
-            1/(1 + math.exp(-(0.23 * (special_teams[team] - 100))))
-
-
-if __name__ == "__main__":
-    special_teams_combine()
-    special_teams_apply_sigmoid()
-    for team in special_teams.keys():
-        print(team, special_teams[team])
+            1/(1 + exp(-(0.23 * (special_teams[team] - 100))))

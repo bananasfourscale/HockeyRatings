@@ -68,6 +68,6 @@ def win_rating_calc() -> None:
 
 
 if __name__ == "__main__":
-    parse_team_summary('Input_Files/TeamSummary.csv')
+    scrape_team_summary()
     win_rating_calc()
     print(win_rating)

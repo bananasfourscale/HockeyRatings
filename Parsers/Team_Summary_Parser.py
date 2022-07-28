@@ -89,10 +89,10 @@ class summary_indecies(Enum):
     SHA_GP = 21
     FOW_PER = 22
 
-def scrap_team_summary() -> None:
-    driver = webdriver.Chrome("C:\\Users\\lindb\\Documents\\chromedriver_win32\\chromedriver.exe")
+def scrape_team_summary() -> None:
+    driver = webdriver.Chrome("P:\\chromedriver.exe")
     driver.get("https://www.nhl.com/stats/teams")
-    sleep(10)
+    sleep(5)
     pageSource = driver.page_source
     soup = BeautifulSoup(pageSource, 'html.parser')
     driver.close()
@@ -108,53 +108,80 @@ def scrap_team_summary() -> None:
     while index < len(source_str_trimmed):
         if source_str_trimmed[index].strip() in team_summary_data.keys():
             source_str_trimmed[index].strip()
-            team_summary_data[source_str_trimmed[index].strip()].append([
-                source_str_trimmed[index + trimmed_html_rows.SEASON.value],
-                source_str_trimmed[index + trimmed_html_rows.GP.value],
-                source_str_trimmed[index + trimmed_html_rows.W.value],
-                source_str_trimmed[index + trimmed_html_rows.L.value],
-                source_str_trimmed[index + trimmed_html_rows.SEASON.value],
-                source_str_trimmed[index + trimmed_html_rows.T.value],
-                source_str_trimmed[index + trimmed_html_rows.OT.value],
-                source_str_trimmed[index + trimmed_html_rows.PTS.value],
-                source_str_trimmed[index + trimmed_html_rows.PTS_PER.value],
-                source_str_trimmed[index + trimmed_html_rows.RW.value],
-                source_str_trimmed[index + trimmed_html_rows.ROW.value],
-                source_str_trimmed[index + trimmed_html_rows.SOW.value],
-                source_str_trimmed[index + trimmed_html_rows.GF.value],
-                source_str_trimmed[index + trimmed_html_rows.GA.value],
-                source_str_trimmed[index + trimmed_html_rows.GF_GP.value],
-                source_str_trimmed[index + trimmed_html_rows.GA_GP.value],
-                source_str_trimmed[index + trimmed_html_rows.PP_PER.value],
-                source_str_trimmed[index + trimmed_html_rows.PK_PER.value],
-                source_str_trimmed[index + trimmed_html_rows.NET_PP.value],
-                source_str_trimmed[index + trimmed_html_rows.NET_PK.value],
-                source_str_trimmed[index + trimmed_html_rows.SHF_GP.value],
-                source_str_trimmed[index + trimmed_html_rows.SHA_GP.value],
-                source_str_trimmed[index + trimmed_html_rows.FOW_PER.value]])
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.SEASON.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.GP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.W.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.L.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.SEASON.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.T.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.OT.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.PTS.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.PTS_PER.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.RW.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.ROW.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.SOW.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.GF.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.GA.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.GF_GP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.GA_GP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.PP_PER.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.PK_PER.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.NET_PP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.NET_PK.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.SHF_GP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.SHA_GP.value].strip())
+            team_summary_data[source_str_trimmed[index].strip()].append(
+                source_str_trimmed[
+                    index + trimmed_html_rows.FOW_PER.value].strip())
             index += trimmed_html_rows.FOW_PER.value
         else:
             index += 1
 
 
-def parse_team_summary(file_name : str = "") -> None:
-    header_row = True
-    with open(file_name, newline='') as csv_data_file:
-        summaries = csv.reader(csv_data_file, delimiter = ',')
-
-        # loop through all rows of the file
-        for summary in summaries:
-
-            # always skip the header row
-            if header_row == True:
-                header_row = False
-                continue
-
-            team_summary_data[summary[trimmed_html_rows.TEAM.value]] = summary
-
-
 if __name__ == "__main__":
-    # parse_team_summary("Input_Files/TeamSummary.csv")
-    # print(team_summary_data)
-    scrap_team_summary()
+    scrape_team_summary()
     print(team_summary_data)

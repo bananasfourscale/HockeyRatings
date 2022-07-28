@@ -159,7 +159,7 @@ def scoring_rating_combine_factors() -> None:
             (shooting_difference[team] * 0.25)
 
 if __name__ == "__main__":
-    parse_team_summary("Input_Files/TeamSummary.csv")
+    scrape_team_summary()
     scoring_rating_calc_goal_diff()
     scoring_rating_apply_sigmoid_goal_diff()
     scoring_rating_calc_shooting_diff()

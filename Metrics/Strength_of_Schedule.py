@@ -170,6 +170,6 @@ def strength_of_schedule_apply_sigmoid() -> None:
 if __name__ == "__main__":
     average_rankings_parse('Input_Files/AverageRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
-    parse_team_summary('Input_Files/TeamSummary.csv')
+    scrape_team_summary()
     read_matches(matches)
     strength_of_schedule_scale_by_game()

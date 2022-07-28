@@ -148,7 +148,7 @@ def parse_all_data_files() -> None:
     absolute_rankings_parse('Output_Files/Trend_Files/AbsoluteRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
     read_matches(matches)
-    parse_team_summary('Input_Files/TeamSummary.csv')
+    scrape_team_summary()
     parse_leading_trailing('Input_Files/LeadingTrailing.csv')
 
 '''
@@ -237,8 +237,11 @@ def calculate_scoring_rating() -> None:
 
 def calculate_special_teams_rating() -> None:
 
-    # combine special teams and plot
-    special_teams_combine()
+    # combine special teams by feeding the parsed data one team at a time; plot
+    for team in team_summary_data.keys():
+        special_teams_combine(team,
+            float(team[summary_indecies.NET_PP.value]),
+            float(team[summary_indecies.NET_PK.value]))
     write_out_file("Output_Files/Instance_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], special_teams)
     plot_data_set("Output_Files/Instance_Files/SpecialTeams.csv",
