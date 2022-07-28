@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-from math import exp
-=======
-from Parsers.Team_Summary_Parser import *
 import math
->>>>>>> parent of e601379 (Update Special Teams Rating to use web API as well)
+import requests
+import json
 
 special_teams = {
     'Anaheim Ducks' : 0,
@@ -21,7 +18,7 @@ special_teams = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -41,10 +38,26 @@ special_teams = {
 }
 
 
+def special_teams_get_data() -> dict:
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+    web_data = requests.get(records_url)
+    special_teams_data = {}
+    parsed_data = json.loads(web_data.content)
+    for team in parsed_data["teams"]:
+        PPper = team["teamStats"][0]["splits"][0]["stat"]["powerPlayPercentage"]
+        PKper = team["teamStats"][0]["splits"][0]["stat"][
+            "penaltyKillPercentage"]
+        special_teams_data[
+            team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
+    return special_teams_data            
+
+
 def special_teams_combine() -> None:
-    for team in special_teams.keys():
-        net_pp = float(team_summary_data[team][summary_indecies.NET_PP.value])
-        net_pk = float(team_summary_data[team][summary_indecies.NET_PK.value])
+    special_teams_data = special_teams_get_data()
+    for team in special_teams_data.keys():
+        net_pp = float(special_teams_data[team][0])
+        net_pk = float(special_teams_data[team][1])
         special_teams[team] = net_pp + net_pk
 
 
@@ -55,6 +68,8 @@ def special_teams_apply_sigmoid() -> None:
 
 
 if __name__ == "__main__":
-    parse_team_summary('Input_Files/TeamSummary.csv')
     special_teams_combine()
     special_teams_apply_sigmoid()
+    for team in special_teams.keys():
+        print(team, special_teams[team])
+
