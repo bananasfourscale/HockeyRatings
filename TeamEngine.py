@@ -148,9 +148,8 @@ def parse_all_data_files() -> None:
     absolute_rankings_parse('Output_Files/Trend_Files/AbsoluteRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
     read_matches(matches)
-    scrape_team_summary()
+    parse_team_summary('Input_Files/TeamSummary.csv')
     parse_leading_trailing('Input_Files/LeadingTrailing.csv')
-    parse_last_ten()
 
 '''
 Helper functions that calculate the various factors used to create the final
@@ -238,11 +237,8 @@ def calculate_scoring_rating() -> None:
 
 def calculate_special_teams_rating() -> None:
 
-    # combine special teams by feeding the parsed data one team at a time; plot
-    for team in team_summary_data.keys():
-        special_teams_combine(team,
-            float(team[summary_indecies.NET_PP.value]),
-            float(team[summary_indecies.NET_PK.value]))
+    # combine special teams and plot
+    special_teams_combine()
     write_out_file("Output_Files/Instance_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], special_teams)
     plot_data_set("Output_Files/Instance_Files/SpecialTeams.csv",
@@ -278,7 +274,7 @@ def calculate_clutch_rating() -> None:
 def calculate_recent_form() -> None:
     
     # first calculate the recent form raw rating and plot
-    form_calculate_rating()
+    recent_form_calculate_rating()
     write_out_file("Output_Files/Instance_Files/RecentForm.csv",
         ["Team", "Recent Form"], recent_form_rating)
     plot_data_set("Output_Files/Instance_Files/RecentForm.csv",
@@ -287,7 +283,7 @@ def calculate_recent_form() -> None:
         "Graphs/Recent_Form/recent_form_base.png")
 
     # now apply the sigmoid correction and plot
-    form_apply_sigmoid()
+    recent_form_apply_sigmoid()
     write_out_file("Output_Files/Instance_Files/RecentForm.csv",
         ["Team", "Recent Form"], recent_form_rating)
     plot_data_set("Output_Files/Instance_Files/RecentForm.csv",
