@@ -1,8 +1,5 @@
 import csv
 from enum import Enum
-from selenium import webdriver
-from time import sleep
-from bs4 import BeautifulSoup
 
 team_summary_data = {
     'Anaheim Ducks' : [],
@@ -20,7 +17,7 @@ team_summary_data = {
     'Florida Panthers' : [],
     'Los Angeles Kings' : [],
     'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
+    'Montreal Canadiens' : [],
     'Nashville Predators' : [],
     'New Jersey Devils' : [],
     'New York Islanders' : [],
@@ -38,31 +35,6 @@ team_summary_data = {
     'Washington Capitals' : [],
     'Winnipeg Jets' : [],
 }
-
-class trimmed_html_rows(Enum):
-    TEAM = 0
-    SEASON = 4
-    GP = 8
-    W = 11
-    L = 14
-    T = 17
-    OT = 20
-    PTS = 23
-    PTS_PER = 26
-    RW = 29
-    ROW = 32
-    SOW = 35
-    GF = 38
-    GA = 41
-    GF_GP = 44
-    GA_GP = 47
-    PP_PER = 50
-    PK_PER = 53
-    NET_PP = 56
-    NET_PK = 59
-    SHF_GP = 62
-    SHA_GP = 65
-    FOW_PER = 68
 
 class summary_indecies(Enum):
     TEAM = 0
@@ -89,99 +61,30 @@ class summary_indecies(Enum):
     SHA_GP = 21
     FOW_PER = 22
 
-def scrape_team_summary() -> None:
-    driver = webdriver.Chrome("P:\\chromedriver.exe")
-    driver.get("https://www.nhl.com/stats/teams")
-    sleep(5)
-    pageSource = driver.page_source
-    soup = BeautifulSoup(pageSource, 'html.parser')
-    driver.close()
-    source_str = soup.prettify()
-    table_index = source_str.find(
-        '''<div class="rt-tbody" role="rowgroup" style="min-width: 1244px;">''')
-    source_str_trimmed = source_str[table_index:-1]
-    table_index = source_str_trimmed.find(
-        '''<button class="prev-button" disabled="">''')
-    source_str_trimmed = source_str_trimmed[0:table_index]
-    source_str_trimmed = source_str_trimmed.split('\n')
-    index = 0
-    while index < len(source_str_trimmed):
-        if source_str_trimmed[index].strip() in team_summary_data.keys():
-            source_str_trimmed[index].strip()
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.SEASON.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.GP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.W.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.L.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.SEASON.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.T.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.OT.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.PTS.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.PTS_PER.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.RW.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.ROW.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.SOW.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.GF.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.GA.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.GF_GP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.GA_GP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.PP_PER.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.PK_PER.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.NET_PP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.NET_PK.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.SHF_GP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.SHA_GP.value].strip())
-            team_summary_data[source_str_trimmed[index].strip()].append(
-                source_str_trimmed[
-                    index + trimmed_html_rows.FOW_PER.value].strip())
-            index += trimmed_html_rows.FOW_PER.value
-        else:
-            index += 1
+
+def parse_team_summary(file_name : str = "") -> None:
+    header_row = True
+    with open(file_name, newline='') as csv_data_file:
+        summaries = csv.reader(csv_data_file, delimiter = ',')
+
+        # loop through all rows of the file
+        for summary in summaries:
+
+            # always skip the header row
+            if header_row == True:
+                header_row = False
+                continue
+
+            # special case for the Habs french spelling
+            if summary[summary_indecies.TEAM.value] == 'MontÃ©al Canadiens':
+                team_summary_data['Montreal Canadiens'] = summary
+                continue
+
+            # use the team name to sort the row data into the dictionary
+            else:
+                team_summary_data[summary[summary_indecies.TEAM.value]] = summary
 
 
 if __name__ == "__main__":
-    scrape_team_summary()
+    parse_team_summary("Input_Files/TeamSummary.csv")
     print(team_summary_data)
