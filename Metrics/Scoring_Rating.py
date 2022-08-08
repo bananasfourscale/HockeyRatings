@@ -18,7 +18,7 @@ scoring_difference = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -53,7 +53,7 @@ shooting_difference = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -88,7 +88,7 @@ scoring_rating = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -107,32 +107,30 @@ scoring_rating = {
     'Winnipeg Jets' : 0,
 }
 
-def offensive_measure_get_data() -> dict:
+def scoring_diff_get_data() -> dict:
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
     web_data = requests.get(records_url)
-    
+    scoring_diff_data = {}
     parsed_data = json.loads(web_data.content)
     for team in parsed_data["teams"]:
-        PPper = team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
-        PKper = team["teamStats"][0]["splits"][0]["stat"][
-            "penaltyKillPercentage"]
-        special_teams_data[
-            team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
-    return special_teams_data 
+        GPG = team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
+        GAPG = team["teamStats"][0]["splits"][0]["stat"]["goalsAgainstPerGame"]
+        scoring_diff_data[
+            team["teamStats"][0]["splits"][0]["team"]["name"]] = [GPG, GAPG]
+    return scoring_diff_data 
 
 
 def scoring_rating_calc_goal_diff() -> None:
-    for team in team_summary_data.keys():
+    scoring_diff_data = scoring_diff_get_data()
+    for team in scoring_diff_data.keys():
 
         # reassign the data values just to make it easier to use
-        games_played = float(team_summary_data[team][summary_indecies.GP.value])
-        goals_for = float(team_summary_data[team][summary_indecies.GF.value])
-        goals_against = float(
-            team_summary_data[team][summary_indecies.GA.value])
+        goals_for = float(scoring_diff_data[team][0])
+        goals_against = float(scoring_diff_data[team][1])
 
         # calculate scoring diff
-        scoring_difference[team] = (goals_for - goals_against) / games_played
+        scoring_difference[team] = goals_for - goals_against
         # print("{} : {}".format(team, scoring_difference[team]))
 
 
@@ -143,22 +141,31 @@ def scoring_rating_apply_sigmoid_goal_diff() -> None:
         # print("{} : {}".format(team, scoring_difference[team]))
 
 
+def shooting_diff_get_data() -> dict:
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+    web_data = requests.get(records_url)
+    scoring_diff_data = {}
+    parsed_data = json.loads(web_data.content)
+    for team in parsed_data["teams"]:
+        SPG = team["teamStats"][0]["splits"][0]["stat"]["shotsPerGame"]
+        SAPG = team["teamStats"][0]["splits"][0]["stat"]["shotsAllowed"]
+        scoring_diff_data[
+            team["teamStats"][0]["splits"][0]["team"]["name"]] = [SPG, SAPG]
+    return scoring_diff_data
+
+
 def scoring_rating_calc_shooting_diff() -> None:
-    for team in team_summary_data.keys():
+    shooting_diff_data = shooting_diff_get_data()
+    for team in shooting_diff_data.keys():
 
         # reassign the data values just to make it easier to use
-        shots_for_per_game = float(
-                team_summary_data[team][summary_indecies.SHF_GP.value])
-        shots_against_per_game = float(
-            team_summary_data[team][summary_indecies.SHA_GP.value])
+        goals_for = float(shooting_diff_data[team][0])
+        goals_against = float(shooting_diff_data[team][1])
 
-        # calculate shooting diff
-        shooting_difference[team] = \
-            (shots_for_per_game - shots_against_per_game)
-        # print()
-        # print("{} : SF/GP={}, SA/GP={}".format(team, shots_for_per_game,
-        #     shots_against_per_game))
-        # print("\t{}".format(shooting_difference[team]))
+        # calculate scoring diff
+        shooting_difference[team] = goals_for - goals_against
+        # print("{} : {}".format(team, shooting_difference[team]))
 
 
 def scoring_rating_apply_sigmoid_shooting_diff() -> None:
@@ -174,9 +181,17 @@ def scoring_rating_combine_factors() -> None:
             (shooting_difference[team] * 0.25)
 
 if __name__ == "__main__":
-    scrape_team_summary()
     scoring_rating_calc_goal_diff()
     scoring_rating_apply_sigmoid_goal_diff()
+    print("Scoring Diff:")
+    for team in scoring_difference.keys():
+        print("\t" + team + '=' + str(scoring_difference[team]))
     scoring_rating_calc_shooting_diff()
     scoring_rating_apply_sigmoid_shooting_diff()
+    print("Shooting Diff:")
+    for team in shooting_difference.keys():
+        print("\t" + team + '=' + str(shooting_difference[team]))
     scoring_rating_combine_factors()
+    print("Combined Scoring Rating:")
+    for team in scoring_rating.keys():
+        print("\t" + team + '=' + str(scoring_rating[team]))

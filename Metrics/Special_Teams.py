@@ -46,8 +46,8 @@ def special_teams_get_data() -> dict:
     parsed_data = json.loads(web_data.content)
     for team in parsed_data["teams"]:
         PPper = team["teamStats"][0]["splits"][0]["stat"]["powerPlayPercentage"]
-        PKper = team["teamStats"][0]["splits"][0]["stat"][
-            "penaltyKillPercentage"]
+        PKper = \
+            team["teamStats"][0]["splits"][0]["stat"]["penaltyKillPercentage"]
         special_teams_data[
             team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
     return special_teams_data            
@@ -70,6 +70,7 @@ def special_teams_apply_sigmoid() -> None:
 if __name__ == "__main__":
     special_teams_combine()
     special_teams_apply_sigmoid()
+    print("Special Teams Ratings:")
     for team in special_teams.keys():
-        print(team, special_teams[team])
+        print("\t" + team + '=' + str(special_teams[team]))
 
