@@ -1,5 +1,6 @@
-from Parsers.Team_Summary_Parser import *
-import math
+import requests
+import json
+from math import exp
 
 scoring_difference = {
     'Anaheim Ducks' : 0,
@@ -106,6 +107,20 @@ scoring_rating = {
     'Winnipeg Jets' : 0,
 }
 
+def offensive_measure_get_data() -> dict:
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+    web_data = requests.get(records_url)
+    
+    parsed_data = json.loads(web_data.content)
+    for team in parsed_data["teams"]:
+        PPper = team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
+        PKper = team["teamStats"][0]["splits"][0]["stat"][
+            "penaltyKillPercentage"]
+        special_teams_data[
+            team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
+    return special_teams_data 
+
 
 def scoring_rating_calc_goal_diff() -> None:
     for team in team_summary_data.keys():
@@ -124,7 +139,7 @@ def scoring_rating_calc_goal_diff() -> None:
 def scoring_rating_apply_sigmoid_goal_diff() -> None:
     for team in scoring_difference.keys():
         scoring_difference[team] = \
-            1/(1 + math.exp(-(2.3 * (scoring_difference[team]))))
+            1/(1 + exp(-(2.3 * (scoring_difference[team]))))
         # print("{} : {}".format(team, scoring_difference[team]))
 
 
@@ -149,7 +164,7 @@ def scoring_rating_calc_shooting_diff() -> None:
 def scoring_rating_apply_sigmoid_shooting_diff() -> None:
     for team in shooting_difference.keys():
         shooting_difference[team] = \
-            1/(1 + math.exp(-(0.46 * (shooting_difference[team]))))
+            1/(1 + exp(-(0.46 * (shooting_difference[team]))))
         # print("{} : {}".format(team, shooting_difference[team]))
 
 

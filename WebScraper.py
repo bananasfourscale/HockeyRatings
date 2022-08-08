@@ -1,28 +1,11 @@
-from selenium import webdriver
-import time
-from bs4 import BeautifulSoup
+import requests
+import json
 
-driver = webdriver.Chrome("P:\\chromedriver.exe")
-driver.get("https://www.nhl.com/stats/teams")
-time.sleep(10)
-pageSource = driver.page_source
-soup = BeautifulSoup(pageSource, 'html.parser')
-driver.close()
-source_str = soup.prettify()
-table_index = source_str.find(
-    '''<div class="rt-tbody" role="rowgroup" style="min-width: 1244px;">''')
-source_str_trimmed = source_str[table_index:-1]
-table_index = source_str_trimmed.find(
-    '''<button class="prev-button" disabled="">''')
-source_str_trimmed = source_str_trimmed[0:table_index]
-source_str_trimmed = source_str_trimmed.split('\n')
-index = 0
-for row in source_str_trimmed:
-    if index < 50:
-        print("{} = {}".format(index, row))
-        index += 1
-del source_str_trimmed
-del source_str
-del soup
-del pageSource
-del driver
+records_url = \
+    'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+web_data = requests.get(records_url)
+special_teams_data = {}
+parsed_data = json.loads(web_data.content)
+for team in parsed_data["teams"]:
+    PPper = team["teamStats"][0]["splits"][0]["stat"]
+    print(PPper)
