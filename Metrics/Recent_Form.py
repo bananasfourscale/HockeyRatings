@@ -77,6 +77,6 @@ def recent_form_apply_sigmoid() -> None:
 if __name__ == "__main__":
     recent_form_calculate_rating()
     recent_form_apply_sigmoid()
+    print("Recent Form:")
     for team in recent_form_rating.keys() :
-        print("{}: Recent Form Rating = {}".format(
-            team, recent_form_rating[team]))
+        print("\t" + team + '=' + str(recent_form_rating[team]))
