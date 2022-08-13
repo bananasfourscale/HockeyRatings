@@ -81,7 +81,7 @@ if __name__ == "__main__":
     print("Recent Form (uncorrected):")
     for team in recent_form_rating.keys() :
         print("\t" + team + '=' + str(recent_form_rating[team]))
-    recent_form_rating = apply_sigmoid_correction(recent_form_rating)
+    recent_form_rating = apply_sigmoid_correction(recent_form_get_dict())
     print("Recent Form (corrected):")
     for team in recent_form_rating.keys() :
         print("\t" + team + '=' + str(recent_form_rating[team]))

@@ -14,12 +14,15 @@ from CSV_Writer import *
 # import all custom modules for statistical analysis
 from Metrics.Strength_of_Schedule import *
 from Metrics.Win_Rating import *
-from Metrics.Scoring_Rating import *
+from Metrics.Scoring_Rating import scoring_diff_get_dict, \
+    shooting_diff_get_dict, scoring_rating_get_dict, \
+    scoring_rating_calc_goal_diff, scoring_rating_calc_shooting_diff, \
+    scoring_rating_combine_factors
 from Metrics.Special_Teams import special_teams_get_dict, special_teams_combine
 from Metrics.Clutch import *
-from Metrics.Recent_Form import *
+from Metrics.Recent_Form import recent_form_get_dict, \
+    recent_form_calculate_rating
 from Metrics.Sigmoid_Correction import apply_sigmoid_correction
-
 from Weights import *
 
 
@@ -213,13 +216,13 @@ def calculate_scoring_rating() -> None:
     # calculate the goal difference and graph
     scoring_rating_calc_goal_diff()
     write_out_file("Output_Files/Instance_Files/ScoringDiff.csv",
-        ["Team", "Scoring Difference"], scoring_difference)
+        ["Team", "Scoring Difference"], scoring_diff_get_dict())
     plot_data_set("Output_Files/Instance_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], 2.0, -2.0, [],
         "Graphs/Scoring_Rating/scoring_diff_base.png")
 
     # apply a sigmoid correction and graph again
-    scoring_rating_apply_sigmoid_goal_diff()
+    scoring_difference = apply_sigmoid_correction(scoring_diff_get_dict())
     write_out_file("Output_Files/Instance_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], scoring_difference)
     plot_data_set("Output_Files/Instance_Files/ScoringDiff.csv",
@@ -229,13 +232,13 @@ def calculate_scoring_rating() -> None:
     # calculate the shooting diff and graph
     scoring_rating_calc_shooting_diff()
     write_out_file("Output_Files/Instance_Files/ShootingDiff.csv",
-        ["Team", "Shooting Difference"], shooting_difference)
+        ["Team", "Shooting Difference"], shooting_diff_get_dict())
     plot_data_set("Output_Files/Instance_Files/ShootingDiff.csv",
         ["Team", "Shooting Difference"], 12.0, -12.0, [],
         "Graphs/Scoring_Rating/shooting_diff_base.png")
 
     # apply a signmoid correction and graph again
-    scoring_rating_apply_sigmoid_shooting_diff()
+    shooting_difference = apply_sigmoid_correction(shooting_diff_get_dict())
     write_out_file("Output_Files/Instance_Files/ShootingDiff.csv",
         ["Team", "Shooting Difference"], shooting_difference)
     plot_data_set("Output_Files/Instance_Files/ShootingDiff.csv",
@@ -245,14 +248,14 @@ def calculate_scoring_rating() -> None:
     # combine the scoring rating factors and graph again
     scoring_rating_combine_factors()
     write_out_file("Output_Files/Instance_Files/ScoringRating.csv",
-        ["Team", "Scoring Rating"], scoring_rating)
+        ["Team", "Scoring Rating"], scoring_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/ScoringRating.csv",
         ["Team", "Scoring Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Scoring_Rating/scoring_rating_final.png")
 
     # update the trend file
     update_trend_file("Output_Files/Trend_Files/ScoringRating.csv",
-        scoring_rating)
+        scoring_rating_get_dict())
     plot_trend_set("Output_Files/Trend_Files/ScoringRating.csv",
         ["Rating Date", "Scoring Rating"], 1.1, -.1, sigmiod_ticks,
         "Graphs/Scoring_rating/scoring_rating_trend.png")
@@ -344,13 +347,13 @@ def combine_all_factors() -> None:
         total_rating[team] = \
             (win_rating[team] * \
                 total_rating_weights.WIN_RATING_WEIGHT.value) + \
-            (scoring_rating[team] * \
+            (scoring_rating_get_dict()[team] * \
                 total_rating_weights.SCORING_RATING_WEIGHT.value) + \
-            (get_special_teams_dict()[team] * \
+            (special_teams_get_dict()[team] * \
                 total_rating_weights.SPECIAL_TEAMS_RATING_WEIGHT.value) + \
             (clutch_rating[team] * \
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
-            (recent_form_rating[team] * \
+            (recent_form_get_dict()[team] * \
                 total_rating_weights.FORM_RATING_WEIGHT.value) + \
             (strength_of_schedule[team] * \
                 total_rating_weights.SOS_RATING_WEIGHT.value)

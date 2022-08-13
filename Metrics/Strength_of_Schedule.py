@@ -40,7 +40,7 @@ strength_of_schedule = {
 }
 
 class strength_of_schedule_weights(Enum):
-    FOR_OR_MORE = 1.0
+    FOUR_OR_MORE = 1.0
     THREE_GOALS = 0.85
     TWO_OR_ONE = 0.75
     OT_GAME = 0.5
@@ -99,7 +99,8 @@ def scale_game_rating(winner_rating : float = 0.0, loser_rating : float = 0.0,
 
     # any win by 4 or more goals gets full credit
     if (score_difference >= 4):
-        return (winner_rating, loser_rating)
+        return (winner_rating * strength_of_schedule_weights.FOUR_OR_MORE.value,
+            loser_rating * strength_of_schedule_weights.FOUR_OR_MORE.value)
 
     # a win by 3 goals is slightly closer and might have an ENG so slightly less
     if (score_difference == 3):
@@ -170,6 +171,5 @@ def strength_of_schedule_apply_sigmoid() -> None:
 if __name__ == "__main__":
     average_rankings_parse('Input_Files/AverageRankings.csv')
     parse_matches('Input_Files/Matches2021_2022.csv')
-    scrape_team_summary()
     read_matches(matches)
     strength_of_schedule_scale_by_game()
