@@ -1,7 +1,5 @@
-from math import exp
 import requests
 import json
-from numpy import std, var, mean
 
 special_teams = {
     'Anaheim Ducks' : 0,
@@ -39,6 +37,10 @@ special_teams = {
 }
 
 
+def get_special_teams_dict() -> dict:
+    return special_teams
+
+
 def special_teams_get_data() -> dict:
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
@@ -51,7 +53,7 @@ def special_teams_get_data() -> dict:
             team["teamStats"][0]["splits"][0]["stat"]["penaltyKillPercentage"]
         special_teams_data[
             team["teamStats"][0]["splits"][0]["team"]["name"]] = [PPper, PKper]
-    return special_teams_data            
+    return special_teams_data
 
 
 def special_teams_combine() -> None:
@@ -62,18 +64,17 @@ def special_teams_combine() -> None:
         special_teams[team] = net_pp + net_pk
 
 
-def special_teams_apply_sigmoid() -> None:
-    for team in special_teams.keys():
-        special_teams[team] = \
-            1/(1 + exp(-(0.23 * (special_teams[team] - 100))))
-
-
 if __name__ == "__main__":
+
+    # localized import only for this file
+    from Sigmoid_Correction import apply_sigmoid_correction
+
+    # combine PP and PK ratings to get the full metric of Special Teams
     special_teams_combine()
     print("Special Teams Ratings:")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))
-    special_teams_apply_sigmoid()
+    special_teams = apply_sigmoid_correction(special_teams)
     print("Special Teams Ratings:")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))

@@ -16,7 +16,7 @@ divisions = {
     'Florida Panthers' : "ATL",
     'Los Angeles Kings' : "PAC",
     'Minnesota Wild' : "CEN",
-    'Montreal Canadiens' : "ATL",
+    'Montréal Canadiens' : "ATL",
     'Nashville Predators' : "CEN",
     'New Jersey Devils' : "MET",
     'New York Islanders' : "MET",

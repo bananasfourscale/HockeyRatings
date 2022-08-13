@@ -1,7 +1,7 @@
 import requests
 import json
 from math import exp
-from numpy import std, var, mean, absolute
+from numpy import std, var, mean
 
 scoring_difference = {
     'Anaheim Ducks' : 0,
@@ -132,14 +132,12 @@ def scoring_rating_calc_goal_diff() -> None:
 
         # calculate scoring diff
         scoring_difference[team] = goals_for - goals_against
-        # print("{} : {}".format(team, scoring_difference[team]))
 
 
 def scoring_rating_apply_sigmoid_goal_diff() -> None:
     for team in scoring_difference.keys():
         scoring_difference[team] = \
             1/(1 + exp(-(2.3 * (scoring_difference[team]))))
-        # print("{} : {}".format(team, scoring_difference[team]))
 
 
 def shooting_diff_get_data() -> dict:

@@ -15,9 +15,10 @@ from CSV_Writer import *
 from Metrics.Strength_of_Schedule import *
 from Metrics.Win_Rating import *
 from Metrics.Scoring_Rating import *
-from Metrics.Special_Teams import *
+from Metrics.Special_Teams import get_special_teams_dict, special_teams_combine
 from Metrics.Clutch import *
 from Metrics.Recent_Form import *
+from Metrics.Sigmoid_Correction import apply_sigmoid_correction
 
 from Weights import *
 
@@ -48,7 +49,7 @@ team_codes = {
     'Florida Panthers' : 13,
     'Los Angeles Kings' : 26,
     'Minnesota Wild' : 30,
-    'Montreal Canadiens' : 8,
+    'Montréal Canadiens' : 8,
     'Nashville Predators' : 18,
     'New Jersey Devils' : 1,
     'New York Islanders' : 2,
@@ -83,7 +84,7 @@ total_rating = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,
@@ -108,7 +109,7 @@ Specialized plotting functions
 def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
                   tick_set : list = [], image_file : str = "") -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t')
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
     sns.set_theme()
     team_palette = sns.color_palette(team_color_hex_codes)
     plot = sns.barplot(data=plot_data, x=axis[0], y=axis[1],
@@ -127,7 +128,7 @@ def plot_data_set(csv_file : str = "", axis : list = [],
 def plot_trend_set(csv_file : str = "", axis : list = [],
                    upper_bound : float = 0.0, lower_bound : float = 0.0,
                    tick_set : list = [], image_file : str = "") -> None:
-    plot_data = pd.read_csv(csv_file, delimiter=',')
+    plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-8')
     sns.set_theme()
     plotter.figure(figsize=(25, 10), dpi=100)
     team_palette = sns.color_palette(team_color_hex_codes)
@@ -240,18 +241,24 @@ def calculate_special_teams_rating() -> None:
     # combine special teams and plot
     special_teams_combine()
     write_out_file("Output_Files/Instance_Files/SpecialTeams.csv",
-        ["Team", "Special Teams"], special_teams)
+        ["Team", "Special Teams"], get_special_teams_dict())
     plot_data_set("Output_Files/Instance_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], 130, 50, [],
         "Graphs/Special_Teams/special_teams_combined.png")
 
     # apply sigmoid correction and plot
-    special_teams_apply_sigmoid()
+    special_teams = apply_sigmoid_correction(get_special_teams_dict())
     write_out_file("Output_Files/Instance_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], special_teams)
     plot_data_set("Output_Files/Instance_Files/SpecialTeams.csv",
         ["Team", "Special Teams"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Special_Teams/special_teams_final.png")
+
+    update_trend_file("Output_Files/Trend_Files/SpecialTeams.csv",
+        get_special_teams_dict())
+    plot_trend_set("Output_Files/Trend_Files/SpecialTeams.csv",
+        ["Rating Date", "Special Teams"], 1.1, -.1, sigmiod_ticks,
+        "Graphs/Special_Teams/special_teams_trend.png")
 
 
 def calculate_clutch_rating() -> None:
@@ -302,7 +309,7 @@ def combine_all_factors() -> None:
                 total_rating_weights.WIN_RATING_WEIGHT.value) + \
             (scoring_rating[team] * \
                 total_rating_weights.SCORING_RATING_WEIGHT.value) + \
-            (special_teams[team] * \
+            (get_special_teams_dict()[team] * \
                 total_rating_weights.SPECIAL_TEAMS_RATING_WEIGHT.value) + \
             (clutch_rating[team] * \
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
@@ -413,7 +420,7 @@ if __name__ == "__main__":
 
             # special teams
             update_trend_file("Output_Files/Trend_Files/SpecialTeams.csv",
-                special_teams)
+                get_special_teams_dict())
             plot_trend_set("Output_Files/Trend_Files/SpecialTeams.csv",
                 ["Rating Date", "Special Teams"], 1.1, -.1, sigmiod_ticks,
                 "Graphs/Special_Teams/special_teams_trend.png")
