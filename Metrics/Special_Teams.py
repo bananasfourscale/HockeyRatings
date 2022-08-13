@@ -1,6 +1,7 @@
-import math
+from math import exp
 import requests
 import json
+from numpy import std, var, mean
 
 special_teams = {
     'Anaheim Ducks' : 0,
@@ -64,11 +65,14 @@ def special_teams_combine() -> None:
 def special_teams_apply_sigmoid() -> None:
     for team in special_teams.keys():
         special_teams[team] = \
-            1/(1 + math.exp(-(0.23 * (special_teams[team] - 100))))
+            1/(1 + exp(-(0.23 * (special_teams[team] - 100))))
 
 
 if __name__ == "__main__":
     special_teams_combine()
+    print("Special Teams Ratings:")
+    for team in special_teams.keys():
+        print("\t" + team + '=' + str(special_teams[team]))
     special_teams_apply_sigmoid()
     print("Special Teams Ratings:")
     for team in special_teams.keys():

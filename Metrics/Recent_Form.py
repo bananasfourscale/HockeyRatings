@@ -1,6 +1,6 @@
 import requests
 import json
-import math
+from math import exp
 
 recent_form_rating = {
     'Anaheim Ducks' : 0,
@@ -61,7 +61,6 @@ def recent_form_split_game_results(results : str = "") -> tuple((int, int)):
 
 def recent_form_calculate_rating() -> None:
     last_ten_data = recent_form_get_data()
-
     for team in last_ten_data.keys():
         (wins,  ot) = recent_form_split_game_results(
             last_ten_data[team])
@@ -71,7 +70,7 @@ def recent_form_calculate_rating() -> None:
 def recent_form_apply_sigmoid() -> None:
     for team in recent_form_rating.keys():
         recent_form_rating[team] = \
-            1/(1 + math.exp(-(0.92 * (recent_form_rating[team] - 5))))
+            1/(1 + exp(-(0.92 * (recent_form_rating[team] - 5))))
 
 
 if __name__ == "__main__":

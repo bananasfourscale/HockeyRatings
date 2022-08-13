@@ -37,6 +37,7 @@ win_rating = {
     'Winnipeg Jets' : 0,
 }
 
+
 class win_rating_weights(Enum):
     REG_WIN = 100.0
     OT_WIN = 66.666
@@ -82,12 +83,6 @@ def win_rating_calc() -> None:
             win_rating_weights.SHOOTOUT_WIN.value
         win_rating[team] /= float(win_record_data[team][0])
         win_rating[team] /= 100.0
-
-        # print("\t Reg Wins=" + str(int(win_record_data[team][1])))
-        # print("\t OT Wins=" + str(int(win_record_data[team][2])))
-        # print("\t OT Loss=" + str(int(win_record_data[team][3])))
-        # print("\t SO Wins=" + str(int(win_record_data[team][4])))
-        # print("\t Games Played=" + str(int(win_record_data[team][0])))
     return
 
 

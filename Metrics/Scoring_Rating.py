@@ -1,6 +1,7 @@
 import requests
 import json
 from math import exp
+from numpy import std, var, mean, absolute
 
 scoring_difference = {
     'Anaheim Ducks' : 0,
