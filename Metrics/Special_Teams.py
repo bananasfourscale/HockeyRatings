@@ -37,7 +37,7 @@ special_teams = {
 }
 
 
-def get_special_teams_dict() -> dict:
+def special_teams_get_dict() -> dict:
     return special_teams
 
 
@@ -71,10 +71,10 @@ if __name__ == "__main__":
 
     # combine PP and PK ratings to get the full metric of Special Teams
     special_teams_combine()
-    print("Special Teams Ratings:")
+    print("Special Teams Ratings (uncorrected):")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))
     special_teams = apply_sigmoid_correction(special_teams)
-    print("Special Teams Ratings:")
+    print("Special Teams Ratings (corrected):")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))

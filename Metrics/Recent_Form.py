@@ -1,6 +1,5 @@
 import requests
 import json
-from math import exp
 
 recent_form_rating = {
     'Anaheim Ducks' : 0,
@@ -38,6 +37,10 @@ recent_form_rating = {
 }
 
 
+def recent_form_get_dict() -> dict:
+    return recent_form_rating
+
+
 def recent_form_get_data() -> dict:
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
@@ -67,15 +70,18 @@ def recent_form_calculate_rating() -> None:
         recent_form_rating[team] = float(wins) + (float(ot) * 0.333)
 
 
-def recent_form_apply_sigmoid() -> None:
-    for team in recent_form_rating.keys():
-        recent_form_rating[team] = \
-            1/(1 + exp(-(0.92 * (recent_form_rating[team] - 5))))
-
-
 if __name__ == "__main__":
+
+    # localized import only for this file
+    from Sigmoid_Correction import apply_sigmoid_correction
+
+    # combine and scale wins + OT wins to get the rating form score for
+    # the last ten games
     recent_form_calculate_rating()
-    recent_form_apply_sigmoid()
-    print("Recent Form:")
+    print("Recent Form (uncorrected):")
+    for team in recent_form_rating.keys() :
+        print("\t" + team + '=' + str(recent_form_rating[team]))
+    recent_form_rating = apply_sigmoid_correction(recent_form_rating)
+    print("Recent Form (corrected):")
     for team in recent_form_rating.keys() :
         print("\t" + team + '=' + str(recent_form_rating[team]))
