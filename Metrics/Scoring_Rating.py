@@ -1,7 +1,6 @@
 import requests
 import json
-from math import exp
-from numpy import std, var, mean
+from enum import Enum
 
 scoring_difference = {
     'Anaheim Ducks' : 0,
@@ -109,6 +108,11 @@ scoring_rating = {
 }
 
 
+class scoring_rating_weights(Enum):
+    SCORING_DIFF = 0.75
+    SHOOTING_DIFF = 0.25
+
+
 def scoring_diff_get_dict() -> dict:
     return scoring_difference
 
@@ -122,11 +126,15 @@ def scoring_rating_get_dict() -> dict:
 
 
 def scoring_diff_get_data() -> dict:
+
+    # Get the top level record from the API
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
     web_data = requests.get(records_url)
-    scoring_diff_data = {}
     parsed_data = json.loads(web_data.content)
+
+    # place the requried data into a dictionary for later use
+    scoring_diff_data = {}
     for team in parsed_data["teams"]:
         GPG = team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
         GAPG = team["teamStats"][0]["splits"][0]["stat"]["goalsAgainstPerGame"]
@@ -136,17 +144,21 @@ def scoring_diff_get_data() -> dict:
 
 
 def shooting_diff_get_data() -> dict:
+    
+    # Get the top level record from the API
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
     web_data = requests.get(records_url)
-    scoring_diff_data = {}
     parsed_data = json.loads(web_data.content)
+
+    # place the requried data into a dictionary for later use
+    shooting_diff_data = {}
     for team in parsed_data["teams"]:
         SPG = team["teamStats"][0]["splits"][0]["stat"]["shotsPerGame"]
         SAPG = team["teamStats"][0]["splits"][0]["stat"]["shotsAllowed"]
-        scoring_diff_data[
+        shooting_diff_data[
             team["teamStats"][0]["splits"][0]["team"]["name"]] = [SPG, SAPG]
-    return scoring_diff_data
+    return shooting_diff_data
 
 
 def scoring_rating_calc_goal_diff() -> None:
@@ -175,8 +187,11 @@ def scoring_rating_calc_shooting_diff() -> None:
 
 def scoring_rating_combine_factors() -> None:
     for team in scoring_rating.keys():
-        scoring_rating[team] = (scoring_difference[team] * 0.75) + \
-            (shooting_difference[team] * 0.25)
+        scoring_rating[team] = \
+        (scoring_difference[team] * \
+            scoring_rating_weights.SCORING_DIFF.value) + \
+        (shooting_difference[team] * \
+            scoring_rating_weights.SHOOTING_DIFF.value)
 
 if __name__ == "__main__":
 

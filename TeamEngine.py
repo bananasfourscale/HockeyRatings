@@ -8,7 +8,6 @@ from Parsers.Average_Ranking_Parser import *
 from Parsers.Absolute_Ranking_Parser import *
 from Parsers.Team_Summary_Parser import *
 from Parsers.Matches_Parser import *
-from Parsers.Leading_Trailing_Parser import *
 from CSV_Writer import *
 
 # import all custom modules for statistical analysis
@@ -153,7 +152,6 @@ def parse_all_data_files() -> None:
     parse_matches('Input_Files/Matches2021_2022.csv')
     read_matches(matches)
     parse_team_summary('Input_Files/TeamSummary.csv')
-    parse_leading_trailing('Input_Files/LeadingTrailing.csv')
 
 '''
 Helper functions that calculate the various factors used to create the final
@@ -291,16 +289,13 @@ def calculate_clutch_rating() -> None:
 
     # first calculate the positive part of the clutch rating
     clutch_calculate_lead_protection()
-    
-    # next calculate the negative part of the clutch rating
-    clutch_calculated_trail_comeback()
 
     # finally combine the factors, write out, and plot
-    clutch_apply_sigmoid()
-    write_out_file("Output_Files/Instance_Files/ClutchRating.csv", ["Team", "Clutch Rating"],
-        clutch_rating)
-    plot_data_set("Output_Files/Instance_Files/ClutchRating.csv", ["Team", "Clutch Rating"],
-        1.0, 0.0, sigmiod_ticks,
+    clutch_rating = apply_sigmoid_correction(clutch_rating_get_dict())
+    write_out_file("Output_Files/Instance_Files/ClutchRating.csv",
+        ["Team", "Clutch Rating"], clutch_rating)
+    plot_data_set("Output_Files/Instance_Files/ClutchRating.csv",
+        ["Team", "Clutch Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Clutch_Rating/clutch_rating_final.png")
 
     # update the trend file
