@@ -73,4 +73,3 @@ if __name__ == "__main__":
     print("Special Teams Ratings:")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))
-
