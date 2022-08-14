@@ -97,12 +97,12 @@ def determine_winner_loser(home_team : str = "", home_score : int = 0,
 
 
 def get_latest_rankings(winning_team : str = "", losing_team : str = "",
-                        game_date : datetime.date = None) \
-                                                    -> tuple((float, float)):
+                        game_date : datetime.date = None,
+                        average_rankings : dict = {}, ranking_dates : list = [])\
+                                                     -> tuple((float, float)):
+
     winner_rating = 0
     loser_rating = 0
-    average_rankings = average_rankings_get_dict()
-    ranking_dates = average_ranking_get_ranking_dates()
     total_weeks = len(list(average_rankings.values())[0])-1
     try:
         
@@ -168,7 +168,8 @@ def scale_game_rating(winner_rating : float = 0.0, loser_rating : float = 0.0,
             loser_rating * strength_of_schedule_weights.SO_GAME.value)
 
 
-def read_matches() -> None:
+def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
+                                                                        -> None:
     match_data = strength_of_schedule_get_match_data()
 
     # loop through the lines of file
@@ -191,7 +192,7 @@ def read_matches() -> None:
             # now given the winner, loser, get the latest rankings for the two
             # teams that they should use for the update
             (winner_rating, loser_rating) = get_latest_rankings(winner, loser,
-                game_date)
+                game_date, average_rankings, ranking_dates)
 
             # adjust the final points given/taken based on the size of the win
             (adjusted_winner_rating, adjusted_loser_rating) = scale_game_rating(
@@ -217,11 +218,12 @@ def strength_of_schedule_scale_by_game() -> None:
             float(team["teamStats"][0]["splits"][0]["stat"]["gamesPlayed"])
 
 
-def strength_of_schedule_calculate() -> None:
+def strength_of_schedule_calculate(average_rankings : dict = {},
+                                   ranking_dates : list = []) -> None:
 
     # first call read matches which will generate the absolute score for all
     # teams by parsing all complete games one-by-one
-    read_matches()
+    read_matches(average_rankings, ranking_dates)
 
     # then scale each teams score by how many games they specifically have
     # played
@@ -239,7 +241,7 @@ if __name__ == "__main__":
     average_rankings_parse('Output_Files/Trend_Files/AverageRankings.csv')
 
     # calculate the uncorrected strength of schedule
-    strength_of_schedule_calculate()
+    strength_of_schedule_calculate(average_rankings_get_dict())
     print("Strength of Schedule (Uncorrected):")
     for team in strength_of_schedule.keys():
         print("\t" + team + '=' + str(strength_of_schedule[team]))

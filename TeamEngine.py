@@ -4,10 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plotter
 
 # import all custom modules for parsing
-from Parsers.Average_Ranking_Parser import *
-from Parsers.Absolute_Ranking_Parser import *
-from Parsers.Team_Summary_Parser import *
-from Parsers.Matches_Parser import *
+from Metrics.Average_Ranking_Parser import *
+from Metrics.Absolute_Ranking_Parser import *
 from CSV_Writer import *
 
 # import all custom modules for statistical analysis
@@ -149,9 +147,6 @@ Combined specialized parser to get cumulative data needed all ranking factors
 def parse_all_data_files() -> None:
     average_rankings_parse('Output_Files/Trend_Files/AverageRankings.csv')
     absolute_rankings_parse('Output_Files/Trend_Files/AbsoluteRankings.csv')
-    parse_matches('Input_Files/Matches2021_2022.csv')
-    read_matches(matches)
-    parse_team_summary('Input_Files/TeamSummary.csv')
 
 '''
 Helper functions that calculate the various factors used to create the final
@@ -159,36 +154,23 @@ Helper functions that calculate the various factors used to create the final
 '''
 def calculate_strenght_of_schedule() -> None:
 
-    # write the results out to file and graph
-    write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], strength_of_schedule)
-    plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], 500, -500, [],
-        "Graphs/Strength_of_Schedule/sos_base.png")
-
     # scale the strength of schedule by game, write out again, and graph
-    strength_of_schedule_scale_by_game()
+    strength_of_schedule_calculate(average_rankings_get_dict(),
+        average_ranking_get_ranking_dates())
     write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], strength_of_schedule)
+        ["Team", "Strength of Schedule"], strength_of_schedule_get_dict())
     plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], 15.0, -15.0, [],
         "Graphs/Strength_of_Schedule/sos_game_scale.png")
 
     # apply sigmoid correction, write out again, and graph
-    strength_of_schedule_apply_sigmoid()
+    strength_of_schedule = apply_sigmoid_correction(
+        strength_of_schedule_get_dict())
     write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], strength_of_schedule)
     plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Strength_of_Schedule/strenght_of_schedule_final.png")
-
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/StrengthOfSchedule.csv",
-        strength_of_schedule)
-    plot_trend_set("Output_Files/Trend_Files/StrengthOfSchedule.csv",
-        ["Rating Date", "Strength of Schedule"], 1.1, -.1,
-        sigmiod_ticks,
-        "Graphs/Strength_of_Schedule/strength_of_schedule_trend.png")
 
 
 def calculate_win_rating() -> None:
@@ -200,13 +182,6 @@ def calculate_win_rating() -> None:
     plot_data_set("Output_Files/Instance_Files/WinRating.csv",
         ["Team", "Win Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Win_Rating/win_rating_final.png")
-
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/WinRating.csv",
-        win_rating)
-    plot_trend_set("Output_Files/Trend_Files/WinRating.csv",
-        ["Rating Date", "Win Rating"], 1.1, -.1, sigmiod_ticks,
-        "Graphs/Win_Rating/win_rating_trend.png")
 
 
 def calculate_scoring_rating() -> None:
@@ -251,13 +226,6 @@ def calculate_scoring_rating() -> None:
         ["Team", "Scoring Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Scoring_Rating/scoring_rating_final.png")
 
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/ScoringRating.csv",
-        scoring_rating_get_dict())
-    plot_trend_set("Output_Files/Trend_Files/ScoringRating.csv",
-        ["Rating Date", "Scoring Rating"], 1.1, -.1, sigmiod_ticks,
-        "Graphs/Scoring_rating/scoring_rating_trend.png")
-
 
 def calculate_special_teams_rating() -> None:
 
@@ -277,13 +245,6 @@ def calculate_special_teams_rating() -> None:
         ["Team", "Special Teams"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Special_Teams/special_teams_final.png")
 
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/SpecialTeams.csv",
-        special_teams_get_dict())
-    plot_trend_set("Output_Files/Trend_Files/SpecialTeams.csv",
-        ["Rating Date", "Special Teams"], 1.1, -.1, sigmiod_ticks,
-        "Graphs/Special_Teams/special_teams_trend.png")
-
 
 def calculate_clutch_rating() -> None:
 
@@ -297,13 +258,6 @@ def calculate_clutch_rating() -> None:
     plot_data_set("Output_Files/Instance_Files/ClutchRating.csv",
         ["Team", "Clutch Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Clutch_Rating/clutch_rating_final.png")
-
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/ClutchRating.csv",
-        clutch_rating)
-    plot_trend_set("Output_Files/Trend_Files/ClutchRating.csv",
-        ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmiod_ticks,
-        "Graphs/Clutch_Rating/clutch_rating_trend.png")
 
 
 def calculate_recent_form() -> None:
@@ -325,12 +279,6 @@ def calculate_recent_form() -> None:
         ["Team", "Recent Form"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Recent_Form/recent_form_final.png")
 
-    # update the trend file
-    update_trend_file("Output_Files/Trend_Files/RecentForm.csv",
-        recent_form_rating)
-    plot_trend_set("Output_Files/Trend_Files/RecentForm.csv",
-        ["Rating Date", "Recent Form"], 1.1, -.1, sigmiod_ticks,
-        "Graphs/Recent_Form/recent_form_trend.png")
 
 '''
 Function to create the combined set of all metrics into one ranking score
@@ -445,6 +393,49 @@ if __name__ == "__main__":
             combine_all_factors()
 
             # write out and plot all high level trend files
+            # strength of schedule
+            update_trend_file("Output_Files/Trend_Files/StrengthOfSchedule.csv",
+                strength_of_schedule_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/StrengthOfSchedule.csv",
+                ["Rating Date", "Strength of Schedule"], 1.1, -.1,
+                sigmiod_ticks,
+                "Graphs/Strength_of_Schedule/strength_of_schedule_trend.png")
+
+            # win rating
+            update_trend_file("Output_Files/Trend_Files/WinRating.csv",
+                win_rating)
+            plot_trend_set("Output_Files/Trend_Files/WinRating.csv",
+                ["Rating Date", "Win Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Win_Rating/win_rating_trend.png")
+
+            # scoring_rating
+            update_trend_file("Output_Files/Trend_Files/ScoringRating.csv",
+                scoring_rating_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/ScoringRating.csv",
+                ["Rating Date", "Scoring Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Scoring_rating/scoring_rating_trend.png")
+
+            # special teams
+            update_trend_file("Output_Files/Trend_Files/SpecialTeams.csv",
+                special_teams_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/SpecialTeams.csv",
+                ["Rating Date", "Special Teams"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Special_Teams/special_teams_trend.png")
+
+            # clutch_rating
+            update_trend_file("Output_Files/Trend_Files/ClutchRating.csv",
+                clutch_rating_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/ClutchRating.csv",
+                ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Clutch_Rating/clutch_rating_trend.png")
+
+            # update the trend file
+            update_trend_file("Output_Files/Trend_Files/RecentForm.csv",
+                recent_form_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/RecentForm.csv",
+                ["Rating Date", "Recent Form"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Recent_Form/recent_form_trend.png")
+
             # ratings score
             update_trend_file("Output_Files/Trend_Files/RatingScore.csv",
                 total_rating)

@@ -36,7 +36,7 @@ divisions = {
 }
 
 
-VERSION_MAJOR = 5
+VERSION_MAJOR = 6
 VERSION_MINOR = 0
 
 class total_rating_weights(Enum):
