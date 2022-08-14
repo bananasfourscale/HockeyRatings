@@ -17,7 +17,7 @@ clutch_rating = {
     'Florida Panthers' : 0,
     'Los Angeles Kings' : 0,
     'Minnesota Wild' : 0,
-    'Montreal Canadiens' : 0,
+    'Montréal Canadiens' : 0,
     'Nashville Predators' : 0,
     'New Jersey Devils' : 0,
     'New York Islanders' : 0,

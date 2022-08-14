@@ -1,6 +1,5 @@
 import csv
 import datetime
-from Weights import VERSION_MAJOR, VERSION_MINOR, divisions
 
 ranking_averages = {
     'Anaheim Ducks' : [],
@@ -18,7 +17,7 @@ ranking_averages = {
     'Florida Panthers' : [],
     'Los Angeles Kings' : [],
     'Minnesota Wild' : [],
-    'Montreal Canadiens' : [],
+    'Montréal Canadiens' : [],
     'Nashville Predators' : [],
     'New Jersey Devils' : [],
     'New York Islanders' : [],
@@ -37,13 +36,23 @@ ranking_averages = {
     'Winnipeg Jets' : [],
 }
 
+
 ranking_dates = []
+
+
+def average_rankings_get_dict() -> dict:
+    return ranking_averages
+
+
+def average_ranking_get_ranking_dates() -> list:
+    return ranking_dates
+
 
 def average_rankings_parse(file_name : str = "") -> None:
     header_row = True
 
     # open the average rating file
-    with open(file_name, newline='') as csv_data_file:
+    with open(file_name, newline='', encoding='utf-8') as csv_data_file:
         ratings = csv.reader(csv_data_file, delimiter = ',')
 
         # loop through the lines of file
@@ -64,11 +73,6 @@ def average_rankings_parse(file_name : str = "") -> None:
             if ranking_dates.count(date) == 0:
                 ranking_dates.append(date)
 
-            # special case for the canadians french spelling
-            if rating[1] == 'MontrÃ©al Canadiens':
-                ranking_averages['Montreal Canadiens'].append(float(rating[3]))
-                continue
-
             # for every team, add the rating for that week
             ranking_averages[rating[1]].append(float(rating[3]))
 
@@ -79,12 +83,6 @@ def average_rankings_update(total_ratings : dict = {},
     for team, rating in total_ratings.items():
         tuple_list.append(tuple((team, rating)))
     tuple_list.sort(key = lambda x: x[1], reverse=True)
-
-    # print("Before")
-    # for team in ranking_averages.keys():
-    #     print("{} : {}".format(team, ranking_averages[team]))
-    # print()
-
     for count in range(1, len(tuple_list)+1, 1):
         sum = 0
         team = tuple_list[count-1][0]
@@ -93,14 +91,9 @@ def average_rankings_update(total_ratings : dict = {},
         sum /= len(average_rankings[team])
         ranking_averages[team].append(sum)
 
-    # print("After")
-    # for team in ranking_averages.keys():
-    #     print("{} : {}".format(team, ranking_averages[team]))
-    # print()
-
 
 if __name__ == "__main__":
-    average_rankings_parse("Trend_Files/AverageRankings.csv")
+    average_rankings_parse('Output_Files/Trend_Files/AverageRankings.csv')
     for date in ranking_dates:
         print(date)
     for team in ranking_averages.keys():

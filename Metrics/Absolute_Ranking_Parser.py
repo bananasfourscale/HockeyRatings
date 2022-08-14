@@ -1,6 +1,4 @@
 import csv
-import datetime
-from Weights import VERSION_MAJOR, VERSION_MINOR, divisions
 
 ranking_absolutes = {
     'Anaheim Ducks' : [],
@@ -18,7 +16,7 @@ ranking_absolutes = {
     'Florida Panthers' : [],
     'Los Angeles Kings' : [],
     'Minnesota Wild' : [],
-    'Montreal Canadiens' : [],
+    'Montréal Canadiens' : [],
     'Nashville Predators' : [],
     'New Jersey Devils' : [],
     'New York Islanders' : [],
@@ -36,6 +34,11 @@ ranking_absolutes = {
     'Washington Capitals' : [],
     'Winnipeg Jets' : [],
 }
+
+
+def absolute_rankings_get_dict() -> dict:
+    return ranking_absolutes
+
 
 def absolute_rankings_parse(file_name : str = "") -> None:
     header_row = True
@@ -55,7 +58,7 @@ def absolute_rankings_parse(file_name : str = "") -> None:
 
             # special case for the canadians french spelling
             if rating[1] == 'MontrÃ©al Canadiens':
-                ranking_absolutes['Montreal Canadiens'].append(float(rating[3]))
+                ranking_absolutes['Montréal Canadiens'].append(float(rating[3]))
                 continue
 
             # for every team, add the rating for that week
@@ -68,19 +71,9 @@ def absolute_rankings_update(total_ratings : dict = {}) -> None:
         tuple_list.append(tuple((team, rating)))
     tuple_list.sort(key = lambda x: x[1], reverse=True)
 
-    # print("Before")
-    # for team in ranking_absolutes.keys():
-    #     print("{} : {}".format(team, ranking_absolutes[team]))
-    # print()
-
     for count in range(1, len(tuple_list)+1, 1):
         team = tuple_list[count-1][0]
         ranking_absolutes[team].append(float(count))
-
-    # print("After")
-    # for team in ranking_absolutes.keys():
-    #     print("{} : {}".format(team, ranking_absolutes[team]))
-    # print()
 
 
 if __name__ == "__main__":
