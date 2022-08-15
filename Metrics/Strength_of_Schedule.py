@@ -43,7 +43,7 @@ class strength_of_schedule_weights(Enum):
     THREE_GOALS = 0.85
     TWO_OR_ONE = 0.75
     OT_GAME = 0.5
-    SO_GAME = 0.33
+    SO_GAME = 0.10
 
 
 class match_indecies(Enum):
