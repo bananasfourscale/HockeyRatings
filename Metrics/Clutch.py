@@ -61,6 +61,7 @@ def clutch_lead_protection_get_data() -> dict:
                 [win_lead_first, win_lead_second]
     return lead_protection_data
 
+
 def clutch_calculate_lead_protection() -> None:
     lead_protection_data = clutch_lead_protection_get_data()
     for team in lead_protection_data.keys():

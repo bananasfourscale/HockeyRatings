@@ -33,41 +33,6 @@ team_color_hex_codes = [
 
 sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
-team_codes = {
-    'Anaheim Ducks' : 24,
-    'Arizona Coyotes' : 53,
-    'Boston Bruins' : 6,
-    'Buffalo Sabres' : 7,
-    'Calgary Flames' : 20,
-    'Carolina Hurricanes' : 12,
-    'Chicago Blackhawks' : 16,
-    'Colorado Avalanche' : 21,
-    'Columbus Blue Jackets' : 29,
-    'Dallas Stars' : 25,
-    'Detroit Red Wings' : 17,
-    'Edmonton Oilers' : 22,
-    'Florida Panthers' : 13,
-    'Los Angeles Kings' : 26,
-    'Minnesota Wild' : 30,
-    'Montréal Canadiens' : 8,
-    'Nashville Predators' : 18,
-    'New Jersey Devils' : 1,
-    'New York Islanders' : 2,
-    'New York Rangers' : 3,
-    'Ottawa Senators' : 9,
-    'Philadelphia Flyers' : 4,
-    'Pittsburgh Penguins' : 5,
-    'San Jose Sharks' : 28,
-    'Seattle Kraken' : 55,
-    'St. Louis Blues' : 19,
-    'Tampa Bay Lightning' : 14,
-    'Toronto Maple Leafs' : 10,
-    'Vancouver Canucks' : 23,
-    'Vegas Golden Knights' : 54,
-    'Washington Capitals' : 15,
-    'Winnipeg Jets' : 52,
-}
-
 total_rating = {
     'Anaheim Ducks' : 0,
     'Arizona Coyotes' : 0,
@@ -160,7 +125,9 @@ def calculate_strenght_of_schedule() -> None:
     write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
         ["Team", "Strength of Schedule"], strength_of_schedule_get_dict())
     plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], 15.0, -15.0, [],
+        ["Team", "Strength of Schedule"],
+        max(list(strength_of_schedule_get_dict().values())),
+        min(list(strength_of_schedule_get_dict().values())), [],
         "Graphs/Strength_of_Schedule/sos_game_scale.png")
 
     # apply sigmoid correction, write out again, and graph
@@ -191,7 +158,9 @@ def calculate_scoring_rating() -> None:
     write_out_file("Output_Files/Instance_Files/ScoringDiff.csv",
         ["Team", "Scoring Difference"], scoring_diff_get_dict())
     plot_data_set("Output_Files/Instance_Files/ScoringDiff.csv",
-        ["Team", "Scoring Difference"], 2.0, -2.0, [],
+        ["Team", "Scoring Difference"],
+        max(list(scoring_diff_get_dict().values())),
+        min(list(scoring_diff_get_dict().values())), [],
         "Graphs/Scoring_Rating/scoring_diff_base.png")
 
     # apply a sigmoid correction and graph again
@@ -207,7 +176,9 @@ def calculate_scoring_rating() -> None:
     write_out_file("Output_Files/Instance_Files/ShootingDiff.csv",
         ["Team", "Shooting Difference"], shooting_diff_get_dict())
     plot_data_set("Output_Files/Instance_Files/ShootingDiff.csv",
-        ["Team", "Shooting Difference"], 12.0, -12.0, [],
+        ["Team", "Shooting Difference"],
+        max(list(shooting_diff_get_dict().values())),
+        min(list(shooting_diff_get_dict().values())), [],
         "Graphs/Scoring_Rating/shooting_diff_base.png")
 
     # apply a signmoid correction and graph again

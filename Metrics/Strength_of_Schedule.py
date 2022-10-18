@@ -40,8 +40,8 @@ strength_of_schedule = {
 
 class strength_of_schedule_weights(Enum):
     FOUR_OR_MORE = 1.0
-    THREE_GOALS = 0.85
-    TWO_OR_ONE = 0.75
+    THREE_GOALS = 0.90
+    TWO_OR_ONE = 0.80
     OT_GAME = 0.5
     SO_GAME = 0.33
 
@@ -61,7 +61,7 @@ def strength_of_schedule_get_dict() -> dict:
 def strength_of_schedule_get_match_data() -> dict:
     # Get the top level record from the API
     records_url = \
-        "https://statsapi.web.nhl.com/api/v1/schedule?season=20212022" + \
+        "https://statsapi.web.nhl.com/api/v1/schedule?season=20222023" + \
             "&gameType=R&expand=schedule.linescore"
     web_data = requests.get(records_url)
     parsed_data = json.loads(web_data.content)
@@ -125,9 +125,8 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         # of the game. Just use a default which will grant no points
         # to either team.
         if total_weeks == 0:
-            winner_rating = 0
-            loser_rating = 33
-
+            winner_rating = 1
+            loser_rating = 32
         return (winner_rating, loser_rating)
 
     except Exception as e:
@@ -196,10 +195,10 @@ def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
 
             # adjust the final points given/taken based on the size of the win
             (adjusted_winner_rating, adjusted_loser_rating) = scale_game_rating(
-                winner_rating, loser_rating, score_difference, extra_time)
+                winner_rating, (33 - loser_rating), score_difference,
+                extra_time)
 
-            # finally update the teams SOS rankings
-            strength_of_schedule[winner] += (33 - adjusted_loser_rating)
+            strength_of_schedule[winner] += (adjusted_loser_rating)
             strength_of_schedule[loser] -= (adjusted_winner_rating)
 
 
@@ -241,7 +240,8 @@ if __name__ == "__main__":
     average_rankings_parse('Output_Files/Trend_Files/AverageRankings.csv')
 
     # calculate the uncorrected strength of schedule
-    strength_of_schedule_calculate(average_rankings_get_dict())
+    strength_of_schedule_calculate(average_rankings_get_dict(),
+        average_ranking_get_ranking_dates())
     print("Strength of Schedule (Uncorrected):")
     for team in strength_of_schedule.keys():
         print("\t" + team + '=' + str(strength_of_schedule[team]))
