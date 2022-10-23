@@ -72,16 +72,9 @@ def recent_form_calculate_rating() -> None:
 
 if __name__ == "__main__":
 
-    # localized import only for this file
-    from Sigmoid_Correction import apply_sigmoid_correction
-
     # combine and scale wins + OT wins to get the rating form score for
     # the last ten games
     recent_form_calculate_rating()
     print("Recent Form (uncorrected):")
-    for team in recent_form_rating.keys() :
-        print("\t" + team + '=' + str(recent_form_rating[team]))
-    recent_form_rating = apply_sigmoid_correction(recent_form_get_dict())
-    print("Recent Form (corrected):")
     for team in recent_form_rating.keys() :
         print("\t" + team + '=' + str(recent_form_rating[team]))

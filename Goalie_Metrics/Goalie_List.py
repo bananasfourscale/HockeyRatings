@@ -1,18 +1,7 @@
-# import all assisting built in modules
-import json
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plotter
-import json
 import requests
+import json
 
-# import all custom modules for parsing
-from CSV_Writer import *
-
-# import all custom modules for statistical analysis
-from Goalie_Metrics.Goalie_List import populate_active_goalies
-from Goalie_Metrics.Goalie_Utilization import get_goalie_utilization_ranking, \
-    get_time_on_ice
+active_goalies = {}
 
 team_codes = {
     'Anaheim Ducks' : 24,
@@ -49,17 +38,15 @@ team_codes = {
     'Winnipeg Jets' : 52,
 }
 
-active_players = {
-    'Center':{},
-    'Right Wing':{},
-    'Left Wing':{},
-    'Defenseman':{},
-    'Goalie':{}
-}
+def get_active_goalies() -> dict:
+    return active_goalies
 
-def player_sorting() -> None:
+def populate_active_goalies() -> None:
 
-    # loop through each team
+    if len(active_goalies.keys()) > 0:
+        return
+
+    # loop through each teams roster list
     for team in team_codes.keys():
         roster_url = \
             "https://statsapi.web.nhl.com/api/v1/teams/" + \
@@ -67,17 +54,15 @@ def player_sorting() -> None:
         web_data = requests.get(roster_url)
         parsed_data = json.loads(web_data.content)
 
-        # for each listed player in the roster, store the name as the key
-        # and the ID as the value so they can be individually searched later
-        print(team)
+        # for each player on the team loop
         for player in parsed_data["teams"][0]["roster"]["roster"]:
-            active_players[player["position"]["name"]] \
-                [player["person"]["fullName"]] = player["person"]["id"]
 
-            if team == 'Anaheim Ducks':
-                print(active_players)
+            # if the player is a Goalie, add them to the dict
+            if player["position"]["name"] == "Goalie":
+                active_goalies[player["person"]["fullName"]] = \
+                    player["person"]["id"]
 
 if __name__ == "__main__":
     populate_active_goalies()
-    get_time_on_ice()
-    print(get_goalie_utilization_ranking())
+    for player in active_goalies.keys():
+        print("{}:{}".format(player, active_goalies[player]))

@@ -195,19 +195,14 @@ def scoring_rating_combine_factors() -> None:
 
 if __name__ == "__main__":
 
-    # localized import only for this file
-    from Sigmoid_Correction import apply_sigmoid_correction
-
     # calc goal diff rating first
     scoring_rating_calc_goal_diff()
-    scoring_difference = apply_sigmoid_correction(scoring_diff_get_dict())
     print("Scoring Diff:")
     for team in scoring_difference.keys():
         print("\t" + team + '=' + str(scoring_difference[team]))
 
     # calc shooting diff
     scoring_rating_calc_shooting_diff()
-    shooting_difference = apply_sigmoid_correction(shooting_diff_get_dict())
     print("Shooting Diff:")
     for team in shooting_difference.keys():
         print("\t" + team + '=' + str(shooting_difference[team]))

@@ -45,6 +45,10 @@ class win_rating_weights(Enum):
     SHOOTOUT_WIN = 10.0
 
 
+def get_win_rating() -> dict:
+    return win_rating
+
+
 def win_rating_get_data() -> dict:
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'

@@ -76,17 +76,8 @@ def clutch_calculate_lead_protection() -> None:
 
 if __name__ == "__main__":
 
-    # localized import only for this file
-    from Sigmoid_Correction import apply_sigmoid_correction
-
     # calculate the lead protection raw data
     clutch_calculate_lead_protection()
     print("Clutch Rating (Uncorrected):")
-    for team in clutch_rating.keys():
-        print("\t" + team + '=' + str(clutch_rating[team]))
-
-    # now apply correction
-    clutch_rating = apply_sigmoid_correction(clutch_rating_get_dict())
-    print("Clutch Rating (Corrected):")
     for team in clutch_rating.keys():
         print("\t" + team + '=' + str(clutch_rating[team]))

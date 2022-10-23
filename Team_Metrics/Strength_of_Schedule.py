@@ -232,7 +232,6 @@ def strength_of_schedule_calculate(average_rankings : dict = {},
 if __name__ == "__main__":
 
     # localized import only for this file
-    from Sigmoid_Correction import apply_sigmoid_correction
     from Average_Ranking_Parser import average_rankings_parse, \
         average_rankings_get_dict, average_ranking_get_ranking_dates
 
@@ -243,12 +242,5 @@ if __name__ == "__main__":
     strength_of_schedule_calculate(average_rankings_get_dict(),
         average_ranking_get_ranking_dates())
     print("Strength of Schedule (Uncorrected):")
-    for team in strength_of_schedule.keys():
-        print("\t" + team + '=' + str(strength_of_schedule[team]))
-    
-    # now apply adaptive sigmoid
-    strength_of_schedule = apply_sigmoid_correction(
-        strength_of_schedule_get_dict())
-    print("Strength of Schedule (Corrected):")
     for team in strength_of_schedule.keys():
         print("\t" + team + '=' + str(strength_of_schedule[team]))

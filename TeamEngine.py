@@ -4,22 +4,26 @@ import pandas as pd
 import matplotlib.pyplot as plotter
 
 # import all custom modules for parsing
-from Metrics.Average_Ranking_Parser import *
-from Metrics.Absolute_Ranking_Parser import *
+from Team_Metrics.Average_Ranking_Parser import *
+from Team_Metrics.Absolute_Ranking_Parser import *
 from CSV_Writer import *
 
 # import all custom modules for statistical analysis
-from Metrics.Strength_of_Schedule import *
-from Metrics.Win_Rating import *
-from Metrics.Scoring_Rating import scoring_diff_get_dict, \
+from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
+    strength_of_schedule_calculate
+from Team_Metrics.Win_Rating import get_win_rating, win_rating_calc
+
+from Team_Metrics.Scoring_Rating import scoring_diff_get_dict, \
     shooting_diff_get_dict, scoring_rating_get_dict, \
     scoring_rating_calc_goal_diff, scoring_rating_calc_shooting_diff, \
     scoring_rating_combine_factors
-from Metrics.Special_Teams import special_teams_get_dict, special_teams_combine
-from Metrics.Clutch import *
-from Metrics.Recent_Form import recent_form_get_dict, \
+from Team_Metrics.Special_Teams import special_teams_get_dict, \
+    special_teams_combine
+from Team_Metrics.Clutch import clutch_rating_get_dict, \
+    clutch_calculate_lead_protection
+from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_calculate_rating
-from Metrics.Sigmoid_Correction import apply_sigmoid_correction
+from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import *
 
 
@@ -145,7 +149,7 @@ def calculate_win_rating() -> None:
     # calculate the win rating and graph
     win_rating_calc()
     write_out_file("Output_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating"], win_rating)
+        ["Team", "Win Rating"], get_win_rating())
     plot_data_set("Output_Files/Instance_Files/WinRating.csv",
         ["Team", "Win Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Win_Rating/win_rating_final.png")
@@ -259,17 +263,17 @@ def combine_all_factors() -> None:
     # calculate the final rating for all teams using the forms above
     for team in total_rating.keys():
         total_rating[team] = \
-            (win_rating[team] * \
+            (get_win_rating()[team] * \
                 total_rating_weights.WIN_RATING_WEIGHT.value) + \
             (scoring_rating_get_dict()[team] * \
                 total_rating_weights.SCORING_RATING_WEIGHT.value) + \
             (special_teams_get_dict()[team] * \
                 total_rating_weights.SPECIAL_TEAMS_RATING_WEIGHT.value) + \
-            (clutch_rating[team] * \
+            (clutch_rating_get_dict()[team] * \
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
             (recent_form_get_dict()[team] * \
                 total_rating_weights.FORM_RATING_WEIGHT.value) + \
-            (strength_of_schedule[team] * \
+            (strength_of_schedule_get_dict()[team] * \
                 total_rating_weights.SOS_RATING_WEIGHT.value)
 
     # write out and plot the total ratings
@@ -374,7 +378,7 @@ if __name__ == "__main__":
 
             # win rating
             update_trend_file("Output_Files/Trend_Files/WinRating.csv",
-                win_rating)
+                get_win_rating())
             plot_trend_set("Output_Files/Trend_Files/WinRating.csv",
                 ["Rating Date", "Win Rating"], 1.1, -.1, sigmiod_ticks,
                 "Graphs/Win_Rating/win_rating_trend.png")

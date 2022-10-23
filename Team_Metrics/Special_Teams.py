@@ -66,15 +66,8 @@ def special_teams_combine() -> None:
 
 if __name__ == "__main__":
 
-    # localized import only for this file
-    from Sigmoid_Correction import apply_sigmoid_correction
-
     # combine PP and PK ratings to get the full metric of Special Teams
     special_teams_combine()
     print("Special Teams Ratings (uncorrected):")
-    for team in special_teams.keys():
-        print("\t" + team + '=' + str(special_teams[team]))
-    special_teams = apply_sigmoid_correction(special_teams)
-    print("Special Teams Ratings (corrected):")
     for team in special_teams.keys():
         print("\t" + team + '=' + str(special_teams[team]))
