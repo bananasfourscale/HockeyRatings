@@ -10,9 +10,9 @@ def write_out_file(file_name : str = "", header_row : list = [],
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header_row)
-        for team in rating_list.keys():
+        for key in rating_list.keys():
             # if (team == "Montréal Canadiens") :
-            csv_writer.writerow([team, str(rating_list[team])])
+            csv_writer.writerow([key, str(rating_list[key])])
             # print("{} : {}".format(team, str(rating_list[team])))
 
 
@@ -29,10 +29,10 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {}) -> None:
             quoting=csv.QUOTE_MINIMAL)
 
         # for each team print the rating with this timestamp
-        for team in stat_dict.keys():
-            if type(stat_dict[team]) == list:
-                csv_writer.writerow([date_rating, team, divisions[team],
-                    stat_dict[team][len(stat_dict[team])-1]])
+        for key in stat_dict.keys():
+            if type(stat_dict[key]) == list:
+                csv_writer.writerow([date_rating, key, divisions[key],
+                    stat_dict[key][len(stat_dict[key])-1]])
             else:
-                csv_writer.writerow([date_rating, team, divisions[team],
-                    stat_dict[team]])
+                csv_writer.writerow([date_rating, key, divisions[key],
+                    stat_dict[key]])

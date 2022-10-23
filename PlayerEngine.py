@@ -13,6 +13,12 @@ from CSV_Writer import *
 from Goalie_Metrics.Goalie_List import populate_active_goalies
 from Goalie_Metrics.Goalie_Utilization import get_goalie_utilization_ranking, \
     get_time_on_ice
+from Sigmoid_Correction import apply_sigmoid_correction
+from Plotter import plot_data_set, plot_trend_set
+
+
+sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
 
 team_codes = {
     'Anaheim Ducks' : 24,
@@ -49,6 +55,7 @@ team_codes = {
     'Winnipeg Jets' : 52,
 }
 
+
 active_players = {
     'Center':{},
     'Right Wing':{},
@@ -56,6 +63,7 @@ active_players = {
     'Defenseman':{},
     'Goalie':{}
 }
+
 
 def player_sorting() -> None:
 
@@ -80,4 +88,10 @@ def player_sorting() -> None:
 if __name__ == "__main__":
     populate_active_goalies()
     get_time_on_ice()
-    print(get_goalie_utilization_ranking())
+    goalie_utilization = apply_sigmoid_correction(
+        get_goalie_utilization_ranking())
+    write_out_file("Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        ["Goalie", "Utilization"], goalie_utilization)
+    plot_data_set("Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        ["Goalie", "Utilization"], 1.0, 0.0, sigmiod_ticks,
+        "Graphs/Goalies/Utilization/utilization_corrected.png")

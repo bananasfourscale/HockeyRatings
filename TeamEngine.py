@@ -1,8 +1,3 @@
-# import all assisting built in modules
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plotter
-
 # import all custom modules for parsing
 from Team_Metrics.Average_Ranking_Parser import *
 from Team_Metrics.Absolute_Ranking_Parser import *
@@ -11,7 +6,7 @@ from CSV_Writer import *
 # import all custom modules for statistical analysis
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
     strength_of_schedule_calculate
-from Team_Metrics.Win_Rating import get_win_rating, win_rating_calc
+from Team_Metrics.Win_Rating import win_rating_get_dict, win_rating_calc
 
 from Team_Metrics.Scoring_Rating import scoring_diff_get_dict, \
     shooting_diff_get_dict, scoring_rating_get_dict, \
@@ -25,17 +20,11 @@ from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_calculate_rating
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import *
+from Plotter import plot_data_set, plot_trend_set
 
-
-team_color_hex_codes = [
-    "#F47A38", "#8C2633", "#FFB81C", "#ADAFFA", "#C8102E", "#CC0000", "#CF0A2C",
-    "#6F263D", "#002654", "#006847", "#CE1126", "#FF4C00", "#B9975B", "#572A84",
-    "#154734", "#AF1E2D", "#FFB81C", "#000000", "#FF4C00", "#0038A8", "#C52032",
-    "#C83C01", "#CFC493", "#006D75", "#001628", "#002F87", "#FFFFFF", "#00205B",
-    "#00843D", "#B4975A", "#C8102E", "#8E9090"
-]
 
 sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
 
 total_rating = {
     'Anaheim Ducks' : 0,
@@ -75,40 +64,7 @@ total_rating = {
 '''
 Specialized plotting functions
 '''
-def plot_data_set(csv_file : str = "", axis : list = [],
-                  upper_bound : float = 0.0, lower_bound : float = 0.0,
-                  tick_set : list = [], image_file : str = "") -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
-    sns.set_theme()
-    team_palette = sns.color_palette(team_color_hex_codes)
-    plot = sns.barplot(data=plot_data, x=axis[0], y=axis[1],
-        palette=team_palette)
-    plot.set(xticks=range(len(team_color_hex_codes)))
-    plot.set_xticklabels(plot.get_xticklabels(), rotation=90,
-        horizontalalignment='center')
-    plotter.tight_layout()
-    plotter.ylim(lower_bound, upper_bound)
-    if len(tick_set) > 0:
-        plotter.yticks(tick_set)
-    plotter.savefig(image_file)
-    plotter.clf()
 
-
-def plot_trend_set(csv_file : str = "", axis : list = [],
-                   upper_bound : float = 0.0, lower_bound : float = 0.0,
-                   tick_set : list = [], image_file : str = "") -> None:
-    plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-8')
-    sns.set_theme()
-    plotter.figure(figsize=(25, 10), dpi=100)
-    team_palette = sns.color_palette(team_color_hex_codes)
-    plot = sns.lineplot(data=plot_data, x=axis[0], y=axis[1],
-        hue="Team", style="Division",palette=team_palette, marker='s')
-    plot.set(yticks=tick_set)
-    plotter.tick_params(axis='x', which='major', labelsize=8)
-    plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
-    plotter.ylim(lower_bound, upper_bound)
-    plotter.savefig(image_file, bbox_inches='tight')
-    plotter.clf()
 
 '''
 Combined specialized parser to get cumulative data needed all ranking factors
@@ -149,7 +105,7 @@ def calculate_win_rating() -> None:
     # calculate the win rating and graph
     win_rating_calc()
     write_out_file("Output_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating"], get_win_rating())
+        ["Team", "Win Rating"], win_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/WinRating.csv",
         ["Team", "Win Rating"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Win_Rating/win_rating_final.png")
@@ -263,7 +219,7 @@ def combine_all_factors() -> None:
     # calculate the final rating for all teams using the forms above
     for team in total_rating.keys():
         total_rating[team] = \
-            (get_win_rating()[team] * \
+            (win_rating_get_dict()[team] * \
                 total_rating_weights.WIN_RATING_WEIGHT.value) + \
             (scoring_rating_get_dict()[team] * \
                 total_rating_weights.SCORING_RATING_WEIGHT.value) + \
@@ -378,7 +334,7 @@ if __name__ == "__main__":
 
             # win rating
             update_trend_file("Output_Files/Trend_Files/WinRating.csv",
-                get_win_rating())
+                win_rating_get_dict())
             plot_trend_set("Output_Files/Trend_Files/WinRating.csv",
                 ["Rating Date", "Win Rating"], 1.1, -.1, sigmiod_ticks,
                 "Graphs/Win_Rating/win_rating_trend.png")

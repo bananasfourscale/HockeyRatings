@@ -45,7 +45,7 @@ class win_rating_weights(Enum):
     SHOOTOUT_WIN = 10.0
 
 
-def get_win_rating() -> dict:
+def win_rating_get_dict() -> dict:
     return win_rating
 
 

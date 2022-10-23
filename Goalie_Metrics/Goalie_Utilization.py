@@ -26,8 +26,11 @@ def get_time_on_ice():
         parsed_data = json.loads(web_data.content)
 
         if len(parsed_data["stats"][0]["splits"]) > 0:
-            goalie_utilization_ranking[goalie] = \
+            time_on_ice = \
                 parsed_data["stats"][0]["splits"][0]["stat"]["timeOnIce"]
+            time_on_ice = time_on_ice.split(":")
+            goalie_utilization_ranking[goalie] = \
+                float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)
 
 if __name__ == "__main__":
     print("goalie utilization")
