@@ -38,8 +38,14 @@ team_codes = {
     'Winnipeg Jets' : 52,
 }
 
+
 def get_active_goalies() -> dict:
     return active_goalies
+
+
+def get_team_IDs() -> dict:
+    return team_codes
+
 
 def populate_active_goalies() -> None:
 
@@ -60,7 +66,8 @@ def populate_active_goalies() -> None:
             # if the player is a Goalie, add them to the dict
             if player["position"]["name"] == "Goalie":
                 active_goalies[player["person"]["fullName"]] = \
-                    player["person"]["id"]
+                    [player["person"]["id"], parsed_data["teams"][0]["name"]]
+                
 
 if __name__ == "__main__":
     populate_active_goalies()

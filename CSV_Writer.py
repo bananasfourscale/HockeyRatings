@@ -1,19 +1,30 @@
 import csv
 import datetime
-from encodings.utf_8 import encode
 from Weights import *
+
 
 def write_out_file(file_name : str = "", header_row : list = [],
                    rating_list : dict = {}) -> None:
-
     with open(file_name, 'w', newline='', encoding='utf-8') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header_row)
         for key in rating_list.keys():
-            # if (team == "Montréal Canadiens") :
             csv_writer.writerow([key, str(rating_list[key])])
-            # print("{} : {}".format(team, str(rating_list[team])))
+
+
+def write_out_player_file(file_name : str = "", header_row : list = [],
+                          rating_list : dict = {}, player_list : dict = {}) \
+                                                                    -> None:
+    with open(file_name, 'w', newline='', encoding='utf-8') as csv_date_file:
+        csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
+            quoting=csv.QUOTE_MINIMAL)
+
+        # for each player print the player, the stat and the team they're on
+        csv_writer.writerow(header_row)
+        for key in rating_list.keys():
+            data_list = [key, rating_list[key], player_list[key][1]]
+            csv_writer.writerow(data_list)
 
 
 def update_trend_file(file_name : str = "", stat_dict : dict = {}) -> None:
