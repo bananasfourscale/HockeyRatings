@@ -44,8 +44,12 @@ def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
                   tick_set : list = [], image_file : str = "") -> None:
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
+    plot_data = plot_data.sort_values(axis[1], ascending=False)
     sns.set_theme()
-    team_palette = sns.color_palette(list(team_color_hex_codes.values()))
+    player_color_sorted_list = []
+    for player in plot_data.loc[:,"Team"]:
+        player_color_sorted_list.append(team_color_hex_codes[player])
+    team_palette = sns.color_palette(player_color_sorted_list)
     plot = sns.barplot(data=plot_data, x=axis[0], y=axis[1],
         palette=team_palette)
     plot.set(xticks=range(len(list(team_color_hex_codes.values()))))
