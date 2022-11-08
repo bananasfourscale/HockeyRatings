@@ -199,7 +199,7 @@ def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
                 extra_time)
 
             strength_of_schedule[winner] += (adjusted_loser_rating)
-            strength_of_schedule[loser] -= (adjusted_winner_rating)
+            #strength_of_schedule[loser] -= (adjusted_winner_rating)
 
 
 def strength_of_schedule_scale_by_game() -> None:

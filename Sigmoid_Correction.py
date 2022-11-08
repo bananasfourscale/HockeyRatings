@@ -1,5 +1,5 @@
 from math import exp, log
-from numpy import std, mean, abs
+from numpy import std, mean
 
 
 # The arbitrary sigmoid peak that I've decided to use because reasons

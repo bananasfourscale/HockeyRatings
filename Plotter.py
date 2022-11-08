@@ -31,7 +31,7 @@ team_color_hex_codes = {
     'San Jose Sharks' : "#006D75",
     'Seattle Kraken' : "#001628",
     'St. Louis Blues' : "#002F87",
-    'Tampa Bay Lightning' : "#FFFFFF",
+    'Tampa Bay Lightning' : "#CCCCFF",
     'Toronto Maple Leafs' : "#00205B",
     'Vancouver Canucks' : "#00843D",
     'Vegas Golden Knights' : "#B4975A",
