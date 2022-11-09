@@ -10,10 +10,8 @@ import requests
 from CSV_Writer import write_out_player_file
 
 # import all custom modules for statistical analysis
-from Goalie_Metrics.Goalie_List import populate_active_goalies, \
-    get_active_goalies
-from Goalie_Metrics.Goalie_Utilization import get_goalie_utilization_ranking, \
-    get_time_on_ice
+from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
+    goalie_utilization_calculate_time_on_ice
 from Sigmoid_Correction import apply_sigmoid_correction
 from Plotter import plot_player_ranking
 
@@ -78,24 +76,43 @@ def player_sorting() -> None:
 
         # for each listed player in the roster, store the name as the key
         # and the ID as the value so they can be individually searched later
-        print(team)
         for player in parsed_data["teams"][0]["roster"]["roster"]:
             active_players[player["position"]["name"]] \
-                [player["person"]["fullName"]] = player["person"]["id"]
+                [player["person"]["fullName"]] = \
+                    [player["person"]["id"], parsed_data["teams"][0]["name"]]
 
-            if team == 'Anaheim Ducks':
-                print(active_players)
 
-if __name__ == "__main__":
-    populate_active_goalies()
-    get_time_on_ice()
+def calculate_goalie_metrics() -> None:
+
+    # Utilization
+    goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
+        team_codes)
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        ["Goalie", "Utilization", "Team"], goalie_utilization_get_dict(),
+        active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        ["Goalie", "Utilization"],
+        max(list(goalie_utilization_get_dict().values())),
+        min(list(goalie_utilization_get_dict().values())), [],
+        "Graphs/Goalies/Utilization/utilization_base.png")
+
+    # apply correction
     goalie_utilization = apply_sigmoid_correction(
-        get_goalie_utilization_ranking())
+        goalie_utilization_get_dict())
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
         ["Goalie", "Utilization", "Team"], goalie_utilization,
-        get_active_goalies())
+        active_players['Goalie'])
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
         ["Goalie", "Utilization"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Goalies/Utilization/utilization_corrected.png")
+
+
+if __name__ == "__main__":
+
+    # get all players and sort them into the list for their position
+    player_sorting()
+    calculate_goalie_metrics()
