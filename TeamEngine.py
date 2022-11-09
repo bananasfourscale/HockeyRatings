@@ -392,8 +392,22 @@ if __name__ == "__main__":
             update_trend_file("Output_Files/Trend_Files/RatingScore.csv",
                 total_rating)
             plot_trend_set("Output_Files/Trend_Files/RatingScore.csv",
-                ["Rating Date", "Rating Score"], 1, 0, sigmiod_ticks,
+                ["Rating Date", "Rating Score"], 1.1, -.1, sigmiod_ticks,
                 "Graphs/Final_Rating_Score/rating_score_trend.png")
+
+            # offensive rating
+            update_trend_file("Output_Files/Trend_Files/OffensiveRating.csv",
+                offensive_rating_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/OffensiveRating.csv",
+                ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Offensive_Rating/offensive_rating_trend.png")
+
+            # defensive rating
+            update_trend_file("Output_Files/Trend_Files/DefensiveRating.csv",
+                offensive_rating_get_dict())
+            plot_trend_set("Output_Files/Trend_Files/DefensiveRating.csv",
+                ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmiod_ticks,
+                "Graphs/Defensive_Rating/defensive_rating_trend.png")
 
             # absolute rating
             absolute_rankings_update(total_rating)
