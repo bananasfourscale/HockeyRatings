@@ -37,7 +37,7 @@ divisions = {
 
 
 VERSION_MAJOR = 6
-VERSION_MINOR = 1
+VERSION_MINOR = 2
 
 class total_rating_weights(Enum):
     WIN_RATING_WEIGHT = 0.50
@@ -46,4 +46,5 @@ class total_rating_weights(Enum):
     CLUTCH_RATING_WEIGHT = 0.00
     FORM_RATING_WEIGHT = 0.10
     SOS_RATING_WEIGHT = 0.15
-    OFFENSIVE_RATING_WEIGHT = 0.25
+    OFFENSIVE_RATING_WEIGHT = 0.10
+    DEFENSIVE_RATING_WEIGHT = 0.15
