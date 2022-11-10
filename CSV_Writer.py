@@ -1,6 +1,6 @@
 import csv
 import datetime
-from Weights import *
+from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 
 def write_out_file(file_name : str = "", header_row : list = [],

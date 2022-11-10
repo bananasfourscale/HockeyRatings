@@ -1,9 +1,5 @@
 # import all assisting built in modules
 import json
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plotter
-import json
 import requests
 
 # import all custom modules for parsing
@@ -12,6 +8,8 @@ from CSV_Writer import write_out_player_file
 # import all custom modules for statistical analysis
 from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
     goalie_utilization_calculate_time_on_ice
+from Goalie_Metrics.Goalie_Win_Rating import goalie_win_rating_get_dict, \
+    goalie_win_rating_calculate
 from Sigmoid_Correction import apply_sigmoid_correction
 from Plotter import plot_player_ranking
 
@@ -82,9 +80,7 @@ def player_sorting() -> None:
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
 
 
-def calculate_goalie_metrics() -> None:
-
-    # Utilization
+def goalie_utilization() -> None:
     goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
         team_codes)
     write_out_player_file(
@@ -109,6 +105,38 @@ def calculate_goalie_metrics() -> None:
         "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
         ["Goalie", "Utilization"], 1.0, 0.0, sigmiod_ticks,
         "Graphs/Goalies/Utilization/utilization_corrected.png")
+
+
+def goalie_win_rating() -> None:
+    goalie_win_rating_calculate(active_players['Goalie'], team_codes)
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        ["Goalie", "Win Rating", "Team"], goalie_win_rating_get_dict(),
+        active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        ["Goalie", "Win Rating"],
+        max(list(goalie_win_rating_get_dict().values())),
+        min(list(goalie_win_rating_get_dict().values())), [],
+        "Graphs/Goalies/Win_Rating/win_rating_base.png")
+
+    # apply correction
+    goalie_win_rating = apply_sigmoid_correction(
+        goalie_win_rating_get_dict())
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        ["Goalie", "Win Rating", "Team"], goalie_win_rating,
+        active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        ["Goalie", "Win Rating"], 1.0, 0.0, sigmiod_ticks,
+        "Graphs/Goalies/Win_Rating/win_rating_corrected.png")
+
+
+def calculate_goalie_metrics() -> None:
+    goalie_utilization()
+    goalie_win_rating()
+    
 
 
 if __name__ == "__main__":

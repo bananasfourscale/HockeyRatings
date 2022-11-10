@@ -39,6 +39,7 @@ divisions = {
 VERSION_MAJOR = 6
 VERSION_MINOR = 2
 
+
 class total_rating_weights(Enum):
     WIN_RATING_WEIGHT = 0.50
     SCORING_RATING_WEIGHT = 0.00
@@ -48,3 +49,10 @@ class total_rating_weights(Enum):
     SOS_RATING_WEIGHT = 0.15
     OFFENSIVE_RATING_WEIGHT = 0.10
     DEFENSIVE_RATING_WEIGHT = 0.15
+
+
+class goalie_rating_weights(Enum):
+    UTILIZATION_WEIGHT = 0.45
+    GOALS_AGAINST_WEIGHT = 0.15
+    SAVE_PERCENTAGE_WEIGHT = 0.20
+    WIN_RATING_WEIGHT = 0.20
