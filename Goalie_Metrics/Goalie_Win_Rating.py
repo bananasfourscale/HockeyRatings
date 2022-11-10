@@ -94,8 +94,7 @@ if __name__ == "__main__":
             active_players[player["position"]["name"]] \
                 [player["person"]["fullName"]] = \
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
-    goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
-        team_codes)
+    goalie_win_rating_calculate(active_players['Goalie'], team_codes)
     print("Goalie Utilization (uncorrected):")
-    for goalie in goalie_utilization_ranking.keys():
-        print("\t" + goalie + '=' + str(goalie_utilization_ranking[goalie]))
+    for goalie in goalie_win_ranking.keys():
+        print("\t" + goalie + '=' + str(goalie_win_ranking[goalie]))
