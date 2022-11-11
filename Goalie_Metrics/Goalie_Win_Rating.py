@@ -2,15 +2,14 @@ import requests
 import json
 
 
-goalie_win_ranking = {}
+goalie_win_rating = {}
 
 
 def goalie_win_rating_get_dict() -> dict:
-    return goalie_win_ranking
+    return goalie_win_rating
 
 
-def goalie_win_rating_calculate(active_goalies : dict={},
-    team_IDs : dict={}) -> None:
+def goalie_win_rating_calculate(active_goalies : dict={}) -> None:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():
@@ -22,18 +21,13 @@ def goalie_win_rating_calculate(active_goalies : dict={},
 
         # make sure the goalie has stats
         if len(parsed_data["stats"][0]["splits"]) > 0:
-            team_url = \
-                "https://statsapi.web.nhl.com/api/v1/teams/" + \
-                "{}?expand=team.stats".format(
-                    team_IDs[active_goalies[goalie][1]])
-            team_web_data = requests.get(team_url)
-            team_parsed_data = json.loads(team_web_data.content)
+            player_data = parsed_data["stats"][0]["splits"][0]["stat"]
 
             # (W * 1) + (OTL * .33)
-            wins = parsed_data["stats"][0]["splits"][0]["stat"]["wins"]
-            ot_losses = parsed_data["stats"][0]["splits"][0]["stat"]["ot"]
-            shutouts = parsed_data["stats"][0]["splits"][0]["stat"]["shutouts"]
-            goalie_win_ranking[goalie] = (wins) + (ot_losses * 0.33) + \
+            wins = player_data["wins"]
+            ot_losses = player_data["ot"]
+            shutouts = player_data["shutouts"]
+            goalie_win_rating[goalie] = (wins) + (ot_losses * 0.33) + \
                 (shutouts * 0.1)
 
 
@@ -94,7 +88,7 @@ if __name__ == "__main__":
             active_players[player["position"]["name"]] \
                 [player["person"]["fullName"]] = \
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
-    goalie_win_rating_calculate(active_players['Goalie'], team_codes)
+    goalie_win_rating_calculate(active_players['Goalie'])
     print("Goalie Utilization (uncorrected):")
-    for goalie in goalie_win_ranking.keys():
-        print("\t" + goalie + '=' + str(goalie_win_ranking[goalie]))
+    for goalie in goalie_win_rating.keys():
+        print("\t" + goalie + '=' + str(goalie_win_rating[goalie]))

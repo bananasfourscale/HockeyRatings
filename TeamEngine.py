@@ -80,9 +80,9 @@ def calculate_strenght_of_schedule() -> None:
     strength_of_schedule_calculate(average_rankings_get_dict(),
         average_ranking_get_ranking_dates())
     write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], strength_of_schedule_get_dict())
+        ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
     plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"],
+        ["Team", "Strength of Schedule Base"],
         max(list(strength_of_schedule_get_dict().values())),
         min(list(strength_of_schedule_get_dict().values())), [],
         "Graphs/Strength_of_Schedule/sos_game_scale.png")
@@ -90,9 +90,10 @@ def calculate_strenght_of_schedule() -> None:
     # apply sigmoid correction, write out again, and graph
     apply_sigmoid_correction(strength_of_schedule_get_dict())
     write_out_file("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], strength_of_schedule_get_dict())
+        ["Team", "Strength of Schedule Corrected"],
+        strength_of_schedule_get_dict())
     plot_data_set("Output_Files/Instance_Files/StengthOfSchedule.csv",
-        ["Team", "Strength of Schedule"], 1.0, 0.0, sigmoid_ticks,
+        ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Strength_of_Schedule/strenght_of_schedule_final.png")
 
     # update trend file
@@ -108,9 +109,9 @@ def calculate_win_rating() -> None:
     # calculate the win rating and graph
     win_rating_calc()
     write_out_file("Output_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating"], win_rating_get_dict())
+        ["Team", "Win Rating Base"], win_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating"], 1.0, 0.0, sigmoid_ticks,
+        ["Team", "Win Rating Base"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Win_Rating/win_rating_final.png")
 
     # update trend file
@@ -129,9 +130,9 @@ def calculate_clutch_rating() -> None:
     # finally combine the factors, write out, and plot
     apply_sigmoid_correction(clutch_rating_get_dict())
     write_out_file("Output_Files/Instance_Files/ClutchRating.csv",
-        ["Team", "Clutch Rating"], clutch_rating_get_dict())
+        ["Team", "Clutch Rating Base"], clutch_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/ClutchRating.csv",
-        ["Team", "Clutch Rating"], 1.0, 0.0, sigmoid_ticks,
+        ["Team", "Clutch Rating Base"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Clutch_Rating/clutch_rating_final.png")
 
     # update trend file
@@ -147,21 +148,23 @@ def calculate_offensive_rating() -> None:
 
     # plot each metric before sigmoid
     write_out_file("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Shots Against"], offensive_metrics[0])
+        ["Team", "Shots Against Base"], offensive_metrics[0])
     plot_data_set("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Shots Against"], max(list(offensive_metrics[0].values())),
+        ["Team", "Shots Against Base"],
+        max(list(offensive_metrics[0].values())),
         min(list(offensive_metrics[0].values())), [],
         "Graphs/offensive_Rating/shots_against_per_game_base.png")
     write_out_file("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Goals Against"], offensive_metrics[1])
+        ["Team", "Goals Against Base"], offensive_metrics[1])
     plot_data_set("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Goals Against"], max(list(offensive_metrics[1].values())),
+        ["Team", "Goals Against Base"],
+        max(list(offensive_metrics[1].values())),
         min(list(offensive_metrics[1].values())), [],
         "Graphs/offensive_Rating/goals_against_per_game_base.png")
     write_out_file("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Penalty Kill"], offensive_metrics[2])
+        ["Team", "Penalty Kill Base"], offensive_metrics[2])
     plot_data_set("Output_Files/Instance_Files/offensiveRating.csv",
-        ["Team", "Penalty Kill"], max(list(offensive_metrics[2].values())),
+        ["Team", "Penalty Kill Base"], max(list(offensive_metrics[2].values())),
         min(list(offensive_metrics[2].values())), [],
         "Graphs/offensive_Rating/penalty_kill_base.png")
     
@@ -171,30 +174,33 @@ def calculate_offensive_rating() -> None:
 
     # plot individual metrics after sigmoid
     write_out_file("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Shots Against"], offensive_metrics[0])
+        ["Team", "Shots Against Corrected"], offensive_metrics[0])
     plot_data_set("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Shots Against"], max(list(offensive_metrics[0].values())),
+        ["Team", "Shots Against Corrected"],
+        max(list(offensive_metrics[0].values())),
         min(list(offensive_metrics[0].values())), sigmoid_ticks,
         "Graphs/offensive_Rating/shots_against_per_game_sigmoid.png")
     write_out_file("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Goals Against"], offensive_metrics[1])
+        ["Team", "Goals Against Corrected"], offensive_metrics[1])
     plot_data_set("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Goals Against"], max(list(offensive_metrics[1].values())),
+        ["Team", "Goals Against Corrected"],
+        max(list(offensive_metrics[1].values())),
         min(list(offensive_metrics[1].values())), sigmoid_ticks,
         "Graphs/offensive_Rating/goals_against_per_game_sigmoid.png")
     write_out_file("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Penalty Kill"], offensive_metrics[2])
+        ["Team", "Penalty Kill Corrected"], offensive_metrics[2])
     plot_data_set("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Penalty Kill"], max(list(offensive_metrics[2].values())),
+        ["Team", "Penalty Kill Corrected"],
+        max(list(offensive_metrics[2].values())),
         min(list(offensive_metrics[2].values())), sigmoid_ticks,
         "Graphs/offensive_Rating/penalty_kill_sigmoid.png")
 
     # combine metrics to overall score and plot
     offensive_rating_combine_metrics(offensive_metrics)
     write_out_file("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Offensive Rating"], offensive_rating_get_dict())
+        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Offensive Rating"], 1.0, 0.0, sigmoid_ticks,
+        ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/offensive_Rating/offensive_rating_final.png")
 
     # update trend file
@@ -210,21 +216,24 @@ def calculate_defensive_rating() -> None:
 
     # plot each metric before sigmoid
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Shots Against"], defensive_metrics[0])
+        ["Team", "Shots Against Base"], defensive_metrics[0])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Shots Against"], min(list(defensive_metrics[0].values())),
+        ["Team", "Shots Against Base"],
+        min(list(defensive_metrics[0].values())),
         max(list(defensive_metrics[0].values())), [],
         "Graphs/Defensive_Rating/shots_against_per_game_base.png")
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Goals Against"], defensive_metrics[1])
+        ["Team", "Goals Against Base"], defensive_metrics[1])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Goals Against"], min(list(defensive_metrics[1].values())),
+        ["Team", "Goals Against Base"],
+        min(list(defensive_metrics[1].values())),
         max(list(defensive_metrics[1].values())), [],
         "Graphs/Defensive_Rating/goals_against_per_game_base.png")
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Penalty Kill"], defensive_metrics[2])
+        ["Team", "Penalty Kill Base"], defensive_metrics[2])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Penalty Kill"], min(list(defensive_metrics[2].values())),
+        ["Team", "Penalty Kill Base"],
+        min(list(defensive_metrics[2].values())),
         max(list(defensive_metrics[2].values())), [],
         "Graphs/Defensive_Rating/penalty_kill_base.png")
     
@@ -234,30 +243,33 @@ def calculate_defensive_rating() -> None:
 
     # plot individual metrics after sigmoid
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Shots Against"], defensive_metrics[0])
+        ["Team", "Shots Against Corrected"], defensive_metrics[0])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Shots Against"], max(list(defensive_metrics[0].values())),
+        ["Team", "Shots Against Corrected"],
+        max(list(defensive_metrics[0].values())),
         min(list(defensive_metrics[0].values())), sigmoid_ticks,
         "Graphs/Defensive_Rating/shots_against_per_game_sigmoid.png")
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Goals Against"], defensive_metrics[1])
+        ["Team", "Goals Against Corrected"], defensive_metrics[1])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Goals Against"], max(list(defensive_metrics[1].values())),
+        ["Team", "Goals Against Corrected"],
+        max(list(defensive_metrics[1].values())),
         min(list(defensive_metrics[1].values())), sigmoid_ticks,
         "Graphs/Defensive_Rating/goals_against_per_game_sigmoid.png")
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Penalty Kill"], defensive_metrics[2])
+        ["Team", "Penalty Kill Corrected"], defensive_metrics[2])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Penalty Kill"], max(list(defensive_metrics[2].values())),
+        ["Team", "Penalty Kill Corrected"],
+        max(list(defensive_metrics[2].values())),
         min(list(defensive_metrics[2].values())), sigmoid_ticks,
         "Graphs/Defensive_Rating/penalty_kill_sigmoid.png")
 
     # combine metrics to overall score and plot
     defensive_rating_combine_metrics(defensive_metrics)
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Defensive Rating"], defensive_rating_get_dict())
+        ["Team", "Defensive Rating Final"], defensive_rating_get_dict())
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
-        ["Team", "Defensive Rating"], 1.0, 0.0, sigmoid_ticks,
+        ["Team", "Defensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensive_Rating/defensive_rating_final.png")
 
     # update trend file

@@ -42,8 +42,6 @@ VERSION_MINOR = 2
 
 class total_rating_weights(Enum):
     WIN_RATING_WEIGHT = 0.50
-    SCORING_RATING_WEIGHT = 0.00
-    SPECIAL_TEAMS_RATING_WEIGHT = 0.00
     CLUTCH_RATING_WEIGHT = 0.00
     FORM_RATING_WEIGHT = 0.10
     SOS_RATING_WEIGHT = 0.15
@@ -52,7 +50,7 @@ class total_rating_weights(Enum):
 
 
 class goalie_rating_weights(Enum):
-    UTILIZATION_WEIGHT = 0.45
-    GOALS_AGAINST_WEIGHT = 0.15
-    SAVE_PERCENTAGE_WEIGHT = 0.20
-    WIN_RATING_WEIGHT = 0.20
+    UTILIZATION_WEIGHT = 0.50
+    GOALS_AGAINST_WEIGHT = 0.0 # TODO not yet implemented
+    SAVE_PERCENTAGE_WEIGHT = 0.25
+    WIN_RATING_WEIGHT = 0.25

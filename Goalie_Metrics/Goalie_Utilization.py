@@ -2,11 +2,11 @@ import requests
 import json
 
 
-goalie_utilization_ranking = {}
+goalie_utilization_rating = {}
 
 
 def goalie_utilization_get_dict() -> dict:
-    return goalie_utilization_ranking
+    return goalie_utilization_rating
 
 
 def goalie_utilization_calculate_time_on_ice(active_goalies : dict={},
@@ -29,14 +29,16 @@ def goalie_utilization_calculate_time_on_ice(active_goalies : dict={},
             team_web_data = requests.get(team_url)
             team_parsed_data = json.loads(team_web_data.content)
 
+            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
+            team_stats = \
+                team_parsed_data["teams"][0]["teamStats"][0]["splits"][0][
+                    "stat"]
+
             # ((TOIm + TOIs) / 60) / TeamGP
-            time_on_ice = \
-                parsed_data["stats"][0]["splits"][0]["stat"]["timeOnIce"]
-            time_on_ice = time_on_ice.split(":")
-            goalie_utilization_ranking[goalie] = \
+            time_on_ice = player_stats["timeOnIce"].split(":")
+            goalie_utilization_rating[goalie] = \
                 (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-                    team_parsed_data["teams"][0][
-                        "teamStats"][0]["splits"][0]["stat"]["gamesPlayed"]
+                    team_stats["gamesPlayed"]
 
 
 if __name__ == "__main__":
@@ -99,5 +101,5 @@ if __name__ == "__main__":
     goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
         team_codes)
     print("Goalie Utilization (uncorrected):")
-    for goalie in goalie_utilization_ranking.keys():
-        print("\t" + goalie + '=' + str(goalie_utilization_ranking[goalie]))
+    for goalie in goalie_utilization_rating.keys():
+        print("\t" + goalie + '=' + str(goalie_utilization_rating[goalie]))

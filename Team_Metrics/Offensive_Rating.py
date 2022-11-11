@@ -61,13 +61,12 @@ def offensive_rating_get_data_set() -> list:
     power_play = {}
     for team in parsed_data["teams"]:
         team_name = team["teamStats"][0]["splits"][0]["team"]["name"]
-        SPG = team["teamStats"][0]["splits"][0]["stat"]["shotsPerGame"]
-        GPG = team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
-        PPP = float(
+        shooting_data[team_name] = \
+            team["teamStats"][0]["splits"][0]["stat"]["shotsPerGame"]
+        goal_data[team_name] = \
+            team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
+        power_play[team_name] = float(
             team["teamStats"][0]["splits"][0]["stat"]["powerPlayPercentage"])
-        shooting_data[team_name] = SPG
-        goal_data[team_name] = GPG
-        power_play[team_name] = PPP
     return [shooting_data, goal_data, power_play]
 
 
