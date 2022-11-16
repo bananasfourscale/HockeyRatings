@@ -12,6 +12,7 @@ from Goalie_Metrics.Goalie_Win_Rating import goalie_win_rating_get_dict, \
     goalie_win_rating_calculate
 from Goalie_Metrics.Goalie_Save_Percentage import \
     goalie_save_percentage_get_dict, goalie_save_percentage_get_data, \
+    goalie_save_percentage_scale_for_volume, \
     goalie_save_percentage_combine_metrics
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights
@@ -93,9 +94,7 @@ def goalie_utilization() -> None:
         active_players['Goalie'])
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
-        ["Goalie", "Utilization Base"],
-        max(list(goalie_utilization_get_dict().values())),
-        min(list(goalie_utilization_get_dict().values())), [],
+        ["Goalie", "Utilization Base"], 0.0, 0.0, [],
         "Graphs/Goalies/Utilization/utilization_base.png")
 
     # apply correction
@@ -119,9 +118,7 @@ def goalie_win_rating() -> None:
         active_players['Goalie'])
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
-        ["Goalie", "Win Rating Base"],
-        max(list(goalie_win_rating_get_dict().values())),
-        min(list(goalie_win_rating_get_dict().values())), [],
+        ["Goalie", "Win Rating Base"], 0.0, 0.0, [],
         "Graphs/Goalies/Win_Rating/win_rating_base.png")
 
     # apply correction
@@ -150,10 +147,24 @@ def goalie_save_percentage() -> None:
         goalie_save_percentage_get_dict(), active_players['Goalie'])
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
-        ["Goalie", "Save Percentage Base"],
-        max(list(goalie_save_percentage_get_dict().values())),
-        min(list(goalie_save_percentage_get_dict().values())), [],
+        ["Goalie", "Save Percentage Base"], 0.0, 0.0, [],
         "Graphs/Goalies/Save_Percentage/save_percentage_base.png")
+
+    sp_metrics = goalie_save_percentage_scale_for_volume(sp_metrics,
+        active_players["Goalie"])
+    
+    # these metrics being unevenly weighted it makes more sense to do sigmoid
+    # correction after combining all the metrics
+    goalie_save_percentage_combine_metrics(sp_metrics, active_players["Goalie"],
+        team_codes)
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+        ["Goalie", "Save Percentage Scaled", "Team"],
+        goalie_save_percentage_get_dict(), active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+        ["Goalie", "Save Percentage Scaled"], 0.0, 0.0, [],
+        "Graphs/Goalies/Save_Percentage/save_percentage_scaled.png")
 
     # apply correction
     goalie_save_percentage = apply_sigmoid_correction(
@@ -175,7 +186,7 @@ def calculate_goalie_metrics() -> None:
     goalie_win_rating()
     print("\tGoalie Save Percetage Rating")
     goalie_save_percentage()
-    print("\tCobining Goalie Metrics")
+    print("\tCombining Goalie Metrics")
     goalie_total_rating = {}
 
     # not all active goalies have stats, but all metrics are generated for the

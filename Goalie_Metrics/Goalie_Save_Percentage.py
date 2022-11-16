@@ -49,6 +49,31 @@ def goalie_save_percentage_get_data(active_goalies : dict={}) -> list:
     return [even_strength_sp, power_play_sp, penalty_kill_sp]
 
 
+def goalie_save_percentage_scale_for_volume(metric_list : list=[],
+    active_goalies : dict={}) -> list:
+    for goalie in metric_list[0].keys():
+        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
+        "{}/stats?stats=statsSingleSeason&season=20222023".format(
+            active_goalies[goalie][0])
+        web_data = requests.get(goalie_url)
+        parsed_data = json.loads(web_data.content)
+
+        # make sure the goalie has stats
+        if len(parsed_data["stats"][0]["splits"]) > 0:
+
+            # shortcut to access stats more cleanly
+            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
+            metric_list[0][goalie] = (metric_list[0][goalie] / 100) * \
+                player_stats['evenSaves']
+            metric_list[1][goalie] = (metric_list[1][goalie] / 100) * \
+                player_stats['powerPlaySaves']
+            metric_list[2][goalie] = (metric_list[2][goalie] / 100) * \
+                player_stats['shortHandedSaves']
+
+    return metric_list
+
+
+
 def goalie_save_percentage_combine_metrics(metric_list : list=[],
     active_goalies : dict={}, team_IDs : dict={}) -> None:
     
