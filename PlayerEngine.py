@@ -14,6 +14,8 @@ from Goalie_Metrics.Goalie_Save_Percentage import \
     goalie_save_percentage_get_dict, goalie_save_percentage_get_data, \
     goalie_save_percentage_scale_for_volume, \
     goalie_save_percentage_combine_metrics
+from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
+    goalie_goals_against_get_data
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights
 from Plotter import plot_player_ranking
@@ -179,6 +181,30 @@ def goalie_save_percentage() -> None:
         "Graphs/Goalies/Save_Percentage/save_percentage_corrected.png")
 
 
+def goalie_goals_against_avg() -> None:
+    goalie_goals_against_get_data(active_players["Goalie"])
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        ["Goalie", "Goals Against Avg Base", "Team"],
+        goalie_goals_against_get_dict(), active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],
+        "Graphs/Goalies/Goals_Against/goals_against_base.png", True)
+
+    # apply correction
+    goalie_goals_against = apply_sigmoid_correction(
+        goalie_goals_against_get_dict(), True)
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        ["Goalie", "Goals Against Avg Corrected", "Team"],
+        goalie_goals_against, active_players['Goalie'])
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmiod_ticks,
+        "Graphs/Goalies/Goals_Against/goals_against_corrected.png")
+
+
 def calculate_goalie_metrics() -> None:
     print("\tGoalie Utilization")
     goalie_utilization()
@@ -186,6 +212,8 @@ def calculate_goalie_metrics() -> None:
     goalie_win_rating()
     print("\tGoalie Save Percetage Rating")
     goalie_save_percentage()
+    print("\tGoalie Goals Against Avg")
+    goalie_goals_against_avg()
     print("\tCombining Goalie Metrics")
     goalie_total_rating = {}
 
@@ -198,7 +226,9 @@ def calculate_goalie_metrics() -> None:
             (goalie_win_rating_get_dict()[goalie] * \
                 goalie_rating_weights.WIN_RATING_WEIGHT.value) + \
             (goalie_save_percentage_get_dict()[goalie] * \
-                goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value)
+                goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) + \
+            (goalie_goals_against_get_dict()[goalie] * \
+                goalie_rating_weights.GOALS_AGAINST_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
         ["Goalie", "Total Rating", "Team"], goalie_total_rating,

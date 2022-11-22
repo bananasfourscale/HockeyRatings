@@ -221,14 +221,14 @@ def calculate_defensive_rating() -> None:
         ["Team", "Shots Against Base"],
         min(list(defensive_metrics[0].values())),
         max(list(defensive_metrics[0].values())), [],
-        "Graphs/Defensive_Rating/shots_against_per_game_base.png")
+        "Graphs/Defensive_Rating/shots_against_per_game_base.png", True)
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Goals Against Base"], defensive_metrics[1])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Goals Against Base"],
         min(list(defensive_metrics[1].values())),
         max(list(defensive_metrics[1].values())), [],
-        "Graphs/Defensive_Rating/goals_against_per_game_base.png")
+        "Graphs/Defensive_Rating/goals_against_per_game_base.png", True)
     write_out_file("Output_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Penalty Kill Base"], defensive_metrics[2])
     plot_data_set("Output_Files/Instance_Files/DefensiveRating.csv",

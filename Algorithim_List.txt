@@ -1,0 +1,40 @@
+Goalies:
+    Goalie_Utilization: TOImin / GPteam
+        -Rational: The more a goalie is used, the more responsibility they have,
+            the more likely their stats will be dragged toward norm. This is
+            designed to hopefully be a counter to sample size to reward high
+            working goalies.
+        -TOImin: Time on ice converted to minutes
+        -GPteam: the number of total games the goalies current team has played
+        
+Teams:
+    Clutch (under review): (W%lead1 * 5) + (W%lead2 * 10)
+        -Rational: Ideally this would be a simple way to show teams holding
+            leads vs makikng comebacks but the free API doesn't quite have the
+            level of insight that the manual version did. Thinking of removing.
+        - W%lead1: Win percentage when team is leading after 1st period
+        - W%lead2: Win percentage when team is leading after 2nd period
+    Recent_Form: (W * 1) + (L * 0) + (OT * 0.33)
+        -Rational: somewhat self explanitory, will track just the last 10 games
+            of a team to get thier more recent form as opposed to other stats
+            which are based on season results and can be slow to shift.
+            Essentially works as an accelerator for change that is scalable by
+            chaning the weight of the metric
+        - W: wins in last 10 games
+        - L: losses in last 10 games
+        - OT: overtime losses in last 10 games
+    Scoring_Rating: ((GFG - GAG) * 0.75) + ((SHFG - SHAG) * 0.25)
+        -Rational: takes shooting difference and scoring difference to try to
+            account for the fact that very high scoring teams tend to show up
+            higher on many metrics, but don't nessirarily mean the team wins
+            alot or is good. Defence wins championships. So having a high
+            difference between offence and defense is better than just scoring
+            alot.
+        - GFG: Goals for per game (mean over all games not per 60min)
+        - GAG: Goals against per game (mean over all games not per 60min)
+        - SHFG: Shots for per game (mean over all games not per 60min)
+        - SHAG: Shots against per game (mean over all games not per 60min)
+    Special_Teams: PP% + PK%
+        - Rational: Simply combines both special team metrics. This is generally
+            a very 
+        

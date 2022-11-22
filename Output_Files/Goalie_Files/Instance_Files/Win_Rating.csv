@@ -1,71 +1,72 @@
 Goalie	Win Rating Corrected	Team
-John Gibson	0.2434902071347758	Anaheim Ducks
-Anthony Stolarz	0.20105163330250886	Anaheim Ducks
-Karel Vejmelka	0.7646186731102235	Arizona Coyotes
-Connor Ingram	0.10664490778432595	Arizona Coyotes
-Jeremy Swayman	0.20105163330250886	Boston Bruins
-Keith Kinkaid	0.10664490778432595	Boston Bruins
-Linus Ullmark	0.9955329227080599	Boston Bruins
-Craig Anderson	0.34660644042580774	Buffalo Sabres
-Eric Comrie	0.5279097577199493	Buffalo Sabres
-Jacob Markstrom	0.8904588466439607	Calgary Flames
-Dan Vladar	0.10664490778432595	Calgary Flames
-Frederik Andersen	0.7021380844523519	Carolina Hurricanes
-Antti Raanta	0.404224410572505	Carolina Hurricanes
-Pyotr Kochetkov	0.21329786552181623	Carolina Hurricanes
-Alex Stalock	0.404224410572505	Chicago Blackhawks
-Petr Mrazek	0.13245968664123173	Chicago Blackhawks
-Arvid Soderblom	0.2434902071347758	Chicago Blackhawks
-Alexandar Georgiev	0.9305446299450729	Colorado Avalanche
-Pavel Francouz	0.10664490778432595	Colorado Avalanche
-Joonas Korpisalo	0.2434902071347758	Columbus Blue Jackets
-Elvis Merzlikins	0.20105163330250886	Columbus Blue Jackets
-Scott Wedgewood	0.404224410572505	Dallas Stars
-Jake Oettinger	0.8725743999103709	Dallas Stars
-Alex Nedeljkovic	0.2434902071347758	Detroit Red Wings
-Ville Husso	0.8174015033231948	Detroit Red Wings
-Jack Campbell	0.8324714243171182	Edmonton Oilers
-Stuart Skinner	0.34660644042580774	Edmonton Oilers
-Sergei Bobrovsky	0.5885201242640962	Florida Panthers
-Spencer Knight	0.717495980306999	Florida Panthers
-Jonathan Quick	0.8725743999103709	Los Angeles Kings
-Cal Petersen	0.5279097577199493	Los Angeles Kings
-Marc-Andre Fleury	0.8725743999103709	Minnesota Wild
-Filip Gustavsson	0.13245968664123173	Minnesota Wild
-Jake Allen	0.7021380844523519	Montréal Canadiens
-Sam Montembeault	0.404224410572505	Montréal Canadiens
-Juuse Saros	0.750933260252483	Nashville Predators
-Kevin Lankinen	0.20105163330250886	Nashville Predators
-Mackenzie Blackwood	0.5279097577199493	New Jersey Devils
-Vitek Vanecek	0.918606641788583	New Jersey Devils
-Akira Schmid	0.20105163330250886	New Jersey Devils
-Semyon Varlamov	0.5279097577199493	New York Islanders
-Ilya Sorokin	0.918606641788583	New York Islanders
-Jaroslav Halak	0.06753859720171265	New York Rangers
-Igor Shesterkin	0.9749497183748148	New York Rangers
-Cam Talbot	0.10664490778432595	Ottawa Senators
-Anton Forsberg	0.404224410572505	Ottawa Senators
-Felix Sandstrom	0.10664490778432595	Philadelphia Flyers
-Carter Hart	0.9122588192727092	Philadelphia Flyers
-Tristan Jarry	0.6465587560832011	Pittsburgh Penguins
-Casey DeSmith	0.2434902071347758	Pittsburgh Penguins
-James Reimer	0.6634085884404637	San Jose Sharks
-Kaapo Kahkonen	0.13245968664123173	San Jose Sharks
-Philipp Grubauer	0.06753859720171265	Seattle Kraken
-Martin Jones	0.9486198363760872	Seattle Kraken
-Magnus Hellberg	0.10664490778432595	Seattle Kraken
-Thomas Greiss	0.053594517649553176	St. Louis Blues
-Jordan Binnington	0.8426155739284616	St. Louis Blues
-Brian Elliott	0.5279097577199493	Tampa Bay Lightning
-Andrei Vasilevskiy	0.750933260252483	Tampa Bay Lightning
-Ilya Samsonov	0.8324714243171182	Toronto Maple Leafs
-Matt Murray	0.10664490778432595	Toronto Maple Leafs
-Erik Kallgren	0.34491948645958004	Toronto Maple Leafs
-Spencer Martin	0.5885201242640962	Vancouver Canucks
-Thatcher Demko	0.16338046003301962	Vancouver Canucks
-Adin Hill	0.7021380844523519	Vegas Golden Knights
-Logan Thompson	0.9624527088552125	Vegas Golden Knights
-Darcy Kuemper	0.7646186731102235	Washington Capitals
-Charlie Lindgren	0.2434902071347758	Washington Capitals
-Connor Hellebuyck	0.9395869161148196	Winnipeg Jets
-David Rittich	0.20105163330250886	Winnipeg Jets
+John Gibson	0.32215960712182934	Anaheim Ducks
+Anthony Stolarz	0.17110596287021834	Anaheim Ducks
+Karel Vejmelka	0.6394297103010536	Arizona Coyotes
+Connor Ingram	0.11942182903940916	Arizona Coyotes
+Linus Ullmark	0.9954232504614515	Boston Bruins
+Jeremy Swayman	0.2787273162789087	Boston Bruins
+Eric Comrie	0.4197603258899044	Buffalo Sabres
+Craig Anderson	0.2787273162789087	Buffalo Sabres
+Ukko-Pekka Luukkonen	0.05562654198357069	Buffalo Sabres
+Jacob Markstrom	0.9307445924093487	Calgary Flames
+Dan Vladar	0.0993171200376299	Calgary Flames
+Frederik Andersen	0.5752413624847589	Carolina Hurricanes
+Antti Raanta	0.36889826323460906	Carolina Hurricanes
+Pyotr Kochetkov	0.24950209303649618	Carolina Hurricanes
+Alex Stalock	0.32215960712182934	Chicago Blackhawks
+Petr Mrazek	0.11942182903940916	Chicago Blackhawks
+Arvid Soderblom	0.2024759743944659	Chicago Blackhawks
+Alexandar Georgiev	0.9561019089150987	Colorado Avalanche
+Pavel Francouz	0.17110596287021834	Colorado Avalanche
+Elvis Merzlikins	0.17110596287021834	Columbus Blue Jackets
+Joonas Korpisalo	0.32215960712182934	Columbus Blue Jackets
+Daniil Tarasov	0.17110596287021834	Columbus Blue Jackets
+Scott Wedgewood	0.47082348811867153	Dallas Stars
+Jake Oettinger	0.8843066053231325	Dallas Stars
+Alex Nedeljkovic	0.2024759743944659	Detroit Red Wings
+Ville Husso	0.9091649623694583	Detroit Red Wings
+Jack Campbell	0.7171350474013113	Edmonton Oilers
+Stuart Skinner	0.4197603258899044	Edmonton Oilers
+Sergei Bobrovsky	0.47082348811867153	Florida Panthers
+Spencer Knight	0.6394297103010536	Florida Panthers
+Jonathan Quick	0.7685097967496726	Los Angeles Kings
+Cal Petersen	0.6248503547360097	Los Angeles Kings
+Marc-Andre Fleury	0.7685097967496726	Minnesota Wild
+Filip Gustavsson	0.2024759743944659	Minnesota Wild
+Jake Allen	0.7171350474013113	Montréal Canadiens
+Sam Montembeault	0.32215960712182934	Montréal Canadiens
+Juuse Saros	0.8777354073662689	Nashville Predators
+Kevin Lankinen	0.17110596287021834	Nashville Predators
+Mackenzie Blackwood	0.4197603258899044	New Jersey Devils
+Vitek Vanecek	0.9465498958918034	New Jersey Devils
+Akira Schmid	0.2787273162789087	New Jersey Devils
+Semyon Varlamov	0.4197603258899044	New York Islanders
+Ilya Sorokin	0.9043956949113313	New York Islanders
+Jaroslav Halak	0.06755030220311299	New York Rangers
+Igor Shesterkin	0.9705403318174953	New York Rangers
+Cam Talbot	0.0993171200376299	Ottawa Senators
+Anton Forsberg	0.47082348811867153	Ottawa Senators
+Felix Sandstrom	0.0993171200376299	Philadelphia Flyers
+Carter Hart	0.8529550931252794	Philadelphia Flyers
+Tristan Jarry	0.8032661537488222	Pittsburgh Penguins
+Casey DeSmith	0.32215960712182934	Pittsburgh Penguins
+James Reimer	0.6856388087814805	San Jose Sharks
+Kaapo Kahkonen	0.2024759743944659	San Jose Sharks
+Martin Jones	0.9640117935148753	Seattle Kraken
+Philipp Grubauer	0.06755030220311299	Seattle Kraken
+Magnus Hellberg	0.0993171200376299	Seattle Kraken
+Thomas Greiss	0.0993171200376299	St. Louis Blues
+Jordan Binnington	0.9465498958918034	St. Louis Blues
+Brian Elliott	0.4197603258899044	Tampa Bay Lightning
+Andrei Vasilevskiy	0.8537397868498932	Tampa Bay Lightning
+Ilya Samsonov	0.7171350474013113	Toronto Maple Leafs
+Matt Murray	0.2024759743944659	Toronto Maple Leafs
+Erik Kallgren	0.32079188262312053	Toronto Maple Leafs
+Spencer Martin	0.47082348811867153	Vancouver Canucks
+Thatcher Demko	0.23794627323874212	Vancouver Canucks
+Adin Hill	0.6248503547360097	Vegas Golden Knights
+Logan Thompson	0.9724496662901129	Vegas Golden Knights
+Darcy Kuemper	0.6394297103010536	Washington Capitals
+Charlie Lindgren	0.23794627323874212	Washington Capitals
+Connor Hellebuyck	0.9253022380335418	Winnipeg Jets
+David Rittich	0.2787273162789087	Winnipeg Jets

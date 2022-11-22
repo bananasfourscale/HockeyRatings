@@ -50,7 +50,7 @@ class total_rating_weights(Enum):
 
 
 class goalie_rating_weights(Enum):
-    UTILIZATION_WEIGHT = 0.50
-    GOALS_AGAINST_WEIGHT = 0.0 # TODO not yet implemented
-    SAVE_PERCENTAGE_WEIGHT = 0.25
-    WIN_RATING_WEIGHT = 0.25
+    UTILIZATION_WEIGHT = 0.30
+    WIN_RATING_WEIGHT = 0.10
+    SAVE_PERCENTAGE_WEIGHT = 0.40
+    GOALS_AGAINST_WEIGHT = 0.20

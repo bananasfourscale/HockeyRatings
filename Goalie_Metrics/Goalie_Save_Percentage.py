@@ -5,7 +5,6 @@ import json
 goalie_save_percentage_rating = {}
 
 
-
 def goalie_save_percentage_get_dict() -> dict:
     return goalie_save_percentage_rating
 
@@ -63,6 +62,10 @@ def goalie_save_percentage_scale_for_volume(metric_list : list=[],
 
             # shortcut to access stats more cleanly
             player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
+
+            # (S%_ev / 100) * S_ev
+            # (S%_pp / 100) * S_pp
+            # (S%_sh / 100) * S_sh
             metric_list[0][goalie] = (metric_list[0][goalie] / 100) * \
                 player_stats['evenSaves']
             metric_list[1][goalie] = (metric_list[1][goalie] / 100) * \
