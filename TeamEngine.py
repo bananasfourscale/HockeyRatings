@@ -166,7 +166,7 @@ def calculate_offensive_rating() -> None:
     plot_data_set("Output_Files/Instance_Files/offensiveRating.csv",
         ["Team", "Power Play Base"], max(list(offensive_metrics[2].values())),
         min(list(offensive_metrics[2].values())), [],
-        "Graphs/offensive_Rating/penalty_kill_base.png")
+        "Graphs/offensive_Rating/power_play_base.png")
     
     # apply sigmoid corrections
     for metric_dict in offensive_metrics:
