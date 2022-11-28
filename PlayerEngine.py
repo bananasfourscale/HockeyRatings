@@ -186,7 +186,7 @@ def goalie_goals_against_avg() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
         ["Goalie", "Goals Against Avg Base", "Team"],
-        goalie_goals_against_get_dict(), active_players['Goalie'])
+        goalie_goals_against_get_dict(), active_players['Goalie'], False)
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
         ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],

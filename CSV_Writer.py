@@ -14,17 +14,26 @@ def write_out_file(file_name : str = "", header_row : list = [],
 
 
 def write_out_player_file(file_name : str = "", header_row : list = [],
-                          rating_list : dict = {}, player_list : dict = {}) \
+                          rating_list : dict = {}, player_list : dict = {},
+                          ascending=True) \
                                                                     -> None:
     with open(file_name, 'w', newline='', encoding='utf-8') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
 
+        # sort player dict
+        sorted_list = \
+            dict(sorted(rating_list.items(), key=lambda item: item[1],
+                reverse=ascending))
+
         # for each player print the player, the stat and the team they're on
         csv_writer.writerow(header_row)
-        for key in rating_list.keys():
-            data_list = [key, rating_list[key], player_list[key][1]]
+        count = 1
+        for key in sorted_list.keys():
+            data_list = \
+                [str(count) + " " + key, rating_list[key], player_list[key][1]]
             csv_writer.writerow(data_list)
+            count += 1
 
 
 def update_trend_file(file_name : str = "", stat_dict : dict = {}) -> None:

@@ -54,3 +54,8 @@ class goalie_rating_weights(Enum):
     WIN_RATING_WEIGHT = 0.10
     SAVE_PERCENTAGE_WEIGHT = 0.40
     GOALS_AGAINST_WEIGHT = 0.20
+
+class defensemen_rating_weights(Enum):
+    UTILIZATION_WEIGHT = 0.20
+    PHYSICALITY_WEIGHT = 0.20
+    DISIPLINE_WEIGHT = 0.20
