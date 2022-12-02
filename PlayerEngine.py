@@ -25,7 +25,7 @@ from Plotter import plot_player_ranking
 from Worker_Nodes import plotter_worker
 
 
-sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 
 team_codes = {
@@ -116,7 +116,7 @@ def goalie_utilization() -> None:
 
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
-        ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmiod_ticks,
+        ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Utilization/utilization_corrected.png")))
 
 
@@ -140,7 +140,7 @@ def goalie_win_rating() -> None:
         active_players['Goalie'])
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Win_Rating_Corrected.csv",
-        ["Goalie", "Win Rating Corrected"], 1.0, 0.0, sigmiod_ticks,
+        ["Goalie", "Win Rating Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Win_Rating/win_rating_corrected.png")))
 
 
@@ -186,7 +186,7 @@ def goalie_save_percentage() -> None:
         active_players['Goalie'])
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
-        ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmiod_ticks,
+        ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Save_Percentage/save_percentage_corrected.png")))
 
 
@@ -210,7 +210,7 @@ def goalie_goals_against_avg() -> None:
         goalie_goals_against, active_players['Goalie'])
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
-        ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmiod_ticks,
+        ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Goals_Against/goals_against_corrected_Corrected.png")))
 
 
@@ -245,7 +245,7 @@ def calculate_goalie_metrics() -> None:
         active_players['Goalie'])
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-        ["Goalie", "Total Rating"], 1.0, 0.0, sigmiod_ticks,
+        ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
 
 if __name__ == "__main__":
@@ -253,7 +253,6 @@ if __name__ == "__main__":
     # set up multiprocess to be ready in case a subprocess freezes
     freeze_support()
     start = time.time()
-    print(start)
 
     # create a few plotting processes to speed things up a bit
     subprocess_count = 3
@@ -275,6 +274,10 @@ if __name__ == "__main__":
     # stop all the running workers
     for i in range(subprocess_count):
         player_eng_plotting_queue.put('STOP')
+
+    for process in process_list:
+        while process.is_alive():
+            pass
 
     # remove all the instance files
     for dir in \
