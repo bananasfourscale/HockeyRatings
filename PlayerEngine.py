@@ -2,6 +2,8 @@
 import json
 import requests
 from multiprocessing import Process, Queue, freeze_support
+import os
+import time
 
 # import all custom modules for parsing
 from CSV_Writer import write_out_player_file
@@ -19,7 +21,8 @@ from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
     goalie_goals_against_get_data
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights
-from Plotter import plot_player_ranking, plotter_worker
+from Plotter import plot_player_ranking
+from Worker_Nodes import plotter_worker
 
 
 sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -98,8 +101,6 @@ def goalie_utilization() -> None:
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
         active_players['Goalie'])
-
-    # send plot to plotting queue
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base"], 0.0, 0.0, [],
@@ -122,25 +123,25 @@ def goalie_utilization() -> None:
 def goalie_win_rating() -> None:
     goalie_win_rating_calculate(active_players['Goalie'])
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating_Base.csv",
         ["Goalie", "Win Rating Base", "Team"], goalie_win_rating_get_dict(),
         active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating_Base.csv",
         ["Goalie", "Win Rating Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Win_Rating/win_rating_base.png")
+        "Graphs/Goalies/Win_Rating/win_rating_base.png")))
 
     # apply correction
     goalie_win_rating = apply_sigmoid_correction(
         goalie_win_rating_get_dict())
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating_Corrected.csv",
         ["Goalie", "Win Rating Corrected", "Team"], goalie_win_rating,
         active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Win_Rating.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Win_Rating_Corrected.csv",
         ["Goalie", "Win Rating Corrected"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Goalies/Win_Rating/win_rating_corrected.png")
+        "Graphs/Goalies/Win_Rating/win_rating_corrected.png")))
 
 
 def goalie_save_percentage() -> None:
@@ -151,14 +152,15 @@ def goalie_save_percentage() -> None:
     goalie_save_percentage_combine_metrics(sp_metrics, active_players["Goalie"],
         team_codes)
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Base.csv",
         ["Goalie", "Save Percentage Base", "Team"],
         goalie_save_percentage_get_dict(), active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Base.csv",
         ["Goalie", "Save Percentage Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Save_Percentage/save_percentage_base.png")
+        "Graphs/Goalies/Save_Percentage/save_percentage_base.png")))
 
+    # scale the save percentages by the number of saves to account for volume
     sp_metrics = goalie_save_percentage_scale_for_volume(sp_metrics,
         active_players["Goalie"])
     
@@ -167,49 +169,49 @@ def goalie_save_percentage() -> None:
     goalie_save_percentage_combine_metrics(sp_metrics, active_players["Goalie"],
         team_codes)
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
         ["Goalie", "Save Percentage Scaled", "Team"],
         goalie_save_percentage_get_dict(), active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
         ["Goalie", "Save Percentage Scaled"], 0.0, 0.0, [],
-        "Graphs/Goalies/Save_Percentage/save_percentage_scaled.png")
+        "Graphs/Goalies/Save_Percentage/save_percentage_scaled.png")))
 
     # apply correction
     goalie_save_percentage = apply_sigmoid_correction(
         goalie_save_percentage_get_dict())
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
         ["Goalie", "Save Percentage Corrected", "Team"], goalie_save_percentage,
         active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
         ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Goalies/Save_Percentage/save_percentage_corrected.png")
+        "Graphs/Goalies/Save_Percentage/save_percentage_corrected.png")))
 
 
 def goalie_goals_against_avg() -> None:
     goalie_goals_against_get_data(active_players["Goalie"])
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
         ["Goalie", "Goals Against Avg Base", "Team"],
         goalie_goals_against_get_dict(), active_players['Goalie'], False)
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
         ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Goals_Against/goals_against_base.png", True)
+        "Graphs/Goalies/Goals_Against/goals_against_base.png", True)))
 
     # apply correction
     goalie_goals_against = apply_sigmoid_correction(
         goalie_goals_against_get_dict(), True)
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
         ["Goalie", "Goals Against Avg Corrected", "Team"],
         goalie_goals_against, active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Goals_Against.csv",
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
         ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Goalies/Goals_Against/goals_against_corrected.png")
+        "Graphs/Goalies/Goals_Against/goals_against_corrected_Corrected.png")))
 
 
 def calculate_goalie_metrics() -> None:
@@ -248,16 +250,37 @@ def calculate_goalie_metrics() -> None:
 
 if __name__ == "__main__":
 
+    # set up multiprocess to be ready in case a subprocess freezes
     freeze_support()
+    start = time.time()
+    print(start)
 
     # create a few plotting processes to speed things up a bit
-    Process(target=plotter_worker, args=[player_eng_plotting_queue]).start()
+    subprocess_count = 3
+    process_list = []
+    for i in range(subprocess_count):
+        process_list.append(Process(target=plotter_worker,
+            args=(player_eng_plotting_queue, i)))
+    for process in process_list:
+        process.start()
 
     # get all players and sort them into the list for their position
     print("Sorting All Active Players by Position")
     player_sorting()
 
+    # GOALIES
     print("Calculating all Goalie Metrics:")
     calculate_goalie_metrics()
 
-    player_eng_plotting_queue.put('STOP')
+    # stop all the running workers
+    for i in range(subprocess_count):
+        player_eng_plotting_queue.put('STOP')
+
+    # remove all the instance files
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Goalie_Files\Instance_Files\\" + file)
+
+    print(time.time() - start)
