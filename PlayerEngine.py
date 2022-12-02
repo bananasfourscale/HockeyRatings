@@ -1,6 +1,7 @@
 # import all assisting built in modules
 import json
 import requests
+from multiprocessing import Process, Queue, freeze_support
 
 # import all custom modules for parsing
 from CSV_Writer import write_out_player_file
@@ -18,7 +19,7 @@ from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
     goalie_goals_against_get_data
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights
-from Plotter import plot_player_ranking
+from Plotter import plot_player_ranking, plotter_worker
 
 
 sigmiod_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -69,6 +70,9 @@ active_players = {
 }
 
 
+player_eng_plotting_queue = Queue()
+
+
 def player_sorting() -> None:
 
     # loop through each team
@@ -91,25 +95,28 @@ def goalie_utilization() -> None:
     goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
         team_codes)
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
         active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+
+    # send plot to plotting queue
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Utilization/utilization_base.png")
+        "Graphs/Goalies/Utilization/utilization_base.png")))
 
     # apply correction
     goalie_utilization = apply_sigmoid_correction(
         goalie_utilization_get_dict())
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected", "Team"], goalie_utilization,
         active_players['Goalie'])
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Utilization.csv",
+
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmiod_ticks,
-        "Graphs/Goalies/Utilization/utilization_corrected.png")
+        "Graphs/Goalies/Utilization/utilization_corrected.png")))
 
 
 def goalie_win_rating() -> None:
@@ -206,6 +213,7 @@ def goalie_goals_against_avg() -> None:
 
 
 def calculate_goalie_metrics() -> None:
+
     print("\tGoalie Utilization")
     goalie_utilization()
     print("\tGoalie Win Rating")
@@ -240,9 +248,16 @@ def calculate_goalie_metrics() -> None:
 
 if __name__ == "__main__":
 
+    freeze_support()
+
+    # create a few plotting processes to speed things up a bit
+    Process(target=plotter_worker, args=[player_eng_plotting_queue]).start()
+
     # get all players and sort them into the list for their position
     print("Sorting All Active Players by Position")
     player_sorting()
 
     print("Calculating all Goalie Metrics:")
     calculate_goalie_metrics()
+
+    player_eng_plotting_queue.put('STOP')

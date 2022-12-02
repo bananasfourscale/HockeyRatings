@@ -2,6 +2,7 @@
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plotter
+from multiprocessing import Queue
 
 
 team_color_hex_codes = {
@@ -38,6 +39,15 @@ team_color_hex_codes = {
     'Washington Capitals' : "#C8102E",
     'Winnipeg Jets' : "#8E9090",
 }
+
+
+def plotter_worker(input_queue : Queue=None):
+    i = 0
+    for func, arg_list in iter(input_queue.get, 'STOP'):
+        func(*arg_list)
+        print("completed graph {}".format(i))
+        i += 1
+    print("Exiting! this working ran {} plots".format(i))
 
 
 def plot_data_set(csv_file : str = "", axis : list = [],
