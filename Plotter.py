@@ -59,7 +59,16 @@ def plot_data_set(csv_file : str = "", axis : list = [],
         horizontalalignment='center')
     plotter.tick_params(axis='x', which='major', labelsize=24)
     plotter.tight_layout()
-    plotter.ylim(lower_bound, upper_bound)
+
+    # determine the bounds either based on the input, or based on the data set
+    if (upper_bound == 0.0) and (lower_bound == 0.0):
+        plot_min = \
+            plot_data.min().loc[axis[1]] - (plot_data.min().loc[axis[1]] * 0.10)
+        plot_max = \
+            plot_data.max().loc[axis[1]] + (plot_data.min().loc[axis[1]] * 0.10)
+        plotter.ylim(plot_min, plot_max)
+    else:
+        plotter.ylim(lower_bound, upper_bound)
     if len(tick_set) > 0:
         plotter.yticks(tick_set)
     plotter.savefig(image_file)

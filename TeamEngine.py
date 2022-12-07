@@ -91,9 +91,7 @@ def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
         ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"],
-        max(list(strength_of_schedule_get_dict().values())),
-        min(list(strength_of_schedule_get_dict().values())), [],
+        ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
         "Graphs/Strength_of_Schedule/sos_game_scale.png")))
 
     # apply sigmoid correction, write out again, and graph
@@ -169,24 +167,19 @@ def calculate_offensive_rating(update_trends : bool=True) -> None:
         ["Team", "Shots For Base"], offensive_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/ShotsForRatingBase.csv",
-        ["Team", "Shots For Base"],
-        max(list(offensive_metrics[0].values())),
-        min(list(offensive_metrics[0].values())), [],
+        ["Team", "Shots For Base"], 0.0, 0.0, [],
         "Graphs/offensive_Rating/shots_for_per_game_base.png")))
     write_out_file("Output_Files/Instance_Files/GoalsForRatingBase.csv",
         ["Team", "Goals For Base"], offensive_metrics[1])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/GoalsForRatingBase.csv",
-        ["Team", "Goals For Base"],
-        max(list(offensive_metrics[1].values())),
-        min(list(offensive_metrics[1].values())), [],
+        ["Team", "Goals For Base"], 0.0, 0.0, [],
         "Graphs/offensive_Rating/goals_for_per_game_base.png")))
     write_out_file("Output_Files/Instance_Files/PPRatingBase.csv",
         ["Team", "Power Play Base"], offensive_metrics[2])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/PPRatingBase.csv",
-        ["Team", "Power Play Base"], max(list(offensive_metrics[2].values())),
-        min(list(offensive_metrics[2].values())), [],
+        ["Team", "Power Play Base"], 0.0, 0.0, [],
         "Graphs/offensive_Rating/power_play_base.png")))
     
     # apply sigmoid corrections
@@ -198,25 +191,19 @@ def calculate_offensive_rating(update_trends : bool=True) -> None:
         ["Team", "Shots For Corrected"], offensive_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/ShotsForRatingCorr.csv",
-        ["Team", "Shots For Corrected"],
-        max(list(offensive_metrics[0].values())),
-        min(list(offensive_metrics[0].values())), sigmoid_ticks,
+        ["Team", "Shots For Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/offensive_Rating/shots_for_per_game_sigmoid.png")))
     write_out_file("Output_Files/Instance_Files/GoalsForRatingCorr.csv",
         ["Team", "Goals For Corrected"], offensive_metrics[1])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/GoalsForRatingCorr.csv",
-        ["Team", "Goals For Corrected"],
-        max(list(offensive_metrics[1].values())),
-        min(list(offensive_metrics[1].values())), sigmoid_ticks,
+        ["Team", "Goals For Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/offensive_Rating/goals_for_per_game_sigmoid.png")))
     write_out_file("Output_Files/Instance_Files/PPRatingCorr.csv",
         ["Team", "Power Play Corrected"], offensive_metrics[2])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/PPRatingCorr.csv",
-        ["Team", "Power Play Corrected"],
-        max(list(offensive_metrics[2].values())),
-        min(list(offensive_metrics[2].values())), sigmoid_ticks,
+        ["Team", "Power Play Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/offensive_Rating/power_play_sigmoid.png")))
 
     # combine metrics to overall score and plot
@@ -246,25 +233,19 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
         ["Team", "Shots Against Base"], defensive_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/ShotsAgaRatingBase.csv",
-        ["Team", "Shots Against Base"],
-        min(list(defensive_metrics[0].values())),
-        max(list(defensive_metrics[0].values())), [],
+        ["Team", "Shots Against Base"], 0.0, 0.0, [],
         "Graphs/Defensive_Rating/shots_against_per_game_base.png", True)))
     write_out_file("Output_Files/Instance_Files/GoalsAgaRatingBase.csv",
         ["Team", "Goals Against Base"], defensive_metrics[1])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/GoalsAgaRatingBase.csv",
-        ["Team", "Goals Against Base"],
-        min(list(defensive_metrics[1].values())),
-        max(list(defensive_metrics[1].values())), [],
+        ["Team", "Goals Against Base"], 0.0, 0.0, [],
         "Graphs/Defensive_Rating/goals_against_per_game_base.png", True)))
     write_out_file("Output_Files/Instance_Files/PKRatingBase.csv",
         ["Team", "Penalty Kill Base"], defensive_metrics[2])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/PKRatingBase.csv",
-        ["Team", "Penalty Kill Base"],
-        max(list(defensive_metrics[2].values())),
-        min(list(defensive_metrics[2].values())), [],
+        ["Team", "Penalty Kill Base"], 0.0, 0.0, [],
         "Graphs/Defensive_Rating/penalty_kill_base.png")))
     
     # apply sigmoid corrections
@@ -277,25 +258,19 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
         ["Team", "Shots Against Corrected"], defensive_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/ShotsAgaRatingCorr.csv",
-        ["Team", "Shots Against Corrected"],
-        max(list(defensive_metrics[0].values())),
-        min(list(defensive_metrics[0].values())), sigmoid_ticks,
+        ["Team", "Shots Against Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensive_Rating/shots_against_per_game_sigmoid.png")))
     write_out_file("Output_Files/Instance_Files/GoalsAgaRatingCorr.csv",
         ["Team", "Goals Against Corrected"], defensive_metrics[1])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/GoalsAgaRatingCorr.csv",
-        ["Team", "Goals Against Corrected"],
-        max(list(defensive_metrics[1].values())),
-        min(list(defensive_metrics[1].values())), sigmoid_ticks,
+        ["Team", "Goals Against Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensive_Rating/goals_against_per_game_sigmoid.png")))
     write_out_file("Output_Files/Instance_Files/PKRatingCorr.csv",
         ["Team", "Penalty Kill Corrected"], defensive_metrics[2])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Instance_Files/PKRatingCorr.csv",
-        ["Team", "Penalty Kill Corrected"],
-        max(list(defensive_metrics[2].values())),
-        min(list(defensive_metrics[2].values())), sigmoid_ticks,
+        ["Team", "Penalty Kill Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensive_Rating/penalty_kill_sigmoid.png")))
 
     # combine metrics to overall score and plot

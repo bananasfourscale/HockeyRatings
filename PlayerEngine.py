@@ -4,6 +4,7 @@ import requests
 from multiprocessing import Process, Queue, freeze_support
 import os
 import time
+import psutil
 
 # import all custom modules for parsing
 from CSV_Writer import write_out_player_file
@@ -73,6 +74,42 @@ active_players = {
 }
 
 
+team_stats = {
+    'Anaheim Ducks' : {},
+    'Arizona Coyotes' : {},
+    'Boston Bruins' : {},
+    'Buffalo Sabres' : {},
+    'Calgary Flames' : {},
+    'Carolina Hurricanes' : {},
+    'Chicago Blackhawks' : {},
+    'Colorado Avalanche' : {},
+    'Columbus Blue Jackets' : {},
+    'Dallas Stars' : {},
+    'Detroit Red Wings' : {},
+    'Edmonton Oilers' : {},
+    'Florida Panthers' : {},
+    'Los Angeles Kings' : {},
+    'Minnesota Wild' : {},
+    'Montréal Canadiens' : {},
+    'Nashville Predators' : {},
+    'New Jersey Devils' : {},
+    'New York Islanders' : {},
+    'New York Rangers' : {},
+    'Ottawa Senators' : {},
+    'Philadelphia Flyers' : {},
+    'Pittsburgh Penguins' : {},
+    'San Jose Sharks' : {},
+    'Seattle Kraken' : {},
+    'St. Louis Blues' : {},
+    'Tampa Bay Lightning' : {},
+    'Toronto Maple Leafs' : {},
+    'Vancouver Canucks' : {},
+    'Vegas Golden Knights' : {},
+    'Washington Capitals' : {},
+    'Winnipeg Jets' : {},
+}
+
+
 player_eng_plotting_queue = Queue()
 
 
@@ -94,9 +131,23 @@ def player_sorting() -> None:
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
 
 
+def get_team_stats() -> None:
+
+    # Team lists are so small relative to the list of all player data, just get
+    # the data and store it to save time looking it up over and over
+    for team in team_codes.keys():
+        team_url = \
+            "https://statsapi.web.nhl.com/api/v1/teams/" + \
+            "{}?expand=team.stats".format(team_codes[team])
+        team_web_data = requests.get(team_url)
+        team_parsed_data = json.loads(team_web_data.content)
+        team_stats[team] = \
+            team_parsed_data["teams"][0]["teamStats"][0]["splits"][0]["stat"]
+
+
 def goalie_utilization() -> None:
     goalie_utilization_calculate_time_on_ice(active_players['Goalie'],
-        team_codes)
+        team_stats)
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
@@ -113,7 +164,6 @@ def goalie_utilization() -> None:
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected", "Team"], goalie_utilization,
         active_players['Goalie'])
-
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -150,7 +200,7 @@ def goalie_save_percentage() -> None:
     # these metrics being unevenly weighted it makes more sense to do sigmoid
     # correction after combining all the metrics
     goalie_save_percentage_combine_metrics(sp_metrics, active_players["Goalie"],
-        team_codes)
+        team_stats)
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Base.csv",
         ["Goalie", "Save Percentage Base", "Team"],
@@ -167,7 +217,7 @@ def goalie_save_percentage() -> None:
     # these metrics being unevenly weighted it makes more sense to do sigmoid
     # correction after combining all the metrics
     goalie_save_percentage_combine_metrics(sp_metrics, active_players["Goalie"],
-        team_codes)
+        team_stats)
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
         ["Goalie", "Save Percentage Scaled", "Team"],
@@ -211,7 +261,7 @@ def goalie_goals_against_avg() -> None:
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
         ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Goals_Against/goals_against_corrected_Corrected.png")))
+        "Graphs/Goalies/Goals_Against/goals_against_corrected.png")))
 
 
 def calculate_goalie_metrics() -> None:
@@ -267,9 +317,14 @@ if __name__ == "__main__":
     print("Sorting All Active Players by Position")
     player_sorting()
 
+    get_team_stats()
+
     # GOALIES
     print("Calculating all Goalie Metrics:")
     calculate_goalie_metrics()
+
+    # Getting % usage of virtual_memory ( 3rd field)
+    print(psutil.Process().memory_info())
 
     # stop all the running workers
     for i in range(subprocess_count):
