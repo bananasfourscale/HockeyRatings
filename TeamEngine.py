@@ -391,7 +391,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # create a few plotting processes to speed things up a bit
-    subprocess_count = 3
+    subprocess_count = 7
     process_list = []
     for i in range(subprocess_count):
         process_list.append(Process(target=plotter_worker,

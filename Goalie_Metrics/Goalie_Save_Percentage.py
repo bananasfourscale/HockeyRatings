@@ -16,83 +16,56 @@ def goalie_save_percentage_get_data(active_goalies : dict={}) -> list:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():
-        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-        "{}/stats?stats=statsSingleSeason&season=20222023".format(
-            active_goalies[goalie][0])
-        web_data = requests.get(goalie_url)
-        parsed_data = json.loads(web_data.content)
 
-        # make sure the goalie has stats
-        if len(parsed_data["stats"][0]["splits"]) > 0:
+        # shortcut to access stats more cleanly
+        player_stats = active_goalies[goalie][0]
 
-            # shortcut to access stats more cleanly
-            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
+        # get even strength data
+        even_strength_sp[goalie] = player_stats["evenStrengthSavePercentage"]
 
-            # get even strength data
-            even_strength_sp[goalie] = \
-                player_stats["evenStrengthSavePercentage"]
+        # get powerplay data if it exist (own team short handed)
+        if player_stats["powerPlayShots"] > 0:
+            power_play_sp[goalie] = player_stats["powerPlaySavePercentage"]
+        else:
+            power_play_sp[goalie] = 100.0
 
-            # get powerplay data if it exist (own team short handed)
-            if player_stats["powerPlayShots"] > 0:
-                power_play_sp[goalie] = \
-                    player_stats["powerPlaySavePercentage"]
-            else:
-                power_play_sp[goalie] = 100.0
-
-            # get short handed data if it exist (own team power play)
-            if player_stats["shortHandedShots"] > 0:
-                penalty_kill_sp[goalie] = \
-                    player_stats["shortHandedSavePercentage"]
-            else:
-                penalty_kill_sp[goalie] = 100.0
+        # get short handed data if it exist (own team power play)
+        if player_stats["shortHandedShots"] > 0:
+            penalty_kill_sp[goalie] = player_stats["shortHandedSavePercentage"]
+        else:
+            penalty_kill_sp[goalie] = 100.0
     return [even_strength_sp, power_play_sp, penalty_kill_sp]
 
 
 def goalie_save_percentage_scale_for_volume(metric_list : list=[],
     active_goalies : dict={}) -> list:
     for goalie in metric_list[0].keys():
-        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-        "{}/stats?stats=statsSingleSeason&season=20222023".format(
-            active_goalies[goalie][0])
-        web_data = requests.get(goalie_url)
-        parsed_data = json.loads(web_data.content)
 
-        # make sure the goalie has stats
-        if len(parsed_data["stats"][0]["splits"]) > 0:
+        # shortcut to access stats more cleanly
+        player_stats = active_goalies[goalie][0]
 
-            # shortcut to access stats more cleanly
-            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
-
-            # (S%_ev / 100) * S_ev
-            # (S%_pp / 100) * S_pp
-            # (S%_sh / 100) * S_sh
-            metric_list[0][goalie] = (metric_list[0][goalie] / 100) * \
-                player_stats['evenSaves']
-            metric_list[1][goalie] = (metric_list[1][goalie] / 100) * \
-                player_stats['powerPlaySaves']
-            metric_list[2][goalie] = (metric_list[2][goalie] / 100) * \
-                player_stats['shortHandedSaves']
-
+        # (S%_ev / 100) * S_ev
+        # (S%_pp / 100) * S_pp
+        # (S%_sh / 100) * S_sh
+        metric_list[0][goalie] = (metric_list[0][goalie] / 100) * \
+            player_stats['evenSaves']
+        metric_list[1][goalie] = (metric_list[1][goalie] / 100) * \
+            player_stats['powerPlaySaves']
+        metric_list[2][goalie] = (metric_list[2][goalie] / 100) * \
+            player_stats['shortHandedSaves']
     return metric_list
 
 
 
 def goalie_save_percentage_combine_metrics(metric_list : list=[],
-    active_goalies : dict={}, team_IDs : dict={}) -> None:
+    active_goalies : dict={}, all_team_stats : dict={}) -> None:
     
     # unlike other stats which use a flat weight. Have this weight scale so that
     # roughly the percentage of time at each strength is the percent weight.
     # This is designed to be applied after some other corrections but can be
     # applied proactively as well
     for goalie in metric_list[0].keys():
-        team_url = \
-            "https://statsapi.web.nhl.com/api/v1/teams/" + \
-            "{}?expand=team.stats".format(
-                team_IDs[active_goalies[goalie][1]])
-        team_web_data = requests.get(team_url)
-        team_parsed_data = json.loads(team_web_data.content)
-        team_stats = team_parsed_data["teams"][0]["teamStats"][0]["splits"][
-            0]["stat"]
+        team_stats = all_team_stats[active_goalies[goalie][1]]
 
         # get roughly the total ice time for the team of this goalie
         games_played = team_stats["gamesPlayed"]
@@ -113,7 +86,6 @@ def goalie_save_percentage_combine_metrics(metric_list : list=[],
         # now the even strength must just be the remainder
         even_strength_sp_weight = (total_ice_time - (sh_time + pp_time)) / \
             total_ice_time
-        
         goalie_save_percentage_rating[goalie] = \
             (metric_list[0][goalie] * even_strength_sp_weight) + \
             (metric_list[1][goalie] * power_play_sp_weight) + \

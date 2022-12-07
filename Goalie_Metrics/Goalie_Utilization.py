@@ -10,35 +10,20 @@ def goalie_utilization_get_dict() -> dict:
 
 
 def goalie_utilization_calculate_time_on_ice(active_goalies : dict={},
-    team_IDs : dict={}) -> None:
+    all_team_stats : dict={}) -> None:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():
-        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-        "{}/stats?stats=statsSingleSeason&season=20222023".format(
-            active_goalies[goalie][0])
-        web_data = requests.get(goalie_url)
-        parsed_data = json.loads(web_data.content)
 
-        # make sure the goalie has stats
-        if len(parsed_data["stats"][0]["splits"]) > 0:
-            team_url = \
-                "https://statsapi.web.nhl.com/api/v1/teams/" + \
-                "{}?expand=team.stats".format(
-                    team_IDs[active_goalies[goalie][1]])
-            team_web_data = requests.get(team_url)
-            team_parsed_data = json.loads(team_web_data.content)
+        # shortcut to access stats more cleanly
+        player_stats = active_goalies[goalie][0]
+        team_stats = all_team_stats[active_goalies[goalie][1]]
 
-            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
-            team_stats = \
-                team_parsed_data["teams"][0]["teamStats"][0]["splits"][0][
-                    "stat"]
-
-            # ((TOIm + TOIs) / 60) / TeamGP
-            time_on_ice = player_stats["timeOnIce"].split(":")
-            goalie_utilization_rating[goalie] = \
-                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-                    team_stats["gamesPlayed"]
+        # ((TOIm + TOIs) / 60) / TeamGP
+        time_on_ice = player_stats["timeOnIce"].split(":")
+        goalie_utilization_rating[goalie] = \
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
+                team_stats["gamesPlayed"]
 
 
 if __name__ == "__main__":

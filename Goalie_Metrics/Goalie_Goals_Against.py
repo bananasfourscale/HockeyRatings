@@ -13,19 +13,10 @@ def goalie_goals_against_get_data(active_goalies : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():
-        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-        "{}/stats?stats=statsSingleSeason&season=20222023".format(
-            active_goalies[goalie][0])
-        web_data = requests.get(goalie_url)
-        parsed_data = json.loads(web_data.content)
 
-        # make sure the goalie has stats
-        if len(parsed_data["stats"][0]["splits"]) > 0:
-
-            # shortcut to access stats more cleanly
-            player_stats = parsed_data["stats"][0]["splits"][0]["stat"]
-            goalie_goals_against_rating[goalie] = \
-                player_stats["goalAgainstAverage"]
+        # shortcut to access stats more cleanly
+        player_stats = active_goalies[goalie][0]
+        goalie_goals_against_rating[goalie] = player_stats["goalAgainstAverage"]
 
 
 if __name__ == "__main__":
@@ -87,10 +78,5 @@ if __name__ == "__main__":
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
 
     sp_metrics = goalie_goals_against_get_data(active_players['Goalie'])
-
-    # TODO this does nothing but get data and throw it away, look at team
-    # offenseive and defensive ratings to get an idea of how to do it
-    goalie_goals_against_combine_metrics(sp_metrics,
-        active_players['Goalie'], team_codes)
     for goalie in goalie_goals_against_rating.keys():
         print("\t" + goalie + '=' + str(goalie_goals_against_rating[goalie]))

@@ -121,14 +121,27 @@ def player_sorting() -> None:
             "https://statsapi.web.nhl.com/api/v1/teams/" + \
             "{}?expand=team.roster".format(team_codes[team])
         web_data = requests.get(roster_url)
-        parsed_data = json.loads(web_data.content)
+        roster_data = json.loads(web_data.content)
 
         # for each listed player in the roster, store the name as the key
         # and the ID as the value so they can be individually searched later
-        for player in parsed_data["teams"][0]["roster"]["roster"]:
-            active_players[player["position"]["name"]] \
-                [player["person"]["fullName"]] = \
-                    [player["person"]["id"], parsed_data["teams"][0]["name"]]
+        for player in roster_data["teams"][0]["roster"]["roster"]:
+
+            if player["position"]["name"] == 'Goalie':
+                player_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
+                    "{}/stats?stats=statsSingleSeason&season=20222023".format(
+                    player["person"]["id"])
+                web_data = requests.get(player_url)
+                player_data = json.loads(web_data.content)
+
+                # make sure the goalie has stats
+                if len(player_data["stats"][0]["splits"]) > 0:
+
+                    # shortcut to access stats more cleanly
+                    player_stats = player_data["stats"][0]["splits"][0]["stat"]
+                    active_players[player["position"]["name"]] \
+                        [player["person"]["fullName"]] = \
+                            [player_stats, roster_data["teams"][0]["name"]]
 
 
 def get_team_stats() -> None:
@@ -305,7 +318,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # create a few plotting processes to speed things up a bit
-    subprocess_count = 3
+    subprocess_count = 7
     process_list = []
     for i in range(subprocess_count):
         process_list.append(Process(target=plotter_worker,
@@ -316,20 +329,15 @@ if __name__ == "__main__":
     # get all players and sort them into the list for their position
     print("Sorting All Active Players by Position")
     player_sorting()
-
     get_team_stats()
 
     # GOALIES
     print("Calculating all Goalie Metrics:")
     calculate_goalie_metrics()
 
-    # Getting % usage of virtual_memory ( 3rd field)
-    print(psutil.Process().memory_info())
-
     # stop all the running workers
     for i in range(subprocess_count):
         player_eng_plotting_queue.put('STOP')
-
     for process in process_list:
         while process.is_alive():
             pass
@@ -340,5 +348,4 @@ if __name__ == "__main__":
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-
     print(time.time() - start)

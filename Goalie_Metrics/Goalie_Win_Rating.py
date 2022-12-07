@@ -13,22 +13,16 @@ def goalie_win_rating_calculate(active_goalies : dict={}) -> None:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():
-        goalie_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-        "{}/stats?stats=statsSingleSeason&season=20222023".format(
-            active_goalies[goalie][0])
-        web_data = requests.get(goalie_url)
-        parsed_data = json.loads(web_data.content)
 
-        # make sure the goalie has stats
-        if len(parsed_data["stats"][0]["splits"]) > 0:
-            player_data = parsed_data["stats"][0]["splits"][0]["stat"]
+        # shortcut to access stats more cleanly
+        player_stats = active_goalies[goalie][0]
 
-            # (W * 1) + (OTL * .33)
-            wins = player_data["wins"]
-            ot_losses = player_data["ot"]
-            shutouts = player_data["shutouts"]
-            goalie_win_rating[goalie] = (wins) + (ot_losses * 0.33) + \
-                (shutouts * 0.1)
+        # (W * 1) + (OTL * .33)
+        wins = player_stats["wins"]
+        ot_losses = player_stats["ot"]
+        shutouts = player_stats["shutouts"]
+        goalie_win_rating[goalie] = (wins) + (ot_losses * 0.33) + \
+            (shutouts * 0.1)
 
 
 if __name__ == "__main__":
