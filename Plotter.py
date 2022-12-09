@@ -43,7 +43,7 @@ team_color_hex_codes = {
 def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
                   tick_set : list = [], image_file : str = "",
-                  ascending=False) -> None:
+                  ascending : bool=False) -> None:
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
     sns.set_theme()
@@ -97,7 +97,7 @@ def plot_trend_set(csv_file : str = "", axis : list = [],
 def plot_player_ranking(csv_file : str = "", axis : list = [],
                         upper_bound : float = 0.0, lower_bound : float = 0.0,
                         tick_set : list = [], image_file : str = "",
-                        ascending=False) -> None:
+                        ascending: bool=False) -> None:
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
     sns.set_theme()

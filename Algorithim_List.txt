@@ -6,35 +6,54 @@ Goalies:
             working goalies.
         -TOImin: Time on ice converted to minutes
         -GPteam: the number of total games the goalies current team has played
-        
+
+/*******************************************************************************/        
 Teams:
+    Strength of Schedule:
+        1. SoS: Wsc + Lrk;
+        -Rational: It's not just eough to win, but rather to win against the
+            other best teams in the league. Wining against good teams gives
+            more points while losing doesn't change the score at all. Standard
+            ELO rankings don't punish losses other than no more gain of points.
+            Over time the punishment for losing games is that the points are
+            scaled by games played, so points become worth less individually.
+        - Wsc: The winning teams current score
+        - Lrk: the losing teams' current average ranking
+
     Clutch (under review): (W%lead1 * 5) + (W%lead2 * 10)
         -Rational: Ideally this would be a simple way to show teams holding
             leads vs makikng comebacks but the free API doesn't quite have the
             level of insight that the manual version did. Thinking of removing.
         - W%lead1: Win percentage when team is leading after 1st period
         - W%lead2: Win percentage when team is leading after 2nd period
-    Recent_Form: (W * 1) + (L * 0) + (OT * 0.33)
+
+    Win Rating:
+        1. Win Rating: (W * 1) + (L * 0) + (OT * 1/3)
+        -Rational: Same basic calculation as recent form (below) but taking in
+            to account the entire season when looking at record. In the end no
+            matter the style of game that a team plays if they consistantly win
+            most of their games, they can't really be that bad.
+        - W: wins in this season
+        - L: losses in this season
+        - OT: overtime losses this season
+
+    Recent_Form:
+        1. Recent_Form: (W * 1) + (L * 0) + (OT * 1/3)
         -Rational: somewhat self explanitory, will track just the last 10 games
-            of a team to get thier more recent form as opposed to other stats
+            of a team to get their more recent form as opposed to other stats
             which are based on season results and can be slow to shift.
             Essentially works as an accelerator for change that is scalable by
             chaning the weight of the metric
         - W: wins in last 10 games
         - L: losses in last 10 games
         - OT: overtime losses in last 10 games
-    Scoring_Rating: ((GFG - GAG) * 0.75) + ((SHFG - SHAG) * 0.25)
-        -Rational: takes shooting difference and scoring difference to try to
-            account for the fact that very high scoring teams tend to show up
-            higher on many metrics, but don't nessirarily mean the team wins
-            alot or is good. Defence wins championships. So having a high
-            difference between offence and defense is better than just scoring
-            alot.
-        - GFG: Goals for per game (mean over all games not per 60min)
-        - GAG: Goals against per game (mean over all games not per 60min)
-        - SHFG: Shots for per game (mean over all games not per 60min)
-        - SHAG: Shots against per game (mean over all games not per 60min)
-    Special_Teams: PP% + PK%
-        - Rational: Simply combines both special team metrics. This is generally
-            a very 
+        2. Streak: (W * 1) | (L * -1) | (OT * -1/3)
+        -Rational: an even greater accelerator than the general recent form,
+            this stat rewards the team that is currenly on the longest winning
+            streak greatly and vice-versa.
+        - W: wins in current streak
+        - L: losses in current streak
+        - OT: overtime losses in current streak
+
+
         

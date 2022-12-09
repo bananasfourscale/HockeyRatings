@@ -98,20 +98,16 @@ def determine_winner_loser(home_team : str = "", home_score : int = 0,
 
 def get_latest_rankings(winning_team : str = "", losing_team : str = "",
                         game_date : datetime.date = None,
-                        average_rankings : dict = {}, ranking_dates : list = [])\
-                                                     -> tuple((float, float)):
-
-    winner_rating = 0
+                        average_rankings : dict = {},
+                        ranking_dates : list = []) -> tuple((float, float)):
     loser_rating = 0
     total_weeks = len(list(average_rankings.values())[0])-1
     try:
         
         # loop through all rating points until the most recent before the
         # date of the game is found
-        while (total_weeks > 0):
-            if game_date > ranking_dates[total_weeks]:
-                winner_rating = float(
-                    average_rankings[winning_team][total_weeks])
+        while (total_weeks >= 0):
+            if game_date >= ranking_dates[total_weeks]:
                 loser_rating = float(average_rankings[losing_team][total_weeks])
 
                 # if we find the correct week, then skip the loop
@@ -124,10 +120,9 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         # there might not have been any ranking data available at the time
         # of the game. Just use a default which will grant no points
         # to either team.
-        if total_weeks == 0:
-            winner_rating = 1
+        if total_weeks < 0:
             loser_rating = 32
-        return (winner_rating, loser_rating)
+        return loser_rating
 
     except Exception as e:
         print(winning_team, losing_team)
@@ -135,36 +130,29 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         raise e
 
 
-def scale_game_rating(winner_rating : float = 0.0, loser_rating : float = 0.0,
-                      score_difference : int = 1, extra_time : str = "") \
-                                                    -> tuple((float, float)):
+def scale_game_rating(loser_rating : float = 0.0, score_difference : int = 1,
+                      extra_time : str = "") -> tuple((float, float)):
 
     # any win by 4 or more goals gets full credit
     if (score_difference >= 4):
-        return (winner_rating * strength_of_schedule_weights.FOUR_OR_MORE.value,
-            loser_rating * strength_of_schedule_weights.FOUR_OR_MORE.value)
+        return loser_rating * strength_of_schedule_weights.FOUR_OR_MORE.value
 
     # a win by 3 goals is slightly closer and might have an ENG so slightly less
     if (score_difference == 3):
-        return (winner_rating * strength_of_schedule_weights.THREE_GOALS.value,
-            loser_rating * strength_of_schedule_weights.THREE_GOALS.value)
+        return loser_rating * strength_of_schedule_weights.THREE_GOALS.value
 
     # a win by 1/2 goals is generally a close game with an ENG likely majority
     # credit but not full
     if ((score_difference >= 1) and (extra_time == "3rd")):
-        return (winner_rating * strength_of_schedule_weights.TWO_OR_ONE.value,
-            loser_rating * strength_of_schedule_weights.TWO_OR_ONE.value)
+        return loser_rating * strength_of_schedule_weights.TWO_OR_ONE.value
 
     # if you had to go to OT then it was a really close win
     if (extra_time == "OT"):
-        return (winner_rating * strength_of_schedule_weights.OT_GAME.value,
-            loser_rating * strength_of_schedule_weights.OT_GAME.value)
+        return loser_rating * strength_of_schedule_weights.OT_GAME.value
 
     # shootouts are basically just luck on some level and have little
     # correlation to how good the actual team is
-    else:
-        return (winner_rating * strength_of_schedule_weights.SO_GAME.value,
-            loser_rating * strength_of_schedule_weights.SO_GAME.value)
+    return loser_rating * strength_of_schedule_weights.SO_GAME.value
 
 
 def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
@@ -190,16 +178,14 @@ def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
 
             # now given the winner, loser, get the latest rankings for the two
             # teams that they should use for the update
-            (winner_rating, loser_rating) = get_latest_rankings(winner, loser,
-                game_date, average_rankings, ranking_dates)
+            loser_rating = get_latest_rankings(winner, loser, game_date,
+                average_rankings, ranking_dates)
 
             # adjust the final points given/taken based on the size of the win
-            (adjusted_winner_rating, adjusted_loser_rating) = scale_game_rating(
-                winner_rating, (33 - loser_rating), score_difference,
-                extra_time)
+            adjusted_loser_rating = scale_game_rating((33 - loser_rating),
+                score_difference, extra_time)
 
             strength_of_schedule[winner] += (adjusted_loser_rating)
-            #strength_of_schedule[loser] -= (adjusted_winner_rating)
 
 
 def strength_of_schedule_scale_by_game() -> None:

@@ -10,7 +10,7 @@ def goalie_utilization_get_dict() -> dict:
 
 
 def goalie_utilization_calculate_time_on_ice(active_goalies : dict={},
-    all_team_stats : dict={}) -> None:
+                                             all_team_stats : dict={}) -> None:
 
     # loop through and populate the time on ice
     for goalie in active_goalies.keys():

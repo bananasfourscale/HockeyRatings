@@ -434,16 +434,13 @@ if __name__ == "__main__":
     parse_all_data_files()
 
     # calculate all the elements of the score and plot them
-    print("Recent Form")
-    calculate_recent_form(UPDATE_TRENDS)
-
     print("Strenght of Schedule")
     calculate_strenght_of_schedule(UPDATE_TRENDS)
 
     print("Win Rating")
     calculate_win_rating(UPDATE_TRENDS)
 
-    # print("Clutch Rating")
+    # print("Clutch Rating") CURRENTLY BEING REVIEWED
     # calculate_clutch_rating(UPDATE_TRENDS)
 
     print("Offensive Rating")
@@ -451,6 +448,9 @@ if __name__ == "__main__":
 
     print("Defensive Rating")
     calculate_defensive_rating(UPDATE_TRENDS)
+
+    print("Recent Form")
+    calculate_recent_form(UPDATE_TRENDS)
 
     # combine all factors and plot the total rankings
     print("Combining All Metrics")

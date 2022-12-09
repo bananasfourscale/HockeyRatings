@@ -38,7 +38,7 @@ def goalie_save_percentage_get_data(active_goalies : dict={}) -> list:
 
 
 def goalie_save_percentage_scale_for_volume(metric_list : list=[],
-    active_goalies : dict={}) -> list:
+                                            active_goalies : dict={}) -> list:
     for goalie in metric_list[0].keys():
 
         # shortcut to access stats more cleanly
