@@ -22,7 +22,8 @@ from Team_Metrics.Defensive_Rating import defensive_rating_get_data_set, \
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
     clutch_calculate_lead_protection
 from Team_Metrics.Recent_Form import recent_form_get_dict, \
-    recent_form_calculate_rating
+    recent_form_get_data_set, recent_form_calculate_last_ten, \
+    recent_form_calculate_streak, recent_form_combine_metrics
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import total_rating_weights
 from Plotter import plot_data_set, plot_trend_set
@@ -294,23 +295,52 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
 
 def calculate_recent_form(update_trends : bool=True) -> None:
     
-    # first calculate the recent form raw rating and plot
-    recent_form_calculate_rating()
-    write_out_file("Output_Files/Instance_Files/RecentFormBase.csv",
-        ["Team", "Recent Form"], recent_form_get_dict())
+    # get all the data used for recent form across all metrics
+    recent_form_metrics = recent_form_get_data_set()
+
+    # last 10 is just a string value so actually calculate the rating and plot
+    recent_form_metrics[0] = \
+        recent_form_calculate_last_ten(recent_form_metrics[0])
+    write_out_file("Output_Files/Instance_Files/RecentFormLast10Base.csv",
+        ["Team", "Last Ten Games"], recent_form_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Instance_Files/RecentFormBase.csv",
-        ["Team", "Recent Form"], 10.0, 0,
+        ("Output_Files/Instance_Files/RecentFormLast10Base.csv",
+        ["Team", "Last Ten Games"], 10.0, 0,
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "Graphs/Recent_Form/recent_form_base.png")))
+        "Graphs/Recent_Form/recent_form_last_ten_base.png")))
+
+    recent_form_metrics[1] = \
+        recent_form_calculate_streak(recent_form_metrics[1])
+    write_out_file("Output_Files/Instance_Files/RecentFormStreakBase.csv",
+        ["Team", "Current Streak"], recent_form_metrics[1])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Instance_Files/RecentFormStreakBase.csv",
+        ["Team", "Current Streak"], 0.0, 0.0, [],
+        "Graphs/Recent_Form/recent_form_streak_base.png")))
 
     # now apply the sigmoid correction and plot
-    apply_sigmoid_correction(recent_form_get_dict())
-    write_out_file("Output_Files/Instance_Files/RecentFormCorr.csv",
-        ["Team", "Recent Form"], recent_form_get_dict())
+    recent_form_metrics[0] = apply_sigmoid_correction(recent_form_metrics[0])
+    write_out_file("Output_Files/Instance_Files/RecentFormLastTenCorr.csv",
+        ["Team", "Last Ten Games"], recent_form_metrics[0])
     team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Instance_Files/RecentFormCorr.csv",
-        ["Team", "Recent Form"], 1.0, 0.0, sigmoid_ticks,
+        ("Output_Files/Instance_Files/RecentFormLastTenCorr.csv",
+        ["Team", "Last Ten Games"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Recent_Form/recent_form_last_ten_corrected.png")))
+    recent_form_metrics[1] = apply_sigmoid_correction(recent_form_metrics[1])
+    write_out_file("Output_Files/Instance_Files/RecentFormStreakCorr.csv",
+        ["Team", "Last Ten Games"], recent_form_metrics[1])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Instance_Files/RecentFormStreakCorr.csv",
+        ["Team", "Last Ten Games"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Recent_Form/recent_form_streak_corrected.png")))
+
+    # combine the metrics and plot the final result
+    recent_form_combine_metrics(recent_form_metrics)
+    write_out_file("Output_Files/Instance_Files/RecentFormFinal.csv",
+        ["Team", "Recent Form Rating"], recent_form_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Instance_Files/RecentFormFinal.csv",
+        ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Recent_Form/recent_form_final.png")))
 
     # update the trend file
@@ -413,8 +443,8 @@ if __name__ == "__main__":
     print("Win Rating")
     calculate_win_rating(UPDATE_TRENDS)
 
-    print("Clutch Rating")
-    calculate_clutch_rating(UPDATE_TRENDS)
+    # print("Clutch Rating")
+    # calculate_clutch_rating(UPDATE_TRENDS)
 
     print("Offensive Rating")
     calculate_offensive_rating(UPDATE_TRENDS)

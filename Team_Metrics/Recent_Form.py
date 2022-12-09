@@ -1,5 +1,6 @@
 import requests
 import json
+from enum import Enum
 
 recent_form_rating = {
     'Anaheim Ducks' : 0,
@@ -37,44 +38,66 @@ recent_form_rating = {
 }
 
 
+class recent_form_weights(Enum):
+    LAST_TEN = 0.85
+    STREAK = 0.15
+
+
 def recent_form_get_dict() -> dict:
     return recent_form_rating
 
 
-def recent_form_get_data() -> dict:
+def recent_form_get_data_set() -> list:
     records_url = \
         'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
     web_data = requests.get(records_url)
     last_ten_data = {}
+    streak_data = {}
     parsed_data = json.loads(web_data.content)
     for record in parsed_data["records"]:
         for team in record["teamRecords"]:
             last_10 = team["records"]["overallRecords"][3]
-
-            # use the team name to sort the row data into the dictionary
-            last_ten_data[team["team"]["name"]] = "{}-{}-{}".format(
-                last_10["wins"], last_10["losses"], last_10["ot"])
-    return last_ten_data
-
-
-def recent_form_split_game_results(results : str = "") -> tuple((int, int)):
-    game_result = results.split("-")
-    return (game_result[0], game_result[2])
+            streak = team["streak"]
+            streak_data[team["team"]["name"]] = \
+                (streak["streakType"], streak["streakNumber"])
+            last_ten_data[team["team"]["name"]] = \
+                (last_10["wins"], last_10["ot"])
+    return [last_ten_data, streak_data]
 
 
-def recent_form_calculate_rating() -> None:
-    last_ten_data = recent_form_get_data()
-    for team in last_ten_data.keys():
-        (wins,  ot) = recent_form_split_game_results(
-            last_ten_data[team])
-        recent_form_rating[team] = float(wins) + (float(ot) * 0.333)
+def recent_form_calculate_last_ten(last_ten : dict={}) -> dict:
+    calc_last_ten = {}
+    for team in last_ten.keys():
+        calc_last_ten[team] = last_ten[team][0] + (last_ten[team][1] * (1 / 3))
+    return calc_last_ten
+
+
+def recent_form_calculate_streak(streak : dict={}) -> dict:
+    calc_streak = {}
+    for team in streak.keys():
+        if streak[team][0] == "wins":
+            calc_streak[team] = streak[team][1]
+        elif streak[team][0] == "ot":
+            calc_streak[team] = (streak[team][1] * (-1 / 3))
+        else:
+            calc_streak[team] = (streak[team][1] * -1)
+    return calc_streak
+
+
+def recent_form_combine_metrics(metric_list : list=[]) -> None:
+    for team in recent_form_rating.keys():
+        recent_form_rating[team] = \
+            (metric_list[0][team] * \
+                recent_form_weights.LAST_TEN.value) + \
+            (metric_list[1][team] * \
+                recent_form_weights.STREAK.value)
 
 
 if __name__ == "__main__":
 
     # combine and scale wins + OT wins to get the rating form score for
     # the last ten games
-    recent_form_calculate_rating()
+    recent_form_metrics = recent_form_get_data_set()
     print("Recent Form (uncorrected):")
     for team in recent_form_rating.keys() :
         print("\t" + team + '=' + str(recent_form_rating[team]))

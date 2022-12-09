@@ -5,6 +5,5 @@ def plotter_worker(input_queue : Queue=None, id : int=0):
     i = 0
     for func, arg_list in iter(input_queue.get, 'STOP'):
         func(*arg_list)
-        print("worker {} completed graph {}".format(id, i))
         i += 1
-    print("Exiting! this worker {} ran {} plots".format(id, i))
+    print("Exiting! Worker {} ran {} plots".format(id, i))
