@@ -4,10 +4,10 @@ import requests
 from multiprocessing import Process, Queue, freeze_support
 import os
 import time
-import psutil
 
 # import all custom modules for parsing
 from CSV_Writer import write_out_player_file
+from Worker_Nodes import plotter_worker
 
 # import all custom modules for statistical analysis
 from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
@@ -23,7 +23,6 @@ from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights
 from Plotter import plot_player_ranking
-from Worker_Nodes import plotter_worker
 
 
 sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
