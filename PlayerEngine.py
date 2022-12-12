@@ -20,8 +20,12 @@ from Goalie_Metrics.Goalie_Save_Percentage import \
     goalie_save_percentage_combine_metrics
 from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
     goalie_goals_against_get_data
+
+from Defensemen_Metrics.Defensemen_Hits import defensemen_hits_get_dict, \
+    defensemen_hits_get_data
+
 from Sigmoid_Correction import apply_sigmoid_correction
-from Weights import goalie_rating_weights
+from Weights import goalie_rating_weights, defensemen_rating_weights
 from Plotter import plot_player_ranking
 
 
@@ -126,7 +130,8 @@ def player_sorting() -> None:
         # and the ID as the value so they can be individually searched later
         for player in roster_data["teams"][0]["roster"]["roster"]:
 
-            if player["position"]["name"] == 'Goalie':
+            # NOTE only to shorten time while testing
+            if player["position"]["name"] == 'Defenseman':
                 player_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
                     "{}/stats?stats=statsSingleSeason&season=20222023".format(
                     player["person"]["id"])
@@ -310,6 +315,63 @@ def calculate_goalie_metrics() -> None:
         ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
 
+
+def defensemen_hits() -> None:
+    defensemen_hits_get_data(active_players["Defenseman"])
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
+        ["Defensemen", "Hits Base", "Team"],
+        defensemen_hits_get_dict(), active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
+        ["Defensemen", "Hits Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Hits/hits_base.png", False)))
+
+    # apply correction
+    defensemen_hits = apply_sigmoid_correction(
+        defensemen_hits_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
+        ["Defensemen", "Hits Corrected", "Team"],
+        defensemen_hits, active_players['Defenseman'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
+        ["Defensemen", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Hits/hits_corrected.png")))
+
+
+def calculate_defensemen_metrics() -> None:
+    print("\tDefensemen Hits")
+    defensemen_hits()
+
+    defensemen_total_rating = {}
+
+    # not all active defensemen have stats, but all metrics are generated for the
+    # same subset of defensemen so just loop through the keys of any metric
+    for defensemen in defensemen_hits_get_dict().keys():
+        defensemen_total_rating[defensemen] = \
+            (defensemen_hits_get_dict()[defensemen] * \
+                defensemen_rating_weights.UTILIZATION_WEIGHT.value) #+ \
+            # (goalie_win_rating_get_dict()[defensemen] * \
+            #     defensemen_rating_weights.HITS_WEIGHT.value) + \
+            # (goalie_save_percentage_get_dict()[defensemen] * \
+            #     defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
+            # (goalie_goals_against_get_dict()[defensemen] * \
+            #     defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
+            # (goalie_save_percentage_get_dict()[defensemen] * \
+            #     defensemen_rating_weights.TAKE_AWAY_WEIGHT.value)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
+        active_players['Defenseman'])
+    plot_player_ranking(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
+
+
 if __name__ == "__main__":
 
     # set up multiprocess to be ready in case a subprocess freezes
@@ -331,8 +393,10 @@ if __name__ == "__main__":
     get_team_stats()
 
     # GOALIES
-    print("Calculating all Goalie Metrics:")
-    calculate_goalie_metrics()
+    # print("Calculating all Goalie Metrics:")
+    # calculate_goalie_metrics()
+    print("Calculating all Defensemen Metrics:")
+    calculate_defensemen_metrics()
 
     # stop all the running workers
     for i in range(subprocess_count):

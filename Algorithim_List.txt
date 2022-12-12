@@ -54,6 +54,4 @@ Teams:
         - W: wins in current streak
         - L: losses in current streak
         - OT: overtime losses in current streak
-
-
         
