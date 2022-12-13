@@ -47,21 +47,18 @@ def recent_form_get_dict() -> dict:
     return recent_form_rating
 
 
-def recent_form_get_data_set() -> list:
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
-    web_data = requests.get(records_url)
+def recent_form_get_data_set(team_records : dict={}) -> list:
     last_ten_data = {}
     streak_data = {}
-    parsed_data = json.loads(web_data.content)
-    for record in parsed_data["records"]:
-        for team in record["teamRecords"]:
-            last_10 = team["records"]["overallRecords"][3]
-            streak = team["streak"]
-            streak_data[team["team"]["name"]] = \
-                (streak["streakType"], streak["streakNumber"])
-            last_ten_data[team["team"]["name"]] = \
-                (last_10["wins"], last_10["ot"])
+    for team in team_records.keys():
+
+        # some additional shortcuts for getting data
+        last_10 = team_records[team]["records"]["overallRecords"][3]
+        streak = team_records[team]["streak"]
+
+        # now use the shortcuts to actually assign the values
+        streak_data[team] = (streak["streakType"], streak["streakNumber"])
+        last_ten_data[team] = (last_10["wins"], last_10["ot"])
     return [last_ten_data, streak_data]
 
 

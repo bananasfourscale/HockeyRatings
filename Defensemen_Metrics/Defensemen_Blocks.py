@@ -2,21 +2,21 @@ import requests
 import json
 
 
-defensemen_hits_rating = {}
+defensemen_blocks_rating = {}
 
 
-def defensemen_hits_get_dict() -> dict:
-    return defensemen_hits_rating
+def defensemen_blocks_get_dict() -> dict:
+    return defensemen_blocks_rating
 
 
-def defensemen_hits_get_data(active_defensemen : dict={}) -> dict:
+def defensemen_blocks_get_data(active_defensemen : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for defensemen in active_defensemen.keys():
 
         # shortcut to access stats more cleanly
         player_stats = active_defensemen[defensemen][0]
-        defensemen_hits_rating[defensemen] = player_stats["hits"]
+        defensemen_blocks_rating[defensemen] = player_stats["blocked"]
 
 
 if __name__ == "__main__":
@@ -77,6 +77,6 @@ if __name__ == "__main__":
                 [player["person"]["fullName"]] = \
                     [player["person"]["id"], parsed_data["teams"][0]["name"]]
 
-    sp_metrics = defensemen_hits_get_data(active_players['defensemen'])
-    for defensemen in defensemen_hits_rating.keys():
-        print("\t" + defensemen + '=' + str(defensemen_hits_rating[defensemen]))
+    sp_metrics = defensemen_blocks_get_data(active_players['defensemen'])
+    for defensemen in defensemen_blocks_rating.keys():
+        print("\t" + defensemen + '=' + str(defensemen_blocks_rating[defensemen]))

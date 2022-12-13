@@ -2,6 +2,7 @@ import requests
 import json
 from enum import Enum
 
+
 defensive_rating = {
     'Anaheim Ducks' : 0,
     'Arizona Coyotes' : 0,
@@ -48,27 +49,18 @@ def defensive_rating_get_dict() -> dict:
     return defensive_rating
 
 
-def defensive_rating_get_data_set() -> list:
-    # Get the top level record from the API
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
-    web_data = requests.get(records_url)
-    parsed_data = json.loads(web_data.content)
+def defensive_rating_get_data_set(team_stats : dict={}) -> list:
 
     # place the requried data into a dictionary for later use
     shooting_data = {}
-    goal_data = {}
-    power_play = {}
-    for team in parsed_data["teams"]:
-        team_name = team["teamStats"][0]["splits"][0]["team"]["name"]
-        SAPG = team["teamStats"][0]["splits"][0]["stat"]["shotsAllowed"]
-        GAPG = team["teamStats"][0]["splits"][0]["stat"]["goalsAgainstPerGame"]
-        PKP = float(
-            team["teamStats"][0]["splits"][0]["stat"]["penaltyKillPercentage"])
-        shooting_data[team_name] = SAPG
-        goal_data[team_name] = GAPG
-        power_play[team_name] = PKP
-    return [shooting_data, goal_data, power_play]
+    goal_against_data = {}
+    penalty_kill_data = {}
+    for team in team_stats.keys():
+        shooting_data[team] = team_stats[team]["shotsAllowed"]
+        goal_against_data[team] = team_stats[team]["goalsAgainstPerGame"]
+        penalty_kill_data[team] = \
+            float(team_stats[team]["penaltyKillPercentage"])
+    return [shooting_data, goal_against_data, penalty_kill_data]
 
 
 def defensive_rating_combine_metrics(metric_list : list=[]) -> None:
@@ -80,10 +72,3 @@ def defensive_rating_combine_metrics(metric_list : list=[]) -> None:
                 defensive_rating_weights.GOALS_AGAINST_PER_GAME.value) + \
             (metric_list[2][team] * \
                 defensive_rating_weights.PENALTY_KILL_STRENGTH.value)
-
-
-if __name__ == "__main__":
-    defensive_metrics = defensive_rating_get_data_set()
-    defensive_rating_combine_metrics(defensive_metrics)
-    for team in defensive_rating.keys():
-        print()

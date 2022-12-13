@@ -42,7 +42,7 @@ class strength_of_schedule_weights(Enum):
     FOUR_OR_MORE = 1.0
     THREE_GOALS = 0.90
     TWO_OR_ONE = 0.80
-    OT_GAME = 0.5
+    OT_GAME = 0.333
     SO_GAME = 0.10
 
 
@@ -58,35 +58,6 @@ def strength_of_schedule_get_dict() -> dict:
     return strength_of_schedule
 
 
-def strength_of_schedule_get_match_data() -> dict:
-    # Get the top level record from the API
-    records_url = \
-        "https://statsapi.web.nhl.com/api/v1/schedule?season=20222023" + \
-            "&gameType=R&expand=schedule.linescore"
-    web_data = requests.get(records_url)
-    parsed_data = json.loads(web_data.content)
-
-    # place match data in a dict of list of games for later use
-    match_data = {}
-    # matches are orginized by date they take place
-    for date in parsed_data["dates"]:
-        game_data = []
-
-        # for each game on a specific date loop through
-        for game in date["games"]:
-
-            # if the game is a completed regular season game then add to list
-            if (game["status"]["abstractGameState"] == "Final"):
-                away_name = game["teams"]["away"]["team"]["name"]
-                away_score = game["teams"]["away"]["score"]
-                home_name = game["teams"]["home"]["team"]["name"]
-                home_score = game["teams"]["home"]["score"]
-                game_end_type = game["linescore"]["currentPeriodOrdinal"]
-                game_data.append([away_name, away_score, home_name, home_score,
-                    game_end_type])
-        match_data[date["date"]] = game_data
-    return match_data
-
 def determine_winner_loser(home_team : str = "", home_score : int = 0,
                            away_team : str = "", away_score : int = 0) \
                                                     -> tuple((str, str, int)):
@@ -99,7 +70,7 @@ def determine_winner_loser(home_team : str = "", home_score : int = 0,
 def get_latest_rankings(winning_team : str = "", losing_team : str = "",
                         game_date : datetime.date = None,
                         average_rankings : dict = {},
-                        ranking_dates : list = []) -> tuple((float, float)):
+                        ranking_dates : list = []) -> float:
     loser_rating = 0
     total_weeks = len(list(average_rankings.values())[0])-1
     try:
@@ -130,8 +101,8 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         raise e
 
 
-def scale_game_rating(loser_rating : float = 0.0, score_difference : int = 1,
-                      extra_time : str = "") -> tuple((float, float)):
+def scale_game_rating(loser_rating : float=0.0, score_difference : int=1,
+                      extra_time : str="") -> float:
 
     # any win by 4 or more goals gets full credit
     if (score_difference >= 4):
@@ -155,9 +126,8 @@ def scale_game_rating(loser_rating : float = 0.0, score_difference : int = 1,
     return loser_rating * strength_of_schedule_weights.SO_GAME.value
 
 
-def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
-                                                                        -> None:
-    match_data = strength_of_schedule_get_match_data()
+def read_matches(average_rankings : dict={}, ranking_dates : list=[],
+                 match_data : dict={}) -> None:
 
     # loop through the lines of file
     for date in match_data.keys():
@@ -165,11 +135,11 @@ def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
             date_str = date.split("-")
             game_date = datetime.date(int(date_str[0]), int(date_str[1]),
                 int(date_str[2]))
-            away_team = game[match_indecies.AWAY_TEAM.value]
-            away_score = int(game[match_indecies.AWAY_SCORE.value])
-            home_team = game[match_indecies.HOME_TEAM.value]
-            home_score = int(game[match_indecies.HOME_SCORE.value])
-            extra_time = game[match_indecies.EXTRA_TIME.value]
+            away_team = game["teams"]["away"]["team"]["name"]
+            away_score = int(game["teams"]["away"]["score"])
+            home_team = game["teams"]["home"]["team"]["name"]
+            home_score = int(game["teams"]["home"]["score"])
+            extra_time = game["linescore"]["currentPeriodOrdinal"]
 
             # fill out a 3ple with the winner and loser of the game as well as
             # the scoring difference between the teams
@@ -188,45 +158,23 @@ def read_matches(average_rankings : dict = {}, ranking_dates : list = []) \
             strength_of_schedule[winner] += (adjusted_loser_rating)
 
 
-def strength_of_schedule_scale_by_game() -> None:
-
-     # Get the top level record from the API
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
-    web_data = requests.get(records_url)
-    parsed_data = json.loads(web_data.content)
+def strength_of_schedule_scale_by_game(team_stats : dict={}) -> None:
 
     # place the requried data into a dictionary for later use
-    for team in parsed_data["teams"]:
-        strength_of_schedule[
-            team["teamStats"][0]["splits"][0]["team"]["name"]] /= \
-            float(team["teamStats"][0]["splits"][0]["stat"]["gamesPlayed"])
+    for team in team_stats.keys():
+        strength_of_schedule[team] /= \
+            float(team_stats[team]["gamesPlayed"])
 
 
-def strength_of_schedule_calculate(average_rankings : dict = {},
-                                   ranking_dates : list = []) -> None:
+def strength_of_schedule_calculate(average_rankings : dict={},
+                                   ranking_dates : list=[],
+                                   match_data : dict={},
+                                   team_stats : dict={}) -> None:
 
     # first call read matches which will generate the absolute score for all
     # teams by parsing all complete games one-by-one
-    read_matches(average_rankings, ranking_dates)
+    read_matches(average_rankings, ranking_dates, match_data)
 
     # then scale each teams score by how many games they specifically have
     # played
-    strength_of_schedule_scale_by_game()
-
-
-if __name__ == "__main__":
-
-    # localized import only for this file
-    from Average_Ranking_Parser import average_rankings_parse, \
-        average_rankings_get_dict, average_ranking_get_ranking_dates
-
-    # parse the average ranking file to get matchup scores
-    average_rankings_parse('Output_Files/Trend_Files/AverageRankings.csv')
-
-    # calculate the uncorrected strength of schedule
-    strength_of_schedule_calculate(average_rankings_get_dict(),
-        average_ranking_get_ranking_dates())
-    print("Strength of Schedule (Uncorrected):")
-    for team in strength_of_schedule.keys():
-        print("\t" + team + '=' + str(strength_of_schedule[team]))
+    strength_of_schedule_scale_by_game(team_stats)

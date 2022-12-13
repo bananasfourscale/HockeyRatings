@@ -72,12 +72,3 @@ def clutch_calculate_lead_protection() -> None:
         
         # calculate the positive clutch portion based on keeping leads
         clutch_rating[team] += (win_lead_1 * 5) + (win_lead_2 * 10)
-
-
-if __name__ == "__main__":
-
-    # calculate the lead protection raw data
-    clutch_calculate_lead_protection()
-    print("Clutch Rating (Uncorrected):")
-    for team in clutch_rating.keys():
-        print("\t" + team + '=' + str(clutch_rating[team]))

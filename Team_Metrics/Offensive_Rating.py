@@ -48,25 +48,16 @@ def offensive_rating_get_dict() -> dict:
     return offensive_rating
 
 
-def offensive_rating_get_data_set() -> list:
-    # Get the top level record from the API
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
-    web_data = requests.get(records_url)
-    parsed_data = json.loads(web_data.content)
+def offensive_rating_get_data_set(team_stats : dict={}) -> list:
 
     # place the requried data into a dictionary for later use
     shooting_data = {}
     goal_data = {}
     power_play = {}
-    for team in parsed_data["teams"]:
-        team_name = team["teamStats"][0]["splits"][0]["team"]["name"]
-        shooting_data[team_name] = \
-            team["teamStats"][0]["splits"][0]["stat"]["shotsPerGame"]
-        goal_data[team_name] = \
-            team["teamStats"][0]["splits"][0]["stat"]["goalsPerGame"]
-        power_play[team_name] = float(
-            team["teamStats"][0]["splits"][0]["stat"]["powerPlayPercentage"])
+    for team in team_stats.keys():
+        shooting_data[team] = team_stats[team]["shotsPerGame"]
+        goal_data[team] = team_stats[team]["goalsPerGame"]
+        power_play[team] = float(team_stats[team]["powerPlayPercentage"])
     return [shooting_data, goal_data, power_play]
 
 
@@ -79,10 +70,3 @@ def offensive_rating_combine_metrics(metric_list : list=[]) -> None:
                 offensive_rating_weights.GOALS_PER_GAME.value) + \
             (metric_list[2][team] * \
                 offensive_rating_weights.POWER_PLAY_STRENGTH.value)
-
-
-if __name__ == "__main__":
-    offensive_metrics = offensive_rating_get_data_set()
-    offensive_rating_combine_metrics(offensive_metrics)
-    for team in offensive_rating.keys():
-        print()

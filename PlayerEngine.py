@@ -23,6 +23,8 @@ from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
 
 from Defensemen_Metrics.Defensemen_Hits import defensemen_hits_get_dict, \
     defensemen_hits_get_data
+from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
+    defensemen_blocks_get_data
 
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights, defensemen_rating_weights
@@ -135,6 +137,7 @@ def player_sorting() -> None:
                 player_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
                     "{}/stats?stats=statsSingleSeason&season=20222023".format(
                     player["person"]["id"])
+                print(player["person"]["id"])
                 web_data = requests.get(player_url)
                 player_data = json.loads(web_data.content)
 
@@ -340,9 +343,36 @@ def defensemen_hits() -> None:
         "Graphs/Defensemen/Hits/hits_corrected.png")))
 
 
+def defensemen_blocks() -> None:
+    defensemen_blocks_get_data(active_players["Defenseman"])
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
+        ["Defensemen", "Blocks Base", "Team"],
+        defensemen_blocks_get_dict(), active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
+        ["Defensemen", "Blocks Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Blocks/blocks_base.png", False)))
+
+    # apply correction
+    defensemen_blocks = apply_sigmoid_correction(
+        defensemen_blocks_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
+        ["Defensemen", "Blocks Corrected", "Team"],
+        defensemen_blocks, active_players['Defenseman'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
+        ["Defensemen", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Blocks/blocks_corrected.png")))
+
+
 def calculate_defensemen_metrics() -> None:
     print("\tDefensemen Hits")
     defensemen_hits()
+
+    print("\tDefensemen Blocks")
+    defensemen_blocks()
 
     defensemen_total_rating = {}
 
@@ -351,9 +381,9 @@ def calculate_defensemen_metrics() -> None:
     for defensemen in defensemen_hits_get_dict().keys():
         defensemen_total_rating[defensemen] = \
             (defensemen_hits_get_dict()[defensemen] * \
-                defensemen_rating_weights.UTILIZATION_WEIGHT.value) #+ \
-            # (goalie_win_rating_get_dict()[defensemen] * \
-            #     defensemen_rating_weights.HITS_WEIGHT.value) + \
+                defensemen_rating_weights.HITS_WEIGHT.value) + \
+            (defensemen_blocks_get_dict()[defensemen] * \
+                defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) #+ \
             # (goalie_save_percentage_get_dict()[defensemen] * \
             #     defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
             # (goalie_goals_against_get_dict()[defensemen] * \

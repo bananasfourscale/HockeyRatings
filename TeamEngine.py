@@ -1,6 +1,8 @@
 from multiprocessing import Process, Queue, freeze_support
-import os
+import requests
+import json
 import time
+import os
 
 # import all custom modules for parsing
 from Team_Metrics.Average_Ranking_Parser import average_rankings_get_dict, \
@@ -71,12 +73,69 @@ total_rating = {
 team_engine_plotting_queue = Queue()
 
 
+team_season_stats = {}
+
+
+team_season_records = {}
+
+
+season_matches = {}
+
+
 '''
 Combined specialized parser to get cumulative data needed all ranking factors
 '''
 def parse_all_data_files() -> None:
     average_rankings_parse('Output_Files/Team_Files/Trend_Files/AverageRankings.csv')
     absolute_rankings_parse('Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv')
+
+
+def get_team_season_stats() -> None:
+
+    # Team lists are so small relative to the list of all player data, just get
+    # the data and store it to save time looking it up over and over
+    # Get the top level record from the API
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/teams?expand=team.stats'
+    web_data = requests.get(records_url)
+    parsed_data = json.loads(web_data.content)
+
+    for team in parsed_data["teams"]:
+        team_season_stats[team["name"]] = \
+            team["teamStats"][0]["splits"][0]["stat"]
+
+
+def get_team_season_records() -> None:
+    records_url = \
+        'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
+    web_data = requests.get(records_url)
+    parsed_data = json.loads(web_data.content)
+    for record in parsed_data["records"]:
+        for team in record["teamRecords"]:
+            team_season_records[team["team"]["name"]] = team
+
+
+def get_game_records() -> None:
+    records_url = \
+        "https://statsapi.web.nhl.com/api/v1/schedule?season=20222023" + \
+            "&gameType=R&expand=schedule.linescore"
+    web_data = requests.get(records_url)
+    parsed_data = json.loads(web_data.content)
+
+    # matches are orginized by date they take place
+    for date in parsed_data["dates"]:
+        game_data = []
+
+        # for each game on a specific date loop through
+        for game in date["games"]:
+
+            # if the game is a completed regular season game then add to list
+            if (game["status"]["abstractGameState"] == "Final"):
+                game_data.append(game)
+        
+        # now update the current date with all games from that day we just
+        # finished collecting
+        season_matches[date["date"]] = game_data
 
 
 '''
@@ -87,7 +146,7 @@ def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
 
     # scale the strength of schedule by game, write out again, and graph
     strength_of_schedule_calculate(average_rankings_get_dict(),
-        average_ranking_get_ranking_dates())
+        average_ranking_get_ranking_dates(), season_matches, team_season_stats)
     write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
         ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
     team_engine_plotting_queue.put((plot_data_set,
@@ -118,7 +177,7 @@ def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
 def calculate_win_rating(update_trends : bool=True) -> None:
 
     # calculate the win rating and graph
-    win_rating_calc()
+    win_rating_calc(team_season_records)
     write_out_file("Output_Files/Team_Files/Instance_Files/WinRating.csv",
         ["Team", "Win Rating Base"], win_rating_get_dict())
     team_engine_plotting_queue.put((plot_data_set,
@@ -161,7 +220,7 @@ def calculate_clutch_rating(update_trends : bool=True) -> None:
 
 
 def calculate_offensive_rating(update_trends : bool=True) -> None:
-    offensive_metrics = offensive_rating_get_data_set()
+    offensive_metrics = offensive_rating_get_data_set(team_season_stats)
 
     # plot each metric before sigmoid
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
@@ -227,7 +286,7 @@ def calculate_offensive_rating(update_trends : bool=True) -> None:
 
 
 def calculate_defensive_rating(update_trends : bool=True) -> None:
-    defensive_metrics = defensive_rating_get_data_set()
+    defensive_metrics = defensive_rating_get_data_set(team_season_stats)
 
     # plot each metric before sigmoid
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsAgaRatingBase.csv",
@@ -296,7 +355,7 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
 def calculate_recent_form(update_trends : bool=True) -> None:
     
     # get all the data used for recent form across all metrics
-    recent_form_metrics = recent_form_get_data_set()
+    recent_form_metrics = recent_form_get_data_set(team_season_records)
 
     # last 10 is just a string value so actually calculate the rating and plot
     recent_form_metrics[0] = \
@@ -420,6 +479,15 @@ if __name__ == "__main__":
     freeze_support()
     start = time.time()
 
+    print("Gathering All Team Season Stats")
+    get_team_season_stats()
+
+    print("Gathering All Team Season Records")
+    get_team_season_records()
+
+    print("Gathering All Match Data")
+    get_game_records()
+
     # create a few plotting processes to speed things up a bit
     subprocess_count = 7
     process_list = []
@@ -475,10 +543,10 @@ if __name__ == "__main__":
             pass
 
     # remove all the instance files
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files/Team_Files/\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files/Team_Files/\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files/Team_Files/\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files/Team_Files/\Instance_Files\\" + file)
 
     print(time.time() - start)

@@ -49,31 +49,27 @@ def win_rating_get_dict() -> dict:
     return win_rating
 
 
-def win_rating_get_data() -> dict:
-    records_url = \
-        'https://statsapi.web.nhl.com/api/v1/standings?expand=standings.record'
-    web_data = requests.get(records_url)
-    record_data = {}
-    parsed_data = json.loads(web_data.content)
-    for record in parsed_data["records"]:
-        for team in record["teamRecords"]:
-            games_played = team["gamesPlayed"]
-            shootout_wins = team["records"]["overallRecords"][2]["wins"]
-            regulation_wins = team["regulationWins"]
-            overtime_wins = team["leagueRecord"]["wins"] - \
-                (regulation_wins + shootout_wins)
-            overtime_loses = team["leagueRecord"]["ot"]
+def win_rating_get_data(team_records : dict={}) -> dict:
+    win_rating_data = {}
+    for team in team_records.keys():
+        
+        games_played = team_records[team]["gamesPlayed"]
+        shootout_wins = team_records[team]["records"]["overallRecords"][2]["wins"]
+        regulation_wins = team_records[team]["regulationWins"]
+        overtime_wins = team_records[team]["leagueRecord"]["wins"] - \
+            (regulation_wins + shootout_wins)
+        overtime_loses = team_records[team]["leagueRecord"]["ot"]
 
-            # use the team name to sort the row data into the dictionary
-            record_data[team["team"]["name"]] = [
-                games_played, regulation_wins, overtime_wins, overtime_loses,
-                shootout_wins
-            ]
-    return record_data
+        # use the team name to sort the row data into the dictionary
+        win_rating_data[team_records[team]["team"]["name"]] = [
+            games_played, regulation_wins, overtime_wins, overtime_loses,
+            shootout_wins
+        ]
+    return win_rating_data
 
 
-def win_rating_calc() -> None:
-    win_record_data = win_rating_get_data()
+def win_rating_calc(team_records : dict={}) -> None:
+    win_record_data = win_rating_get_data(team_records)
     for team in win_rating.keys():
 
         # apply all weights based on the type of win/loss
@@ -88,10 +84,3 @@ def win_rating_calc() -> None:
         win_rating[team] /= float(win_record_data[team][0])
         win_rating[team] /= 100.0
     return
-
-
-if __name__ == "__main__":
-    win_rating_calc()
-    print("Win Ratings:")
-    for team in win_rating.keys() :
-        print("\t" + team + '=' + str(win_rating[team]))
