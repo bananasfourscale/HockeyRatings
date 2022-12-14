@@ -136,9 +136,9 @@ def read_matches(average_rankings : dict={}, ranking_dates : list=[],
             game_date = datetime.date(int(date_str[0]), int(date_str[1]),
                 int(date_str[2]))
             away_team = game["teams"]["away"]["team"]["name"]
-            away_score = int(game["teams"]["away"]["score"])
+            away_score = game["teams"]["away"]["score"]
             home_team = game["teams"]["home"]["team"]["name"]
-            home_score = int(game["teams"]["home"]["score"])
+            home_score = game["teams"]["home"]["score"]
             extra_time = game["linescore"]["currentPeriodOrdinal"]
 
             # fill out a 3ple with the winner and loser of the game as well as

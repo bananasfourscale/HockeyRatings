@@ -16,7 +16,7 @@ from Worker_Nodes import plotter_worker
 # import all custom modules for statistical analysis
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
     strength_of_schedule_calculate
-from Team_Metrics.Win_Rating import win_rating_get_dict, win_rating_calc
+from Team_Metrics.Win_Rating import win_rating_get_dict, win_rating_calculate
 from Team_Metrics.Offensive_Rating import offensive_rating_get_data_set, \
     offensive_rating_get_dict, offensive_rating_combine_metrics
 from Team_Metrics.Defensive_Rating import defensive_rating_get_data_set, \
@@ -177,7 +177,7 @@ def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
 def calculate_win_rating(update_trends : bool=True) -> None:
 
     # calculate the win rating and graph
-    win_rating_calc(team_season_records)
+    win_rating_calculate(team_season_records)
     write_out_file("Output_Files/Team_Files/Instance_Files/WinRating.csv",
         ["Team", "Win Rating Base"], win_rating_get_dict())
     team_engine_plotting_queue.put((plot_data_set,
@@ -198,7 +198,7 @@ def calculate_win_rating(update_trends : bool=True) -> None:
 def calculate_clutch_rating(update_trends : bool=True) -> None:
 
     # first calculate the positive part of the clutch rating
-    clutch_calculate_lead_protection()
+    clutch_calculate_lead_protection(season_matches)
 
     # finally combine the factors, write out, and plot
     apply_sigmoid_correction(clutch_rating_get_dict())
@@ -508,8 +508,8 @@ if __name__ == "__main__":
     print("Win Rating")
     calculate_win_rating(UPDATE_TRENDS)
 
-    # print("Clutch Rating") CURRENTLY BEING REVIEWED
-    # calculate_clutch_rating(UPDATE_TRENDS)
+    print("Clutch Rating")
+    calculate_clutch_rating(UPDATE_TRENDS)
 
     print("Offensive Rating")
     calculate_offensive_rating(UPDATE_TRENDS)

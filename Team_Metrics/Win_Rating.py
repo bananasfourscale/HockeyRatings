@@ -68,7 +68,7 @@ def win_rating_get_data(team_records : dict={}) -> dict:
     return win_rating_data
 
 
-def win_rating_calc(team_records : dict={}) -> None:
+def win_rating_calculate(team_records : dict={}) -> None:
     win_record_data = win_rating_get_data(team_records)
     for team in win_rating.keys():
 
