@@ -1,252 +1,254 @@
 Defensemen	Blocks Base	Team
-1 Alec Martinez	117	Vegas Golden Knights
+1 Alec Martinez	118	Vegas Golden Knights
 2 Ivan Provorov	75	Philadelphia Flyers
 3 David Savard	74	Montréal Canadiens
-4 Jacob Trouba	71	New York Rangers
-5 Brayden McNabb	68	Vegas Golden Knights
-6 Moritz Seider	63	Detroit Red Wings
-7 Roman Josi	62	Nashville Predators
-8 Jake McCabe	61	Chicago Blackhawks
-9 Ben Chiarot	60	Detroit Red Wings
-10 Alexander Romanov	60	New York Islanders
-11 Mark Giordano	60	Toronto Maple Leafs
-12 John Carlson	60	Washington Capitals
-13 Nick Jensen	59	Washington Capitals
-14 Adam Larsson	58	Seattle Kraken
-15 Joel Edmundson	57	Montréal Canadiens
-16 Justin Holl	57	Toronto Maple Leafs
-17 Marcus Pettersson	56	Pittsburgh Penguins
-18 Mikhail Sergachev	56	Tampa Bay Lightning
-19 Matt Roy	55	Los Angeles Kings
-20 Vladislav Gavrikov	54	Columbus Blue Jackets
-21 Andrew Peeke	54	Columbus Blue Jackets
-22 Jared Spurgeon	54	Minnesota Wild
-23 Travis Sanheim	54	Philadelphia Flyers
-24 Jeff Petry	54	Pittsburgh Penguins
-25 Zach Whitecloud	54	Vegas Golden Knights
-26 Chris Tanev	53	Calgary Flames
-27 Connor Murphy	53	Chicago Blackhawks
-28 Darnell Nurse	53	Edmonton Oilers
-29 Sean Durzi	53	Los Angeles Kings
-30 Scott Mayfield	53	New York Islanders
-31 Brian Dumoulin	53	Pittsburgh Penguins
-32 Dmitry Kulikov	52	Anaheim Ducks
-33 Erik Johnson	52	Colorado Avalanche
-34 Trevor van Riemsdyk	52	Washington Capitals
-35 Rasmus Ristolainen	51	Philadelphia Flyers
-36 Ryan Pulock	50	New York Islanders
-37 Josh Brown	49	Arizona Coyotes
-38 Noah Hanifin	49	Calgary Flames
-39 Erik Cernak	49	Tampa Bay Lightning
-40 Kaiden Guhle	48	Montréal Canadiens
-41 Ryan McDonagh	48	Nashville Predators
-42 Ryan Lindgren	48	New York Rangers
-43 Nick Seeler	48	Philadelphia Flyers
-44 Luke Schenn	48	Vancouver Canucks
-45 Neal Pionk	48	Winnipeg Jets
-46 J.J. Moser	47	Arizona Coyotes
-47 Jack Johnson	47	Chicago Blackhawks
-48 Mikey Anderson	47	Los Angeles Kings
-49 Jake Middleton	47	Minnesota Wild
-50 Mario Ferraro	47	San Jose Sharks
-51 Matt Benning	47	San Jose Sharks
-52 Victor Hedman	47	Tampa Bay Lightning
-53 Rasmus Andersson	46	Calgary Flames
-54 Alexander Edler	46	Los Angeles Kings
-55 Marc-Edouard Vlasic	46	San Jose Sharks
-56 Radim Simek	46	San Jose Sharks
-57 Ryan Suter	45	Dallas Stars
-58 Jani Hakanpaa	45	Dallas Stars
-59 Jonas Siegenthaler	45	New Jersey Devils
-60 Erik Brannstrom	45	Ottawa Senators
-61 Justin Faulk	45	St. Louis Blues
-62 Niko Mikkola	45	St. Louis Blues
-63 Ian Cole	45	Tampa Bay Lightning
-64 Esa Lindell	44	Dallas Stars
-65 Olli Maatta	44	Detroit Red Wings
-66 Cody Ceci	44	Edmonton Oilers
-67 Noah Dobson	44	New York Islanders
-68 Rasmus Dahlin	43	Buffalo Sabres
-69 MacKenzie Weegar	43	Calgary Flames
-70 Devon Toews	43	Colorado Avalanche
-71 Erik Gudbranson	43	Columbus Blue Jackets
-72 Drew Doughty	43	Los Angeles Kings
-73 Travis Hamonic	43	Ottawa Senators
-74 Colton Parayko	43	St. Louis Blues
-75 Adam Fox	42	New York Rangers
-76 Nicolas Hague	42	Vegas Golden Knights
-77 Simon Benoit	41	Anaheim Ducks
-78 Radko Gudas	41	Florida Panthers
-79 Adam Pelech	41	New York Islanders
-80 Braden Schneider	41	New York Rangers
-81 Jake Sanderson	41	Ottawa Senators
-82 Shea Theodore	41	Vegas Golden Knights
-83 Brett Pesce	40	Carolina Hurricanes
-84 Brett Kulak	40	Edmonton Oilers
-85 Jonas Brodin	40	Minnesota Wild
-86 Josh Morrissey	40	Winnipeg Jets
-87 Troy Stecher	39	Arizona Coyotes
-88 Jaccob Slavin	39	Carolina Hurricanes
-89 Cale Makar	39	Colorado Avalanche
-90 Ryan Graves	39	New Jersey Devils
-91 Martin Fehervary	39	Washington Capitals
-92 Jacob Bryson	38	Buffalo Sabres
-93 Seth Jones	38	Chicago Blackhawks
-94 Matt Dumba	38	Minnesota Wild
-95 Jamie Oleksiak	38	Seattle Kraken
-96 Nate Schmidt	38	Winnipeg Jets
-97 Dylan Samberg	38	Winnipeg Jets
-98 Jordan Harris	37	Montréal Canadiens
-99 John Marino	37	New Jersey Devils
-100 Tony DeAngelo	37	Philadelphia Flyers
-101 Kris Letang	37	Pittsburgh Penguins
-102 Jaycob Megna	37	San Jose Sharks
-103 Tyler Myers	37	Vancouver Canucks
-104 Ethan Bear	37	Vancouver Canucks
-105 Brenden Dillon	37	Winnipeg Jets
-106 Gustav Forsling	36	Florida Panthers
-107 Shayne Gostisbehere	35	Arizona Coyotes
-108 Brandon Carlo	35	Boston Bruins
-109 Marc Staal	35	Florida Panthers
-110 K'Andre Miller	35	New York Rangers
-111 Nick Leddy	35	St. Louis Blues
-112 Owen Power	34	Buffalo Sabres
-113 Brandon Montour	34	Florida Panthers
-114 Torey Krug	34	St. Louis Blues
-115 Rasmus Sandin	34	Toronto Maple Leafs
-116 Hampus Lindholm	33	Boston Bruins
-117 Jon Merrill	33	Minnesota Wild
-118 Thomas Chabot	33	Ottawa Senators
-119 Patrik Nemeth	32	Arizona Coyotes
-120 Jarred Tinordi	32	Chicago Blackhawks
-121 Miro Heiskanen	32	Dallas Stars
-122 Erik Karlsson	32	San Jose Sharks
-123 Kevin Shattenkirk	31	Anaheim Ducks
-124 Tyson Barrie	31	Edmonton Oilers
-125 Jan Rutta	31	Pittsburgh Penguins
-126 Will Borgen	31	Seattle Kraken
-127 Kyle Burroughs	31	Vancouver Canucks
-128 Connor Clifton	30	Boston Bruins
-129 Jalen Chatfield	30	Carolina Hurricanes
-130 Caleb Jones	30	Chicago Blackhawks
-131 Dante Fabbro	30	Nashville Predators
-132 Vince Dunn	30	Seattle Kraken
-133 Cam Fowler	29	Anaheim Ducks
-134 Nathan Beaulieu	29	Anaheim Ducks
-135 Nikita Zadorov	29	Calgary Flames
-136 Sean Walker	29	Los Angeles Kings
-137 Justin Braun	29	Philadelphia Flyers
-138 Erik Gustafsson	29	Washington Capitals
-139 Evan Bouchard	28	Edmonton Oilers
-140 Mattias Ekholm	28	Nashville Predators
-141 Damon Severson	28	New Jersey Devils
-142 Justin Schultz	28	Seattle Kraken
-143 Carson Soucy	28	Seattle Kraken
-144 Matt Grzelcyk	27	Boston Bruins
-145 Ilya Lyubushkin	27	Buffalo Sabres
-146 Mattias Samuelsson	27	Buffalo Sabres
-147 Alexandre Carrier	27	Nashville Predators
-148 Nick Holden	27	Ottawa Senators
-149 Nick Perbix	27	Tampa Bay Lightning
-150 Timothy Liljegren	27	Toronto Maple Leafs
-151 Quinn Hughes	27	Vancouver Canucks
-152 Dylan DeMelo	27	Winnipeg Jets
-153 Dougie Hamilton	26	New Jersey Devils
-154 Brent Burns	25	Carolina Hurricanes
-155 Nils Lundkvist	25	Dallas Stars
-156 Aaron Ekblad	25	Florida Panthers
-157 Johnathan Kovacevic	25	Montréal Canadiens
-158 Brendan Smith	25	New Jersey Devils
-159 TJ Brodie	25	Toronto Maple Leafs
-160 John Klingberg	24	Anaheim Ducks
-161 Charlie McAvoy	24	Boston Bruins
-162 Zach Werenski	24	Columbus Blue Jackets
-163 Colin Miller	24	Dallas Stars
-164 Morgan Rielly	24	Toronto Maple Leafs
-165 Calvin de Haan	23	Carolina Hurricanes
-166 Josh Manson	23	Colorado Avalanche
-167 Arber Xhekaj	23	Montréal Canadiens
-168 Matt Irwin	23	Washington Capitals
-169 Juuso Valimaki	22	Arizona Coyotes
-170 Derek Forbort	22	Boston Bruins
-171 Jordan Oesterle	22	Detroit Red Wings
-172 Alex Goligoski	22	Minnesota Wild
-173 Jeremy Lauzon	22	Nashville Predators
-174 Jake Bean	21	Columbus Blue Jackets
-175 Marcus Bjork	21	Columbus Blue Jackets
-176 Filip Hronek	21	Detroit Red Wings
-177 Oliver Ekman-Larsson	21	Vancouver Canucks
-178 Josh Mahura	20	Florida Panthers
-179 Nikita Zaitsev	20	Ottawa Senators
-180 Calle Rosen	20	St. Louis Blues
-181 Henri Jokiharju	19	Buffalo Sabres
-182 Brady Skjei	19	Carolina Hurricanes
-183 Gavin Bayreuther	19	Columbus Blue Jackets
-184 Dysin Mayo	18	Arizona Coyotes
-185 Samuel Girard	18	Colorado Avalanche
-186 Libor Hajek	18	New York Rangers
-187 Dmitry Orlov	18	Washington Capitals
-188 Filip Roos	17	Chicago Blackhawks
+4 Jacob Trouba	74	New York Rangers
+5 Brayden McNabb	70	Vegas Golden Knights
+6 Roman Josi	69	Nashville Predators
+7 Moritz Seider	65	Detroit Red Wings
+8 Alexander Romanov	65	New York Islanders
+9 Jake McCabe	63	Chicago Blackhawks
+10 Joel Edmundson	62	Montréal Canadiens
+11 Mark Giordano	62	Toronto Maple Leafs
+12 Ben Chiarot	61	Detroit Red Wings
+13 John Carlson	61	Washington Capitals
+14 Matt Roy	60	Los Angeles Kings
+15 Nick Jensen	60	Washington Capitals
+16 Marcus Pettersson	59	Pittsburgh Penguins
+17 Mikhail Sergachev	59	Tampa Bay Lightning
+18 Adam Larsson	58	Seattle Kraken
+19 Darnell Nurse	57	Edmonton Oilers
+20 Justin Holl	57	Toronto Maple Leafs
+21 Andrew Peeke	56	Columbus Blue Jackets
+22 Zach Whitecloud	56	Vegas Golden Knights
+23 Chris Tanev	55	Calgary Flames
+24 Connor Murphy	55	Chicago Blackhawks
+25 Vladislav Gavrikov	55	Columbus Blue Jackets
+26 Jared Spurgeon	55	Minnesota Wild
+27 Scott Mayfield	55	New York Islanders
+28 Noah Hanifin	54	Calgary Flames
+29 Travis Sanheim	54	Philadelphia Flyers
+30 Jeff Petry	54	Pittsburgh Penguins
+31 Brian Dumoulin	54	Pittsburgh Penguins
+32 Dmitry Kulikov	53	Anaheim Ducks
+33 Sean Durzi	53	Los Angeles Kings
+34 Trevor van Riemsdyk	53	Washington Capitals
+35 Rasmus Andersson	52	Calgary Flames
+36 Erik Johnson	52	Colorado Avalanche
+37 Erik Brannstrom	52	Ottawa Senators
+38 Jani Hakanpaa	51	Dallas Stars
+39 Esa Lindell	51	Dallas Stars
+40 Mikey Anderson	51	Los Angeles Kings
+41 Jonas Siegenthaler	51	New Jersey Devils
+42 Rasmus Ristolainen	51	Philadelphia Flyers
+43 Jack Johnson	50	Chicago Blackhawks
+44 Ryan Pulock	50	New York Islanders
+45 Ryan Lindgren	50	New York Rangers
+46 Nicolas Hague	50	Vegas Golden Knights
+47 Josh Brown	49	Arizona Coyotes
+48 Ryan Suter	49	Dallas Stars
+49 Jake Middleton	49	Minnesota Wild
+50 Kaiden Guhle	49	Montréal Canadiens
+51 Erik Cernak	49	Tampa Bay Lightning
+52 Neal Pionk	49	Winnipeg Jets
+53 Ryan McDonagh	48	Nashville Predators
+54 Nick Seeler	48	Philadelphia Flyers
+55 Colton Parayko	48	St. Louis Blues
+56 Victor Hedman	48	Tampa Bay Lightning
+57 Luke Schenn	48	Vancouver Canucks
+58 J.J. Moser	47	Arizona Coyotes
+59 Cody Ceci	47	Edmonton Oilers
+60 Mario Ferraro	47	San Jose Sharks
+61 Matt Benning	47	San Jose Sharks
+62 Justin Faulk	47	St. Louis Blues
+63 Alexander Edler	46	Los Angeles Kings
+64 Drew Doughty	46	Los Angeles Kings
+65 Travis Hamonic	46	Ottawa Senators
+66 Marc-Edouard Vlasic	46	San Jose Sharks
+67 Radim Simek	46	San Jose Sharks
+68 Ian Cole	46	Tampa Bay Lightning
+69 Rasmus Dahlin	45	Buffalo Sabres
+70 Erik Gudbranson	45	Columbus Blue Jackets
+71 Niko Mikkola	45	St. Louis Blues
+72 Olli Maatta	44	Detroit Red Wings
+73 Noah Dobson	44	New York Islanders
+74 Simon Benoit	43	Anaheim Ducks
+75 MacKenzie Weegar	43	Calgary Flames
+76 Devon Toews	43	Colorado Avalanche
+77 Brett Kulak	43	Edmonton Oilers
+78 Ryan Graves	43	New Jersey Devils
+79 Adam Fox	43	New York Rangers
+80 Jake Sanderson	43	Ottawa Senators
+81 Brett Pesce	42	Carolina Hurricanes
+82 Braden Schneider	42	New York Rangers
+83 Seth Jones	41	Chicago Blackhawks
+84 Radko Gudas	41	Florida Panthers
+85 Jonas Brodin	41	Minnesota Wild
+86 Adam Pelech	41	New York Islanders
+87 Shea Theodore	41	Vegas Golden Knights
+88 Josh Morrissey	41	Winnipeg Jets
+89 Jaccob Slavin	40	Carolina Hurricanes
+90 Jordan Harris	40	Montréal Canadiens
+91 Kris Letang	40	Pittsburgh Penguins
+92 Nate Schmidt	40	Winnipeg Jets
+93 Dylan Samberg	40	Winnipeg Jets
+94 Troy Stecher	39	Arizona Coyotes
+95 Cale Makar	39	Colorado Avalanche
+96 Gustav Forsling	39	Florida Panthers
+97 Matt Dumba	39	Minnesota Wild
+98 Martin Fehervary	39	Washington Capitals
+99 Brenden Dillon	39	Winnipeg Jets
+100 Jacob Bryson	38	Buffalo Sabres
+101 John Marino	38	New Jersey Devils
+102 Jamie Oleksiak	38	Seattle Kraken
+103 Brandon Carlo	37	Boston Bruins
+104 Owen Power	37	Buffalo Sabres
+105 Marc Staal	37	Florida Panthers
+106 Tony DeAngelo	37	Philadelphia Flyers
+107 Jaycob Megna	37	San Jose Sharks
+108 Nick Leddy	37	St. Louis Blues
+109 Tyler Myers	37	Vancouver Canucks
+110 Ethan Bear	37	Vancouver Canucks
+111 Jarred Tinordi	36	Chicago Blackhawks
+112 Brandon Montour	36	Florida Panthers
+113 Shayne Gostisbehere	35	Arizona Coyotes
+114 Jon Merrill	35	Minnesota Wild
+115 Dante Fabbro	35	Nashville Predators
+116 K'Andre Miller	35	New York Rangers
+117 Torey Krug	35	St. Louis Blues
+118 Kevin Shattenkirk	34	Anaheim Ducks
+119 Miro Heiskanen	34	Dallas Stars
+120 Thomas Chabot	34	Ottawa Senators
+121 Jan Rutta	34	Pittsburgh Penguins
+122 Rasmus Sandin	34	Toronto Maple Leafs
+123 Hampus Lindholm	33	Boston Bruins
+124 Patrik Nemeth	32	Arizona Coyotes
+125 Connor Clifton	32	Boston Bruins
+126 Tyson Barrie	32	Edmonton Oilers
+127 Erik Karlsson	32	San Jose Sharks
+128 Nikita Zadorov	31	Calgary Flames
+129 Jalen Chatfield	31	Carolina Hurricanes
+130 Evan Bouchard	31	Edmonton Oilers
+131 Vince Dunn	31	Seattle Kraken
+132 Will Borgen	31	Seattle Kraken
+133 Kyle Burroughs	31	Vancouver Canucks
+134 Cam Fowler	30	Anaheim Ducks
+135 Nathan Beaulieu	30	Anaheim Ducks
+136 Caleb Jones	30	Chicago Blackhawks
+137 Damon Severson	30	New Jersey Devils
+138 Erik Gustafsson	30	Washington Capitals
+139 Sean Walker	29	Los Angeles Kings
+140 Mattias Ekholm	29	Nashville Predators
+141 Justin Braun	29	Philadelphia Flyers
+142 Matt Grzelcyk	28	Boston Bruins
+143 Mattias Samuelsson	28	Buffalo Sabres
+144 Nils Lundkvist	28	Dallas Stars
+145 Johnathan Kovacevic	28	Montréal Canadiens
+146 Dougie Hamilton	28	New Jersey Devils
+147 Justin Schultz	28	Seattle Kraken
+148 Carson Soucy	28	Seattle Kraken
+149 Charlie McAvoy	27	Boston Bruins
+150 Ilya Lyubushkin	27	Buffalo Sabres
+151 Brent Burns	27	Carolina Hurricanes
+152 Alexandre Carrier	27	Nashville Predators
+153 Nick Holden	27	Ottawa Senators
+154 Nick Perbix	27	Tampa Bay Lightning
+155 Timothy Liljegren	27	Toronto Maple Leafs
+156 Quinn Hughes	27	Vancouver Canucks
+157 Dylan DeMelo	27	Winnipeg Jets
+158 John Klingberg	26	Anaheim Ducks
+159 Aaron Ekblad	26	Florida Panthers
+160 Matt Irwin	26	Washington Capitals
+161 Marcus Bjork	25	Columbus Blue Jackets
+162 Colin Miller	25	Dallas Stars
+163 Brendan Smith	25	New Jersey Devils
+164 TJ Brodie	25	Toronto Maple Leafs
+165 Calvin de Haan	24	Carolina Hurricanes
+166 Zach Werenski	24	Columbus Blue Jackets
+167 Arber Xhekaj	24	Montréal Canadiens
+168 Morgan Rielly	24	Toronto Maple Leafs
+169 Derek Forbort	23	Boston Bruins
+170 Josh Manson	23	Colorado Avalanche
+171 Nikita Zaitsev	23	Ottawa Senators
+172 Juuso Valimaki	22	Arizona Coyotes
+173 Jordan Oesterle	22	Detroit Red Wings
+174 Filip Hronek	22	Detroit Red Wings
+175 Alex Goligoski	22	Minnesota Wild
+176 Jeremy Lauzon	22	Nashville Predators
+177 Brady Skjei	21	Carolina Hurricanes
+178 Jake Bean	21	Columbus Blue Jackets
+179 Oliver Ekman-Larsson	21	Vancouver Canucks
+180 Josh Mahura	20	Florida Panthers
+181 Libor Hajek	20	New York Rangers
+182 Calle Rosen	20	St. Louis Blues
+183 Henri Jokiharju	19	Buffalo Sabres
+184 Michael Stone	19	Calgary Flames
+185 Gavin Bayreuther	19	Columbus Blue Jackets
+186 Dmitry Orlov	19	Washington Capitals
+187 Dysin Mayo	18	Arizona Coyotes
+188 Samuel Girard	18	Colorado Avalanche
 189 Robert Hagg	17	Detroit Red Wings
-190 Michael Stone	16	Calgary Flames
-191 Calen Addison	16	Minnesota Wild
+190 Calen Addison	16	Minnesota Wild
+191 Chris Wideman	16	Montréal Canadiens
 192 Sebastian Aho	16	New York Islanders
 193 Artem Zub	16	Ottawa Senators
 194 Robert Bortuzzo	16	St. Louis Blues
 195 Jakob Chychrun	15	Arizona Coyotes
 196 Lawrence Pilut	15	Buffalo Sabres
-197 Chris Wideman	15	Montréal Canadiens
+197 Jake Walman	15	Detroit Red Wings
 198 Jordie Benn	15	Toronto Maple Leafs
-199 Nick Blankenburg	13	Columbus Blue Jackets
-200 Jake Walman	13	Detroit Red Wings
-201 Riley Stillman	13	Vancouver Canucks
-202 Gustav Lindstrom	12	Detroit Red Wings
-203 Ryan Murray	12	Edmonton Oilers
-204 Cal Foote	12	Tampa Bay Lightning
-205 Colton White	11	Anaheim Ducks
-206 Jakub Zboril	11	Boston Bruins
-207 Bowen Byram	11	Colorado Avalanche
-208 Jacob MacDonald	11	Colorado Avalanche
-209 Philip Broberg	11	Edmonton Oilers
-210 Anton Stralman	10	Boston Bruins
-211 Jordan Gross	10	Nashville Predators
-212 Robin Salo	10	New York Islanders
-213 Haydn Fleury	10	Tampa Bay Lightning
-214 Jake Muzzin	10	Toronto Maple Leafs
-215 Urho Vaakanainen	9	Anaheim Ducks
+199 Colton White	13	Anaheim Ducks
+200 Nick Blankenburg	13	Columbus Blue Jackets
+201 Philip Broberg	13	Edmonton Oilers
+202 Haydn Fleury	13	Tampa Bay Lightning
+203 Riley Stillman	13	Vancouver Canucks
+204 Gustav Lindstrom	12	Detroit Red Wings
+205 Ryan Murray	12	Edmonton Oilers
+206 Cal Foote	12	Tampa Bay Lightning
+207 Urho Vaakanainen	11	Anaheim Ducks
+208 Jakub Zboril	11	Boston Bruins
+209 Bowen Byram	11	Colorado Avalanche
+210 Jacob MacDonald	11	Colorado Avalanche
+211 Jordan Gross	11	Nashville Predators
+212 Nick Cicek	11	San Jose Sharks
+213 Anton Stralman	10	Boston Bruins
+214 Robin Salo	10	New York Islanders
+215 Jake Muzzin	10	Toronto Maple Leafs
 216 Joel Hanley	9	Dallas Stars
 217 Mike Matheson	9	Montréal Canadiens
-218 Victor Mete	9	Toronto Maple Leafs
-219 Kevin Bahl	8	New Jersey Devils
-220 Pierre-Olivier Joseph	8	Pittsburgh Penguins
-221 Alexander Alexeyev	8	Washington Capitals
-222 Logan Stanley	8	Winnipeg Jets
-223 Kale Clague	7	Buffalo Sabres
-224 Casey Fitzgerald	7	Buffalo Sabres
-225 Andreas Englund	7	Colorado Avalanche
-226 Chad Ruhwedel	7	Pittsburgh Penguins
+218 Kevin Bahl	9	New Jersey Devils
+219 Victor Mete	9	Toronto Maple Leafs
+220 Chad Ruhwedel	8	Pittsburgh Penguins
+221 Pierre-Olivier Joseph	8	Pittsburgh Penguins
+222 Alexander Alexeyev	8	Washington Capitals
+223 Logan Stanley	8	Winnipeg Jets
+224 Kale Clague	7	Buffalo Sabres
+225 Casey Fitzgerald	7	Buffalo Sabres
+226 Andreas Englund	7	Colorado Avalanche
 227 Jamie Drysdale	6	Anaheim Ducks
 228 Jacob Bernard-Docker	6	Ottawa Senators
 229 Mac Hollowell	6	Toronto Maple Leafs
 230 Ben Hutton	6	Vegas Golden Knights
 231 Tim Berni	5	Columbus Blue Jackets
 232 Scott Harrington	5	San Jose Sharks
-233 Connor Mackey	4	Calgary Flames
-234 Adam Boqvist	4	Columbus Blue Jackets
-235 Cale Fleury	4	Seattle Kraken
-236 Zach Bogosian	4	Tampa Bay Lightning
-237 Dylan Coghlan	3	Carolina Hurricanes
-238 Cam York	3	Philadelphia Flyers
-239 Jack Rathbone	3	Vancouver Canucks
-240 Daniil Miromanov	3	Vegas Golden Knights
-241 Lucas Johansen	3	Washington Capitals
-242 Ian Mitchell	2	Chicago Blackhawks
-243 Matt Kiersted	2	Florida Panthers
-244 Tobias Bjornfot	2	Los Angeles Kings
-245 Conor Timmins	2	Toronto Maple Leafs
-246 Tucker Poolman	2	Vancouver Canucks
-247 Kurtis MacDermid	1	Colorado Avalanche
-248 Mark Borowiecki	1	Nashville Predators
-249 Kyle Capobianco	1	Winnipeg Jets
-250 Maxime Lajoie	0	Carolina Hurricanes
-251 Brad Hunt	0	Colorado Avalanche
+233 Cale Fleury	5	Seattle Kraken
+234 Daniil Miromanov	5	Vegas Golden Knights
+235 Connor Mackey	4	Calgary Flames
+236 Adam Boqvist	4	Columbus Blue Jackets
+237 Matt Kiersted	4	Florida Panthers
+238 Kevin Gravel	4	Nashville Predators
+239 Zach Bogosian	4	Tampa Bay Lightning
+240 Dylan Coghlan	3	Carolina Hurricanes
+241 Ian Mitchell	3	Chicago Blackhawks
+242 Tobias Bjornfot	3	Los Angeles Kings
+243 Roland McKeown	3	Nashville Predators
+244 Cam York	3	Philadelphia Flyers
+245 Jack Rathbone	3	Vancouver Canucks
+246 Lucas Johansen	3	Washington Capitals
+247 Conor Timmins	2	Toronto Maple Leafs
+248 Tucker Poolman	2	Vancouver Canucks
+249 Kurtis MacDermid	1	Colorado Avalanche
+250 Mark Borowiecki	1	Nashville Predators
+251 Kyle Capobianco	1	Winnipeg Jets
+252 Maxime Lajoie	0	Carolina Hurricanes
+253 Brad Hunt	0	Colorado Avalanche

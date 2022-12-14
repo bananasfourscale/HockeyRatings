@@ -228,19 +228,19 @@ def calculate_offensive_rating(update_trends : bool=True) -> None:
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
         ["Team", "Shots For Base"], 0.0, 0.0, [],
-        "Graphs/Teams/offensive_Rating/shots_for_per_game_base.png")))
+        "Graphs/Teams/Offensive_Rating/shots_for_per_game_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
         ["Team", "Goals For Base"], offensive_metrics[1])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
         ["Team", "Goals For Base"], 0.0, 0.0, [],
-        "Graphs/Teams/offensive_Rating/goals_for_per_game_base.png")))
+        "Graphs/Teams/Offensive_Rating/goals_for_per_game_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
         ["Team", "Power Play Base"], offensive_metrics[2])
     team_engine_plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
         ["Team", "Power Play Base"], 0.0, 0.0, [],
-        "Graphs/Teams/offensive_Rating/power_play_base.png")))
+        "Graphs/Teams/Offensive_Rating/power_play_base.png")))
     
     # apply sigmoid corrections
     for metric_dict in offensive_metrics:

@@ -25,6 +25,9 @@ from Defensemen_Metrics.Defensemen_Hits import defensemen_hits_get_dict, \
     defensemen_hits_get_data
 from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
     defensemen_blocks_get_data
+from Defensemen_Metrics.Defensemen_Utilization import \
+    defensemen_utilization_get_dict, defensemen_utilization_get_data, \
+    defensemen_utilization_combine_metrics
 
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights, defensemen_rating_weights
@@ -133,22 +136,21 @@ def player_sorting() -> None:
         for player in roster_data["teams"][0]["roster"]["roster"]:
 
             # NOTE only to shorten time while testing
-            if player["position"]["name"] == 'Defenseman':
-                player_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
-                    "{}/stats?stats=statsSingleSeason&season=20222023".format(
-                    player["person"]["id"])
-                print(player["person"]["id"])
-                web_data = requests.get(player_url)
-                player_data = json.loads(web_data.content)
+            #if player["position"]["name"] == 'Defenseman':
+            player_url = "https://statsapi.web.nhl.com/api/v1/people/" + \
+                "{}/stats?stats=statsSingleSeason&season=20222023".format(
+                player["person"]["id"])
+            web_data = requests.get(player_url)
+            player_data = json.loads(web_data.content)
 
-                # make sure the goalie has stats
-                if len(player_data["stats"][0]["splits"]) > 0:
+            # make sure the goalie has stats
+            if len(player_data["stats"][0]["splits"]) > 0:
 
-                    # shortcut to access stats more cleanly
-                    player_stats = player_data["stats"][0]["splits"][0]["stat"]
-                    active_players[player["position"]["name"]] \
-                        [player["person"]["fullName"]] = \
-                            [player_stats, roster_data["teams"][0]["name"]]
+                # shortcut to access stats more cleanly
+                player_stats = player_data["stats"][0]["splits"][0]["stat"]
+                active_players[player["position"]["name"]] \
+                    [player["person"]["fullName"]] = \
+                        [player_stats, roster_data["teams"][0]["name"]]
 
 
 def get_team_stats() -> None:
@@ -367,12 +369,87 @@ def defensemen_blocks() -> None:
         "Graphs/Defensemen/Blocks/blocks_corrected.png")))
 
 
+def defensemen_utilization() -> None:
+    utilization_metrics = defensemen_utilization_get_data(
+        active_players["Defenseman"], team_stats)
+
+    # plot each metric before sigmoid
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Defensemen", "Even Strength Utilization Base", "Team"],
+        utilization_metrics[0], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Defensemen", "Even Strength Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/even_utilzation_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Defensemen", "Power Play Utilization Base", "Team"],
+        utilization_metrics[1], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Defensemen", "Power Play Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/pp_utilization_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Defensemen", "Penalty Kill Utilization Base", "Team"],
+        utilization_metrics[2], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Defensemen", "Penalty Kill Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/pk_utilization_base.png", False)))
+
+    # apply sigmoids to uncombined values
+    for metric_dict in utilization_metrics:
+        apply_sigmoid_correction(metric_dict)
+
+    # plot after individual sigmoids
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Corrected.csv",
+        ["Defensemen", "Even Strength Utilization Corrected", "Team"],
+        utilization_metrics[0], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Corrected.csv",
+        ["Defensemen", "Even Strength Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/even_utilzation_corrected.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Corrected.csv",
+        ["Defensemen", "Power Play Utilization Corrected", "Team"],
+        utilization_metrics[1], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Corrected.csv",
+        ["Defensemen", "Power Play Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/pp_utilization_corrected.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Corrected.csv",
+        ["Defensemen", "Penalty Kill Utilization Corrected", "Team"],
+        utilization_metrics[2], active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Corrected.csv",
+        ["Defensemen", "Penalty Kill Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/pk_utilization_corrected.png", False)))
+
+    # combine all metrics and then plot final score
+    defensemen_utilization_combine_metrics(utilization_metrics)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating", "Team"],
+        defensemen_utilization_get_dict(), active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/utilization_rating.png", False)))
+
+
 def calculate_defensemen_metrics() -> None:
     print("\tDefensemen Hits")
     defensemen_hits()
 
     print("\tDefensemen Blocks")
     defensemen_blocks()
+
+    print("\tDefensemen Utilization")
+    defensemen_utilization()
 
     defensemen_total_rating = {}
 
@@ -383,13 +460,11 @@ def calculate_defensemen_metrics() -> None:
             (defensemen_hits_get_dict()[defensemen] * \
                 defensemen_rating_weights.HITS_WEIGHT.value) + \
             (defensemen_blocks_get_dict()[defensemen] * \
-                defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) #+ \
-            # (goalie_save_percentage_get_dict()[defensemen] * \
-            #     defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
+                defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
+            (defensemen_utilization_get_dict()[defensemen] * \
+                defensemen_rating_weights.UTILIZATION_WEIGHT.value) #+ \
             # (goalie_goals_against_get_dict()[defensemen] * \
             #     defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
-            # (goalie_save_percentage_get_dict()[defensemen] * \
-            #     defensemen_rating_weights.TAKE_AWAY_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",
@@ -423,8 +498,8 @@ if __name__ == "__main__":
     get_team_stats()
 
     # GOALIES
-    # print("Calculating all Goalie Metrics:")
-    # calculate_goalie_metrics()
+    print("Calculating all Goalie Metrics:")
+    calculate_goalie_metrics()
     print("Calculating all Defensemen Metrics:")
     calculate_defensemen_metrics()
 
