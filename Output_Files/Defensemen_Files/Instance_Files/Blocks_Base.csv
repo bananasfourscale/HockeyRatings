@@ -26,33 +26,33 @@ Defensemen	Blocks Base	Team
 25 Vladislav Gavrikov	55	Columbus Blue Jackets
 26 Jared Spurgeon	55	Minnesota Wild
 27 Scott Mayfield	55	New York Islanders
-28 Noah Hanifin	54	Calgary Flames
-29 Travis Sanheim	54	Philadelphia Flyers
-30 Jeff Petry	54	Pittsburgh Penguins
-31 Brian Dumoulin	54	Pittsburgh Penguins
-32 Dmitry Kulikov	53	Anaheim Ducks
-33 Sean Durzi	53	Los Angeles Kings
-34 Trevor van Riemsdyk	53	Washington Capitals
-35 Rasmus Andersson	52	Calgary Flames
-36 Erik Johnson	52	Colorado Avalanche
-37 Erik Brannstrom	52	Ottawa Senators
-38 Jani Hakanpaa	51	Dallas Stars
-39 Esa Lindell	51	Dallas Stars
-40 Mikey Anderson	51	Los Angeles Kings
-41 Jonas Siegenthaler	51	New Jersey Devils
-42 Rasmus Ristolainen	51	Philadelphia Flyers
+28 Travis Sanheim	55	Philadelphia Flyers
+29 Noah Hanifin	54	Calgary Flames
+30 Rasmus Ristolainen	54	Philadelphia Flyers
+31 Jeff Petry	54	Pittsburgh Penguins
+32 Brian Dumoulin	54	Pittsburgh Penguins
+33 Dmitry Kulikov	53	Anaheim Ducks
+34 Erik Johnson	53	Colorado Avalanche
+35 Sean Durzi	53	Los Angeles Kings
+36 Trevor van Riemsdyk	53	Washington Capitals
+37 Rasmus Andersson	52	Calgary Flames
+38 Erik Brannstrom	52	Ottawa Senators
+39 Jani Hakanpaa	51	Dallas Stars
+40 Esa Lindell	51	Dallas Stars
+41 Mikey Anderson	51	Los Angeles Kings
+42 Jonas Siegenthaler	51	New Jersey Devils
 43 Jack Johnson	50	Chicago Blackhawks
 44 Ryan Pulock	50	New York Islanders
 45 Ryan Lindgren	50	New York Rangers
-46 Nicolas Hague	50	Vegas Golden Knights
-47 Josh Brown	49	Arizona Coyotes
-48 Ryan Suter	49	Dallas Stars
-49 Jake Middleton	49	Minnesota Wild
-50 Kaiden Guhle	49	Montréal Canadiens
-51 Erik Cernak	49	Tampa Bay Lightning
-52 Neal Pionk	49	Winnipeg Jets
-53 Ryan McDonagh	48	Nashville Predators
-54 Nick Seeler	48	Philadelphia Flyers
+46 Nick Seeler	50	Philadelphia Flyers
+47 Nicolas Hague	50	Vegas Golden Knights
+48 Josh Brown	49	Arizona Coyotes
+49 Ryan Suter	49	Dallas Stars
+50 Jake Middleton	49	Minnesota Wild
+51 Kaiden Guhle	49	Montréal Canadiens
+52 Erik Cernak	49	Tampa Bay Lightning
+53 Neal Pionk	49	Winnipeg Jets
+54 Ryan McDonagh	48	Nashville Predators
 55 Colton Parayko	48	St. Louis Blues
 56 Victor Hedman	48	Tampa Bay Lightning
 57 Luke Schenn	48	Vancouver Canucks
@@ -70,11 +70,11 @@ Defensemen	Blocks Base	Team
 69 Rasmus Dahlin	45	Buffalo Sabres
 70 Erik Gudbranson	45	Columbus Blue Jackets
 71 Niko Mikkola	45	St. Louis Blues
-72 Olli Maatta	44	Detroit Red Wings
-73 Noah Dobson	44	New York Islanders
-74 Simon Benoit	43	Anaheim Ducks
-75 MacKenzie Weegar	43	Calgary Flames
-76 Devon Toews	43	Colorado Avalanche
+72 Devon Toews	44	Colorado Avalanche
+73 Olli Maatta	44	Detroit Red Wings
+74 Noah Dobson	44	New York Islanders
+75 Simon Benoit	43	Anaheim Ducks
+76 MacKenzie Weegar	43	Calgary Flames
 77 Brett Kulak	43	Edmonton Oilers
 78 Ryan Graves	43	New Jersey Devils
 79 Adam Fox	43	New York Rangers
@@ -88,12 +88,12 @@ Defensemen	Blocks Base	Team
 87 Shea Theodore	41	Vegas Golden Knights
 88 Josh Morrissey	41	Winnipeg Jets
 89 Jaccob Slavin	40	Carolina Hurricanes
-90 Jordan Harris	40	Montréal Canadiens
-91 Kris Letang	40	Pittsburgh Penguins
-92 Nate Schmidt	40	Winnipeg Jets
-93 Dylan Samberg	40	Winnipeg Jets
-94 Troy Stecher	39	Arizona Coyotes
-95 Cale Makar	39	Colorado Avalanche
+90 Cale Makar	40	Colorado Avalanche
+91 Jordan Harris	40	Montréal Canadiens
+92 Kris Letang	40	Pittsburgh Penguins
+93 Nate Schmidt	40	Winnipeg Jets
+94 Dylan Samberg	40	Winnipeg Jets
+95 Troy Stecher	39	Arizona Coyotes
 96 Gustav Forsling	39	Florida Panthers
 97 Matt Dumba	39	Minnesota Wild
 98 Martin Fehervary	39	Washington Capitals
@@ -136,10 +136,10 @@ Defensemen	Blocks Base	Team
 135 Nathan Beaulieu	30	Anaheim Ducks
 136 Caleb Jones	30	Chicago Blackhawks
 137 Damon Severson	30	New Jersey Devils
-138 Erik Gustafsson	30	Washington Capitals
-139 Sean Walker	29	Los Angeles Kings
-140 Mattias Ekholm	29	Nashville Predators
-141 Justin Braun	29	Philadelphia Flyers
+138 Justin Braun	30	Philadelphia Flyers
+139 Erik Gustafsson	30	Washington Capitals
+140 Sean Walker	29	Los Angeles Kings
+141 Mattias Ekholm	29	Nashville Predators
 142 Matt Grzelcyk	28	Boston Bruins
 143 Mattias Samuelsson	28	Buffalo Sabres
 144 Nils Lundkvist	28	Dallas Stars
@@ -178,15 +178,15 @@ Defensemen	Blocks Base	Team
 177 Brady Skjei	21	Carolina Hurricanes
 178 Jake Bean	21	Columbus Blue Jackets
 179 Oliver Ekman-Larsson	21	Vancouver Canucks
-180 Josh Mahura	20	Florida Panthers
-181 Libor Hajek	20	New York Rangers
-182 Calle Rosen	20	St. Louis Blues
-183 Henri Jokiharju	19	Buffalo Sabres
-184 Michael Stone	19	Calgary Flames
-185 Gavin Bayreuther	19	Columbus Blue Jackets
-186 Dmitry Orlov	19	Washington Capitals
-187 Dysin Mayo	18	Arizona Coyotes
-188 Samuel Girard	18	Colorado Avalanche
+180 Samuel Girard	20	Colorado Avalanche
+181 Josh Mahura	20	Florida Panthers
+182 Libor Hajek	20	New York Rangers
+183 Calle Rosen	20	St. Louis Blues
+184 Henri Jokiharju	19	Buffalo Sabres
+185 Michael Stone	19	Calgary Flames
+186 Gavin Bayreuther	19	Columbus Blue Jackets
+187 Dmitry Orlov	19	Washington Capitals
+188 Dysin Mayo	18	Arizona Coyotes
 189 Robert Hagg	17	Detroit Red Wings
 190 Calen Addison	16	Minnesota Wild
 191 Chris Wideman	16	Montréal Canadiens

@@ -28,6 +28,8 @@ from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
 from Defensemen_Metrics.Defensemen_Utilization import \
     defensemen_utilization_get_dict, defensemen_utilization_get_data, \
     defensemen_utilization_combine_metrics
+from Defensemen_Metrics.Defensemen_Discipline import \
+    defensemen_discipline_get_dict, defensemen_discipline_get_data
 
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights, defensemen_rating_weights
@@ -441,6 +443,30 @@ def defensemen_utilization() -> None:
         "Graphs/Defensemen/Utilization/utilization_rating.png", False)))
 
 
+def defensemen_discipline() -> None:
+    defensemen_discipline_get_data(active_players["Defenseman"])
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
+        ["Defensemen", "Discipline Base", "Team"],
+        defensemen_discipline_get_dict(), active_players['Defenseman'], False)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
+        ["Defensemen", "Discipline Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Discipline/discipline_base.png", True)))
+
+    # apply correction
+    defensemen_discipline = apply_sigmoid_correction(
+        defensemen_discipline_get_dict(), True)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
+        ["Defensemen", "Discipline Corrected", "Team"],
+        defensemen_discipline, active_players['Defenseman'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
+        ["Defensemen", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Discipline/discipline_corrected.png")))
+
+
 def calculate_defensemen_metrics() -> None:
     print("\tDefensemen Hits")
     defensemen_hits()
@@ -450,6 +476,9 @@ def calculate_defensemen_metrics() -> None:
 
     print("\tDefensemen Utilization")
     defensemen_utilization()
+
+    print("\tDefensemen Discipline")
+    defensemen_discipline()
 
     defensemen_total_rating = {}
 
@@ -502,6 +531,7 @@ if __name__ == "__main__":
     calculate_goalie_metrics()
     print("Calculating all Defensemen Metrics:")
     calculate_defensemen_metrics()
+    print("Waiting for Plotters to finish their very hard work <3")
 
     # stop all the running workers
     for i in range(subprocess_count):

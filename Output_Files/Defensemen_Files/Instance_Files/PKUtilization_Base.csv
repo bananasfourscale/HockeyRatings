@@ -7,15 +7,15 @@ Defensemen	Penalty Kill Utilization Base	Team
 6 Andrew Peeke	0.5091362500000002	Columbus Blue Jackets
 7 Justin Holl	0.5033333333333333	Toronto Maple Leafs
 8 Marc-Edouard Vlasic	0.48978205128205093	San Jose Sharks
-9 Adam Larsson	0.47798571428571435	Seattle Kraken
-10 Brian Dumoulin	0.4718083333333331	Pittsburgh Penguins
-11 Ivan Provorov	0.4713583333333333	Philadelphia Flyers
-12 Ben Chiarot	0.4685823529411767	Detroit Red Wings
-13 Jonas Siegenthaler	0.4667666666666668	New Jersey Devils
-14 Nick Jensen	0.4644857843137254	Washington Capitals
-15 David Savard	0.45894736842105277	Montréal Canadiens
-16 Jared Spurgeon	0.4570999999999999	Minnesota Wild
-17 Devon Toews	0.45488181818181833	Colorado Avalanche
+9 Ivan Provorov	0.489256884057971	Philadelphia Flyers
+10 Adam Larsson	0.47798571428571435	Seattle Kraken
+11 Devon Toews	0.4722545454545456	Colorado Avalanche
+12 Brian Dumoulin	0.4718083333333331	Pittsburgh Penguins
+13 Ben Chiarot	0.4685823529411767	Detroit Red Wings
+14 Jonas Siegenthaler	0.4667666666666668	New Jersey Devils
+15 Nick Jensen	0.4644857843137254	Washington Capitals
+16 David Savard	0.45894736842105277	Montréal Canadiens
+17 Jared Spurgeon	0.4570999999999999	Minnesota Wild
 18 Trevor van Riemsdyk	0.45343774509803914	Washington Capitals
 19 Adam Pelech	0.44072205882352955	New York Islanders
 20 J.J. Moser	0.43580833333333335	Arizona Coyotes
@@ -51,14 +51,14 @@ Defensemen	Penalty Kill Utilization Base	Team
 50 Brett Pesce	0.35991228070175435	Carolina Hurricanes
 51 Ryan Graves	0.3572250000000001	New Jersey Devils
 52 Nikita Zadorov	0.35716428571428566	Calgary Flames
-53 Ryan McDonagh	0.35197500000000015	Nashville Predators
-54 Nick Holden	0.3515598484848486	Ottawa Senators
-55 Mario Ferraro	0.3514621794871793	San Jose Sharks
-56 Rasmus Andersson	0.3512595238095237	Calgary Flames
-57 Chris Tanev	0.3500785714285713	Calgary Flames
-58 Joel Edmundson	0.34955789473684223	Montréal Canadiens
-59 Alexander Romanov	0.34427647058823535	New York Islanders
-60 Travis Sanheim	0.3436521739130435	Philadelphia Flyers
+53 Travis Sanheim	0.35403333333333337	Philadelphia Flyers
+54 Ryan McDonagh	0.35197500000000015	Nashville Predators
+55 Nick Holden	0.3515598484848486	Ottawa Senators
+56 Mario Ferraro	0.3514621794871793	San Jose Sharks
+57 Rasmus Andersson	0.3512595238095237	Calgary Flames
+58 Chris Tanev	0.3500785714285713	Calgary Flames
+59 Joel Edmundson	0.34955789473684223	Montréal Canadiens
+60 Alexander Romanov	0.34427647058823535	New York Islanders
 61 Niko Mikkola	0.3435079365079365	St. Louis Blues
 62 Mikey Anderson	0.3422499999999999	Los Angeles Kings
 63 Jonas Brodin	0.33984999999999993	Minnesota Wild
@@ -71,16 +71,16 @@ Defensemen	Penalty Kill Utilization Base	Team
 70 Connor Murphy	0.3267041666666667	Chicago Blackhawks
 71 Brent Burns	0.32438596491228067	Carolina Hurricanes
 72 Drew Doughty	0.3239812499999999	Los Angeles Kings
-73 Justin Faulk	0.3210773809523809	St. Louis Blues
-74 Tony DeAngelo	0.3204735507246377	Philadelphia Flyers
-75 Zach Whitecloud	0.31898888888888877	Vegas Golden Knights
-76 Patrik Nemeth	0.31553148148148147	Arizona Coyotes
-77 Luke Schenn	0.31495740740740735	Vancouver Canucks
-78 Simon Benoit	0.31404999999999994	Anaheim Ducks
-79 Nate Schmidt	0.3118142857142858	Winnipeg Jets
-80 Radko Gudas	0.3113226666666668	Florida Panthers
-81 Kaiden Guhle	0.3095578947368422	Montréal Canadiens
-82 Erik Johnson	0.3084545454545456	Colorado Avalanche
+73 Erik Johnson	0.32237045454545465	Colorado Avalanche
+74 Justin Faulk	0.3210773809523809	St. Louis Blues
+75 Tony DeAngelo	0.3204735507246377	Philadelphia Flyers
+76 Zach Whitecloud	0.31898888888888877	Vegas Golden Knights
+77 Patrik Nemeth	0.31553148148148147	Arizona Coyotes
+78 Luke Schenn	0.31495740740740735	Vancouver Canucks
+79 Simon Benoit	0.31404999999999994	Anaheim Ducks
+80 Nate Schmidt	0.3118142857142858	Winnipeg Jets
+81 Radko Gudas	0.3113226666666668	Florida Panthers
+82 Kaiden Guhle	0.3095578947368422	Montréal Canadiens
 83 Jake Middleton	0.3046749999999999	Minnesota Wild
 84 Jake McCabe	0.3041760416666667	Chicago Blackhawks
 85 Erik Gudbranson	0.3035287500000001	Columbus Blue Jackets
@@ -95,9 +95,9 @@ Defensemen	Penalty Kill Utilization Base	Team
 94 Miro Heiskanen	0.2925764705882351	Dallas Stars
 95 Ryan Pulock	0.2888735294117648	New York Islanders
 96 Victor Hedman	0.2874666666666666	Tampa Bay Lightning
-97 TJ Brodie	0.2832456140350877	Toronto Maple Leafs
-98 Derek Forbort	0.2803711111111112	Boston Bruins
-99 Justin Braun	0.27438478260869564	Philadelphia Flyers
+97 Justin Braun	0.2849449275362319	Philadelphia Flyers
+98 TJ Brodie	0.2832456140350877	Toronto Maple Leafs
+99 Derek Forbort	0.2803711111111112	Boston Bruins
 100 Matt Roy	0.27410833333333323	Los Angeles Kings
 101 Brett Kulak	0.2711843749999999	Edmonton Oilers
 102 Will Borgen	0.26292380952380956	Seattle Kraken
@@ -121,12 +121,12 @@ Defensemen	Penalty Kill Utilization Base	Team
 120 Jarred Tinordi	0.22064583333333335	Chicago Blackhawks
 121 Jeremy Lauzon	0.2198181818181819	Nashville Predators
 122 Jacob Bryson	0.21645773809523802	Buffalo Sabres
-123 Robert Bortuzzo	0.21187261904761903	St. Louis Blues
-124 Ethan Bear	0.20934999999999995	Vancouver Canucks
-125 Dante Fabbro	0.2032431818181819	Nashville Predators
-126 Sean Durzi	0.1964854166666666	Los Angeles Kings
-127 Charlie McAvoy	0.19438222222222226	Boston Bruins
-128 Rasmus Ristolainen	0.19419927536231885	Philadelphia Flyers
+123 Rasmus Ristolainen	0.21281376811594202	Philadelphia Flyers
+124 Robert Bortuzzo	0.21187261904761903	St. Louis Blues
+125 Ethan Bear	0.20934999999999995	Vancouver Canucks
+126 Dante Fabbro	0.2032431818181819	Nashville Predators
+127 Sean Durzi	0.1964854166666666	Los Angeles Kings
+128 Charlie McAvoy	0.19438222222222226	Boston Bruins
 129 Nikita Zaitsev	0.19308636363636372	Ottawa Senators
 130 Dmitry Orlov	0.18894019607843132	Washington Capitals
 131 Jordan Harris	0.18804210526315795	Montréal Canadiens
@@ -183,7 +183,7 @@ Defensemen	Penalty Kill Utilization Base	Team
 182 Chad Ruhwedel	0.05756666666666664	Pittsburgh Penguins
 183 Jordie Benn	0.0563157894736842	Toronto Maple Leafs
 184 Victor Mete	0.05061403508771929	Toronto Maple Leafs
-185 Samuel Girard	0.04910454545454547	Colorado Avalanche
+185 Samuel Girard	0.04972500000000002	Colorado Avalanche
 186 Erik Karlsson	0.048203846153846125	San Jose Sharks
 187 Ryan Murray	0.04168749999999999	Edmonton Oilers
 188 Nick Blankenburg	0.037432500000000014	Columbus Blue Jackets
@@ -198,11 +198,11 @@ Defensemen	Penalty Kill Utilization Base	Team
 197 Rasmus Sandin	0.03166666666666666	Toronto Maple Leafs
 198 Erik Gustafsson	0.02864999999999999	Washington Capitals
 199 Nick Cicek	0.027780128205128186	San Jose Sharks
-200 Arber Xhekaj	0.025600000000000008	Montréal Canadiens
-201 Matt Grzelcyk	0.024613333333333338	Boston Bruins
-202 Mark Borowiecki	0.024375000000000008	Nashville Predators
-203 Juuso Valimaki	0.023356172839506174	Arizona Coyotes
-204 Andreas Englund	0.022779545454545462	Colorado Avalanche
+200 Andreas Englund	0.026679545454545463	Colorado Avalanche
+201 Arber Xhekaj	0.025600000000000008	Montréal Canadiens
+202 Matt Grzelcyk	0.024613333333333338	Boston Bruins
+203 Mark Borowiecki	0.024375000000000008	Nashville Predators
+204 Juuso Valimaki	0.023356172839506174	Arizona Coyotes
 205 Tobias Bjornfot	0.02135208333333333	Los Angeles Kings
 206 Jake Bean	0.021247916666666672	Columbus Blue Jackets
 207 Zach Bogosian	0.02088947368421052	Tampa Bay Lightning

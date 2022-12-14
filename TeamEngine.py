@@ -533,6 +533,7 @@ if __name__ == "__main__":
     print("Updating Average Ranking")
     if UPDATE_TRENDS:
         update_average_rankings()
+    print("Waiting for Plotters to finish their very hard work <3")
 
     # stop all the running workers
     for i in range(subprocess_count):
