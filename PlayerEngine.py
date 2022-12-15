@@ -30,6 +30,10 @@ from Defensemen_Metrics.Defensemen_Utilization import \
     defensemen_utilization_combine_metrics
 from Defensemen_Metrics.Defensemen_Discipline import \
     defensemen_discipline_get_dict, defensemen_discipline_get_data
+from Defensemen_Metrics.Defensemen_PlusMinus import \
+    defensemen_plus_minus_get_dict, defensemen_plus_minus_get_data
+from Defensemen_Metrics.Defensemen_Points import defensemen_points_get_dict, \
+    defensemen_points_get_data
 
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights, defensemen_rating_weights
@@ -467,6 +471,54 @@ def defensemen_discipline() -> None:
         "Graphs/Defensemen/Discipline/discipline_corrected.png")))
 
 
+def defensemen_plus_minus() -> None:
+    defensemen_plus_minus_get_data(active_players["Defenseman"])
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Defensemen", "Plus_Minus Base", "Team"],
+        defensemen_plus_minus_get_dict(), active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Defensemen", "Plus_Minus Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Plus_Minus/plus_minus_base.png", False)))
+
+    # apply correction
+    defensemen_plus_minus = apply_sigmoid_correction(
+        defensemen_plus_minus_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Defensemen", "Plus_Minus Corrected", "Team"],
+        defensemen_plus_minus, active_players['Defenseman'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Defensemen", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Plus_Minus/plus_minus_corrected.png")))
+
+
+def defensemen_points() -> None:
+    defensemen_points_get_data(active_players["Defenseman"])
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
+        ["Defensemen", "Points Base", "Team"],
+        defensemen_points_get_dict(), active_players['Defenseman'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
+        ["Defensemen", "Points Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Points/points_base.png", False)))
+
+    # apply correction
+    defensemen_points = apply_sigmoid_correction(
+        defensemen_points_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
+        ["Defensemen", "Points Corrected", "Team"],
+        defensemen_points, active_players['Defenseman'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
+        ["Defensemen", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Points/points_corrected.png")))
+
+
 def calculate_defensemen_metrics() -> None:
     print("\tDefensemen Hits")
     defensemen_hits()
@@ -479,6 +531,12 @@ def calculate_defensemen_metrics() -> None:
 
     print("\tDefensemen Discipline")
     defensemen_discipline()
+
+    print("\tDefensemen Plus Minus")
+    defensemen_plus_minus()
+
+    print("\tDefensemen Points")
+    defensemen_points()
 
     defensemen_total_rating = {}
 
@@ -493,7 +551,9 @@ def calculate_defensemen_metrics() -> None:
             (defensemen_utilization_get_dict()[defensemen] * \
                 defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
             (defensemen_discipline_get_dict()[defensemen] * \
-                defensemen_rating_weights.DISIPLINE_WEIGHT.value)# + \
+                defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
+            (defensemen_plus_minus_get_dict()[defensemen] * \
+                defensemen_rating_weights.PLUS_MINUS_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",

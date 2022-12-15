@@ -28,7 +28,7 @@ def defensemen_utilization_get_data(active_defensemen : dict={},
         team_stats = all_team_stats[active_defensemen[defensemen][1]]
 
         # even strength time directly gathered
-        time_on_ice = player_stats["timeOnIce"].split(":")
+        time_on_ice = player_stats["evenTimeOnIce"].split(":")
         even_time[defensemen] = \
             (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
             (team_stats["gamesPlayed"] * 60)

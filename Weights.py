@@ -56,7 +56,9 @@ class goalie_rating_weights(Enum):
     GOALS_AGAINST_WEIGHT = 0.20
 
 class defensemen_rating_weights(Enum):
-    UTILIZATION_WEIGHT = 0.30
+    UTILIZATION_WEIGHT = 0.35
     HITS_WEIGHT = 0.05
-    DISIPLINE_WEIGHT = 0.20
+    DISIPLINE_WEIGHT = 0.25
     SHOT_BLOCKING_WEIGHT = 0.10
+    PLUS_MINUS_WEIGHT = 0.05
+    POINTS_WEIGHT = 0.20
