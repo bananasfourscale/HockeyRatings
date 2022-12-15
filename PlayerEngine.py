@@ -448,15 +448,15 @@ def defensemen_discipline() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
         ["Defensemen", "Discipline Base", "Team"],
-        defensemen_discipline_get_dict(), active_players['Defenseman'], False)
+        defensemen_discipline_get_dict(), active_players['Defenseman'], True)
     player_eng_plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
         ["Defensemen", "Discipline Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Discipline/discipline_base.png", True)))
+        "Graphs/Defensemen/Discipline/discipline_base.png", False)))
 
     # apply correction
     defensemen_discipline = apply_sigmoid_correction(
-        defensemen_discipline_get_dict(), True)
+        defensemen_discipline_get_dict(), False)
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
         ["Defensemen", "Discipline Corrected", "Team"],
@@ -491,9 +491,9 @@ def calculate_defensemen_metrics() -> None:
             (defensemen_blocks_get_dict()[defensemen] * \
                 defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
             (defensemen_utilization_get_dict()[defensemen] * \
-                defensemen_rating_weights.UTILIZATION_WEIGHT.value) #+ \
-            # (goalie_goals_against_get_dict()[defensemen] * \
-            #     defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
+                defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
+            (defensemen_discipline_get_dict()[defensemen] * \
+                defensemen_rating_weights.DISIPLINE_WEIGHT.value)# + \
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",

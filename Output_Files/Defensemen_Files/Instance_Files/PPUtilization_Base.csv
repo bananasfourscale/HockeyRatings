@@ -2,7 +2,7 @@ Defensemen	Power Play Utilization Base	Team
 1 Adam Fox	0.6311855670103093	New York Rangers
 2 Cale Makar	0.6178819444444444	Colorado Avalanche
 3 Noah Dobson	0.6161111111111112	New York Islanders
-4 Erik Karlsson	0.601068376068376	San Jose Sharks
+4 Erik Karlsson	0.6029166666666667	San Jose Sharks
 5 Dougie Hamilton	0.5663857677902622	New Jersey Devils
 6 Brandon Montour	0.5611607142857143	Florida Panthers
 7 Roman Josi	0.5476430976430977	Nashville Predators
@@ -10,11 +10,11 @@ Defensemen	Power Play Utilization Base	Team
 9 Tony DeAngelo	0.5428030303030303	Philadelphia Flyers
 10 Rasmus Dahlin	0.5421091445427728	Buffalo Sabres
 11 John Carlson	0.529559748427673	Washington Capitals
-12 Shayne Gostisbehere	0.5285714285714286	Arizona Coyotes
-13 Josh Morrissey	0.5233333333333333	Winnipeg Jets
-14 Brent Burns	0.5221052631578947	Carolina Hurricanes
-15 J.J. Moser	0.5007936507936508	Arizona Coyotes
-16 Quinn Hughes	0.5	Vancouver Canucks
+12 Josh Morrissey	0.5233333333333333	Winnipeg Jets
+13 Brent Burns	0.5221052631578947	Carolina Hurricanes
+14 Shayne Gostisbehere	0.5194756554307116	Arizona Coyotes
+15 Quinn Hughes	0.5	Vancouver Canucks
+16 J.J. Moser	0.497565543071161	Arizona Coyotes
 17 Rasmus Andersson	0.4946127946127946	Calgary Flames
 18 Tyson Barrie	0.4454475308641975	Edmonton Oilers
 19 Vince Dunn	0.4444746376811594	Seattle Kraken
@@ -61,12 +61,12 @@ Defensemen	Power Play Utilization Base	Team
 60 Mattias Ekholm	0.21809764309764307	Nashville Predators
 61 Nils Lundkvist	0.21722222222222223	Dallas Stars
 62 Chris Wideman	0.20416666666666666	Montréal Canadiens
-63 Juuso Valimaki	0.20148809523809524	Arizona Coyotes
-64 Mike Matheson	0.19518518518518518	Montréal Canadiens
+63 Mike Matheson	0.19518518518518518	Montréal Canadiens
+64 Juuso Valimaki	0.1901685393258427	Arizona Coyotes
 65 Jared Spurgeon	0.18288043478260868	Minnesota Wild
 66 Jacob Trouba	0.1777491408934708	New York Rangers
-67 Mario Ferraro	0.1768162393162393	San Jose Sharks
-68 Jakob Chychrun	0.15952380952380954	Arizona Coyotes
+67 Jakob Chychrun	0.17265917602996256	Arizona Coyotes
+68 Mario Ferraro	0.17239583333333333	San Jose Sharks
 69 Ryan Pulock	0.15361111111111111	New York Islanders
 70 MacKenzie Weegar	0.14823232323232324	Calgary Flames
 71 Samuel Girard	0.13871527777777778	Colorado Avalanche
@@ -76,10 +76,10 @@ Defensemen	Power Play Utilization Base	Team
 75 Darnell Nurse	0.12692901234567902	Edmonton Oilers
 76 Pierre-Olivier Joseph	0.12534013605442176	Pittsburgh Penguins
 77 Travis Sanheim	0.10767045454545454	Philadelphia Flyers
-78 Jake Bean	0.10267094017094017	Columbus Blue Jackets
-79 Vladislav Gavrikov	0.10256410256410256	Columbus Blue Jackets
-80 Alexandre Carrier	0.10067340067340068	Nashville Predators
-81 Matt Benning	0.09999999999999999	San Jose Sharks
+78 Matt Benning	0.10270833333333333	San Jose Sharks
+79 Jake Bean	0.10267094017094017	Columbus Blue Jackets
+80 Vladislav Gavrikov	0.10256410256410256	Columbus Blue Jackets
+81 Alexandre Carrier	0.10067340067340068	Nashville Predators
 82 Colton Parayko	0.09915611814345991	St. Louis Blues
 83 Michael Stone	0.09747474747474748	Calgary Flames
 84 Jordan Gross	0.09082491582491584	Nashville Predators
@@ -120,8 +120,8 @@ Defensemen	Power Play Utilization Base	Team
 119 Jake Middleton	0.02373188405797101	Minnesota Wild
 120 Adam Pelech	0.023425925925925926	New York Islanders
 121 Jon Merrill	0.02092391304347826	Minnesota Wild
-122 Marc-Edouard Vlasic	0.020405982905982906	San Jose Sharks
-123 Connor Clifton	0.02015873015873016	Boston Bruins
+122 Connor Clifton	0.02015873015873016	Boston Bruins
+123 Marc-Edouard Vlasic	0.01989583333333333	San Jose Sharks
 124 Carson Soucy	0.01938405797101449	Seattle Kraken
 125 Justin Holl	0.01904761904761905	Toronto Maple Leafs
 126 Sean Walker	0.01861861861861862	Los Angeles Kings
@@ -129,12 +129,12 @@ Defensemen	Power Play Utilization Base	Team
 128 Ryan McDonagh	0.01658249158249158	Nashville Predators
 129 Henri Jokiharju	0.016371681415929203	Buffalo Sabres
 130 Matt Dumba	0.016304347826086956	Minnesota Wild
-131 Troy Stecher	0.016071428571428573	Arizona Coyotes
-132 Artem Zub	0.015408805031446541	Ottawa Senators
-133 Luke Schenn	0.015404040404040403	Vancouver Canucks
-134 Colin Miller	0.015277777777777777	Dallas Stars
-135 Radim Simek	0.013782051282051282	San Jose Sharks
-136 Jacob Bryson	0.013495575221238938	Buffalo Sabres
+131 Artem Zub	0.015408805031446541	Ottawa Senators
+132 Luke Schenn	0.015404040404040403	Vancouver Canucks
+133 Colin Miller	0.015277777777777777	Dallas Stars
+134 Troy Stecher	0.015168539325842698	Arizona Coyotes
+135 Jacob Bryson	0.013495575221238938	Buffalo Sabres
+136 Radim Simek	0.0134375	San Jose Sharks
 137 Mikey Anderson	0.013363363363363363	Los Angeles Kings
 138 Rasmus Ristolainen	0.012878787878787878	Philadelphia Flyers
 139 Jake McCabe	0.012797619047619047	Chicago Blackhawks
@@ -181,16 +181,16 @@ Defensemen	Power Play Utilization Base	Team
 180 Jeremy Lauzon	0.005050505050505051	Nashville Predators
 181 Mattias Samuelsson	0.00471976401179941	Buffalo Sabres
 182 Nick Jensen	0.0047169811320754715	Washington Capitals
-183 Jaycob Megna	0.004700854700854701	San Jose Sharks
-184 Johnathan Kovacevic	0.00462962962962963	Montréal Canadiens
-185 Marc Staal	0.004613095238095238	Florida Panthers
+183 Johnathan Kovacevic	0.00462962962962963	Montréal Canadiens
+184 Marc Staal	0.004613095238095238	Florida Panthers
+185 Jaycob Megna	0.004583333333333333	San Jose Sharks
 186 Jamie Oleksiak	0.004438405797101449	Seattle Kraken
 187 Brett Kulak	0.004243827160493827	Edmonton Oilers
 188 Niko Mikkola	0.004113924050632912	St. Louis Blues
-189 Nick Cicek	0.003846153846153846	San Jose Sharks
-190 Jan Rutta	0.0035714285714285713	Pittsburgh Penguins
-191 Simon Benoit	0.0026785714285714286	Anaheim Ducks
-192 Josh Brown	0.0026785714285714286	Arizona Coyotes
+189 Nick Cicek	0.00375	San Jose Sharks
+190 Josh Brown	0.003651685393258427	Arizona Coyotes
+191 Jan Rutta	0.0035714285714285713	Pittsburgh Penguins
+192 Simon Benoit	0.0026785714285714286	Anaheim Ducks
 193 Nick Seeler	0.0026515151515151517	Philadelphia Flyers
 194 Gustav Lindstrom	0.0026402640264026403	Detroit Red Wings
 195 Kyle Burroughs	0.0025252525252525255	Vancouver Canucks
@@ -200,12 +200,12 @@ Defensemen	Power Play Utilization Base	Team
 199 Philip Broberg	0.0023919753086419754	Edmonton Oilers
 200 Nick Perbix	0.0022435897435897434	Tampa Bay Lightning
 201 Nick Holden	0.00220125786163522	Ottawa Senators
-202 Dysin Mayo	0.0021825396825396826	Arizona Coyotes
+202 Dysin Mayo	0.002059925093632959	Arizona Coyotes
 203 Gavin Bayreuther	0.0020299145299145296	Columbus Blue Jackets
 204 Urho Vaakanainen	0.001984126984126984	Anaheim Ducks
-205 Patrik Nemeth	0.001984126984126984	Arizona Coyotes
-206 Jake Walman	0.0019801980198019802	Detroit Red Wings
-207 Cale Fleury	0.0019021739130434781	Seattle Kraken
+205 Jake Walman	0.0019801980198019802	Detroit Red Wings
+206 Cale Fleury	0.0019021739130434781	Seattle Kraken
+207 Patrik Nemeth	0.0018726591760299624	Arizona Coyotes
 208 Scott Mayfield	0.0018518518518518517	New York Islanders
 209 Dylan Samberg	0.0018518518518518517	Winnipeg Jets
 210 Erik Johnson	0.0018229166666666665	Colorado Avalanche
@@ -228,7 +228,7 @@ Defensemen	Power Play Utilization Base	Team
 227 Calvin de Haan	0.0005263157894736842	Carolina Hurricanes
 228 Lawrence Pilut	0.0005162241887905605	Buffalo Sabres
 229 Ilya Lyubushkin	0.0003687315634218289	Buffalo Sabres
-230 Scott Harrington	0.0003205128205128205	San Jose Sharks
+230 Scott Harrington	0.0003125	San Jose Sharks
 231 Casey Fitzgerald	0.0002949852507374631	Buffalo Sabres
 232 Haydn Fleury	0.0002403846153846154	Tampa Bay Lightning
 233 Jake Muzzin	0.00017006802721088434	Toronto Maple Leafs

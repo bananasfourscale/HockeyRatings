@@ -3,7 +3,7 @@ Defensemen	Even Strength Utilization Base	Team
 2 Roman Josi	0.4254423868312757	Nashville Predators
 3 Drew Doughty	0.42486111111111113	Los Angeles Kings
 4 Adam Fox	0.4193703703703704	New York Rangers
-5 Erik Karlsson	0.41841666666666666	San Jose Sharks
+5 Erik Karlsson	0.4174820788530466	San Jose Sharks
 6 Rasmus Dahlin	0.41613026819923377	Buffalo Sabres
 7 Rasmus Andersson	0.4123084291187739	Calgary Flames
 8 Cam Fowler	0.4084907407407407	Anaheim Ducks
@@ -23,14 +23,14 @@ Defensemen	Even Strength Utilization Base	Team
 22 Devon Toews	0.3803909465020576	Colorado Avalanche
 23 Vladislav Gavrikov	0.3801884920634921	Columbus Blue Jackets
 24 Jaccob Slavin	0.37843253968253965	Carolina Hurricanes
-25 J.J. Moser	0.3783867521367521	Arizona Coyotes
-26 Moritz Seider	0.37700396825396826	Detroit Red Wings
-27 Filip Hronek	0.3762202380952381	Detroit Red Wings
-28 Brett Pesce	0.3752380952380952	Carolina Hurricanes
+25 Moritz Seider	0.37700396825396826	Detroit Red Wings
+26 Filip Hronek	0.3762202380952381	Detroit Red Wings
+27 Brett Pesce	0.3752380952380952	Carolina Hurricanes
+28 J.J. Moser	0.374320987654321	Arizona Coyotes
 29 Victor Hedman	0.3717559523809524	Tampa Bay Lightning
 30 K'Andre Miller	0.369787037037037	New York Rangers
 31 Dougie Hamilton	0.3634003831417625	New Jersey Devils
-32 Shayne Gostisbehere	0.3622970085470085	Arizona Coyotes
+32 Shayne Gostisbehere	0.3633641975308642	Arizona Coyotes
 33 Ryan Suter	0.3617870370370371	Dallas Stars
 34 Mikey Anderson	0.36029513888888887	Los Angeles Kings
 35 Noah Hanifin	0.3600478927203065	Calgary Flames
@@ -78,7 +78,7 @@ Defensemen	Even Strength Utilization Base	Team
 77 Tyson Barrie	0.3283240740740741	Edmonton Oilers
 78 Connor Clifton	0.3279960317460317	Boston Bruins
 79 Erik Gudbranson	0.32645833333333335	Columbus Blue Jackets
-80 Matt Benning	0.3203796296296296	San Jose Sharks
+80 Matt Benning	0.3219086021505376	San Jose Sharks
 81 David Savard	0.31836309523809525	Montréal Canadiens
 82 Ryan Graves	0.3175287356321839	New Jersey Devils
 83 Kris Letang	0.31713601532567054	Pittsburgh Penguins
@@ -87,36 +87,36 @@ Defensemen	Even Strength Utilization Base	Team
 86 Adam Pelech	0.31227777777777777	New York Islanders
 87 Erik Gustafsson	0.3088440860215054	Washington Capitals
 88 Evan Bouchard	0.3070555555555556	Edmonton Oilers
-89 Marc-Edouard Vlasic	0.3061666666666667	San Jose Sharks
-90 Travis Hamonic	0.3049503968253969	Ottawa Senators
-91 Jake Middleton	0.3049206349206349	Minnesota Wild
-92 Rasmus Sandin	0.3043333333333333	Toronto Maple Leafs
-93 Sean Durzi	0.30432291666666667	Los Angeles Kings
-94 Matt Roy	0.30385416666666665	Los Angeles Kings
-95 Tyler Myers	0.30089285714285713	Vancouver Canucks
-96 Damon Severson	0.3007088122605364	New Jersey Devils
-97 Marc Staal	0.30062962962962964	Florida Panthers
-98 Brett Kulak	0.2993425925925926	Edmonton Oilers
-99 Olli Maatta	0.296468253968254	Detroit Red Wings
+89 Travis Hamonic	0.3049503968253969	Ottawa Senators
+90 Jake Middleton	0.3049206349206349	Minnesota Wild
+91 Rasmus Sandin	0.3043333333333333	Toronto Maple Leafs
+92 Sean Durzi	0.30432291666666667	Los Angeles Kings
+93 Matt Roy	0.30385416666666665	Los Angeles Kings
+94 Tyler Myers	0.30089285714285713	Vancouver Canucks
+95 Damon Severson	0.3007088122605364	New Jersey Devils
+96 Marc Staal	0.30062962962962964	Florida Panthers
+97 Brett Kulak	0.2993425925925926	Edmonton Oilers
+98 Olli Maatta	0.296468253968254	Detroit Red Wings
+99 Marc-Edouard Vlasic	0.2962903225806452	San Jose Sharks
 100 Luke Schenn	0.2949107142857143	Vancouver Canucks
 101 Justin Schultz	0.29484126984126985	Seattle Kraken
 102 Trevor van Riemsdyk	0.2948028673835126	Washington Capitals
-103 Mario Ferraro	0.29158333333333336	San Jose Sharks
-104 Jonas Brodin	0.29140873015873014	Minnesota Wild
-105 Torey Krug	0.29012452107279696	St. Louis Blues
-106 John Klingberg	0.2884351851851852	Anaheim Ducks
-107 Erik Johnson	0.2883950617283951	Colorado Avalanche
-108 Jake McCabe	0.28809670781893004	Chicago Blackhawks
-109 Ryan McDonagh	0.28771604938271605	Nashville Predators
-110 Ryan Lindgren	0.28586111111111107	New York Rangers
-111 Erik Cernak	0.2848809523809524	Tampa Bay Lightning
-112 Jaycob Megna	0.2840740740740741	San Jose Sharks
-113 Troy Stecher	0.283792735042735	Arizona Coyotes
-114 Jan Rutta	0.283323754789272	Pittsburgh Penguins
-115 Martin Fehervary	0.28067204301075266	Washington Capitals
-116 Carson Soucy	0.2802678571428572	Seattle Kraken
-117 Ian Cole	0.27785714285714286	Tampa Bay Lightning
-118 Chris Tanev	0.27444444444444444	Calgary Flames
+103 Jonas Brodin	0.29140873015873014	Minnesota Wild
+104 Torey Krug	0.29012452107279696	St. Louis Blues
+105 John Klingberg	0.2884351851851852	Anaheim Ducks
+106 Erik Johnson	0.2883950617283951	Colorado Avalanche
+107 Jake McCabe	0.28809670781893004	Chicago Blackhawks
+108 Ryan McDonagh	0.28771604938271605	Nashville Predators
+109 Ryan Lindgren	0.28586111111111107	New York Rangers
+110 Erik Cernak	0.2848809523809524	Tampa Bay Lightning
+111 Jan Rutta	0.283323754789272	Pittsburgh Penguins
+112 Mario Ferraro	0.2821774193548387	San Jose Sharks
+113 Martin Fehervary	0.28067204301075266	Washington Capitals
+114 Carson Soucy	0.2802678571428572	Seattle Kraken
+115 Ian Cole	0.27785714285714286	Tampa Bay Lightning
+116 Jaycob Megna	0.27491039426523295	San Jose Sharks
+117 Chris Tanev	0.27444444444444444	Calgary Flames
+118 Troy Stecher	0.2732818930041152	Arizona Coyotes
 119 Nicolas Hague	0.27097670250896055	Vegas Golden Knights
 120 Calen Addison	0.26862103174603175	Minnesota Wild
 121 Zach Whitecloud	0.2686021505376344	Vegas Golden Knights
@@ -134,9 +134,9 @@ Defensemen	Even Strength Utilization Base	Team
 133 Nils Lundkvist	0.26028703703703704	Dallas Stars
 134 Niko Mikkola	0.2592624521072797	St. Louis Blues
 135 Aaron Ekblad	0.259	Florida Panthers
-136 Josh Brown	0.2585470085470085	Arizona Coyotes
-137 Seth Jones	0.2574074074074074	Chicago Blackhawks
-138 Samuel Girard	0.25715020576131686	Colorado Avalanche
+136 Seth Jones	0.2574074074074074	Chicago Blackhawks
+137 Samuel Girard	0.25715020576131686	Colorado Avalanche
+138 Josh Brown	0.2570884773662552	Arizona Coyotes
 139 Morgan Rielly	0.25557407407407406	Toronto Maple Leafs
 140 Johnathan Kovacevic	0.2553769841269841	Montréal Canadiens
 141 Alexandre Carrier	0.25353909465020574	Nashville Predators
@@ -151,22 +151,22 @@ Defensemen	Even Strength Utilization Base	Team
 150 Arber Xhekaj	0.23470238095238097	Montréal Canadiens
 151 Caleb Jones	0.23401234567901236	Chicago Blackhawks
 152 Jon Merrill	0.22972222222222222	Minnesota Wild
-153 Juuso Valimaki	0.22751068376068379	Arizona Coyotes
-154 Brendan Smith	0.2236111111111111	New Jersey Devils
-155 Nick Holden	0.22236111111111112	Ottawa Senators
-156 Patrik Nemeth	0.22181623931623934	Arizona Coyotes
-157 Josh Manson	0.21974279835390947	Colorado Avalanche
-158 Jalen Chatfield	0.21677579365079366	Carolina Hurricanes
-159 Pierre-Olivier Joseph	0.21471264367816092	Pittsburgh Penguins
-160 Sebastian Aho	0.21362962962962964	New York Islanders
+153 Brendan Smith	0.2236111111111111	New Jersey Devils
+154 Nick Holden	0.22236111111111112	Ottawa Senators
+155 Josh Manson	0.21974279835390947	Colorado Avalanche
+156 Juuso Valimaki	0.21908436213991772	Arizona Coyotes
+157 Jalen Chatfield	0.21677579365079366	Carolina Hurricanes
+158 Pierre-Olivier Joseph	0.21471264367816092	Pittsburgh Penguins
+159 Sebastian Aho	0.21362962962962964	New York Islanders
+160 Patrik Nemeth	0.2136008230452675	Arizona Coyotes
 161 Alexander Edler	0.21330729166666668	Los Angeles Kings
 162 TJ Brodie	0.21094444444444443	Toronto Maple Leafs
 163 Ethan Bear	0.21038690476190475	Vancouver Canucks
 164 Joel Edmundson	0.20973214285714287	Montréal Canadiens
 165 Sean Walker	0.20858506944444447	Los Angeles Kings
-166 Radim Simek	0.20777777777777778	San Jose Sharks
-167 Charlie McAvoy	0.20721230158730158	Boston Bruins
-168 Jeremy Lauzon	0.20168724279835393	Nashville Predators
+166 Charlie McAvoy	0.20721230158730158	Boston Bruins
+167 Jeremy Lauzon	0.20168724279835393	Nashville Predators
+168 Radim Simek	0.2010752688172043	San Jose Sharks
 169 Timothy Liljegren	0.19980555555555554	Toronto Maple Leafs
 170 Nick Perbix	0.19753968253968254	Tampa Bay Lightning
 171 Mattias Samuelsson	0.19590996168582375	Buffalo Sabres
@@ -179,13 +179,13 @@ Defensemen	Even Strength Utilization Base	Team
 178 Dmitry Orlov	0.1721236559139785	Washington Capitals
 179 Jordan Oesterle	0.16447420634920634	Detroit Red Wings
 180 Calvin de Haan	0.156984126984127	Carolina Hurricanes
-181 Kyle Burroughs	0.15089285714285713	Vancouver Canucks
-182 Ilya Lyubushkin	0.15042145593869732	Buffalo Sabres
-183 Michael Stone	0.14799808429118774	Calgary Flames
-184 Alex Goligoski	0.14625992063492063	Minnesota Wild
-185 Casey Fitzgerald	0.1456704980842912	Buffalo Sabres
-186 Matt Irwin	0.14538530465949823	Washington Capitals
-187 Jakob Chychrun	0.1436111111111111	Arizona Coyotes
+181 Jakob Chychrun	0.15195473251028807	Arizona Coyotes
+182 Kyle Burroughs	0.15089285714285713	Vancouver Canucks
+183 Ilya Lyubushkin	0.15042145593869732	Buffalo Sabres
+184 Michael Stone	0.14799808429118774	Calgary Flames
+185 Alex Goligoski	0.14625992063492063	Minnesota Wild
+186 Casey Fitzgerald	0.1456704980842912	Buffalo Sabres
+187 Matt Irwin	0.14538530465949823	Washington Capitals
 188 Riley Stillman	0.14360119047619047	Vancouver Canucks
 189 Chris Wideman	0.14096230158730158	Montréal Canadiens
 190 Calle Rosen	0.13665708812260535	St. Louis Blues
@@ -206,11 +206,11 @@ Defensemen	Even Strength Utilization Base	Team
 205 Jakub Zboril	0.10500000000000001	Boston Bruins
 206 Lawrence Pilut	0.10156130268199234	Buffalo Sabres
 207 Haydn Fleury	0.1002579365079365	Tampa Bay Lightning
-208 Dysin Mayo	0.0997008547008547	Arizona Coyotes
+208 Dysin Mayo	0.0960082304526749	Arizona Coyotes
 209 Ryan Murray	0.09478703703703704	Edmonton Oilers
 210 Chad Ruhwedel	0.09181992337164752	Pittsburgh Penguins
 211 Matt Kiersted	0.08469444444444443	Florida Panthers
-212 Nick Cicek	0.08325925925925927	San Jose Sharks
+212 Nick Cicek	0.08057347670250896	San Jose Sharks
 213 Jordan Gross	0.08027777777777778	Nashville Predators
 214 Victor Mete	0.0798888888888889	Toronto Maple Leafs
 215 Kale Clague	0.07835249042145595	Buffalo Sabres
@@ -240,8 +240,8 @@ Defensemen	Even Strength Utilization Base	Team
 239 Ben Hutton	0.03560931899641577	Vegas Golden Knights
 240 Cam York	0.03534259259259259	Philadelphia Flyers
 241 Connor Mackey	0.03526819923371648	Calgary Flames
-242 Scott Harrington	0.03389814814814815	San Jose Sharks
-243 Kevin Bahl	0.03342911877394636	New Jersey Devils
+242 Kevin Bahl	0.03342911877394636	New Jersey Devils
+243 Scott Harrington	0.032804659498207885	San Jose Sharks
 244 Alexander Alexeyev	0.03271505376344086	Washington Capitals
 245 Tobias Bjornfot	0.03139756944444445	Los Angeles Kings
 246 Tucker Poolman	0.024930555555555556	Vancouver Canucks
