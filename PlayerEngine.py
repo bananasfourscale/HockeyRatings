@@ -35,8 +35,14 @@ from Defensemen_Metrics.Defensemen_PlusMinus import \
 from Defensemen_Metrics.Defensemen_Points import defensemen_points_get_dict, \
     defensemen_points_get_data
 
+from Forward_Metrics.Forward_Points import forward_points_get_dict, \
+    forward_points_get_data
+from Forward_Metrics.Forward_Utilization import forward_utilization_get_dict, \
+    forward_utilization_get_data, forward_utilization_combine_metrics
+
 from Sigmoid_Correction import apply_sigmoid_correction
-from Weights import goalie_rating_weights, defensemen_rating_weights
+from Weights import goalie_rating_weights, defensemen_rating_weights, \
+    forward_rating_weights
 from Plotter import plot_player_ranking
 
 
@@ -84,7 +90,8 @@ active_players = {
     'Right Wing':{},
     'Left Wing':{},
     'Defenseman':{},
-    'Goalie':{}
+    'Goalie':{},
+    'Forwards':{},
 }
 
 
@@ -154,8 +161,18 @@ def player_sorting() -> None:
 
                 # shortcut to access stats more cleanly
                 player_stats = player_data["stats"][0]["splits"][0]["stat"]
-                active_players[player["position"]["name"]] \
-                    [player["person"]["fullName"]] = \
+                if player["position"]["name"] == 'Defenseman' or \
+                    player["position"]["name"] == 'Goalie':
+
+                    # these positions have their own dict
+                    active_players[player["position"]["name"]] \
+                        [player["person"]["fullName"]] = \
+                        [player_stats, roster_data["teams"][0]["name"]]
+
+                else:
+
+                    # all forwards are currently grouped together
+                    active_players["Forwards"][player["person"]["fullName"]] = \
                         [player_stats, roster_data["teams"][0]["name"]]
 
 
@@ -553,7 +570,9 @@ def calculate_defensemen_metrics() -> None:
             (defensemen_discipline_get_dict()[defensemen] * \
                 defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
             (defensemen_plus_minus_get_dict()[defensemen] * \
-                defensemen_rating_weights.PLUS_MINUS_WEIGHT.value)
+                defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) + \
+            (defensemen_points_get_dict()[defensemen] * \
+                defensemen_rating_weights.POINTS_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",
@@ -564,6 +583,130 @@ def calculate_defensemen_metrics() -> None:
             "Defensemen_Total_Rating.csv",
         ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
+
+
+def forward_points() -> None:
+    forward_points_get_data(active_players["Forwards"])
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/Points_Base.csv",
+        ["Forward", "Points Base", "Team"],
+        forward_points_get_dict(), active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/Points_Base.csv",
+        ["Forward", "Points Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Points/points_base.png", False)))
+
+    # apply correction
+    forward_points = apply_sigmoid_correction(
+        forward_points_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/Points_Corrected.csv",
+        ["Forward", "Points Corrected", "Team"],
+        forward_points, active_players['Forwards'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/Points_Corrected.csv",
+        ["Forward", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Points/points_corrected.png")))
+
+
+def forward_utilization() -> None:
+    utilization_metrics = forward_utilization_get_data(
+        active_players["Forwards"] , team_stats)
+
+    # plot each metric before sigmoid
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Forward", "Even Strength Utilization Base", "Team"],
+        utilization_metrics[0], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Forward", "Even Strength Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Utilization/even_utilzation_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Forward", "Power Play Utilization Base", "Team"],
+        utilization_metrics[1], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Forward", "Power Play Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Utilization/pp_utilization_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Forward", "Penalty Kill Utilization Base", "Team"],
+        utilization_metrics[2], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Forward", "Penalty Kill Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Utilization/pk_utilization_base.png", False)))
+
+    # apply sigmoids to uncombined values
+    for metric_dict in utilization_metrics:
+        apply_sigmoid_correction(metric_dict)
+
+    # plot after individual sigmoids
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Corrected.csv",
+        ["Forward", "Even Strength Utilization Corrected", "Team"],
+        utilization_metrics[0], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Corrected.csv",
+        ["Forward", "Even Strength Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Utilization/even_utilzation_corrected.png", False)))
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/PPUtilization_Corrected.csv",
+        ["Forward", "Power Play Utilization Corrected", "Team"],
+        utilization_metrics[1], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/PPUtilization_Corrected.csv",
+        ["Forward", "Power Play Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Utilization/pp_utilization_corrected.png", False)))
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/PKUtilization_Corrected.csv",
+        ["Forward", "Penalty Kill Utilization Corrected", "Team"],
+        utilization_metrics[2], active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/PKUtilization_Corrected.csv",
+        ["Forward", "Penalty Kill Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Utilization/pk_utilization_corrected.png", False)))
+
+    # combine all metrics and then plot final score
+    forward_utilization_combine_metrics(utilization_metrics)
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
+        ["Forward", "Utilization Rating", "Team"],
+        forward_utilization_get_dict(), active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
+        ["Forward", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Utilization/utilization_rating.png", False)))
+
+
+def calculate_forward_metrics() -> None:
+    print("\tForward Utilization")
+    forward_utilization()
+    print("\tForward Points")
+    forward_points()
+
+    forward_total_rating = {}
+
+    # not all active forward have stats, but all metrics are generated for the
+    # same subset of forward so just loop through the keys of any metric
+    for forward in forward_points_get_dict().keys():
+        forward_total_rating[forward] = \
+            (forward_utilization_get_dict()[forward] * \
+                forward_rating_weights.UTILIZATION_WEIGHT.value) + \
+            (forward_points_get_dict()[forward] * \
+                forward_rating_weights.POINTS_WEIGHT.value)
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/" + \
+            "Forward_Total_Rating.csv",
+        ["Forward", "Total Rating", "Team"], forward_total_rating,
+        active_players['Forwards'])
+    plot_player_ranking(
+        "Output_Files/Forward_Files/Instance_Files/" + \
+            "Forward_Total_Rating.csv",
+        ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
 
 
 if __name__ == "__main__":
@@ -591,6 +734,8 @@ if __name__ == "__main__":
     calculate_goalie_metrics()
     print("Calculating all Defensemen Metrics:")
     calculate_defensemen_metrics()
+    print("Calculation all Forward Metrics")
+    calculate_forward_metrics()
     print("Waiting for Plotters to finish their very hard work <3")
 
     # stop all the running workers

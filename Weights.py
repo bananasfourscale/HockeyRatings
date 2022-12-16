@@ -62,3 +62,7 @@ class defensemen_rating_weights(Enum):
     SHOT_BLOCKING_WEIGHT = 0.10
     PLUS_MINUS_WEIGHT = 0.05
     POINTS_WEIGHT = 0.20
+
+class forward_rating_weights(Enum):
+    UTILIZATION_WEIGHT = 0.25
+    POINTS_WEIGHT = 0.30
