@@ -2,11 +2,11 @@ Defensemen	Hits Base	Team
 1 Luke Schenn	125	Vancouver Canucks
 2 Jacob Trouba	98	New York Rangers
 3 Radko Gudas	95	Florida Panthers
-4 Arber Xhekaj	89	Montréal Canadiens
-5 Jeff Petry	89	Pittsburgh Penguins
-6 Jani Hakanpaa	88	Dallas Stars
-7 Connor Clifton	87	Boston Bruins
-8 Jarred Tinordi	87	Chicago Blackhawks
+4 Jarred Tinordi	91	Chicago Blackhawks
+5 Arber Xhekaj	89	Montréal Canadiens
+6 Jeff Petry	89	Pittsburgh Penguins
+7 Jani Hakanpaa	88	Dallas Stars
+8 Connor Clifton	87	Boston Bruins
 9 Erik Cernak	86	Tampa Bay Lightning
 10 Martin Fehervary	83	Washington Capitals
 11 Alexander Romanov	81	New York Islanders
@@ -16,78 +16,78 @@ Defensemen	Hits Base	Team
 15 Adam Larsson	77	Seattle Kraken
 16 Simon Benoit	75	Anaheim Ducks
 17 Rasmus Sandin	74	Toronto Maple Leafs
-18 Brayden McNabb	72	Vegas Golden Knights
+18 Brayden McNabb	73	Vegas Golden Knights
 19 Jeremy Lauzon	68	Nashville Predators
 20 Marcus Pettersson	68	Pittsburgh Penguins
 21 MacKenzie Weegar	65	Calgary Flames
 22 Carson Soucy	65	Seattle Kraken
 23 Moritz Seider	64	Detroit Red Wings
 24 Mikey Anderson	64	Los Angeles Kings
-25 K'Andre Miller	63	New York Rangers
-26 Neal Pionk	63	Winnipeg Jets
+25 Neal Pionk	64	Winnipeg Jets
+26 K'Andre Miller	63	New York Rangers
 27 Rasmus Ristolainen	62	Philadelphia Flyers
 28 Justin Holl	62	Toronto Maple Leafs
 29 Andrew Peeke	61	Columbus Blue Jackets
 30 Kaiden Guhle	61	Montréal Canadiens
 31 Ben Chiarot	60	Detroit Red Wings
 32 Marc Staal	60	Florida Panthers
-33 Justin Faulk	59	St. Louis Blues
-34 Kris Letang	57	Pittsburgh Penguins
-35 Niko Mikkola	56	St. Louis Blues
-36 Jake McCabe	55	Chicago Blackhawks
+33 Jake McCabe	59	Chicago Blackhawks
+34 Justin Faulk	59	St. Louis Blues
+35 Kris Letang	57	Pittsburgh Penguins
+36 Niko Mikkola	56	St. Louis Blues
 37 Erik Gudbranson	54	Columbus Blue Jackets
-38 Brendan Smith	52	New Jersey Devils
-39 Ryan Pulock	52	New York Islanders
-40 Artem Zub	52	Ottawa Senators
-41 Ivan Provorov	52	Philadelphia Flyers
-42 Jamie Oleksiak	52	Seattle Kraken
-43 Matt Irwin	52	Washington Capitals
-44 Brandon Carlo	51	Boston Bruins
-45 Connor Murphy	51	Chicago Blackhawks
-46 Josh Brown	50	Arizona Coyotes
-47 Braden Schneider	50	New York Rangers
-48 Radim Simek	50	San Jose Sharks
-49 Zach Whitecloud	50	Vegas Golden Knights
-50 Esa Lindell	49	Dallas Stars
-51 Alexander Edler	49	Los Angeles Kings
+38 Alexander Edler	53	Los Angeles Kings
+39 Brandon Carlo	52	Boston Bruins
+40 Brendan Smith	52	New Jersey Devils
+41 Ryan Pulock	52	New York Islanders
+42 Artem Zub	52	Ottawa Senators
+43 Ivan Provorov	52	Philadelphia Flyers
+44 Jamie Oleksiak	52	Seattle Kraken
+45 Matt Irwin	52	Washington Capitals
+46 Connor Murphy	51	Chicago Blackhawks
+47 Josh Brown	50	Arizona Coyotes
+48 Braden Schneider	50	New York Rangers
+49 Radim Simek	50	San Jose Sharks
+50 Zach Whitecloud	50	Vegas Golden Knights
+51 Esa Lindell	49	Dallas Stars
 52 Drew Doughty	49	Los Angeles Kings
 53 Colton Parayko	49	St. Louis Blues
 54 Kyle Burroughs	49	Vancouver Canucks
 55 Darnell Nurse	48	Edmonton Oilers
-56 Cody Ceci	47	Edmonton Oilers
-57 Dmitry Kulikov	46	Anaheim Ducks
-58 Josh Manson	46	Colorado Avalanche
-59 Erik Johnson	46	Colorado Avalanche
-60 Colin Miller	46	Dallas Stars
-61 Evan Bouchard	46	Edmonton Oilers
-62 Nick Seeler	46	Philadelphia Flyers
-63 Derek Forbort	45	Boston Bruins
-64 Brian Dumoulin	45	Pittsburgh Penguins
-65 Oliver Ekman-Larsson	45	Vancouver Canucks
-66 Dylan DeMelo	45	Winnipeg Jets
-67 Filip Hronek	44	Detroit Red Wings
-68 Jake Middleton	44	Minnesota Wild
-69 Matt Benning	44	San Jose Sharks
-70 Rasmus Dahlin	43	Buffalo Sabres
-71 Matt Roy	43	Los Angeles Kings
+56 Dylan DeMelo	48	Winnipeg Jets
+57 Derek Forbort	47	Boston Bruins
+58 Cody Ceci	47	Edmonton Oilers
+59 Dmitry Kulikov	46	Anaheim Ducks
+60 Josh Manson	46	Colorado Avalanche
+61 Erik Johnson	46	Colorado Avalanche
+62 Colin Miller	46	Dallas Stars
+63 Evan Bouchard	46	Edmonton Oilers
+64 Matt Roy	46	Los Angeles Kings
+65 Nick Seeler	46	Philadelphia Flyers
+66 Brian Dumoulin	45	Pittsburgh Penguins
+67 Oliver Ekman-Larsson	45	Vancouver Canucks
+68 Filip Hronek	44	Detroit Red Wings
+69 Jake Middleton	44	Minnesota Wild
+70 Matt Benning	44	San Jose Sharks
+71 Rasmus Dahlin	43	Buffalo Sabres
 72 Ian Cole	43	Tampa Bay Lightning
 73 Victor Hedman	43	Tampa Bay Lightning
 74 Travis Hamonic	42	Ottawa Senators
 75 Nick Jensen	42	Washington Capitals
 76 Ryan Suter	41	Dallas Stars
-77 Nicolas Hague	40	Vegas Golden Knights
-78 Noah Hanifin	39	Calgary Flames
-79 Calvin de Haan	39	Carolina Hurricanes
-80 Andreas Englund	39	Colorado Avalanche
-81 Adam Pelech	39	New York Islanders
-82 Pierre-Olivier Joseph	39	Pittsburgh Penguins
-83 Kevin Shattenkirk	38	Anaheim Ducks
-84 Mattias Samuelsson	38	Buffalo Sabres
-85 Sean Durzi	38	Los Angeles Kings
-86 Ryan Graves	38	New Jersey Devils
-87 Jalen Chatfield	37	Carolina Hurricanes
-88 Matt Dumba	37	Minnesota Wild
-89 Mattias Ekholm	37	Nashville Predators
+77 Nicolas Hague	41	Vegas Golden Knights
+78 Mattias Ekholm	40	Nashville Predators
+79 Noah Hanifin	39	Calgary Flames
+80 Calvin de Haan	39	Carolina Hurricanes
+81 Andreas Englund	39	Colorado Avalanche
+82 Adam Pelech	39	New York Islanders
+83 Pierre-Olivier Joseph	39	Pittsburgh Penguins
+84 Kevin Shattenkirk	38	Anaheim Ducks
+85 Mattias Samuelsson	38	Buffalo Sabres
+86 Sean Durzi	38	Los Angeles Kings
+87 Ryan Graves	38	New Jersey Devils
+88 Jalen Chatfield	37	Carolina Hurricanes
+89 Matt Dumba	37	Minnesota Wild
 90 Vince Dunn	37	Seattle Kraken
 91 Ilya Lyubushkin	36	Buffalo Sabres
 92 Jack Johnson	36	Chicago Blackhawks
@@ -101,35 +101,35 @@ Defensemen	Hits Base	Team
 100 Mikhail Sergachev	35	Tampa Bay Lightning
 101 Timothy Liljegren	35	Toronto Maple Leafs
 102 Dmitry Orlov	35	Washington Capitals
-103 Patrik Nemeth	34	Arizona Coyotes
-104 Hampus Lindholm	34	Boston Bruins
-105 Brett Kulak	34	Edmonton Oilers
-106 Brandon Montour	34	Florida Panthers
-107 Jonas Siegenthaler	34	New Jersey Devils
-108 Cale Makar	33	Colorado Avalanche
-109 Zach Bogosian	33	Tampa Bay Lightning
-110 Brady Skjei	32	Carolina Hurricanes
-111 Vladislav Gavrikov	32	Columbus Blue Jackets
-112 John Marino	31	New Jersey Devils
-113 Justin Braun	31	Philadelphia Flyers
-114 Tyler Myers	31	Vancouver Canucks
-115 Charlie McAvoy	30	Boston Bruins
-116 Alexandre Carrier	30	Nashville Predators
-117 Dante Fabbro	30	Nashville Predators
-118 Travis Sanheim	30	Philadelphia Flyers
-119 Mark Giordano	30	Toronto Maple Leafs
-120 John Carlson	30	Washington Capitals
-121 Josh Morrissey	30	Winnipeg Jets
-122 Olli Maatta	29	Detroit Red Wings
-123 Sean Walker	29	Los Angeles Kings
-124 Joel Edmundson	29	Montréal Canadiens
-125 Johnathan Kovacevic	29	Montréal Canadiens
-126 Dysin Mayo	28	Arizona Coyotes
-127 Caleb Jones	28	Chicago Blackhawks
-128 Gustav Forsling	28	Florida Panthers
-129 Jared Spurgeon	28	Minnesota Wild
-130 Thomas Chabot	28	Ottawa Senators
-131 Dylan Samberg	28	Winnipeg Jets
+103 Dylan Samberg	35	Winnipeg Jets
+104 Patrik Nemeth	34	Arizona Coyotes
+105 Hampus Lindholm	34	Boston Bruins
+106 Brett Kulak	34	Edmonton Oilers
+107 Brandon Montour	34	Florida Panthers
+108 Jonas Siegenthaler	34	New Jersey Devils
+109 Cale Makar	33	Colorado Avalanche
+110 Zach Bogosian	33	Tampa Bay Lightning
+111 Brady Skjei	32	Carolina Hurricanes
+112 Vladislav Gavrikov	32	Columbus Blue Jackets
+113 Dante Fabbro	32	Nashville Predators
+114 John Marino	31	New Jersey Devils
+115 Justin Braun	31	Philadelphia Flyers
+116 Tyler Myers	31	Vancouver Canucks
+117 Charlie McAvoy	30	Boston Bruins
+118 Caleb Jones	30	Chicago Blackhawks
+119 Alexandre Carrier	30	Nashville Predators
+120 Travis Sanheim	30	Philadelphia Flyers
+121 Mark Giordano	30	Toronto Maple Leafs
+122 John Carlson	30	Washington Capitals
+123 Josh Morrissey	30	Winnipeg Jets
+124 Olli Maatta	29	Detroit Red Wings
+125 Sean Walker	29	Los Angeles Kings
+126 Joel Edmundson	29	Montréal Canadiens
+127 Johnathan Kovacevic	29	Montréal Canadiens
+128 Dysin Mayo	28	Arizona Coyotes
+129 Gustav Forsling	28	Florida Panthers
+130 Jared Spurgeon	28	Minnesota Wild
+131 Thomas Chabot	28	Ottawa Senators
 132 Rasmus Andersson	27	Calgary Flames
 133 Nils Lundkvist	27	Dallas Stars
 134 Mario Ferraro	27	San Jose Sharks
@@ -141,10 +141,10 @@ Defensemen	Hits Base	Team
 140 Robert Bortuzzo	25	St. Louis Blues
 141 John Klingberg	24	Anaheim Ducks
 142 J.J. Moser	24	Arizona Coyotes
-143 Jordan Harris	24	Montréal Canadiens
-144 Cal Foote	24	Tampa Bay Lightning
-145 Nathan Beaulieu	23	Anaheim Ducks
-146 Seth Jones	23	Chicago Blackhawks
+143 Seth Jones	24	Chicago Blackhawks
+144 Jordan Harris	24	Montréal Canadiens
+145 Cal Foote	24	Tampa Bay Lightning
+146 Nathan Beaulieu	23	Anaheim Ducks
 147 Aaron Ekblad	23	Florida Panthers
 148 Jake Sanderson	23	Ottawa Senators
 149 Nick Perbix	23	Tampa Bay Lightning
@@ -172,11 +172,11 @@ Defensemen	Hits Base	Team
 171 Ryan McDonagh	19	Nashville Predators
 172 Haydn Fleury	19	Tampa Bay Lightning
 173 Alec Martinez	19	Vegas Golden Knights
-174 Erik Brannstrom	18	Ottawa Senators
-175 TJ Brodie	18	Toronto Maple Leafs
-176 Jordie Benn	18	Toronto Maple Leafs
-177 Ethan Bear	18	Vancouver Canucks
-178 Nate Schmidt	18	Winnipeg Jets
+174 Nate Schmidt	19	Winnipeg Jets
+175 Erik Brannstrom	18	Ottawa Senators
+176 TJ Brodie	18	Toronto Maple Leafs
+177 Jordie Benn	18	Toronto Maple Leafs
+178 Ethan Bear	18	Vancouver Canucks
 179 Jakob Chychrun	17	Arizona Coyotes
 180 Brent Burns	17	Carolina Hurricanes
 181 Devon Toews	17	Colorado Avalanche
@@ -224,17 +224,17 @@ Defensemen	Hits Base	Team
 223 Chris Wideman	7	Montréal Canadiens
 224 Philip Broberg	6	Edmonton Oilers
 225 Tobias Bjornfot	6	Los Angeles Kings
-226 Cam York	6	Philadelphia Flyers
-227 Calle Rosen	6	St. Louis Blues
-228 Conor Timmins	6	Toronto Maple Leafs
-229 Alexander Alexeyev	6	Washington Capitals
-230 Kyle Capobianco	6	Winnipeg Jets
-231 Urho Vaakanainen	5	Anaheim Ducks
-232 Lawrence Pilut	5	Buffalo Sabres
-233 Zach Werenski	5	Columbus Blue Jackets
-234 Mark Borowiecki	5	Nashville Predators
-235 Jordan Gross	5	Nashville Predators
-236 Kevin Gravel	4	Nashville Predators
+226 Jordan Gross	6	Nashville Predators
+227 Cam York	6	Philadelphia Flyers
+228 Calle Rosen	6	St. Louis Blues
+229 Conor Timmins	6	Toronto Maple Leafs
+230 Alexander Alexeyev	6	Washington Capitals
+231 Kyle Capobianco	6	Winnipeg Jets
+232 Urho Vaakanainen	5	Anaheim Ducks
+233 Lawrence Pilut	5	Buffalo Sabres
+234 Zach Werenski	5	Columbus Blue Jackets
+235 Mark Borowiecki	5	Nashville Predators
+236 Kevin Gravel	5	Nashville Predators
 237 Kevin Bahl	4	New Jersey Devils
 238 Robin Salo	4	New York Islanders
 239 Scott Harrington	4	San Jose Sharks
@@ -243,10 +243,10 @@ Defensemen	Hits Base	Team
 242 Victor Mete	3	Toronto Maple Leafs
 243 Adam Boqvist	2	Columbus Blue Jackets
 244 Tucker Poolman	2	Vancouver Canucks
-245 Jack Rathbone	1	Vancouver Canucks
-246 Quinn Hughes	1	Vancouver Canucks
-247 Ian Mitchell	0	Chicago Blackhawks
-248 Brad Hunt	0	Colorado Avalanche
-249 Roland McKeown	0	Nashville Predators
+245 Roland McKeown	1	Nashville Predators
+246 Jack Rathbone	1	Vancouver Canucks
+247 Quinn Hughes	1	Vancouver Canucks
+248 Ian Mitchell	0	Chicago Blackhawks
+249 Brad Hunt	0	Colorado Avalanche
 250 Ben Hutton	0	Vegas Golden Knights
 251 Lucas Johansen	0	Washington Capitals

@@ -39,6 +39,8 @@ from Forward_Metrics.Forward_Points import forward_points_get_dict, \
     forward_points_get_data
 from Forward_Metrics.Forward_Utilization import forward_utilization_get_dict, \
     forward_utilization_get_data, forward_utilization_combine_metrics
+from Forward_Metrics.Forward_PlusMinus import forward_plus_minus_get_dict, \
+    forward_plus_minus_get_data
 
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import goalie_rating_weights, defensemen_rating_weights, \
@@ -319,11 +321,11 @@ def calculate_goalie_metrics() -> None:
     goalie_save_percentage()
     print("\tGoalie Goals Against Avg")
     goalie_goals_against_avg()
-    print("\tCombining Goalie Metrics")
     goalie_total_rating = {}
 
     # not all active goalies have stats, but all metrics are generated for the
     # same subset of goalies so just loop through the keys of any metric
+    print("\tCombining Goalie Metrics")
     for goalie in goalie_utilization_get_dict().keys():
         goalie_total_rating[goalie] = \
             (goalie_utilization_get_dict()[goalie] * \
@@ -557,8 +559,9 @@ def calculate_defensemen_metrics() -> None:
 
     defensemen_total_rating = {}
 
-    # not all active defensemen have stats, but all metrics are generated for the
-    # same subset of defensemen so just loop through the keys of any metric
+    # not all active defensemen have stats, but all metrics are generated for
+    # the same subset of defensemen so just loop through the keys of any metric
+    print("\tCombining Defensemen Metics")
     for defensemen in defensemen_hits_get_dict().keys():
         defensemen_total_rating[defensemen] = \
             (defensemen_hits_get_dict()[defensemen] * \
@@ -681,22 +684,51 @@ def forward_utilization() -> None:
         "Graphs/Forward/Utilization/utilization_rating.png", False)))
 
 
+def forward_plus_minus() -> None:
+    forward_plus_minus_get_data(active_players["Forwards"])
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Forward", "Plus_Minus Base", "Team"],
+        forward_plus_minus_get_dict(), active_players['Forwards'], True)
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Forward", "Plus_Minus Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Plus_Minus/plus_minus_base.png", False)))
+
+    # apply correction
+    forward_plus_minus = apply_sigmoid_correction(
+        forward_plus_minus_get_dict(), False)
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Forward", "Plus_Minus Corrected", "Team"],
+        forward_plus_minus, active_players['Forwards'])
+    player_eng_plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Forward", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Plus_Minus/plus_minus_corrected.png")))
+
+
 def calculate_forward_metrics() -> None:
     print("\tForward Utilization")
     forward_utilization()
     print("\tForward Points")
     forward_points()
+    print("\tForward Plus Minus")
+    forward_plus_minus()
 
     forward_total_rating = {}
 
     # not all active forward have stats, but all metrics are generated for the
     # same subset of forward so just loop through the keys of any metric
+    print("\tCombining Forward Metrics")
     for forward in forward_points_get_dict().keys():
         forward_total_rating[forward] = \
             (forward_utilization_get_dict()[forward] * \
                 forward_rating_weights.UTILIZATION_WEIGHT.value) + \
             (forward_points_get_dict()[forward] * \
-                forward_rating_weights.POINTS_WEIGHT.value)
+                forward_rating_weights.POINTS_WEIGHT.value) + \
+            (forward_plus_minus_get_dict()[forward] * \
+                forward_rating_weights.PLUS_MINUS_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/" + \
             "Forward_Total_Rating.csv",

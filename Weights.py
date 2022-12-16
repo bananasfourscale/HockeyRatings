@@ -66,3 +66,4 @@ class defensemen_rating_weights(Enum):
 class forward_rating_weights(Enum):
     UTILIZATION_WEIGHT = 0.25
     POINTS_WEIGHT = 0.30
+    PLUS_MINUS_WEIGHT = 0.05
