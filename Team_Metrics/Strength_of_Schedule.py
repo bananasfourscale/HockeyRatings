@@ -39,11 +39,11 @@ strength_of_schedule = {
 }
 
 class strength_of_schedule_weights(Enum):
-    FOUR_OR_MORE = 1.0
-    THREE_GOALS = 0.90
-    TWO_OR_ONE = 0.80
-    OT_GAME = 0.333
-    SO_GAME = 0.10
+    WIN_REGULATION_WEIGHT = 1.0
+    WIN_OT_WEIGHT = 0.33
+    LOSE_OT_WEIGHT = 0.10
+    WIN_SO_WEIGHT = 0.10
+    LOSE_SO_WEIGHT = 0.05
 
 
 class match_indecies(Enum):
@@ -59,19 +59,20 @@ def strength_of_schedule_get_dict() -> dict:
 
 
 def determine_winner_loser(home_team : str = "", home_score : int = 0,
-                           away_team : str = "", away_score : int = 0) \
-                                                    -> tuple((str, str, int)):
-        if home_score > away_score:
-            return (home_team, away_team, home_score - away_score)
-        else:
-            return (away_team, home_team, away_score - home_score)
+    away_team : str = "", away_score : int = 0) -> tuple((str, str, int)):
+
+    # simple case to determine which team won the game
+    if home_score > away_score:
+        return (home_team, away_team, home_score - away_score)
+    else:
+        return (away_team, home_team, away_score - home_score)
 
 
 def get_latest_rankings(winning_team : str = "", losing_team : str = "",
-                        game_date : datetime.date = None,
-                        average_rankings : dict = {},
-                        ranking_dates : list = []) -> float:
-    loser_rating = 0
+    game_date : datetime.date = None, average_rankings : dict = {},
+    ranking_dates : list = []) -> tuple((float, float)):
+
+    # loop through the total number of ranking weeks until gettin the latest
     total_weeks = len(list(average_rankings.values())[0])-1
     try:
         
@@ -80,6 +81,8 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         while (total_weeks >= 0):
             if game_date >= ranking_dates[total_weeks]:
                 loser_rating = float(average_rankings[losing_team][total_weeks])
+                winner_rating = \
+                    float(average_rankings[winning_team][total_weeks])
 
                 # if we find the correct week, then skip the loop
                 break
@@ -93,37 +96,37 @@ def get_latest_rankings(winning_team : str = "", losing_team : str = "",
         # to either team.
         if total_weeks < 0:
             loser_rating = 32
-        return loser_rating
-
+            winner_rating = 1
+        return (loser_rating, winner_rating)
     except Exception as e:
         print(winning_team, losing_team)
         print("error index: {}".format(total_weeks))
         raise e
 
 
-def scale_game_rating(loser_rating : float=0.0, score_difference : int=1,
-                      extra_time : str="") -> float:
+def scale_game_rating(loser_rating : float=0.0, winner_rating : float=0.0,
+    score_difference : int=1, extra_time : str="") -> float:
 
-    # any win by 4 or more goals gets full credit
-    if (score_difference >= 4):
-        return loser_rating * strength_of_schedule_weights.FOUR_OR_MORE.value
-
-    # a win by 3 goals is slightly closer and might have an ENG so slightly less
-    if (score_difference == 3):
-        return loser_rating * strength_of_schedule_weights.THREE_GOALS.value
-
-    # a win by 1/2 goals is generally a close game with an ENG likely majority
-    # credit but not full
-    if ((score_difference >= 1) and (extra_time == "3rd")):
-        return loser_rating * strength_of_schedule_weights.TWO_OR_ONE.value
+    # regulation wins give full points to the winner
+    if (extra_time == "3rd"):
+        return (
+            (loser_rating *
+                strength_of_schedule_weights.WIN_REGULATION_WEIGHT.value),
+            0.0
+        )
 
     # if you had to go to OT then it was a really close win
     if (extra_time == "OT"):
-        return loser_rating * strength_of_schedule_weights.OT_GAME.value
+        return (
+            (loser_rating * strength_of_schedule_weights.WIN_OT_WEIGHT.value),
+            (winner_rating * strength_of_schedule_weights.LOSE_OT_WEIGHT.value)
+        )
 
-    # shootouts are basically just luck on some level and have little
-    # correlation to how good the actual team is
-    return loser_rating * strength_of_schedule_weights.SO_GAME.value
+    # shoot outs give basically no credit to either team because they suck
+    return (
+        (loser_rating * strength_of_schedule_weights.WIN_SO_WEIGHT.value),
+        (winner_rating * strength_of_schedule_weights.LOSE_SO_WEIGHT.value)
+    )
 
 
 def read_matches(average_rankings : dict={}, ranking_dates : list=[],
@@ -148,14 +151,16 @@ def read_matches(average_rankings : dict={}, ranking_dates : list=[],
 
             # now given the winner, loser, get the latest rankings for the two
             # teams that they should use for the update
-            loser_rating = get_latest_rankings(winner, loser, game_date,
-                average_rankings, ranking_dates)
+            (loser_rating, winner_rating) = \
+                get_latest_rankings(winner, loser, game_date, average_rankings,
+                    ranking_dates)
 
             # adjust the final points given/taken based on the size of the win
-            adjusted_loser_rating = scale_game_rating((33 - loser_rating),
-                score_difference, extra_time)
-
-            strength_of_schedule[winner] += (adjusted_loser_rating)
+            (adjusted_loser_rating, adjusted_winner_rating) = \
+                scale_game_rating((33 - loser_rating), (33 - winner_rating),\
+                    score_difference, extra_time)
+            strength_of_schedule[winner] += adjusted_loser_rating
+            strength_of_schedule[loser] += adjusted_winner_rating
 
 
 def strength_of_schedule_scale_by_game(team_stats : dict={}) -> None:
@@ -168,13 +173,8 @@ def strength_of_schedule_scale_by_game(team_stats : dict={}) -> None:
 
 def strength_of_schedule_calculate(average_rankings : dict={},
                                    ranking_dates : list=[],
-                                   match_data : dict={},
-                                   team_stats : dict={}) -> None:
+                                   match_data : dict={}) -> None:
 
     # first call read matches which will generate the absolute score for all
     # teams by parsing all complete games one-by-one
     read_matches(average_rankings, ranking_dates, match_data)
-
-    # then scale each teams score by how many games they specifically have
-    # played
-    strength_of_schedule_scale_by_game(team_stats)

@@ -10,13 +10,10 @@ from Team_Metrics.Average_Ranking_Parser import average_rankings_get_dict, \
     average_rankings_update
 from Team_Metrics.Absolute_Ranking_Parser import absolute_rankings_get_dict, \
     absolute_rankings_parse, absolute_rankings_update
-from CSV_Writer import write_out_file, update_trend_file
-from Worker_Nodes import plotter_worker
 
 # import all custom modules for statistical analysis
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
-    strength_of_schedule_calculate
-from Team_Metrics.Win_Rating import win_rating_get_dict, win_rating_calculate
+    strength_of_schedule_calculate, strength_of_schedule_scale_by_game
 from Team_Metrics.Offensive_Rating import offensive_rating_get_data_set, \
     offensive_rating_get_dict, offensive_rating_combine_metrics
 from Team_Metrics.Defensive_Rating import defensive_rating_get_data_set, \
@@ -26,9 +23,13 @@ from Team_Metrics.Clutch import clutch_rating_get_dict, \
 from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_get_data_set, recent_form_calculate_last_ten, \
     recent_form_calculate_streak, recent_form_combine_metrics
+
+# shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import total_rating_weights
 from Plotter import plot_data_set, plot_trend_set
+from CSV_Writer import write_out_file, update_trend_file
+from Worker_Nodes import plotter_worker
 
 
 sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -142,59 +143,6 @@ def get_game_records() -> None:
 Helper functions that calculate the various factors used to create the final
     ranking score
 '''
-def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
-
-    # scale the strength of schedule by game, write out again, and graph
-    strength_of_schedule_calculate(average_rankings_get_dict(),
-        average_ranking_get_ranking_dates(), season_matches, team_season_stats)
-    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Strength_of_Schedule/sos_game_scale.png")))
-
-    # apply sigmoid correction, write out again, and graph
-    apply_sigmoid_correction(strength_of_schedule_get_dict())
-    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
-        ["Team", "Strength of Schedule Corrected"],
-        strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
-        ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
-
-    # update trend file
-    if update_trends:
-        update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
-            strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
-        ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
-
-
-def calculate_win_rating(update_trends : bool=True) -> None:
-
-    # calculate the win rating and graph
-    win_rating_calculate(team_season_records)
-    write_out_file("Output_Files/Team_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating Base"], win_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/WinRating.csv",
-        ["Team", "Win Rating Base"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Win_Rating/win_rating_final.png")))
-
-    # update trend file
-    if update_trends:
-        update_trend_file("Output_Files/Team_Files/Trend_Files/WinRating.csv",
-            win_rating_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/WinRating.csv",
-        ["Rating Date", "Win Rating"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Win_Rating/win_rating_trend.png")))
-
-
 def calculate_clutch_rating(update_trends : bool=True) -> None:
 
     # first calculate the positive part of the clutch rating
@@ -217,72 +165,6 @@ def calculate_clutch_rating(update_trends : bool=True) -> None:
         ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
         ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
-
-
-def calculate_offensive_rating(update_trends : bool=True) -> None:
-    offensive_metrics = offensive_rating_get_data_set(team_season_stats)
-
-    # plot each metric before sigmoid
-    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
-        ["Team", "Shots For Base"], offensive_metrics[0])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
-        ["Team", "Shots For Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Offensive_Rating/shots_for_per_game_base.png")))
-    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
-        ["Team", "Goals For Base"], offensive_metrics[1])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
-        ["Team", "Goals For Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Offensive_Rating/goals_for_per_game_base.png")))
-    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
-        ["Team", "Power Play Base"], offensive_metrics[2])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
-        ["Team", "Power Play Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Offensive_Rating/power_play_base.png")))
-    
-    # apply sigmoid corrections
-    for metric_dict in offensive_metrics:
-        apply_sigmoid_correction(metric_dict)
-
-    # plot individual metrics after sigmoid
-    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
-        ["Team", "Shots For Corrected"], offensive_metrics[0])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
-        ["Team", "Shots For Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Offensive_Rating/shots_for_per_game_sigmoid.png")))
-    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
-        ["Team", "Goals For Corrected"], offensive_metrics[1])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
-        ["Team", "Goals For Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Offensive_Rating/goals_for_per_game_sigmoid.png")))
-    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
-        ["Team", "Power Play Corrected"], offensive_metrics[2])
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
-        ["Team", "Power Play Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Offensive_Rating/power_play_sigmoid.png")))
-
-    # combine metrics to overall score and plot
-    offensive_rating_combine_metrics(offensive_metrics)
-    write_out_file("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
-        ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
-
-    # update trend file
-    if update_trends:
-        update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
-            offensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
-        ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
 
 
 def calculate_defensive_rating(update_trends : bool=True) -> None:
@@ -352,6 +234,72 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
         "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
 
 
+def calculate_offensive_rating(update_trends : bool=True) -> None:
+    offensive_metrics = offensive_rating_get_data_set(team_season_stats)
+
+    # plot each metric before sigmoid
+    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
+        ["Team", "Shots For Base"], offensive_metrics[0])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
+        ["Team", "Shots For Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/shots_for_per_game_base.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
+        ["Team", "Goals For Base"], offensive_metrics[1])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
+        ["Team", "Goals For Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/goals_for_per_game_base.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
+        ["Team", "Power Play Base"], offensive_metrics[2])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
+        ["Team", "Power Play Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/power_play_base.png")))
+    
+    # apply sigmoid corrections
+    for metric_dict in offensive_metrics:
+        apply_sigmoid_correction(metric_dict)
+
+    # plot individual metrics after sigmoid
+    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
+        ["Team", "Shots For Corrected"], offensive_metrics[0])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
+        ["Team", "Shots For Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/shots_for_per_game_sigmoid.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
+        ["Team", "Goals For Corrected"], offensive_metrics[1])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
+        ["Team", "Goals For Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/goals_for_per_game_sigmoid.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
+        ["Team", "Power Play Corrected"], offensive_metrics[2])
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
+        ["Team", "Power Play Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/power_play_sigmoid.png")))
+
+    # combine metrics to overall score and plot
+    offensive_rating_combine_metrics(offensive_metrics)
+    write_out_file("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
+
+    # update trend file
+    if update_trends:
+        update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+            offensive_rating_get_dict())
+    team_engine_plotting_queue.put((plot_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+        ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
+
+
 def calculate_recent_form(update_trends : bool=True) -> None:
     
     # get all the data used for recent form across all metrics
@@ -412,6 +360,46 @@ def calculate_recent_form(update_trends : bool=True) -> None:
         "Graphs/Teams/Recent_Form/recent_form_trend.png")))
 
 
+def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
+
+    # scale the strength of schedule by game, write out again, and graph
+    strength_of_schedule_calculate(average_rankings_get_dict(),
+        average_ranking_get_ranking_dates(), season_matches)
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
+        ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
+        ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Strength_of_Schedule/sos_base.png")))
+
+    strength_of_schedule_scale_by_game(team_season_stats)
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
+        ["Team", "Strength of Schedule Game Scale"], strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
+        ["Team", "Strength of Schedule Game Scale"], 0.0, 0.0, [],
+        "Graphs/Teams/Strength_of_Schedule/sos_game_scale.png")))
+
+    # apply sigmoid correction, write out again, and graph
+    apply_sigmoid_correction(strength_of_schedule_get_dict())
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
+        ["Team", "Strength of Schedule Corrected"],
+        strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
+        ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
+
+    # update trend file
+    if update_trends:
+        update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+            strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+        ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
+
+
 '''
 Function to create the combined set of all metrics into one ranking score
 '''
@@ -420,18 +408,17 @@ def combine_all_factors(update_trends : bool=True) -> None:
     # calculate the final rating for all teams using the forms above
     for team in total_rating.keys():
         total_rating[team] = \
-            (win_rating_get_dict()[team] * \
-                total_rating_weights.WIN_RATING_WEIGHT.value) + \
             (clutch_rating_get_dict()[team] * \
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
-            (recent_form_get_dict()[team] * \
-                total_rating_weights.FORM_RATING_WEIGHT.value) + \
-            (strength_of_schedule_get_dict()[team] * \
-                total_rating_weights.SOS_RATING_WEIGHT.value) + \
+            (defensive_rating_get_dict()[team] * \
+                total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) + \
             (offensive_rating_get_dict()[team] * \
                 total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) + \
-            (defensive_rating_get_dict()[team] * \
-                total_rating_weights.DEFENSIVE_RATING_WEIGHT.value)
+            (recent_form_get_dict()[team] * \
+                total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) + \
+            (strength_of_schedule_get_dict()[team] * \
+                total_rating_weights.SOS_RATING_WEIGHT.value)
+            
 
     # write out and plot the total ratings
     write_out_file("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
@@ -505,8 +492,8 @@ if __name__ == "__main__":
     print("Strenght of Schedule")
     calculate_strenght_of_schedule(UPDATE_TRENDS)
 
-    print("Win Rating")
-    calculate_win_rating(UPDATE_TRENDS)
+    # print("Win Rating")
+    # calculate_win_rating(UPDATE_TRENDS)
 
     print("Clutch Rating")
     calculate_clutch_rating(UPDATE_TRENDS)

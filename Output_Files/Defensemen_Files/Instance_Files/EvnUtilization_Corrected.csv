@@ -1,256 +1,254 @@
 Defensemen	Even Strength Utilization Corrected	Team
-1 Erik Karlsson	0.9508206605748012	San Jose Sharks
-2 Roman Josi	0.9344787592633851	Nashville Predators
-3 Adam Larsson	0.9331302710549148	Seattle Kraken
-4 Darnell Nurse	0.9268407772746712	Edmonton Oilers
-5 Drew Doughty	0.9224411090890194	Los Angeles Kings
-6 Cale Makar	0.9218033704783983	Colorado Avalanche
-7 K'Andre Miller	0.915437559141701	New York Rangers
-8 Vince Dunn	0.9145359925488382	Seattle Kraken
-9 Jaccob Slavin	0.9114773705661465	Carolina Hurricanes
-10 Cam Fowler	0.9109520206417195	Anaheim Ducks
-11 Josh Morrissey	0.9102412345821026	Winnipeg Jets
-12 Nick Leddy	0.9079985698043624	St. Louis Blues
-13 Rasmus Dahlin	0.9071032890220438	Buffalo Sabres
-14 Justin Faulk	0.9067041407910305	St. Louis Blues
-15 Gustav Forsling	0.9033894321338978	Florida Panthers
-16 Ivan Provorov	0.898604108073268	Philadelphia Flyers
-17 Colton Parayko	0.8958967783867712	St. Louis Blues
-18 Neal Pionk	0.8947409544059014	Winnipeg Jets
-19 Mikey Anderson	0.8945302070245775	Los Angeles Kings
-20 Matt Dumba	0.8908155802751555	Minnesota Wild
-21 Adam Fox	0.8871596897233628	New York Rangers
-22 Owen Power	0.883045040086547	Buffalo Sabres
-23 Rasmus Andersson	0.880334630161953	Calgary Flames
-24 Hampus Lindholm	0.8800576145887968	Boston Bruins
-25 Vladislav Gavrikov	0.880001861160815	Columbus Blue Jackets
-26 Miro Heiskanen	0.8797816701428408	Dallas Stars
-27 Devon Toews	0.8794336885791463	Colorado Avalanche
-28 Brady Skjei	0.8786992727876131	Carolina Hurricanes
-29 Brett Pesce	0.8737823566271822	Carolina Hurricanes
-30 Travis Sanheim	0.872620130269539	Philadelphia Flyers
-31 Marcus Pettersson	0.8715632140902452	Pittsburgh Penguins
-32 Thomas Chabot	0.8694410245728034	Ottawa Senators
-33 Justin Holl	0.8680341690186573	Toronto Maple Leafs
-34 Nick Jensen	0.8677274081625443	Washington Capitals
-35 Brent Burns	0.8641491773386245	Carolina Hurricanes
-36 Alexander Romanov	0.8636645005525602	New York Islanders
-37 Brayden McNabb	0.8628791947720138	Vegas Golden Knights
-38 Dougie Hamilton	0.8621964235434745	New Jersey Devils
-39 Ryan Suter	0.8619168067440347	Dallas Stars
-40 Jack Johnson	0.8606670273125321	Chicago Blackhawks
-41 Brenden Dillon	0.859569299018397	Winnipeg Jets
-42 Brandon Montour	0.8591159855016604	Florida Panthers
-43 Jacob Trouba	0.8586321234783829	New York Rangers
-44 Alec Martinez	0.8582576672003958	Vegas Golden Knights
-45 Cody Ceci	0.8572419268311735	Edmonton Oilers
-46 Oliver Ekman-Larsson	0.8566191387057097	Vancouver Canucks
-47 Victor Hedman	0.8546990418689878	Tampa Bay Lightning
-48 Erik Gudbranson	0.8539445444598444	Columbus Blue Jackets
-49 Shayne Gostisbehere	0.8491939681276034	Arizona Coyotes
-50 Kaiden Guhle	0.84811321516059	Montréal Canadiens
-51 MacKenzie Weegar	0.8471271298954957	Calgary Flames
-52 Connor Murphy	0.8465361864875536	Chicago Blackhawks
-53 Filip Hronek	0.8453079155724778	Detroit Red Wings
-54 John Marino	0.844665324289877	New Jersey Devils
-55 Jonas Siegenthaler	0.8372215623302438	New Jersey Devils
-56 Mattias Ekholm	0.832279462361206	Nashville Predators
-57 Noah Hanifin	0.8313311328553058	Calgary Flames
-58 Ryan Pulock	0.828575525603904	New York Islanders
-59 Quinn Hughes	0.8280730734338851	Vancouver Canucks
-60 Ben Chiarot	0.8272294017706711	Detroit Red Wings
-61 Dmitry Kulikov	0.8253499907187126	Anaheim Ducks
-62 Andrew Peeke	0.8220274508302099	Columbus Blue Jackets
-63 Scott Mayfield	0.8206793808532634	New York Islanders
-64 Moritz Seider	0.8197384742848756	Detroit Red Wings
-65 Connor Clifton	0.8183107641218104	Boston Bruins
-66 Mikhail Sergachev	0.8174801822117088	Tampa Bay Lightning
-67 Jared Spurgeon	0.8158609566871857	Minnesota Wild
-68 Brian Dumoulin	0.8135146687510517	Pittsburgh Penguins
-69 Nikita Zadorov	0.8103155868818207	Calgary Flames
-70 Erik Gustafsson	0.8101978663238908	Washington Capitals
-71 Ryan Graves	0.8071495539115331	New Jersey Devils
-72 Tyler Myers	0.805409181790367	Vancouver Canucks
-73 Noah Dobson	0.7998805846921326	New York Islanders
-74 Mark Giordano	0.7986836199468933	Toronto Maple Leafs
-75 Shea Theodore	0.7985882626430949	Vegas Golden Knights
-76 Matt Benning	0.7888779471667213	San Jose Sharks
-77 Kris Letang	0.782366679133062	Pittsburgh Penguins
-78 Matt Roy	0.7792391019095732	Los Angeles Kings
-79 Jake Middleton	0.7741740458695777	Minnesota Wild
-80 Brett Kulak	0.7641430203254587	Edmonton Oilers
-81 Esa Lindell	0.7562139620866837	Dallas Stars
-82 Rasmus Sandin	0.7553055966095069	Toronto Maple Leafs
-83 Nicolas Hague	0.755022451038645	Vegas Golden Knights
-84 Tony DeAngelo	0.7482856569541466	Philadelphia Flyers
-85 Jake Sanderson	0.7438431790183495	Ottawa Senators
-86 Jake McCabe	0.7426956968444854	Chicago Blackhawks
-87 Olli Maatta	0.7421743582810724	Detroit Red Wings
-88 Tyson Barrie	0.7413769206602776	Edmonton Oilers
-89 Marc-Edouard Vlasic	0.738833600732512	San Jose Sharks
-90 Ryan Lindgren	0.7385361896980336	New York Rangers
-91 Jeff Petry	0.7378084714880602	Pittsburgh Penguins
-92 Luke Schenn	0.7376868879511288	Vancouver Canucks
-93 John Klingberg	0.7304569030246378	Anaheim Ducks
-94 Colin Miller	0.728200615824325	Dallas Stars
-95 Evan Bouchard	0.7257745852406545	Edmonton Oilers
-96 J.J. Moser	0.725660831327779	Arizona Coyotes
-97 Erik Johnson	0.7247212425839532	Colorado Avalanche
-98 Torey Krug	0.7222218636440567	St. Louis Blues
-99 Travis Hamonic	0.7186670365625533	Ottawa Senators
-100 Jani Hakanpää	0.7148379891023606	Dallas Stars
-101 Jonas Brodin	0.7145769561295139	Minnesota Wild
-102 Nate Schmidt	0.7119330234660811	Winnipeg Jets
-103 Jaycob Megna	0.7102237021408948	San Jose Sharks
-104 Damon Severson	0.7061241232931359	New Jersey Devils
-105 Justin Schultz	0.7037031196757749	Seattle Kraken
-106 Marc Staal	0.6989880453648426	Florida Panthers
-107 Sean Durzi	0.6880704731875779	Los Angeles Kings
-108 Samuel Girard	0.6864566327800049	Colorado Avalanche
-109 Trevor van Riemsdyk	0.684714102602651	Washington Capitals
-110 Jordan Harris	0.6833925319035672	Montréal Canadiens
-111 Carson Soucy	0.6827214481522628	Seattle Kraken
-112 Ian Cole	0.6822820310951767	Tampa Bay Lightning
-113 Erik Cernak	0.6811086650148117	Tampa Bay Lightning
-114 Dante Fabbro	0.6763738060253207	Nashville Predators
-115 Nils Lundkvist	0.6740587805662129	Dallas Stars
-116 Jan Rutta	0.6729963294694835	Pittsburgh Penguins
-117 Adam Pelech	0.672557304251657	New York Islanders
-118 Matt Grzelcyk	0.6685016947115693	Boston Bruins
-119 Braden Schneider	0.6595293563018493	New York Rangers
-120 John Carlson	0.6574851417803738	Washington Capitals
-121 Dylan DeMelo	0.6474455688074764	Winnipeg Jets
-122 Martin Fehervary	0.6468254632740102	Washington Capitals
-123 Will Borgen	0.632174197790379	Seattle Kraken
-124 David Savard	0.62352371840512	Montréal Canadiens
-125 Troy Stecher	0.6234904131609119	Arizona Coyotes
-126 Erik Brannstrom	0.6222162554071055	Ottawa Senators
-127 Niko Mikkola	0.620497073482019	St. Louis Blues
-128 Johnathan Kovacevic	0.6195960060455606	Montréal Canadiens
-129 Alex Pietrangelo	0.6099701647366065	Vegas Golden Knights
-130 Simon Benoit	0.6078965979759089	Anaheim Ducks
-131 Justin Braun	0.6070638480538963	Philadelphia Flyers
-132 Arber Xhekaj	0.6068224232283808	Montréal Canadiens
-133 Josh Mahura	0.6049792573380475	Florida Panthers
-134 Mario Ferraro	0.5857495288296297	San Jose Sharks
-135 Ryan McDonagh	0.5785562035166925	Nashville Predators
-136 Zach Whitecloud	0.5773134587888469	Vegas Golden Knights
-137 Rasmus Ristolainen	0.572397746478621	Philadelphia Flyers
-138 Sebastian Aho	0.5675341632275444	New York Islanders
-139 Brandon Carlo	0.566884260402786	Boston Bruins
-140 Nick Seeler	0.564063283823049	Philadelphia Flyers
-141 Jon Merrill	0.5494243368533044	Minnesota Wild
-142 Caleb Jones	0.5367571673812104	Chicago Blackhawks
-143 Kevin Shattenkirk	0.5355846593303023	Anaheim Ducks
-144 Jarred Tinordi	0.5289333922648276	Chicago Blackhawks
-145 Seth Jones	0.5263221131411382	Chicago Blackhawks
-146 Calen Addison	0.5202139305743037	Minnesota Wild
-147 Chris Tanev	0.5199583044561139	Calgary Flames
-148 Brendan Smith	0.5186927239624672	New Jersey Devils
-149 Nick Perbix	0.5080572678829267	Tampa Bay Lightning
-150 Josh Brown	0.5039951764503305	Arizona Coyotes
-151 Pierre-Olivier Joseph	0.5010622094260442	Pittsburgh Penguins
-152 Jalen Chatfield	0.4991386764616291	Carolina Hurricanes
-153 Alexandre Carrier	0.4971415040244682	Nashville Predators
-154 Jamie Oleksiak	0.4961867761806235	Seattle Kraken
-155 Radko Gudas	0.4843359289667076	Florida Panthers
-156 Aaron Ekblad	0.48318624669884164	Florida Panthers
-157 Alexander Edler	0.4700863773627242	Los Angeles Kings
-158 Ethan Bear	0.4690197010930269	Vancouver Canucks
-159 Radim Simek	0.4636787511765721	San Jose Sharks
-160 Juuso Valimaki	0.4594259128548856	Arizona Coyotes
-161 TJ Brodie	0.45803847943762255	Toronto Maple Leafs
-162 Jacob Bryson	0.4539640293802954	Buffalo Sabres
-163 Timothy Liljegren	0.42226238787167364	Toronto Maple Leafs
-164 Nick Holden	0.41926759136453945	Ottawa Senators
-165 Mattias Samuelsson	0.4185104553833061	Buffalo Sabres
-166 Morgan Rielly	0.4141130185167187	Toronto Maple Leafs
-167 Sean Walker	0.4104830314779293	Los Angeles Kings
-168 Joel Edmundson	0.3956373563716312	Montréal Canadiens
-169 Patrik Nemeth	0.38243209516990245	Arizona Coyotes
-170 Jeremy Lauzon	0.3645785745551008	Nashville Predators
-171 Josh Manson	0.36393158174441015	Colorado Avalanche
-172 Jordan Oesterle	0.35435637144125587	Detroit Red Wings
-173 Charlie McAvoy	0.3470071252161288	Boston Bruins
-174 Dylan Samberg	0.3444115080326761	Winnipeg Jets
-175 Marcus Bjork	0.32635222296216854	Columbus Blue Jackets
-176 Dmitry Orlov	0.32402353753384144	Washington Capitals
-177 Calvin de Haan	0.30837471588572396	Carolina Hurricanes
-178 Derek Forbort	0.30144810380493403	Boston Bruins
-179 Jakob Chychrun	0.25544135578467697	Arizona Coyotes
-180 Matt Irwin	0.24668511505609184	Washington Capitals
-181 Artem Zub	0.24617903484739237	Ottawa Senators
-182 Henri Jokiharju	0.2459360790986582	Buffalo Sabres
-183 Michael Stone	0.23208276635906674	Calgary Flames
-184 Kyle Burroughs	0.22278209923918696	Vancouver Canucks
-185 Casey Fitzgerald	0.21455266985771426	Buffalo Sabres
-186 Zach Werenski	0.2071711283664416	Columbus Blue Jackets
-187 Riley Stillman	0.19510708934705318	Vancouver Canucks
-188 Gustav Lindstrom	0.19341428095219887	Detroit Red Wings
-189 Jake Walman	0.19084384712675878	Detroit Red Wings
-190 Nikita Zaitsev	0.18953194716132274	Ottawa Senators
-191 Chris Wideman	0.18374203852307078	Montréal Canadiens
-192 Robert Bortuzzo	0.1749097217423501	St. Louis Blues
-193 Ilya Lyubushkin	0.1732073964408739	Buffalo Sabres
-194 Alex Goligoski	0.16741506146288182	Minnesota Wild
-195 Cal Foote	0.16301042449856862	Tampa Bay Lightning
-196 Calle Rosen	0.15968177630766806	St. Louis Blues
-197 Jacob MacDonald	0.14880531693850516	Colorado Avalanche
-198 Nathan Beaulieu	0.13701624648148314	Anaheim Ducks
-199 Lawrence Pilut	0.13388173478790283	Buffalo Sabres
-200 Jake Bean	0.13295430503619604	Columbus Blue Jackets
-201 Libor Hajek	0.130948003679635	New York Rangers
-202 Robert Hagg	0.12999901878505377	Detroit Red Wings
-203 Bowen Byram	0.12940578464619412	Colorado Avalanche
-204 Kale Clague	0.12777684971477002	Buffalo Sabres
-205 Haydn Fleury	0.11991516550436716	Tampa Bay Lightning
-206 Chad Ruhwedel	0.1191864484348009	Pittsburgh Penguins
-207 Mike Matheson	0.11865471318299772	Montréal Canadiens
-208 Colton White	0.11757989892413083	Anaheim Ducks
-209 Jordan Gross	0.10340563935422496	Nashville Predators
-210 Gavin Bayreuther	0.10168915373018365	Columbus Blue Jackets
-211 Matt Kiersted	0.10000637690755171	Florida Panthers
-212 Andreas Englund	0.094579997890068	Colorado Avalanche
-213 Tim Berni	0.09325473447693516	Columbus Blue Jackets
-214 Jakub Zboril	0.09229600784106105	Boston Bruins
-215 Ryan Murray	0.09064911309411292	Edmonton Oilers
-216 Markus Niemelainen	0.08625967471523853	Edmonton Oilers
-217 Urho Vaakanainen	0.08113568528790462	Anaheim Ducks
-218 Zach Bogosian	0.07753180881767242	Tampa Bay Lightning
-219 Daniil Miromanov	0.0772875984596303	Vegas Golden Knights
-220 Victor Mete	0.07095522107588756	Toronto Maple Leafs
-221 Jamie Drysdale	0.06876852267587999	Anaheim Ducks
-222 Philip Broberg	0.06716963296649364	Edmonton Oilers
-223 Conor Timmins	0.0658685318387528	Toronto Maple Leafs
-224 Anton Stralman	0.06501169498766668	Boston Bruins
-225 Nick Blankenburg	0.06390731297867934	Columbus Blue Jackets
-226 Scott Harrington	0.05875871698831946	San Jose Sharks
-227 Jacob Bernard-Docker	0.057102328870556524	Ottawa Senators
-228 Robin Salo	0.05652813282326172	New York Islanders
-229 Cam York	0.054858527294410216	Philadelphia Flyers
-230 Ben Hutton	0.054560564548066896	Vegas Golden Knights
-231 Jordie Benn	0.048509449533355016	Toronto Maple Leafs
-232 Jack Rathbone	0.04827034515795764	Vancouver Canucks
-233 Connor Mackey	0.04702216840305229	Calgary Flames
-234 Joel Hanley	0.04691558080417795	Dallas Stars
-235 Logan Stanley	0.046915137170109006	Winnipeg Jets
-236 Dennis Gilbert	0.044716071847198634	Calgary Flames
-237 Cale Fleury	0.0445119930486387	Seattle Kraken
-238 Ian Mitchell	0.04385875043625204	Chicago Blackhawks
-239 Kurtis MacDermid	0.041310722021166785	Colorado Avalanche
-240 Dylan Coghlan	0.04098090291363545	Carolina Hurricanes
-241 Kevin Bahl	0.04029165838486841	New Jersey Devils
-242 Brad Hunt	0.03990937535098565	Colorado Avalanche
-243 Kyle Capobianco	0.039124430428585176	Winnipeg Jets
-244 Adam Boqvist	0.036166450875594905	Columbus Blue Jackets
-245 Alexander Alexeyev	0.03583892370892336	Washington Capitals
-246 Kevin Gravel	0.03539683945076267	Nashville Predators
-247 Jake Muzzin	0.03529616279206531	Toronto Maple Leafs
-248 Ben Harpur	0.03440839228291468	New York Rangers
-249 Nick DeSimone	0.03107436296390877	Calgary Flames
-250 Ville Heinola	0.03080026523314457	Winnipeg Jets
-251 Tucker Poolman	0.030711637215345835	Vancouver Canucks
-252 Roland McKeown	0.030601828652501897	Nashville Predators
-253 Mark Borowiecki	0.03015435692028969	Nashville Predators
-254 Jordan Spence	0.02663187803014612	Los Angeles Kings
-255 Lucas Johansen	0.026475871993752294	Washington Capitals
+1 Erik Karlsson	0.9483732026575997	San Jose Sharks
+2 Adam Larsson	0.936855437374992	Seattle Kraken
+3 Roman Josi	0.9335191825161516	Nashville Predators
+4 Darnell Nurse	0.9253492429847276	Edmonton Oilers
+5 Cale Makar	0.924124493520595	Colorado Avalanche
+6 Drew Doughty	0.9239091293871168	Los Angeles Kings
+7 Vince Dunn	0.9185686409338412	Seattle Kraken
+8 Jaccob Slavin	0.9136983996075014	Carolina Hurricanes
+9 K'Andre Miller	0.9134705474823162	New York Rangers
+10 Josh Morrissey	0.9112437045769856	Winnipeg Jets
+11 Cam Fowler	0.9092349137494631	Anaheim Ducks
+12 Nick Leddy	0.9075778178345959	St. Louis Blues
+13 Gustav Forsling	0.9069395971659739	Florida Panthers
+14 Rasmus Dahlin	0.9066712365346445	Buffalo Sabres
+15 Justin Faulk	0.90626703143011	St. Louis Blues
+16 Ivan Provorov	0.8974591402295462	Philadelphia Flyers
+17 Mikey Anderson	0.896059005510066	Los Angeles Kings
+18 Colton Parayko	0.8953186453106068	St. Louis Blues
+19 Neal Pionk	0.893565395438521	Winnipeg Jets
+20 Matt Dumba	0.8873520975188242	Minnesota Wild
+21 Devon Toews	0.8865692557704071	Colorado Avalanche
+22 Adam Fox	0.8837702167460683	New York Rangers
+23 Rasmus Andersson	0.8826386613884473	Calgary Flames
+24 Owen Power	0.8822901564307638	Buffalo Sabres
+25 Hampus Lindholm	0.8797638176767202	Boston Bruins
+26 Miro Heiskanen	0.879249254704091	Dallas Stars
+27 Vladislav Gavrikov	0.8792038823377647	Columbus Blue Jackets
+28 Marcus Pettersson	0.875271331867606	Pittsburgh Penguins
+29 Thomas Chabot	0.8726261106149367	Ottawa Senators
+30 Brett Pesce	0.8724658835865475	Carolina Hurricanes
+31 Travis Sanheim	0.8704750379962031	Philadelphia Flyers
+32 Nick Jensen	0.8678311201645927	Washington Capitals
+33 Dougie Hamilton	0.8670258504042381	New Jersey Devils
+34 Justin Holl	0.8651462561250054	Toronto Maple Leafs
+35 Jack Johnson	0.8647223289000294	Chicago Blackhawks
+36 Brandon Montour	0.8647106022624574	Florida Panthers
+37 Brent Burns	0.8638944269276341	Carolina Hurricanes
+38 Brayden McNabb	0.8626218545467258	Vegas Golden Knights
+39 Alexander Romanov	0.8618868438531758	New York Islanders
+40 Ryan Suter	0.8602698283512984	Dallas Stars
+41 Oliver Ekman-Larsson	0.8597109137691368	Vancouver Canucks
+42 Alec Martinez	0.8592061244106928	Vegas Golden Knights
+43 Brady Skjei	0.8575039250854939	Carolina Hurricanes
+44 Jacob Trouba	0.8567045336792424	New York Rangers
+45 Cody Ceci	0.8543401459160745	Edmonton Oilers
+46 Brenden Dillon	0.8540862563387982	Winnipeg Jets
+47 Erik Gudbranson	0.8527620918078922	Columbus Blue Jackets
+48 Kaiden Guhle	0.8527042945290926	Montréal Canadiens
+49 Victor Hedman	0.8522223404252511	Tampa Bay Lightning
+50 Shayne Gostisbehere	0.851233719653525	Arizona Coyotes
+51 MacKenzie Weegar	0.8454624191686141	Calgary Flames
+52 Filip Hronek	0.8448180401942917	Detroit Red Wings
+53 Jonas Siegenthaler	0.8429588649407023	New Jersey Devils
+54 Connor Murphy	0.8425064682994549	Chicago Blackhawks
+55 Quinn Hughes	0.8402627823017811	Vancouver Canucks
+56 Noah Hanifin	0.8369759017887234	Calgary Flames
+57 Mattias Ekholm	0.8324900280291808	Nashville Predators
+58 Ben Chiarot	0.8262551590864744	Detroit Red Wings
+59 Ryan Pulock	0.8242131686922547	New York Islanders
+60 Dmitry Kulikov	0.8203762100919606	Anaheim Ducks
+61 Andrew Peeke	0.8203475880587914	Columbus Blue Jackets
+62 John Marino	0.819688993870254	New Jersey Devils
+63 Scott Mayfield	0.818975298366459	New York Islanders
+64 Moritz Seider	0.8175325743306951	Detroit Red Wings
+65 Mikhail Sergachev	0.8168173146136671	Tampa Bay Lightning
+66 Connor Clifton	0.8125555099630988	Boston Bruins
+67 Erik Gustafsson	0.8109850606661742	Washington Capitals
+68 Jared Spurgeon	0.8101781567123053	Minnesota Wild
+69 Tyler Myers	0.8093666991508233	Vancouver Canucks
+70 Brian Dumoulin	0.8070317540304838	Pittsburgh Penguins
+71 Nikita Zadorov	0.8016711785874655	Calgary Flames
+72 Mark Giordano	0.7960036373564681	Toronto Maple Leafs
+73 Noah Dobson	0.7939523608867477	New York Islanders
+74 Kris Letang	0.78812411267172	Pittsburgh Penguins
+75 Matt Benning	0.7826000727679369	San Jose Sharks
+76 Matt Roy	0.7815532215783668	Los Angeles Kings
+77 Ryan Graves	0.7804602960756181	New Jersey Devils
+78 Shea Theodore	0.7710890184663658	Vegas Golden Knights
+79 Brett Kulak	0.7637762640629825	Edmonton Oilers
+80 Jake Middleton	0.7613568976577401	Minnesota Wild
+81 Esa Lindell	0.7588068442543177	Dallas Stars
+82 Nicolas Hague	0.7519924557935512	Vegas Golden Knights
+83 Tony DeAngelo	0.7490649900032593	Philadelphia Flyers
+84 Tyson Barrie	0.7446883028982295	Edmonton Oilers
+85 Olli Maatta	0.7411905272998977	Detroit Red Wings
+86 Luke Schenn	0.7408737176803202	Vancouver Canucks
+87 Ryan Lindgren	0.7368329261334262	New York Rangers
+88 Jake Sanderson	0.7353579952076951	Ottawa Senators
+89 John Klingberg	0.7319317011466833	Anaheim Ducks
+90 Marc-Edouard Vlasic	0.7301947983665473	San Jose Sharks
+91 Evan Bouchard	0.7287799967387288	Edmonton Oilers
+92 Erik Johnson	0.7267034791714485	Colorado Avalanche
+93 Colin Miller	0.725883464314721	Dallas Stars
+94 J.J. Moser	0.7250079620026362	Arizona Coyotes
+95 Jonas Brodin	0.7241835468414957	Minnesota Wild
+96 Rasmus Sandin	0.7241177096129046	Toronto Maple Leafs
+97 Damon Severson	0.7240236395561293	New Jersey Devils
+98 Travis Hamonic	0.722549803937806	Ottawa Senators
+99 Torey Krug	0.7189411347546252	St. Louis Blues
+100 Jake McCabe	0.717574258309966	Chicago Blackhawks
+101 Jani Hakanpää	0.7153107347028957	Dallas Stars
+102 Justin Schultz	0.7099552821879338	Seattle Kraken
+103 Jeff Petry	0.7047578689987282	Pittsburgh Penguins
+104 Jaycob Megna	0.7038090888047797	San Jose Sharks
+105 Marc Staal	0.7031682883103065	Florida Panthers
+106 Samuel Girard	0.696363879546198	Colorado Avalanche
+107 Jordan Harris	0.6957870523538764	Montréal Canadiens
+108 Sean Durzi	0.691577613100066	Los Angeles Kings
+109 Erik Cernak	0.6851678550565596	Tampa Bay Lightning
+110 Ian Cole	0.681739151021913	Tampa Bay Lightning
+111 Nate Schmidt	0.6776757351009548	Winnipeg Jets
+112 Nils Lundkvist	0.67556584993115	Dallas Stars
+113 Jan Rutta	0.673535780564009	Pittsburgh Penguins
+114 Carson Soucy	0.6727906345739179	Seattle Kraken
+115 Dante Fabbro	0.671996455807778	Nashville Predators
+116 Trevor van Riemsdyk	0.671908447250824	Washington Capitals
+117 Matt Grzelcyk	0.6696209792118364	Boston Bruins
+118 John Carlson	0.6619510571058096	Washington Capitals
+119 Dylan DeMelo	0.6489808256447056	Winnipeg Jets
+120 Braden Schneider	0.6484148385879807	New York Rangers
+121 Adam Pelech	0.6379049334231188	New York Islanders
+122 Johnathan Kovacevic	0.6289315763563893	Montréal Canadiens
+123 Will Borgen	0.6218645680509831	Seattle Kraken
+124 Alex Pietrangelo	0.6159304763289095	Vegas Golden Knights
+125 Niko Mikkola	0.6157259589077989	St. Louis Blues
+126 Martin Fehervary	0.6124970105588667	Washington Capitals
+127 Troy Stecher	0.6124253597370402	Arizona Coyotes
+128 Simon Benoit	0.6050982857245354	Anaheim Ducks
+129 Arber Xhekaj	0.604110028129948	Montréal Canadiens
+130 Justin Braun	0.5975368642233573	Philadelphia Flyers
+131 Josh Mahura	0.5960039083159049	Florida Panthers
+132 David Savard	0.587030303456899	Montréal Canadiens
+133 Erik Brannstrom	0.5857101821786637	Ottawa Senators
+134 Mario Ferraro	0.5836254427149797	San Jose Sharks
+135 Ryan McDonagh	0.5823103280708042	Nashville Predators
+136 Sebastian Aho	0.5738644581645521	New York Islanders
+137 Rasmus Ristolainen	0.5737884634167048	Philadelphia Flyers
+138 Brandon Carlo	0.5699224676421589	Boston Bruins
+139 Seth Jones	0.5444774895448852	Chicago Blackhawks
+140 Zach Whitecloud	0.5425059891488772	Vegas Golden Knights
+141 Jon Merrill	0.5394177803315046	Minnesota Wild
+142 Kevin Shattenkirk	0.5379002122001693	Anaheim Ducks
+143 Brendan Smith	0.5347610847663667	New Jersey Devils
+144 Chris Tanev	0.5302062209044186	Calgary Flames
+145 Nick Seeler	0.5284642492283935	Philadelphia Flyers
+146 Nick Perbix	0.5121877775164662	Tampa Bay Lightning
+147 Aaron Ekblad	0.5102368388867211	Florida Panthers
+148 Jamie Oleksiak	0.5078559860433136	Seattle Kraken
+149 Alexandre Carrier	0.5069761543940797	Nashville Predators
+150 Jalen Chatfield	0.5025200170355999	Carolina Hurricanes
+151 Calen Addison	0.49943839619872726	Minnesota Wild
+152 Caleb Jones	0.4986263537223801	Chicago Blackhawks
+153 Josh Brown	0.4979873108679428	Arizona Coyotes
+154 Pierre-Olivier Joseph	0.4953963717263402	Pittsburgh Penguins
+155 Jarred Tinordi	0.4909587326567284	Chicago Blackhawks
+156 TJ Brodie	0.4644234530759943	Toronto Maple Leafs
+157 Alexander Edler	0.4626783139047593	Los Angeles Kings
+158 Juuso Valimaki	0.4508989409253276	Arizona Coyotes
+159 Radko Gudas	0.45027233642599773	Florida Panthers
+160 Jacob Bryson	0.44754560161779905	Buffalo Sabres
+161 Ethan Bear	0.4337524710037681	Vancouver Canucks
+162 Radim Simek	0.4310551590388559	San Jose Sharks
+163 Timothy Liljegren	0.42979267945687866	Toronto Maple Leafs
+164 Nick Holden	0.42203799388370394	Ottawa Senators
+165 Mattias Samuelsson	0.41191972477602573	Buffalo Sabres
+166 Joel Edmundson	0.40839538694435235	Montréal Canadiens
+167 Sean Walker	0.4042634266131513	Los Angeles Kings
+168 Morgan Rielly	0.38275983013959913	Toronto Maple Leafs
+169 Patrik Nemeth	0.3736160596693532	Arizona Coyotes
+170 Jeremy Lauzon	0.36701977783830214	Nashville Predators
+171 Charlie McAvoy	0.35888094731252584	Boston Bruins
+172 Jordan Oesterle	0.3527886786715838	Detroit Red Wings
+173 Dylan Samberg	0.348831854149169	Winnipeg Jets
+174 Dmitry Orlov	0.33866917340430924	Washington Capitals
+175 Josh Manson	0.33311381641182314	Colorado Avalanche
+176 Marcus Bjork	0.3196854492931044	Columbus Blue Jackets
+177 Calvin de Haan	0.30767798522968853	Carolina Hurricanes
+178 Derek Forbort	0.3025983351859113	Boston Bruins
+179 Jakob Chychrun	0.27054733832311656	Arizona Coyotes
+180 Matt Irwin	0.24265218142226302	Washington Capitals
+181 Henri Jokiharju	0.2397163227823689	Buffalo Sabres
+182 Michael Stone	0.23196556004647495	Calgary Flames
+183 Artem Zub	0.22512882813449114	Ottawa Senators
+184 Kyle Burroughs	0.22235974527291572	Vancouver Canucks
+185 Casey Fitzgerald	0.208659323261193	Buffalo Sabres
+186 Jake Walman	0.20158074565904852	Detroit Red Wings
+187 Zach Werenski	0.20136826749203993	Columbus Blue Jackets
+188 Riley Stillman	0.19980641418198175	Vancouver Canucks
+189 Nikita Zaitsev	0.1961272878721136	Ottawa Senators
+190 Chris Wideman	0.1892792045691203	Montréal Canadiens
+191 Gustav Lindstrom	0.17648059487352735	Detroit Red Wings
+192 Robert Bortuzzo	0.16956801169663274	St. Louis Blues
+193 Ilya Lyubushkin	0.16789312074793908	Buffalo Sabres
+194 Cal Foote	0.16740934220604015	Tampa Bay Lightning
+195 Calle Rosen	0.15459712837458933	St. Louis Blues
+196 Alex Goligoski	0.15436711920450472	Minnesota Wild
+197 Nathan Beaulieu	0.142843221143674	Anaheim Ducks
+198 Jacob MacDonald	0.1392635900273736	Colorado Avalanche
+199 Lawrence Pilut	0.12929555390523922	Buffalo Sabres
+200 Jake Bean	0.1283876013542704	Columbus Blue Jackets
+201 Kale Clague	0.12332096113362426	Buffalo Sabres
+202 Chad Ruhwedel	0.12192376195452845	Pittsburgh Penguins
+203 Libor Hajek	0.12035965576573354	New York Rangers
+204 Robert Hagg	0.11894514573957424	Detroit Red Wings
+205 Bowen Byram	0.11820322316392436	Colorado Avalanche
+206 Haydn Fleury	0.10981858504829775	Tampa Bay Lightning
+207 Mike Matheson	0.108847687545977	Montréal Canadiens
+208 Colton White	0.10803059307945305	Anaheim Ducks
+209 Gavin Bayreuther	0.09784832090020569	Columbus Blue Jackets
+210 Andreas Englund	0.09708240041196123	Colorado Avalanche
+211 Matt Kiersted	0.09663693287444118	Florida Panthers
+212 Markus Niemelainen	0.09111376015532648	Edmonton Oilers
+213 Tim Berni	0.08963451517088679	Columbus Blue Jackets
+214 Jakub Zboril	0.08482477482483537	Boston Bruins
+215 Ryan Murray	0.08355121377877435	Edmonton Oilers
+216 Daniil Miromanov	0.08203791238037964	Vegas Golden Knights
+217 Urho Vaakanainen	0.07489955464437914	Anaheim Ducks
+218 Zach Bogosian	0.07145293720452518	Tampa Bay Lightning
+219 Conor Timmins	0.06896935100439443	Toronto Maple Leafs
+220 Victor Mete	0.06563433612418	Toronto Maple Leafs
+221 Jamie Drysdale	0.06364292095333401	Anaheim Ducks
+222 Philip Broberg	0.06218646722530163	Edmonton Oilers
+223 Scott Harrington	0.06188991316464936	San Jose Sharks
+224 Nick Blankenburg	0.06115028357348492	Columbus Blue Jackets
+225 Anton Stralman	0.06009733778117794	Boston Bruins
+226 Cam York	0.0576125612273375	Philadelphia Flyers
+227 Ben Hutton	0.05625611092271571	Vegas Golden Knights
+228 Robin Salo	0.0561292084696531	New York Islanders
+229 Jacob Bernard-Docker	0.05296111556848711	Ottawa Senators
+230 Jordie Benn	0.051526269481094976	Toronto Maple Leafs
+231 Ian Mitchell	0.04841328983840533	Chicago Blackhawks
+232 Jack Rathbone	0.04487205679895179	Vancouver Canucks
+233 Connor Mackey	0.043798621405345635	Calgary Flames
+234 Joel Hanley	0.04370111663059005	Dallas Stars
+235 Logan Stanley	0.04366964425876155	Winnipeg Jets
+236 Kevin Bahl	0.04352279764875257	New Jersey Devils
+237 Brad Hunt	0.04231860445361523	Colorado Avalanche
+238 Dylan Coghlan	0.0422481308923128	Carolina Hurricanes
+239 Dennis Gilbert	0.04168834955828095	Calgary Flames
+240 Cale Fleury	0.041444618324129524	Seattle Kraken
+241 Kurtis MacDermid	0.03968603910949043	Colorado Avalanche
+242 Kyle Capobianco	0.03654472979446557	Winnipeg Jets
+243 Ben Harpur	0.03585457206218385	New York Rangers
+244 Adam Boqvist	0.03439370623184361	Columbus Blue Jackets
+245 Alexander Alexeyev	0.033564494251244616	Washington Capitals
+246 Jake Muzzin	0.033050923359681156	Toronto Maple Leafs
+247 Ville Heinola	0.032676056346282	Winnipeg Jets
+248 Nick DeSimone	0.029168624080791374	Calgary Flames
+249 Tucker Poolman	0.02881460517088466	Vancouver Canucks
+250 Mark Borowiecki	0.028292437488648188	Nashville Predators
+251 Jordan Spence	0.02508347430120976	Los Angeles Kings
+252 Lucas Johansen	0.024934622948945186	Washington Capitals
+253 Isaak Phillips	0.023429523994299668	Chicago Blackhawks
