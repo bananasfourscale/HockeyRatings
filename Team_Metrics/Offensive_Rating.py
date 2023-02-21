@@ -1,6 +1,5 @@
-import requests
-import json
 from enum import Enum
+import csv
 
 offensive_rating = {
     'Anaheim Ducks' : 0,
@@ -37,6 +36,41 @@ offensive_rating = {
     'Winnipeg Jets' : 0,
 }
 
+offensive_rating_trends = {
+    'Anaheim Ducks' : [],
+    'Arizona Coyotes' : [],
+    'Boston Bruins' : [],
+    'Buffalo Sabres' : [],
+    'Calgary Flames' : [],
+    'Carolina Hurricanes' : [],
+    'Chicago Blackhawks' : [],
+    'Colorado Avalanche' : [],
+    'Columbus Blue Jackets' : [],
+    'Dallas Stars' : [],
+    'Detroit Red Wings' : [],
+    'Edmonton Oilers' : [],
+    'Florida Panthers' : [],
+    'Los Angeles Kings' : [],
+    'Minnesota Wild' : [],
+    'Montréal Canadiens' : [],
+    'Nashville Predators' : [],
+    'New Jersey Devils' : [],
+    'New York Islanders' : [],
+    'New York Rangers' : [],
+    'Ottawa Senators' : [],
+    'Philadelphia Flyers' : [],
+    'Pittsburgh Penguins' : [],
+    'San Jose Sharks' : [],
+    'Seattle Kraken' : [],
+    'St. Louis Blues' : [],
+    'Tampa Bay Lightning' : [],
+    'Toronto Maple Leafs' : [],
+    'Vancouver Canucks' : [],
+    'Vegas Golden Knights' : [],
+    'Washington Capitals' : [],
+    'Winnipeg Jets' : [],
+}
+
 
 class offensive_rating_weights(Enum):
     POWER_PLAY_STRENGTH = 0.20
@@ -46,6 +80,10 @@ class offensive_rating_weights(Enum):
 
 def offensive_rating_get_dict() -> dict:
     return offensive_rating
+
+
+def offensive_rating_get_trend_dict() -> dict:
+    return offensive_rating_trends
 
 
 def offensive_rating_get_data_set(team_stats : dict={}) -> list:

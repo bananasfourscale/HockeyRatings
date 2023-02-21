@@ -1,4 +1,5 @@
 from enum import Enum
+import csv
 
 
 defensive_rating = {
@@ -36,6 +37,40 @@ defensive_rating = {
     'Winnipeg Jets' : 0,
 }
 
+defensive_rating_trends = {
+    'Anaheim Ducks' : [],
+    'Arizona Coyotes' : [],
+    'Boston Bruins' : [],
+    'Buffalo Sabres' : [],
+    'Calgary Flames' : [],
+    'Carolina Hurricanes' : [],
+    'Chicago Blackhawks' : [],
+    'Colorado Avalanche' : [],
+    'Columbus Blue Jackets' : [],
+    'Dallas Stars' : [],
+    'Detroit Red Wings' : [],
+    'Edmonton Oilers' : [],
+    'Florida Panthers' : [],
+    'Los Angeles Kings' : [],
+    'Minnesota Wild' : [],
+    'Montréal Canadiens' : [],
+    'Nashville Predators' : [],
+    'New Jersey Devils' : [],
+    'New York Islanders' : [],
+    'New York Rangers' : [],
+    'Ottawa Senators' : [],
+    'Philadelphia Flyers' : [],
+    'Pittsburgh Penguins' : [],
+    'San Jose Sharks' : [],
+    'Seattle Kraken' : [],
+    'St. Louis Blues' : [],
+    'Tampa Bay Lightning' : [],
+    'Toronto Maple Leafs' : [],
+    'Vancouver Canucks' : [],
+    'Vegas Golden Knights' : [],
+    'Washington Capitals' : [],
+    'Winnipeg Jets' : [],
+}
 
 class defensive_rating_weights(Enum):
     PENALTY_KILL_STRENGTH = 0.20
@@ -45,6 +80,10 @@ class defensive_rating_weights(Enum):
 
 def defensive_rating_get_dict() -> dict:
     return defensive_rating
+
+
+def defensive_rating_get_trend_dict() -> dict:
+    return defensive_rating_trends
 
 
 def defensive_rating_get_data_set(team_stats : dict={}) -> list:

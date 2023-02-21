@@ -37,6 +37,41 @@ recent_form_rating = {
     'Winnipeg Jets' : 0,
 }
 
+recent_form_trends = {
+    'Anaheim Ducks' : [],
+    'Arizona Coyotes' : [],
+    'Boston Bruins' : [],
+    'Buffalo Sabres' : [],
+    'Calgary Flames' : [],
+    'Carolina Hurricanes' : [],
+    'Chicago Blackhawks' : [],
+    'Colorado Avalanche' : [],
+    'Columbus Blue Jackets' : [],
+    'Dallas Stars' : [],
+    'Detroit Red Wings' : [],
+    'Edmonton Oilers' : [],
+    'Florida Panthers' : [],
+    'Los Angeles Kings' : [],
+    'Minnesota Wild' : [],
+    'Montréal Canadiens' : [],
+    'Nashville Predators' : [],
+    'New Jersey Devils' : [],
+    'New York Islanders' : [],
+    'New York Rangers' : [],
+    'Ottawa Senators' : [],
+    'Philadelphia Flyers' : [],
+    'Pittsburgh Penguins' : [],
+    'San Jose Sharks' : [],
+    'Seattle Kraken' : [],
+    'St. Louis Blues' : [],
+    'Tampa Bay Lightning' : [],
+    'Toronto Maple Leafs' : [],
+    'Vancouver Canucks' : [],
+    'Vegas Golden Knights' : [],
+    'Washington Capitals' : [],
+    'Winnipeg Jets' : [],
+}
+
 
 class recent_form_weights(Enum):
     LAST_TEN = 0.85
@@ -45,6 +80,10 @@ class recent_form_weights(Enum):
 
 def recent_form_get_dict() -> dict:
     return recent_form_rating
+
+
+def recent_form_get_trend_dict() -> dict:
+    return recent_form_trends
 
 
 def recent_form_get_data_set(team_records : dict={}) -> list:

@@ -1,7 +1,6 @@
 from enum import Enum
-import requests
-import json
 import datetime
+import csv
 
 strength_of_schedule = {
     'Anaheim Ducks' : 0,
@@ -38,6 +37,41 @@ strength_of_schedule = {
     'Winnipeg Jets' : 0,
 }
 
+strength_of_schedule_trends = {
+    'Anaheim Ducks' : [],
+    'Arizona Coyotes' : [],
+    'Boston Bruins' : [],
+    'Buffalo Sabres' : [],
+    'Calgary Flames' : [],
+    'Carolina Hurricanes' : [],
+    'Chicago Blackhawks' : [],
+    'Colorado Avalanche' : [],
+    'Columbus Blue Jackets' : [],
+    'Dallas Stars' : [],
+    'Detroit Red Wings' : [],
+    'Edmonton Oilers' : [],
+    'Florida Panthers' : [],
+    'Los Angeles Kings' : [],
+    'Minnesota Wild' : [],
+    'Montréal Canadiens' : [],
+    'Nashville Predators' : [],
+    'New Jersey Devils' : [],
+    'New York Islanders' : [],
+    'New York Rangers' : [],
+    'Ottawa Senators' : [],
+    'Philadelphia Flyers' : [],
+    'Pittsburgh Penguins' : [],
+    'San Jose Sharks' : [],
+    'Seattle Kraken' : [],
+    'St. Louis Blues' : [],
+    'Tampa Bay Lightning' : [],
+    'Toronto Maple Leafs' : [],
+    'Vancouver Canucks' : [],
+    'Vegas Golden Knights' : [],
+    'Washington Capitals' : [],
+    'Winnipeg Jets' : [],
+}
+
 class strength_of_schedule_weights(Enum):
     WIN_REGULATION_WEIGHT = 1.0
     WIN_OT_WEIGHT = 0.33
@@ -56,6 +90,10 @@ class match_indecies(Enum):
 
 def strength_of_schedule_get_dict() -> dict:
     return strength_of_schedule
+
+
+def strength_of_schedule_get_trend_dict() -> dict:
+    return strength_of_schedule_trends
 
 
 def determine_winner_loser(home_team : str = "", home_score : int = 0,
