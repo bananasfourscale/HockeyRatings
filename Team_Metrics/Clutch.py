@@ -85,21 +85,23 @@ def clutch_get_lead_data(game : dict={}) -> dict:
     win_lead_first = {}
     win_lead_second = {}
 
-    # away team data    
-    away_team = game["teams"]["away"]["team"]["name"]
-    away_score_first = game["linescore"]["periods"][0]["away"]["goals"]
-    away_score_second = \
-        game["linescore"]["periods"][1]["away"]["goals"] + \
-        away_score_first
-    away_score_final = game["teams"]["away"]["score"]
-
     # home team data
-    home_team = game["teams"]["home"]["team"]["name"]
-    home_score_first = game["linescore"]["periods"][0]["home"]["goals"]
+    home_team = game['linescore']["teams"]["home"]["team"]["name"]
+    home_score_first = game['linescore']["linescore"]["periods"][0]["home"][
+        "goals"]
     home_score_second = \
-        game["linescore"]["periods"][1]["home"]["goals"] + \
+        game['linescore']["linescore"]["periods"][1]["home"]["goals"] + \
         home_score_first
-    home_score_final = game["teams"]["home"]["score"]
+    home_score_final = game['linescore']["teams"]["home"]["score"]
+
+    # away team data    
+    away_team = game['linescore']["teams"]["away"]["team"]["name"]
+    away_score_first = game['linescore']["linescore"]["periods"][0]["away"][
+        "goals"]
+    away_score_second = \
+        game['linescore']["linescore"]["periods"][1]["away"]["goals"] + \
+        away_score_first
+    away_score_final = game['linescore']["teams"]["away"]["score"]
 
     # set default values
     win_lead_first[home_team] = [0,0]
@@ -157,5 +159,11 @@ def clutch_calculate_lead_protection(match_data : dict={}) -> None:
             win_lead_second_per = lead_protection_data[team][1][0] / \
                 lead_protection_data[team][1][1]
         clutch_data.append(
-            {team:(win_lead_first_per) + (win_lead_second_per  * 2)})
+            {team:(win_lead_first_per) + (win_lead_second_per * 2)})
     return clutch_data
+
+def clutch_add_match_data(clutch_data : dict={}) -> None:
+    clutch_rating[list(clutch_data[0].keys())[0]] += \
+        list(clutch_data[0].values())[0]
+    clutch_rating[list(clutch_data[1].keys())[0]] += \
+        list(clutch_data[1].values())[0]

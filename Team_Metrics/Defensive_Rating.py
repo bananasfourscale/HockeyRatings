@@ -1,6 +1,109 @@
 from enum import Enum
-import csv
 
+shots_against = {
+    'Anaheim Ducks' : 0,
+    'Arizona Coyotes' : 0,
+    'Boston Bruins' : 0,
+    'Buffalo Sabres' : 0,
+    'Calgary Flames' : 0,
+    'Carolina Hurricanes' : 0,
+    'Chicago Blackhawks' : 0,
+    'Colorado Avalanche' : 0,
+    'Columbus Blue Jackets' : 0,
+    'Dallas Stars' : 0,
+    'Detroit Red Wings' : 0,
+    'Edmonton Oilers' : 0,
+    'Florida Panthers' : 0,
+    'Los Angeles Kings' : 0,
+    'Minnesota Wild' : 0,
+    'Montréal Canadiens' : 0,
+    'Nashville Predators' : 0,
+    'New Jersey Devils' : 0,
+    'New York Islanders' : 0,
+    'New York Rangers' : 0,
+    'Ottawa Senators' : 0,
+    'Philadelphia Flyers' : 0,
+    'Pittsburgh Penguins' : 0,
+    'San Jose Sharks' : 0,
+    'Seattle Kraken' : 0,
+    'St. Louis Blues' : 0,
+    'Tampa Bay Lightning' : 0,
+    'Toronto Maple Leafs' : 0,
+    'Vancouver Canucks' : 0,
+    'Vegas Golden Knights' : 0,
+    'Washington Capitals' : 0,
+    'Winnipeg Jets' : 0,
+}
+
+goals_against = {
+    'Anaheim Ducks' : 0,
+    'Arizona Coyotes' : 0,
+    'Boston Bruins' : 0,
+    'Buffalo Sabres' : 0,
+    'Calgary Flames' : 0,
+    'Carolina Hurricanes' : 0,
+    'Chicago Blackhawks' : 0,
+    'Colorado Avalanche' : 0,
+    'Columbus Blue Jackets' : 0,
+    'Dallas Stars' : 0,
+    'Detroit Red Wings' : 0,
+    'Edmonton Oilers' : 0,
+    'Florida Panthers' : 0,
+    'Los Angeles Kings' : 0,
+    'Minnesota Wild' : 0,
+    'Montréal Canadiens' : 0,
+    'Nashville Predators' : 0,
+    'New Jersey Devils' : 0,
+    'New York Islanders' : 0,
+    'New York Rangers' : 0,
+    'Ottawa Senators' : 0,
+    'Philadelphia Flyers' : 0,
+    'Pittsburgh Penguins' : 0,
+    'San Jose Sharks' : 0,
+    'Seattle Kraken' : 0,
+    'St. Louis Blues' : 0,
+    'Tampa Bay Lightning' : 0,
+    'Toronto Maple Leafs' : 0,
+    'Vancouver Canucks' : 0,
+    'Vegas Golden Knights' : 0,
+    'Washington Capitals' : 0,
+    'Winnipeg Jets' : 0,
+}
+
+penalty_kill_data = {
+    'Anaheim Ducks' : [0,0],
+    'Arizona Coyotes' : [0,0],
+    'Boston Bruins' : [0,0],
+    'Buffalo Sabres' : [0,0],
+    'Calgary Flames' : [0,0],
+    'Carolina Hurricanes' : [0,0],
+    'Chicago Blackhawks' : [0,0],
+    'Colorado Avalanche' : [0,0],
+    'Columbus Blue Jackets' : [0,0],
+    'Dallas Stars' : [0,0],
+    'Detroit Red Wings' : [0,0],
+    'Edmonton Oilers' : [0,0],
+    'Florida Panthers' : [0,0],
+    'Los Angeles Kings' : [0,0],
+    'Minnesota Wild' : [0,0],
+    'Montréal Canadiens' : [0,0],
+    'Nashville Predators' : [0,0],
+    'New Jersey Devils' : [0,0],
+    'New York Islanders' : [0,0],
+    'New York Rangers' : [0,0],
+    'Ottawa Senators' : [0,0],
+    'Philadelphia Flyers' : [0,0],
+    'Pittsburgh Penguins' : [0,0],
+    'San Jose Sharks' : [0,0],
+    'Seattle Kraken' : [0,0],
+    'St. Louis Blues' : [0,0],
+    'Tampa Bay Lightning' : [0,0],
+    'Toronto Maple Leafs' : [0,0],
+    'Vancouver Canucks' : [0,0],
+    'Vegas Golden Knights' : [0,0],
+    'Washington Capitals' : [0,0],
+    'Winnipeg Jets' : [0,0],
+}
 
 defensive_rating = {
     'Anaheim Ducks' : 0,
@@ -82,22 +185,93 @@ def defensive_rating_get_dict() -> dict:
     return defensive_rating
 
 
+def defensive_rating_get_shots_against_dict() -> dict:
+    return shots_against
+
+
+def defensive_rating_get_goals_against_dict() -> dict:
+    return goals_against
+
+
+def defensive_rating_get_pk_dict() -> dict:
+    return penalty_kill_data
+
+
 def defensive_rating_get_trend_dict() -> dict:
     return defensive_rating_trends
 
 
-def defensive_rating_get_data_set(team_stats : dict={}) -> list:
+def defensive_rating_get_data_set(match_data : dict={}) -> list:
 
     # place the requried data into a dictionary for later use
-    shooting_data = {}
+    shots_against = {}
     goal_against_data = {}
     penalty_kill_data = {}
-    for team in team_stats.keys():
-        shooting_data[team] = team_stats[team]["shotsAllowed"]
-        goal_against_data[team] = team_stats[team]["goalsAgainstPerGame"]
-        penalty_kill_data[team] = \
-            float(team_stats[team]["penaltyKillPercentage"])
-    return [shooting_data, goal_against_data, penalty_kill_data]
+
+    # get home and away team
+    home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
+    away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
+
+    # home data
+    shots_against[home_team] = match_data['boxscore']["teams"]["away"][
+        "teamStats"]["teamSkaterStats"]["shots"]
+    goal_against_data[home_team] = match_data['boxscore']["teams"]["away"][
+        "teamStats"]["teamSkaterStats"]["goals"]
+    penalty_kill_data[home_team] = [
+        match_data['boxscore']["teams"]["away"]["teamStats"][
+            "teamSkaterStats"]["powerPlayGoals"],
+        match_data['boxscore']["teams"]["away"]["teamStats"][
+            "teamSkaterStats"]["powerPlayOpportunities"]
+    ]
+
+    # away data
+    shots_against[away_team] = match_data['boxscore']["teams"]["home"][
+        "teamStats"]["teamSkaterStats"]["shots"]
+    goal_against_data[away_team] = match_data['boxscore']["teams"]["home"][
+        "teamStats"]["teamSkaterStats"]["goals"]
+    penalty_kill_data[away_team] = [
+        match_data['boxscore']["teams"]["home"]["teamStats"][
+            "teamSkaterStats"]["powerPlayGoals"],
+        match_data['boxscore']["teams"]["home"]["teamStats"][
+            "teamSkaterStats"]["powerPlayOpportunities"]
+    ]
+    return [shots_against, goal_against_data, penalty_kill_data]
+
+
+def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
+
+    # shots against
+    shots_against[list(defensive_data[0].keys())[0]] += \
+        list(defensive_data[0].values())[0]
+    shots_against[list(defensive_data[0].keys())[1]] += \
+        list(defensive_data[0].values())[1]
+
+    # goals against
+    goals_against[list(defensive_data[1].keys())[0]] += \
+        list(defensive_data[1].values())[0]
+    goals_against[list(defensive_data[1].keys())[1]] += \
+        list(defensive_data[1].values())[1]
+
+    # penalty kill stats (needs to be converted after collection)
+    penalty_kill_data[list(defensive_data[2].keys())[0]][0] += \
+        list(defensive_data[2].values())[0][0]
+    penalty_kill_data[list(defensive_data[2].keys())[0]][1] += \
+        list(defensive_data[2].values())[0][1]
+    penalty_kill_data[list(defensive_data[2].keys())[1]][0] += \
+        list(defensive_data[2].values())[1][0]
+    penalty_kill_data[list(defensive_data[2].keys())[1]][1] += \
+        list(defensive_data[2].values())[1][1]
+
+
+def defensive_rating_calculate_penalty_kill() -> None:
+    for team in penalty_kill_data.keys():
+        pk_goals_against = penalty_kill_data[team][0]
+        pk_oppertunities = penalty_kill_data[team][1]
+        if (pk_oppertunities > 0):
+            penalty_kill_data[team] = \
+                1.0 - (pk_goals_against / pk_oppertunities)
+        else:
+            penalty_kill_data[team] = 0.0
 
 
 def defensive_rating_combine_metrics(metric_list : list=[]) -> None:

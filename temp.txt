@@ -1,31 +1,3 @@
-'''
-Helper functions that calculate the various factors used to create the final
-    ranking score
-'''
-def calculate_clutch_rating(update_trends : bool=True) -> None:
-
-    # first calculate the positive part of the clutch rating
-    clutch_calculate_lead_protection(season_matches)
-
-    # finally combine the factors, write out, and plot
-    apply_sigmoid_correction(clutch_rating_get_dict())
-    write_out_file("Output_Files/Team_Files/Instance_Files/ClutchRating.csv",
-        ["Team", "Clutch Rating Base"], clutch_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/ClutchRating.csv",
-        ["Team", "Clutch Rating Base"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Clutch_Rating/clutch_rating_final.png")))
-
-    # update trend file
-    if update_trends:
-        update_trend_file("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
-            clutch_rating_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
-        ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
-
-
 def calculate_defensive_rating(update_trends : bool=True) -> None:
     defensive_metrics = defensive_rating_get_data_set(team_season_stats)
 
