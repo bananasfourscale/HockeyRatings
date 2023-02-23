@@ -79,29 +79,29 @@ def clutch_rating_get_trend_dict() -> dict:
     return clutch_trends
 
 
-def clutch_get_lead_data(game : dict={}) -> dict:
+def clutch_get_lead_data(match_data : dict={}) -> dict:
     
     # loop through the lines of file
     win_lead_first = {}
     win_lead_second = {}
 
     # home team data
-    home_team = game['linescore']["teams"]["home"]["team"]["name"]
-    home_score_first = game['linescore']["linescore"]["periods"][0]["home"][
-        "goals"]
+    home_team = match_data['linescore']["teams"]["home"]["team"]["name"]
+    home_score_first = match_data['linescore']["linescore"]["periods"][0][
+        "home"]["goals"]
     home_score_second = \
-        game['linescore']["linescore"]["periods"][1]["home"]["goals"] + \
+        match_data['linescore']["linescore"]["periods"][1]["home"]["goals"] + \
         home_score_first
-    home_score_final = game['linescore']["teams"]["home"]["score"]
+    home_score_final = match_data['linescore']["teams"]["home"]["score"]
 
     # away team data    
-    away_team = game['linescore']["teams"]["away"]["team"]["name"]
-    away_score_first = game['linescore']["linescore"]["periods"][0]["away"][
-        "goals"]
+    away_team = match_data['linescore']["teams"]["away"]["team"]["name"]
+    away_score_first = match_data['linescore']["linescore"]["periods"][0][
+        "away"]["goals"]
     away_score_second = \
-        game['linescore']["linescore"]["periods"][1]["away"]["goals"] + \
+        match_data['linescore']["linescore"]["periods"][1]["away"]["goals"] + \
         away_score_first
-    away_score_final = game['linescore']["teams"]["away"]["score"]
+    away_score_final = match_data['linescore']["teams"]["away"]["score"]
 
     # set default values
     win_lead_first[home_team] = [0,0]
