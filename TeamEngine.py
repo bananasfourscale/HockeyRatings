@@ -25,7 +25,10 @@ from Team_Metrics.Defensive_Rating import defensive_rating_get_dict, \
     defensive_rating_add_match_data, defensive_rating_calculate_penalty_kill, \
     defensive_rating_combine_metrics
 from Team_Metrics.Offensive_Rating import offensive_rating_get_dict, \
-    offensive_rating_get_trend_dict
+    offensive_rating_get_shots_for_dict, offensive_rating_get_goals_for_dict, \
+    offensive_rating_get_pp_dict, offensive_rating_get_trend_dict, \
+    offensive_rating_get_data_set, offensive_rating_add_match_data, \
+    offensive_rating_calculate_power_play, offensive_rating_combine_metrics
 from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_get_trend_dict
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
@@ -144,6 +147,10 @@ def parse_all_data_files() -> None:
         strength_of_schedule_get_trend_dict())
 
 
+def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
+    print("Completed in {} seconds".format(end_time - start_time))
+
+
 '''
 Pull all game records from the API database
 '''
@@ -234,6 +241,33 @@ def parse_match(match_data : dict={}, relative_metrics : list=[]) -> list:
             Team_Selection.HOME.value]
     metric_data.append(defensive_data)
 
+    ### offensive rating ###
+    # shots for
+    offensive_data = offensive_rating_get_data_set(match_data)
+    offensive_data[0][home_team] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.AWAY.value]
+    offensive_data[0][away_team] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.HOME.value]
+
+    # goals for
+    offensive_data[1][home_team] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.AWAY.value]
+    offensive_data[1][away_team] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.HOME.value]
+
+    # power play oppertunities
+    offensive_data[2][home_team][0] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.AWAY.value]
+    offensive_data[2][away_team][0] *= \
+        relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.HOME.value]
+    metric_data.append(offensive_data)
+
     # return the list of all metric data for this match
     return metric_data
 
@@ -270,6 +304,26 @@ def plot_unscaled_metrics() -> None:
         ["Team", "Penalty Kill Base"], 0.0, 0.0, [],
         "Graphs/Teams/Defensive_Rating/penalty_kill_base.png")))
 
+    ### Offensive Rating ###
+    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
+        ["Team", "Shots For Base"], offensive_rating_get_shots_for_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
+        ["Team", "Shots For Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/shots_for_per_game_base.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
+        ["Team", "Goals For Base"], offensive_rating_get_goals_for_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
+        ["Team", "Goals For Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/goals_for_per_game_base.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
+        ["Team", "Power Play Base"], offensive_rating_get_pp_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
+        ["Team", "Power Play Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Offensive_Rating/power_play_base.png")))
+
 def plot_scaled_metrics() -> None:
 
     ### Clutch Rating ###
@@ -301,6 +355,26 @@ def plot_scaled_metrics() -> None:
         ("Output_Files/Team_Files/Instance_Files/PKRatingCorr.csv",
         ["Team", "Penalty Kill Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/penalty_kill_sigmoid.png")))
+
+    ### Offensive Rating ###
+    write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
+        ["Team", "Shots For Corrected"], offensive_rating_get_shots_for_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
+        ["Team", "Shots For Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/shots_for_per_game_sigmoid.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
+        ["Team", "Goals For Corrected"], offensive_rating_get_goals_for_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
+        ["Team", "Goals For Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/goals_for_per_game_sigmoid.png")))
+    write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
+        ["Team", "Power Play Corrected"], offensive_rating_get_pp_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
+        ["Team", "Power Play Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/power_play_sigmoid.png")))
 
 '''
 Function to create the combined set of all metrics into one ranking score
@@ -347,11 +421,16 @@ if __name__ == "__main__":
     freeze_support()
 
     # regardless of command parse the input files
-    print("Parsing All Data Files")
+    parse_start = time.time()
+    print("Parsing All Data Files:")
     parse_all_data_files()
+    print_time_diff(parse_start, time.time())
     
+    # get all the match data
+    match_data_start = time.time()
     print("Gathering All Match Data")
     get_game_records()
+    print_time_diff(match_data_start, time.time())
 
     # get all the different parsed trend data dictionaries
     clutch_trends = clutch_rating_get_trend_dict()
@@ -372,6 +451,8 @@ if __name__ == "__main__":
 
     # feed in matches until all completed matches this season have been put into
     # a process to be parsed
+    match_parsing_start = time.time()
+    print("Feeding in matches to workers")
     date_count = 0
     final_period = False
     current_rating_period = average_ranking_get_ranking_dates()[date_count]
@@ -431,6 +512,7 @@ if __name__ == "__main__":
     
     # keep reading the metric output queue until all data is returned
     stop_count = 0
+    print("Combining jobs from worker nodes")
     for i in range(subprocess_count):
         for output_list in iter(team_engine_match_output_queue.get, 'STOP'):
 
@@ -439,12 +521,17 @@ if __name__ == "__main__":
             clutch_add_match_data(clutch_return)
 
             ### defensive data ###
-            # shots against
             defensive_return = output_list[Metric_Order.DEFENSIVE.value]
             defensive_rating_add_match_data(defensive_return)
 
+            ### offensive data
+            offensive_return = output_list[Metric_Order.OFFENSIVE.value]
+            offensive_rating_add_match_data(offensive_return)
+
     # call any cleanup calculations required
     defensive_rating_calculate_penalty_kill()
+    offensive_rating_calculate_power_play()
+    print_time_diff(match_parsing_start, time.time())
 
     # now start the processes for plotting
     plotting_process_list = []
@@ -455,15 +542,23 @@ if __name__ == "__main__":
         process.start()
 
     # write out any plots before sigmoid correction
+    print("Plot data before correction")
     plot_unscaled_metrics()
 
     # apply all sigmoid corrections
+    print("Apply corrections")
+    sigmoid_start = time.time()
     apply_sigmoid_correction(clutch_rating_get_dict())
     apply_sigmoid_correction(defensive_rating_get_shots_against_dict(), True)
     apply_sigmoid_correction(defensive_rating_get_goals_against_dict(), True)
     apply_sigmoid_correction(defensive_rating_get_pk_dict())
+    apply_sigmoid_correction(offensive_rating_get_shots_for_dict())
+    apply_sigmoid_correction(offensive_rating_get_goals_for_dict())
+    apply_sigmoid_correction(offensive_rating_get_pp_dict())
+    print_time_diff(sigmoid_start, time.time())
 
     # write out any plots after sigmoid correction
+    print("Plot data after correction")
     plot_scaled_metrics()
     
     # combine metrics to overall score and plot
@@ -476,6 +571,15 @@ if __name__ == "__main__":
         ("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Defensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/defensive_rating_final.png")))
+
+    offensive_rating_combine_metrics([offensive_rating_get_shots_for_dict(),
+        offensive_rating_get_goals_for_dict(), offensive_rating_get_pp_dict()])
+    write_out_file("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
 
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
@@ -490,6 +594,7 @@ if __name__ == "__main__":
     # combine_all_factors(UPDATE_TRENDS)
 
     if UPDATE_TRENDS:
+        print("Updating Trend Files")
 
         # clutch
         update_trend_file("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
@@ -498,6 +603,22 @@ if __name__ == "__main__":
             ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
             ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
+
+        # defensive rating
+        update_trend_file("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
+            defensive_rating_get_dict())
+        team_engine_plotting_queue.put((plot_trend_set,
+            ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
+            ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
+            "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
+
+        # offensive rating
+        update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+            offensive_rating_get_dict())
+        team_engine_plotting_queue.put((plot_trend_set,
+            ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+            ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
+            "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
 
         # absolute ranking
         absolute_rankings_update(total_rating)

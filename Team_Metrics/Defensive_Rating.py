@@ -70,7 +70,7 @@ goals_against = {
     'Winnipeg Jets' : 0,
 }
 
-penalty_kill_data = {
+penalty_kill = {
     'Anaheim Ducks' : [0,0],
     'Arizona Coyotes' : [0,0],
     'Boston Bruins' : [0,0],
@@ -194,7 +194,7 @@ def defensive_rating_get_goals_against_dict() -> dict:
 
 
 def defensive_rating_get_pk_dict() -> dict:
-    return penalty_kill_data
+    return penalty_kill
 
 
 def defensive_rating_get_trend_dict() -> dict:
@@ -204,8 +204,8 @@ def defensive_rating_get_trend_dict() -> dict:
 def defensive_rating_get_data_set(match_data : dict={}) -> list:
 
     # place the requried data into a dictionary for later use
-    shots_against = {}
-    goal_against_data = {}
+    shots_against_data = {}
+    goals_against_data = {}
     penalty_kill_data = {}
 
     # get home and away team
@@ -213,29 +213,27 @@ def defensive_rating_get_data_set(match_data : dict={}) -> list:
     away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
 
     # home data
-    shots_against[home_team] = match_data['boxscore']["teams"]["away"][
+    shots_against_data[home_team] = match_data['boxscore']["teams"]["away"][
         "teamStats"]["teamSkaterStats"]["shots"]
-    goal_against_data[home_team] = match_data['boxscore']["teams"]["away"][
+    goals_against_data[home_team] = match_data['boxscore']["teams"]["away"][
         "teamStats"]["teamSkaterStats"]["goals"]
     penalty_kill_data[home_team] = [
         match_data['boxscore']["teams"]["away"]["teamStats"][
             "teamSkaterStats"]["powerPlayGoals"],
         match_data['boxscore']["teams"]["away"]["teamStats"][
-            "teamSkaterStats"]["powerPlayOpportunities"]
-    ]
+            "teamSkaterStats"]["powerPlayOpportunities"]]
 
     # away data
-    shots_against[away_team] = match_data['boxscore']["teams"]["home"][
+    shots_against_data[away_team] = match_data['boxscore']["teams"]["home"][
         "teamStats"]["teamSkaterStats"]["shots"]
-    goal_against_data[away_team] = match_data['boxscore']["teams"]["home"][
+    goals_against_data[away_team] = match_data['boxscore']["teams"]["home"][
         "teamStats"]["teamSkaterStats"]["goals"]
     penalty_kill_data[away_team] = [
         match_data['boxscore']["teams"]["home"]["teamStats"][
             "teamSkaterStats"]["powerPlayGoals"],
         match_data['boxscore']["teams"]["home"]["teamStats"][
-            "teamSkaterStats"]["powerPlayOpportunities"]
-    ]
-    return [shots_against, goal_against_data, penalty_kill_data]
+            "teamSkaterStats"]["powerPlayOpportunities"]]
+    return [shots_against_data, goals_against_data, penalty_kill_data]
 
 
 def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
@@ -253,25 +251,25 @@ def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
         list(defensive_data[1].values())[1]
 
     # penalty kill stats (needs to be converted after collection)
-    penalty_kill_data[list(defensive_data[2].keys())[0]][0] += \
+    penalty_kill[list(defensive_data[2].keys())[0]][0] += \
         list(defensive_data[2].values())[0][0]
-    penalty_kill_data[list(defensive_data[2].keys())[0]][1] += \
+    penalty_kill[list(defensive_data[2].keys())[0]][1] += \
         list(defensive_data[2].values())[0][1]
-    penalty_kill_data[list(defensive_data[2].keys())[1]][0] += \
+    penalty_kill[list(defensive_data[2].keys())[1]][0] += \
         list(defensive_data[2].values())[1][0]
-    penalty_kill_data[list(defensive_data[2].keys())[1]][1] += \
+    penalty_kill[list(defensive_data[2].keys())[1]][1] += \
         list(defensive_data[2].values())[1][1]
 
 
 def defensive_rating_calculate_penalty_kill() -> None:
-    for team in penalty_kill_data.keys():
-        pk_goals_against = penalty_kill_data[team][0]
-        pk_oppertunities = penalty_kill_data[team][1]
+    for team in penalty_kill.keys():
+        pk_goals_against = penalty_kill[team][0]
+        pk_oppertunities = penalty_kill[team][1]
         if (pk_oppertunities > 0):
-            penalty_kill_data[team] = \
+            penalty_kill[team] = \
                 1.0 - (pk_goals_against / pk_oppertunities)
         else:
-            penalty_kill_data[team] = 0.0
+            penalty_kill[team] = 0.0
 
 
 def defensive_rating_combine_metrics(metric_list : list=[]) -> None:
