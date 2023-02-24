@@ -254,27 +254,24 @@ def recent_form_get_data_set(match_data : dict={}) -> list:
     final_game_state = match_data['linescore']["linescore"][
         "currentPeriodOrdinal"]
 
-    # if the home team wins
+    # determin the winner and loser from game score
+    # determine who won and lost the game
     if home_score_final > away_score_final:
-        game_result[home_team] = "W"
-        game_value[home_team] = 1.0
-        if final_game_state == "3rd":
-            game_result[away_team] = "L"
-            game_value[away_team] = 0.0
-        else:
-            game_result[away_team] = "OT"
-            game_value[away_team] = (1 / 3)
-
-    # otherwise the away team won
+        winner = home_team
+        loser = away_team
     else:
-        game_result[away_team] = "W"
-        game_value[away_team] = 1.0
-        if final_game_state == "3rd":
-            game_result[home_team] = "L"
-            game_value[home_team] = 0.0
-        else:
-            game_result[home_team] = "OT"
-            game_value[home_team] = (1 / 3)
+        winner = away_team
+        loser = home_team
+
+    # if the home team wins
+    game_result[winner] = "W"
+    game_value[winner] = 1.0
+    if final_game_state == "3rd":
+        game_result[loser] = "L"
+        game_value[loser] = 0.0
+    else:
+        game_result[loser] = "OT"
+        game_value[loser] = (0.33)
     return [game_result, game_value]
 
 
@@ -322,10 +319,6 @@ def recent_form_add_match_data(recent_form_data : dict={}) -> None:
 
 def recent_form_calculate_all() -> None:
     for team in recent_form_rating.keys():
-        if team == 'Carolina Hurricanes':
-            print(last_10_info['Carolina Hurricanes'])
-            print(last_20_info['Carolina Hurricanes'])
-            print(last_40_info['Carolina Hurricanes'])
         streak_info[team] = streak_info[team][1] / streak_info[team][2]
         last_10_info[team] = sum(last_10_info[team])
         last_20_info[team] = sum(last_20_info[team])

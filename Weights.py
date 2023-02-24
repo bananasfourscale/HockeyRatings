@@ -36,16 +36,16 @@ divisions = {
 }
 
 
-VERSION_MAJOR = 6
-VERSION_MINOR = 5
+VERSION_MAJOR = 7
+VERSION_MINOR = 0
 
 
 class total_rating_weights(Enum):
     CLUTCH_RATING_WEIGHT = 0.05
     DEFENSIVE_RATING_WEIGHT = 0.25
     OFFENSIVE_RATING_WEIGHT = 0.20
-    RECENT_FORM_RATING_WEIGHT = 0.10
-    SOS_RATING_WEIGHT = 0.40
+    RECENT_FORM_RATING_WEIGHT = 0.25
+    SOS_RATING_WEIGHT = 0.25
 
 
 class goalie_rating_weights(Enum):

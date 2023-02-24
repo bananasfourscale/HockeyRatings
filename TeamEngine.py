@@ -36,7 +36,8 @@ from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_add_match_data, recent_form_calculate_all, \
     recent_form_combine_metrics 
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
-    strength_of_schedule_get_trend_dict
+    strength_of_schedule_get_trend_dict, strength_of_schedule_get_data_set, \
+    strength_of_schedule_add_match_data, strength_of_schedule_scale_by_game
 
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
@@ -220,11 +221,11 @@ def feed_parser_jobs() -> None:
             # if the game took place before any rankings were available just
             # give perfect scores to both teams for weighting
             if parsed_date < current_rating_period:
-                clutch_stats = [1.0,1.0]
-                defensive_stats = [1.0,1.0]
-                offensive_stats = [1.0,1.0]
-                recent_form_stats = [1.0,1.0]
-                sos_stats = [1.0,1.0]
+                clutch_stats = [1.0, 1.0]
+                defensive_stats = [1.0, 1.0]
+                offensive_stats = [1.0, 1.0]
+                recent_form_stats = [1.0, 1.0]
+                sos_stats = [1.0, 1.0]
 
             # otherwise find the correct scale factors for each team
             else:
@@ -254,8 +255,12 @@ def feed_parser_jobs() -> None:
                     offensive_trends[away_team][date_count]
                 ]
                 # recent form is too variable right now to be used to scale
-                # for now just give a 1.0 for every team
-                recent_form_stats = [1.0,1.0]
+                # # for now just give a 1.0 for every team
+                # recent_form_stats = [
+                #     recent_form_trends[home_team][date_count],
+                #     recent_form_trends[away_team][date_count]
+                # ]
+                recent_form_stats = [1.0, 1.0]
                 sos_stats = [
                     sos_trends[home_team][date_count],
                     sos_trends[away_team][date_count]
@@ -349,6 +354,12 @@ def parse_match(match_data : dict={}, relative_metrics : list=[]) -> list:
     metric_data.append(recent_form_data)
 
     ### strength of schedule
+    sos_data = strength_of_schedule_get_data_set(match_data)
+    sos_data[home_team] *= \
+        relative_metrics[Metric_Order.SOS.value][Team_Selection.AWAY.value]
+    sos_data[away_team] *= \
+        relative_metrics[Metric_Order.SOS.value][Team_Selection.HOME.value]
+    metric_data.append(sos_data)
 
     # return the list of all metric data for this match
     return metric_data
@@ -435,6 +446,21 @@ def plot_unscaled_metrics() -> None:
         [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
         "Graphs/Teams/Recent_Form/recent_form_last_fourty_base.png")))
 
+    ### Strength of Schedule
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
+        ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
+        ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Strength_of_Schedule/sos_base.png")))
+    strength_of_schedule_scale_by_game()
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
+        ["Team", "Strength of Schedule Game Scale"], strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
+        ["Team", "Strength of Schedule Game Scale"], 0.0, 0.0, [],
+        "Graphs/Teams/Strength_of_Schedule/sos_game_scale.png")))
+
 
 def plot_scaled_metrics() -> None:
 
@@ -514,6 +540,15 @@ def plot_scaled_metrics() -> None:
         ["Team", "Last Fourty Games"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_last_fourty_corrected.png")))
 
+    ### Strength of Schedule ###
+    write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
+        ["Team", "Strength of Schedule Corrected"],
+        strength_of_schedule_get_dict())
+    team_engine_plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
+        ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
+
 
 def combine_all_factors(update_trends : bool=True) -> None:
     
@@ -552,7 +587,7 @@ def combine_all_factors(update_trends : bool=True) -> None:
 
 if __name__ == "__main__":
 
-    UPDATE_TRENDS = False
+    UPDATE_TRENDS = True
     start = time.time()
     freeze_support()
 
@@ -610,6 +645,10 @@ if __name__ == "__main__":
             recent_form_return = output_list[Metric_Order.RECENT.value]
             recent_form_add_match_data(recent_form_return)
 
+            ### strength of schedule data ###
+            sos_return = output_list[Metric_Order.SOS.value]
+            strength_of_schedule_add_match_data(sos_return)
+
     # call any cleanup calculations required
     defensive_rating_calculate_penalty_kill()
     offensive_rating_calculate_power_play()
@@ -652,6 +691,7 @@ if __name__ == "__main__":
     apply_sigmoid_correction(recent_form_get_last_40_dict())
 
     # Strenght of Schedule
+    apply_sigmoid_correction(strength_of_schedule_get_dict())
     print_time_diff(sigmoid_start, time.time())
 
     # write out any plots after sigmoid correction
@@ -690,17 +730,9 @@ if __name__ == "__main__":
         ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_final.png")))
 
-    # stop all the running workers
-    print("Waiting for Plotters to finish their very hard work <3")
-    for i in range(subprocess_count):
-        team_engine_plotting_queue.put('STOP')
-    for process in plotting_process_list:
-        while process.is_alive():
-            pass
-
     # combine all factors and plot the total rankings
-    # print("Combining All Metrics")
-    # combine_all_factors(UPDATE_TRENDS)
+    print("Combining All Metrics")
+    combine_all_factors(UPDATE_TRENDS)
 
     if UPDATE_TRENDS:
         print("Updating Trend Files")
@@ -728,6 +760,22 @@ if __name__ == "__main__":
             ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
+
+        # recent form
+        update_trend_file("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
+            recent_form_get_dict())
+        team_engine_plotting_queue.put((plot_trend_set,
+            ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
+            ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
+            "Graphs/Teams/Recent_Form/recent_form_trend.png")))
+
+        # strenght of schedule
+        update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+            strength_of_schedule_get_dict())
+        team_engine_plotting_queue.put((plot_trend_set,
+            ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+            ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
+            "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
 
         # absolute ranking
         absolute_rankings_update(total_rating)
