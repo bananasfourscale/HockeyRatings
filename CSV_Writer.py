@@ -14,7 +14,7 @@ def write_out_file(file_name : str = "", header_row : list = [],
 
 
 def write_out_player_file(file_name : str = "", header_row : list = [],
-                          rating_list : dict = {}, player_list : dict = {},
+                          rating_list : dict = {}, player_team_list : dict = {},
                           ascending=True) \
                                                                     -> None:
     with open(file_name, 'w', newline='', encoding='utf-8') as csv_date_file:
@@ -31,7 +31,8 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
         count = 1
         for key in sorted_list.keys():
             data_list = \
-                [str(count) + " " + key, rating_list[key], player_list[key][1]]
+                [str(count) + " " + key, rating_list[key],
+                    player_team_list[key]]
             csv_writer.writerow(data_list)
             count += 1
 

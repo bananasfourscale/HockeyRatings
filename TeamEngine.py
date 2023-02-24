@@ -14,7 +14,7 @@ from Team_Metrics.Average_Ranking_Parser import average_rankings_get_dict, \
 from Team_Metrics.Absolute_Ranking_Parser import absolute_rankings_get_dict, \
     absolute_rankings_parse, absolute_rankings_update
 
-# import all custom modules for statistical analysis
+# import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
     clutch_rating_get_trend_dict, clutch_calculate_lead_protection, \
     clutch_add_match_data
@@ -36,14 +36,20 @@ from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_add_match_data, recent_form_calculate_all, \
     recent_form_combine_metrics 
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
+    strength_of_schedule_get_games_played_dict, \
     strength_of_schedule_get_trend_dict, strength_of_schedule_get_data_set, \
     strength_of_schedule_add_match_data, strength_of_schedule_scale_by_game
+
+# import all custom player modules for statistical analysis
+from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
+    goalie_utlization_get_goalie_teams_dict, goalie_utilization_get_data_set, \
+    goalie_utilization_add_match_data, goalie_utilization_scale_by_game
 
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import total_rating_weights
-from Plotter import plot_data_set, plot_trend_set
-from CSV_Writer import write_out_file, update_trend_file
+from Plotter import plot_data_set, plot_trend_set, plot_player_ranking
+from CSV_Writer import write_out_file, update_trend_file, write_out_player_file
 
 
 sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -85,12 +91,55 @@ total_rating = {
 }
 
 
+total_rating_trend = {
+    'Anaheim Ducks' : [],
+    'Arizona Coyotes' : [],
+    'Boston Bruins' : [],
+    'Buffalo Sabres' : [],
+    'Calgary Flames' : [],
+    'Carolina Hurricanes' : [],
+    'Chicago Blackhawks' : [],
+    'Colorado Avalanche' : [],
+    'Columbus Blue Jackets' : [],
+    'Dallas Stars' : [],
+    'Detroit Red Wings' : [],
+    'Edmonton Oilers' : [],
+    'Florida Panthers' : [],
+    'Los Angeles Kings' : [],
+    'Minnesota Wild' : [],
+    'Montréal Canadiens' : [],
+    'Nashville Predators' : [],
+    'New Jersey Devils' : [],
+    'New York Islanders' : [],
+    'New York Rangers' : [],
+    'Ottawa Senators' : [],
+    'Philadelphia Flyers' : [],
+    'Pittsburgh Penguins' : [],
+    'San Jose Sharks' : [],
+    'Seattle Kraken' : [],
+    'St. Louis Blues' : [],
+    'Tampa Bay Lightning' : [],
+    'Toronto Maple Leafs' : [],
+    'Vancouver Canucks' : [],
+    'Vegas Golden Knights' : [],
+    'Washington Capitals' : [],
+    'Winnipeg Jets' : [],
+}
+
+
+active_players = {
+    'Forward':{},
+    'Defenseman':{},
+    'Goalie':{},
+}
+
+
 season_matches = {}
 
 
-team_engine_match_input_queue = Queue()
-team_engine_match_output_queue = Queue()
-team_engine_plotting_queue = Queue()
+match_input_queue = Queue()
+match_output_queue = Queue()
+plotting_queue = Queue()
 dummy_queue = Queue()
 
 
@@ -100,6 +149,7 @@ class Metric_Order(Enum):
     OFFENSIVE = 2
     RECENT = 3
     SOS = 4
+    TOTAL = 5
 
 
 class Team_Selection(Enum):
@@ -148,6 +198,9 @@ def parse_all_data_files() -> None:
     parse_trend_file(
         'Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv',
         strength_of_schedule_get_trend_dict())
+    parse_trend_file(
+        'Output_Files/Team_Files/Trend_Files/RatingScore.csv',
+        total_rating_trend)
 
 
 def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
@@ -177,6 +230,7 @@ def get_game_records() -> None:
                 box_score_parsed_data = json.loads(box_score_web_data.content)
                 game_data.append({'boxscore':box_score_parsed_data,
                     'linescore':game})
+                    
         
         # now update the current date with all games from that day we just
         # finished collecting
@@ -193,13 +247,13 @@ def worker_node(input_queue : Queue=None, output_queue : Queue=None,
     output_queue.put('STOP')
 
 
-def feed_parser_jobs() -> None:
+def run_team_match_parsers() -> None:
 
     # get all the different parsed trend data dictionaries
-    clutch_trends = clutch_rating_get_trend_dict()
+    #clutch_trends = clutch_rating_get_trend_dict()
     defensive_trends = defensive_rating_get_trend_dict()
     offensive_trends = offensive_rating_get_trend_dict()
-    recent_form_trends = recent_form_get_trend_dict()
+    #recent_form_trends = recent_form_get_trend_dict()
     sos_trends = strength_of_schedule_get_trend_dict()
     date_count = 0
     final_period = False
@@ -226,6 +280,7 @@ def feed_parser_jobs() -> None:
                 offensive_stats = [1.0, 1.0]
                 recent_form_stats = [1.0, 1.0]
                 sos_stats = [1.0, 1.0]
+                total_rating_stats = [1.0, 1.0]
 
             # otherwise find the correct scale factors for each team
             else:
@@ -242,9 +297,12 @@ def feed_parser_jobs() -> None:
                             average_ranking_get_ranking_dates()[date_count + 1]
                     else:
                         final_period = True
+
+                # clutch trends don't really counter eachother so pass total
+                # rating score to scale instead
                 clutch_stats = [
-                    clutch_trends[home_team][date_count],
-                    clutch_trends[away_team][date_count]
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
                 ]
                 defensive_stats = [
                     defensive_trends[home_team][date_count],
@@ -255,26 +313,176 @@ def feed_parser_jobs() -> None:
                     offensive_trends[away_team][date_count]
                 ]
                 # recent form is too variable right now to be used to scale
-                # # for now just give a 1.0 for every team
-                # recent_form_stats = [
-                #     recent_form_trends[home_team][date_count],
-                #     recent_form_trends[away_team][date_count]
-                # ]
-                recent_form_stats = [1.0, 1.0]
+                # for now just use the total rating score for the opposing team
+                recent_form_stats = [
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
+                ]
                 sos_stats = [
                     sos_trends[home_team][date_count],
                     sos_trends[away_team][date_count]
+                ]
+                total_rating_stats = [
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
                 ]
 
             # feed the match information with the scale factors for each team
             # into the match parser which will call all metrics to get all
             # relevant information required
-            team_engine_match_input_queue.put((parse_match,
+            match_input_queue.put((parse_team_match_data,
                 (match, [clutch_stats, defensive_stats, offensive_stats,
-                    recent_form_stats, sos_stats])))
+                    recent_form_stats, sos_stats, total_rating_stats])))
+            
+
+def run_player_match_parser() -> None:
+
+    # get all the different parsed trend data dictionaries
+    #clutch_trends = clutch_rating_get_trend_dict()
+    defensive_trends = defensive_rating_get_trend_dict()
+    offensive_trends = offensive_rating_get_trend_dict()
+    #recent_form_trends = recent_form_get_trend_dict()
+    sos_trends = strength_of_schedule_get_trend_dict()
+    date_count = 0
+    final_period = False
+    current_rating_period = average_ranking_get_ranking_dates()[date_count]
+    next_rating_period = average_ranking_get_ranking_dates()[date_count + 1]
+
+    # roll through all the dates updating the trend data when a different
+    # ranking marker is reached
+    for date in season_matches:
+        parsed_date = date.split("-")
+        parsed_date = datetime.date(int(parsed_date[0]), int(parsed_date[1]),
+            int(parsed_date[2]))
+        for match in season_matches[date]:
+            
+            # get the home and away team
+            away_team = match['linescore']["teams"]["away"]["team"]["name"]
+            home_team = match['linescore']["teams"]["home"]["team"]["name"]
+
+            # if the game took place before any rankings were available just
+            # give perfect scores to both teams for weighting
+            if parsed_date < current_rating_period:
+                clutch_stats = [1.0, 1.0]
+                defensive_stats = [1.0, 1.0]
+                offensive_stats = [1.0, 1.0]
+                recent_form_stats = [1.0, 1.0]
+                sos_stats = [1.0, 1.0]
+                total_rating_stats = [1.0, 1.0]
+
+            # otherwise find the correct scale factors for each team
+            else:
+
+                # if the next ranking period has been reached, and this is not
+                # the last known rank, then update the current and next
+                # markers and then keep going
+                if parsed_date >= next_rating_period and final_period is False:
+                    date_count += 1
+                    current_rating_period = next_rating_period
+                    if date_count + 1 <= \
+                        len(average_ranking_get_ranking_dates()) - 1:
+                        next_rating_period = \
+                            average_ranking_get_ranking_dates()[date_count + 1]
+                    else:
+                        final_period = True
+
+                # clutch trends don't really counter eachother so pass total
+                # rating score to scale instead
+                clutch_stats = [
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
+                ]
+                defensive_stats = [
+                    defensive_trends[home_team][date_count],
+                    defensive_trends[away_team][date_count]
+                ]
+                offensive_stats = [
+                    offensive_trends[home_team][date_count],
+                    offensive_trends[away_team][date_count]
+                ]
+                # recent form is too variable right now to be used to scale
+                # for now just use the total rating score for the opposing team
+                recent_form_stats = [
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
+                ]
+                sos_stats = [
+                    sos_trends[home_team][date_count],
+                    sos_trends[away_team][date_count]
+                ]
+                total_rating_stats = [
+                    total_rating_trend[home_team][date_count],
+                    total_rating_trend[away_team][date_count]
+                ]
+
+            # feed the match information with the scale factors for each team
+            # into the match parser which will call all metrics to get all
+            # relevant information required
+            # while in the game sort player data
+            # start with home team players"]
+            goalies = {}
+            forwards = {}
+            defensemen = {}
+            players = match['boxscore']["teams"]["home"]["players"]
+            for player_by_ID in players:
+
+                # find the players position
+                position = players[player_by_ID]["person"][
+                    "primaryPosition"]["type"]
+                name = players[player_by_ID]["person"]["fullName"]
+
+                # determine if the player had any stats for this game
+                if "skaterStats" in players[player_by_ID]["stats"]:
+                    stats = players[player_by_ID]["stats"]["skaterStats"]
+                elif "goalieStats" in players[player_by_ID]["stats"]:
+                    stats = players[player_by_ID]["stats"]["goalieStats"]
+                else:
+                    stats = None
+
+                # sort all the players in this match to parse their data
+                if (position == 'Goalie') and (stats != None):
+                    goalies[name] = [home_team, stats]
+                elif (position == 'Forward') and (stats != None):
+                    forwards[name] = [home_team, stats]
+                elif (stats != None):
+                    forwards[name] = [home_team, stats]
+
+            # then do away team players
+            players = match['boxscore']["teams"]["away"]["players"]
+            for player_by_ID in players:
+
+                # find the players position
+                position = players[player_by_ID]["person"][
+                    "primaryPosition"]["type"]
+                name = players[player_by_ID]["person"]["fullName"]
+
+                # determine if the player had any stats for this game
+                if "skaterStats" in players[player_by_ID]["stats"]:
+                    stats = players[player_by_ID]["stats"]["skaterStats"]
+                elif "goalieStats" in players[player_by_ID]["stats"]:
+                    stats = players[player_by_ID]["stats"]["goalieStats"]
+                else:
+                    stats = None
+
+                # sort all the players in this match to parse their data
+                if (position == 'Goalie') and (stats != None):
+                    goalies[name] = [away_team, stats]
+                elif (position == 'Forward') and (stats != None):
+                    forwards[name] = [away_team, stats]
+                elif (stats != None):
+                    forwards[name] = [away_team, stats]
+
+            # feed the match information with the scale factors for each team
+            # into the match parser which will call all metrics to get all
+            # relevant information required
+            match_input_queue.put((parse_player_match_data,
+                (match, [clutch_stats, defensive_stats, offensive_stats,
+                    recent_form_stats, sos_stats, total_rating_stats],
+                [goalies, forwards, defensemen])))
 
 
-def parse_match(match_data : dict={}, relative_metrics : list=[]) -> list:
+def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
+                                                                        -> list:
     metric_data = []
 
     # get home and away team
@@ -365,12 +573,46 @@ def parse_match(match_data : dict={}, relative_metrics : list=[]) -> list:
     return metric_data
 
 
-def plot_unscaled_metrics() -> None:
+def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
+                            player_list : list=[]) -> list:
+    metric_data = []
+    goalie_metrics = []
+
+    # get home and away team
+    home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
+    away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
+
+    ### Goalie Stats ###
+    # Utilization
+    goalie_utilization_data = goalie_utilization_get_data_set(player_list[0])
+
+    # unlike team engine, run all relative scaling at the end of the section
+    for goalie in player_list[0]:
+
+        # if the player is on the home team
+        if player_list[0][goalie][0] == home_team:
+
+            # Utilization
+            goalie_utilization_data[goalie][1] *= \
+                relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+        else:
+
+            # Utilization
+            goalie_utilization_data[goalie][1] *= \
+                relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+    goalie_metrics.append(goalie_utilization_data)
+    metric_data.append(goalie_metrics)
+    return(metric_data)
+
+
+def plot_unscaled_team_metrics() -> None:
 
     ### Clutch Rating ###
     write_out_file("Output_Files/Team_Files/Instance_Files/ClutchRatingBase.csv",
         ["Team", "Clutch Rating Base"], clutch_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ClutchRatingBase.csv",
         ["Team", "Clutch Rating Base"], 0.0, 0.0, [],
         "Graphs/Teams/Clutch_Rating/clutch_rating_base.png")))
@@ -379,20 +621,20 @@ def plot_unscaled_metrics() -> None:
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsAgaRatingBase.csv",
         ["Team", "Shots Against Base"],
         defensive_rating_get_shots_against_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ShotsAgaRatingBase.csv",
         ["Team", "Shots Against Base"], 0.0, 0.0, [],
         "Graphs/Teams/Defensive_Rating/shots_against_per_game_base.png", True)))
     write_out_file("Output_Files/Team_Files/Instance_Files/GoalsAgaRatingBase.csv",
         ["Team", "Goals Against Base"],
         defensive_rating_get_goals_against_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/GoalsAgaRatingBase.csv",
         ["Team", "Goals Against Base"], 0.0, 0.0, [],
         "Graphs/Teams/Defensive_Rating/goals_against_per_game_base.png", True)))
     write_out_file("Output_Files/Team_Files/Instance_Files/PKRatingBase.csv",
         ["Team", "Penalty Kill Base"], defensive_rating_get_pk_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/PKRatingBase.csv",
         ["Team", "Penalty Kill Base"], 0.0, 0.0, [],
         "Graphs/Teams/Defensive_Rating/penalty_kill_base.png")))
@@ -400,19 +642,19 @@ def plot_unscaled_metrics() -> None:
     ### Offensive Rating ###
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
         ["Team", "Shots For Base"], offensive_rating_get_shots_for_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ShotsForRatingBase.csv",
         ["Team", "Shots For Base"], 0.0, 0.0, [],
         "Graphs/Teams/Offensive_Rating/shots_for_per_game_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
         ["Team", "Goals For Base"], offensive_rating_get_goals_for_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/GoalsForRatingBase.csv",
         ["Team", "Goals For Base"], 0.0, 0.0, [],
         "Graphs/Teams/Offensive_Rating/goals_for_per_game_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
         ["Team", "Power Play Base"], offensive_rating_get_pp_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/PPRatingBase.csv",
         ["Team", "Power Play Base"], 0.0, 0.0, [],
         "Graphs/Teams/Offensive_Rating/power_play_base.png")))
@@ -420,27 +662,27 @@ def plot_unscaled_metrics() -> None:
     ### Recent Form ###
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormStreakBase.csv",
         ["Team", "Average Streak Score Base"], recent_form_get_streak_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormStreakBase.csv",
         ["Team", "Average Streak Score Base"], 0.0, 0.0, [],
         "Graphs/Teams/Recent_Form/recent_form_streak_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast10Base.csv",
         ["Team", "Last Ten Games"], recent_form_get_last_10_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast10Base.csv",
         ["Team", "Last Ten Games"], 10.0, 0,
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         "Graphs/Teams/Recent_Form/recent_form_last_ten_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast20Base.csv",
         ["Team", "Last Twenty Games"], recent_form_get_last_20_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast20Base.csv",
         ["Team", "Last Twenty Games"], 20.0, 0,
         [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
         "Graphs/Teams/Recent_Form/recent_form_last_twenty_base.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast40Base.csv",
         ["Team", "Last Fourty Games"], recent_form_get_last_40_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast40Base.csv",
         ["Team", "Last Fourty Games"], 40.0, 0,
         [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
@@ -449,25 +691,25 @@ def plot_unscaled_metrics() -> None:
     ### Strength of Schedule
     write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
         ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleBase.csv",
         ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
         "Graphs/Teams/Strength_of_Schedule/sos_base.png")))
     strength_of_schedule_scale_by_game()
     write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
         ["Team", "Strength of Schedule Game Scale"], strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleScale.csv",
         ["Team", "Strength of Schedule Game Scale"], 0.0, 0.0, [],
         "Graphs/Teams/Strength_of_Schedule/sos_game_scale.png")))
 
 
-def plot_scaled_metrics() -> None:
+def plot_scaled_team_metrics() -> None:
 
     ### Clutch Rating ###
     write_out_file("Output_Files/Team_Files/Instance_Files/ClutchRatingFinal.csv",
         ["Team", "Clutch Rating Corrected"], clutch_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ClutchRatingFinal.csv",
         ["Team", "Clutch Rating Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Clutch_Rating/clutch_rating_final.png")))
@@ -476,20 +718,20 @@ def plot_scaled_metrics() -> None:
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsAgaRatingCorr.csv",
         ["Team", "Shots Against Corrected"],
         defensive_rating_get_shots_against_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ShotsAgaRatingCorr.csv",
         ["Team", "Shots Against Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/shots_against_per_game_sigmoid.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/GoalsAgaRatingCorr.csv",
         ["Team", "Goals Against Corrected"],
         defensive_rating_get_goals_against_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/GoalsAgaRatingCorr.csv",
         ["Team", "Goals Against Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/goals_against_per_game_sigmoid.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/PKRatingCorr.csv",
         ["Team", "Penalty Kill Corrected"], defensive_rating_get_pk_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/PKRatingCorr.csv",
         ["Team", "Penalty Kill Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/penalty_kill_sigmoid.png")))
@@ -497,19 +739,19 @@ def plot_scaled_metrics() -> None:
     ### Offensive Rating ###
     write_out_file("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
         ["Team", "Shots For Corrected"], offensive_rating_get_shots_for_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/ShotsForRatingCorr.csv",
         ["Team", "Shots For Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Offensive_Rating/shots_for_per_game_sigmoid.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
         ["Team", "Goals For Corrected"], offensive_rating_get_goals_for_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/GoalsForRatingCorr.csv",
         ["Team", "Goals For Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Offensive_Rating/goals_for_per_game_sigmoid.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
         ["Team", "Power Play Corrected"], offensive_rating_get_pp_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/PPRatingCorr.csv",
         ["Team", "Power Play Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Offensive_Rating/power_play_sigmoid.png")))
@@ -517,25 +759,25 @@ def plot_scaled_metrics() -> None:
     ### Recent Form ###
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormStreakCorr.csv",
         ["Team", "Average Streak Score Corrected"], recent_form_get_streak_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormStreakCorr.csv",
         ["Team", "Average Streak Score Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_streak_corrected.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast10Corr.csv",
         ["Team", "Last Ten Games"], recent_form_get_last_10_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast10Corr.csv",
         ["Team", "Last Ten Games"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_last_ten_corrected.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast20Corr.csv",
         ["Team", "Last Twenty Games"], recent_form_get_last_20_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast20Corr.csv",
         ["Team", "Last Twenty Games"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_last_twenty_corrected.png")))
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormLast40Corr.csv",
         ["Team", "Last Fourty Games"], recent_form_get_last_40_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormLast40Corr.csv",
         ["Team", "Last Fourty Games"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_last_fourty_corrected.png")))
@@ -544,13 +786,24 @@ def plot_scaled_metrics() -> None:
     write_out_file("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
         ["Team", "Strength of Schedule Corrected"],
         strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/StengthOfScheduleCorrected.csv",
         ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
+    
+
+def plot_unscaled_player_metrics() -> None:
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
+        ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
+        goalie_utlization_get_goalie_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
+        ["Goalie", "Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Goalies/Utilization/utilization_base.png")))
 
 
-def combine_all_factors(update_trends : bool=True) -> None:
+def combine_all_team_factors(update_trends : bool=True) -> None:
     
     # calculate the final rating for all teams using the forms above
     for team in total_rating.keys():
@@ -570,7 +823,7 @@ def combine_all_factors(update_trends : bool=True) -> None:
     # write out and plot the total ratings
     write_out_file("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
         ["Team", "Total Rating"], total_rating)
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
         ["Team", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Final_Rating_Score/final_rating_score.png")))
@@ -579,36 +832,20 @@ def combine_all_factors(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
             total_rating)
-    team_engine_plotting_queue.put((plot_trend_set,
+    plotting_queue.put((plot_trend_set,
         ("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
         ["Rating Date", "Rating Score"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))
-
-
-if __name__ == "__main__":
-
-    UPDATE_TRENDS = True
-    start = time.time()
-    freeze_support()
-
-    # regardless of command parse the input files
-    parse_start = time.time()
-    print("Parsing All Data Files:")
-    parse_all_data_files()
-    print_time_diff(parse_start, time.time())
     
-    # get all the match data
-    match_data_start = time.time()
-    print("Gathering All Match Data")
-    get_game_records()
-    print_time_diff(match_data_start, time.time())
+
+def run_team_engine():
 
     # create a few match parsing processes to speed things up a bit
     subprocess_count = 15
     metric_process_list = []
     for i in range(subprocess_count):
         metric_process_list.append(Process(target=worker_node,
-            args=(team_engine_match_input_queue, team_engine_match_output_queue,
+            args=(match_input_queue, match_output_queue,
                 i)))
     for process in metric_process_list:
         process.start()
@@ -617,17 +854,16 @@ if __name__ == "__main__":
     # a process to be parsed
     match_parsing_start = time.time()
     print("Feeding in matches to workers")
-    feed_parser_jobs()
+    run_team_match_parsers()
     
     # let the metric workers know there are no more matches
     for i in range(subprocess_count):
-        team_engine_match_input_queue.put('STOP')
+        match_input_queue.put('STOP')
     
     # keep reading the metric output queue until all data is returned
-    stop_count = 0
     print("Combining jobs from worker nodes")
     for i in range(subprocess_count):
-        for output_list in iter(team_engine_match_output_queue.get, 'STOP'):
+        for output_list in iter(match_output_queue.get, 'STOP'):
 
             ### clutch data ###
             clutch_return = output_list[Metric_Order.CLUTCH.value]
@@ -659,13 +895,13 @@ if __name__ == "__main__":
     plotting_process_list = []
     for i in range(subprocess_count):
         plotting_process_list.append(Process(target=worker_node,
-            args=(team_engine_plotting_queue, dummy_queue, i)))
+            args=(plotting_queue, dummy_queue, i)))
     for process in plotting_process_list:
         process.start()
 
     # write out any plots before sigmoid correction
     print("Plot data before correction")
-    plot_unscaled_metrics()
+    plot_unscaled_team_metrics()
 
     ### apply all sigmoid corrections ###
     print("Apply corrections")
@@ -696,7 +932,7 @@ if __name__ == "__main__":
 
     # write out any plots after sigmoid correction
     print("Plot data after correction")
-    plot_scaled_metrics()
+    plot_scaled_team_metrics()
     
     ### combine metrics to overall score and plot ###
     # nothing needed for clutch rating here
@@ -706,7 +942,7 @@ if __name__ == "__main__":
         defensive_rating_get_pk_dict()])
     write_out_file("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Defensive Rating Final"], defensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
         ["Team", "Defensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/defensive_rating_final.png")))
@@ -716,7 +952,7 @@ if __name__ == "__main__":
         offensive_rating_get_goals_for_dict(), offensive_rating_get_pp_dict()])
     write_out_file("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
         ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
         ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
@@ -725,22 +961,23 @@ if __name__ == "__main__":
     recent_form_combine_metrics()
     write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
         ["Team", "Recent Form Rating"], recent_form_get_dict())
-    team_engine_plotting_queue.put((plot_data_set,
+    plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
         ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_final.png")))
 
     # combine all factors and plot the total rankings
     print("Combining All Metrics")
-    combine_all_factors(UPDATE_TRENDS)
+    combine_all_team_factors(UPDATE_TRENDS)
 
+    ### Update any trend files if set ###
     if UPDATE_TRENDS:
         print("Updating Trend Files")
 
         # clutch
         update_trend_file("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
             clutch_rating_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
             ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
@@ -748,7 +985,7 @@ if __name__ == "__main__":
         # defensive rating
         update_trend_file("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
             defensive_rating_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
             ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
@@ -756,7 +993,7 @@ if __name__ == "__main__":
         # offensive rating
         update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             offensive_rating_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
@@ -764,7 +1001,7 @@ if __name__ == "__main__":
         # recent form
         update_trend_file("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
             recent_form_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
             ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Recent_Form/recent_form_trend.png")))
@@ -772,7 +1009,7 @@ if __name__ == "__main__":
         # strenght of schedule
         update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
             strength_of_schedule_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
             ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
@@ -782,7 +1019,7 @@ if __name__ == "__main__":
         update_trend_file(
             "Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
             absolute_rankings_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
             ["Rating Date", "Absolute Ranking"], 0, 33, range(1, 33, 1),
             "Graphs/Teams/Final_Rating_Score/absolute_ranking_trend.png")))
@@ -792,7 +1029,7 @@ if __name__ == "__main__":
         update_trend_file(
             "Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
             average_rankings_get_dict())
-        team_engine_plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_trend_set,
             ("Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
             ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
             "Graphs/Teams/Final_Rating_Score/average_ranking_trend.png")))
@@ -800,7 +1037,7 @@ if __name__ == "__main__":
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
     for i in range(subprocess_count):
-        team_engine_plotting_queue.put('STOP')
+        plotting_queue.put('STOP')
     for process in plotting_process_list:
         while process.is_alive():
             pass
@@ -811,5 +1048,107 @@ if __name__ == "__main__":
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files/Team_Files/\Instance_Files\\" + file)
+            
+
+def run_player_engine() -> None:
+    # create a few match parsing processes to speed things up a bit
+    subprocess_count = 15
+    metric_process_list = []
+    for i in range(subprocess_count):
+        metric_process_list.append(Process(target=worker_node,
+            args=(match_input_queue, match_output_queue,
+                i)))
+    for process in metric_process_list:
+        process.start()
+
+    # feed in matches until all completed matches this season have been put into
+    # a process to be parsed
+    match_parsing_start = time.time()
+    print("Feeding in matches to workers")
+    run_player_match_parser()
+
+    
+    # let the metric workers know there are no more matches
+    for i in range(subprocess_count):
+        match_input_queue.put('STOP')
+    
+    # keep reading the metric output queue until all data is returned
+    print("Combining jobs from worker nodes")
+    for i in range(subprocess_count):
+        for output_list in iter(match_output_queue.get, 'STOP'):
+            goalie_metrics = output_list[0]
+            goalie_utilization = goalie_metrics[0]  
+            goalie_utilization_add_match_data(goalie_utilization)    
+
+    # clean up any stats after collection
+    goalie_utilization_scale_by_game(
+        strength_of_schedule_get_games_played_dict())
+    print_time_diff(match_parsing_start, time.time())
+    
+    # now start the processes for plotting
+    plotting_process_list = []
+    for i in range(subprocess_count):
+        plotting_process_list.append(Process(target=worker_node,
+            args=(plotting_queue, dummy_queue, i)))
+    for process in plotting_process_list:
+        process.start()
+    
+    # write out any plots before sigmoid correction
+    print("Plot data before correction")
+    plot_unscaled_player_metrics()
+
+    ### apply all sigmoid corrections ###
+    print("Apply corrections")
+    sigmoid_start = time.time()
+
+    print_time_diff(sigmoid_start, time.time())
+
+    # write out any plots after sigmoid correction #
+    print("Plot data after correction")
+
+    ### combine metrics to overall score and plot ###
+    print("Combining All Metrics")
+
+    # stop all the running workers
+    print("Waiting for Plotters to finish their very hard work <3")
+    for i in range(subprocess_count):
+        plotting_queue.put('STOP')
+    for process in plotting_process_list:
+        while process.is_alive():
+            pass
+
+     # remove all the instance files
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Goalie_Files\Instance_Files\\" + file)
+
+
+if __name__ == "__main__":
+
+    UPDATE_TRENDS = False
+    start = time.time()
+    freeze_support()
+
+    # regardless of command parse the input files
+    parse_start = time.time()
+    print("Parsing All Data Files:")
+    parse_all_data_files()
+    print_time_diff(parse_start, time.time())
+    
+    # get all the match data
+    match_data_start = time.time()
+    print("Gathering All Match Data")
+    get_game_records()
+    print_time_diff(match_data_start, time.time())
+
+    # first run the team engine which calculates and plots all team stats
+    print("Running Team Engine")
+    run_team_engine()
+    
+    # now run the player engine
+    print("Running Player Engine")
+    run_player_engine()
     print(time.time() - start)
     exit(0)

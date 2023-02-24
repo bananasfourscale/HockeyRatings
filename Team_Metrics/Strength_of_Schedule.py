@@ -129,6 +129,10 @@ def strength_of_schedule_get_dict() -> dict:
     return strength_of_schedule
 
 
+def strength_of_schedule_get_games_played_dict() -> dict:
+    return strength_of_schedule_games_played
+
+
 def strength_of_schedule_get_trend_dict() -> dict:
     return strength_of_schedule_trends
 
