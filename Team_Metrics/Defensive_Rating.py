@@ -35,6 +35,41 @@ shots_against = {
     'Winnipeg Jets' : 0,
 }
 
+shots_against_unscaled = {
+    'Anaheim Ducks' : 0,
+    'Arizona Coyotes' : 0,
+    'Boston Bruins' : 0,
+    'Buffalo Sabres' : 0,
+    'Calgary Flames' : 0,
+    'Carolina Hurricanes' : 0,
+    'Chicago Blackhawks' : 0,
+    'Colorado Avalanche' : 0,
+    'Columbus Blue Jackets' : 0,
+    'Dallas Stars' : 0,
+    'Detroit Red Wings' : 0,
+    'Edmonton Oilers' : 0,
+    'Florida Panthers' : 0,
+    'Los Angeles Kings' : 0,
+    'Minnesota Wild' : 0,
+    'Montréal Canadiens' : 0,
+    'Nashville Predators' : 0,
+    'New Jersey Devils' : 0,
+    'New York Islanders' : 0,
+    'New York Rangers' : 0,
+    'Ottawa Senators' : 0,
+    'Philadelphia Flyers' : 0,
+    'Pittsburgh Penguins' : 0,
+    'San Jose Sharks' : 0,
+    'Seattle Kraken' : 0,
+    'St. Louis Blues' : 0,
+    'Tampa Bay Lightning' : 0,
+    'Toronto Maple Leafs' : 0,
+    'Vancouver Canucks' : 0,
+    'Vegas Golden Knights' : 0,
+    'Washington Capitals' : 0,
+    'Winnipeg Jets' : 0,
+}
+
 goals_against = {
     'Anaheim Ducks' : 0,
     'Arizona Coyotes' : 0,
@@ -103,6 +138,41 @@ penalty_kill = {
     'Vegas Golden Knights' : [0,0],
     'Washington Capitals' : [0,0],
     'Winnipeg Jets' : [0,0],
+}
+
+games_played = {
+    'Anaheim Ducks' : 0,
+    'Arizona Coyotes' : 0,
+    'Boston Bruins' : 0,
+    'Buffalo Sabres' : 0,
+    'Calgary Flames' : 0,
+    'Carolina Hurricanes' : 0,
+    'Chicago Blackhawks' : 0,
+    'Colorado Avalanche' : 0,
+    'Columbus Blue Jackets' : 0,
+    'Dallas Stars' : 0,
+    'Detroit Red Wings' : 0,
+    'Edmonton Oilers' : 0,
+    'Florida Panthers' : 0,
+    'Los Angeles Kings' : 0,
+    'Minnesota Wild' : 0,
+    'Montréal Canadiens' : 0,
+    'Nashville Predators' : 0,
+    'New Jersey Devils' : 0,
+    'New York Islanders' : 0,
+    'New York Rangers' : 0,
+    'Ottawa Senators' : 0,
+    'Philadelphia Flyers' : 0,
+    'Pittsburgh Penguins' : 0,
+    'San Jose Sharks' : 0,
+    'Seattle Kraken' : 0,
+    'St. Louis Blues' : 0,
+    'Tampa Bay Lightning' : 0,
+    'Toronto Maple Leafs' : 0,
+    'Vancouver Canucks' : 0,
+    'Vegas Golden Knights' : 0,
+    'Washington Capitals' : 0,
+    'Winnipeg Jets' : 0,
 }
 
 defensive_rating = {
@@ -175,6 +245,8 @@ defensive_rating_trends = {
     'Winnipeg Jets' : [],
 }
 
+pk_oppertunities = {}
+
 class defensive_rating_weights(Enum):
     PENALTY_KILL_STRENGTH = 0.20
     GOALS_AGAINST_PER_GAME = 0.50
@@ -189,6 +261,10 @@ def defensive_rating_get_shots_against_dict() -> dict:
     return shots_against
 
 
+def defensive_rating_get_unscaled_shots_against_dict() -> dict:
+    return shots_against_unscaled
+
+
 def defensive_rating_get_goals_against_dict() -> dict:
     return goals_against
 
@@ -199,6 +275,10 @@ def defensive_rating_get_pk_dict() -> dict:
 
 def defensive_rating_get_trend_dict() -> dict:
     return defensive_rating_trends
+
+
+def defensive_rating_get_pk_oppertunities_dict() -> dict:
+    return pk_oppertunities
 
 
 def defensive_rating_get_data_set(match_data : dict={}) -> list:
@@ -243,6 +323,10 @@ def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
         list(defensive_data[0].values())[0]
     shots_against[list(defensive_data[0].keys())[1]] += \
         list(defensive_data[0].values())[1]
+    shots_against_unscaled[list(defensive_data[0].keys())[0]] += \
+        list(defensive_data[0].values())[0]
+    shots_against_unscaled[list(defensive_data[0].keys())[1]] += \
+        list(defensive_data[0].values())[1]
 
     # goals against
     goals_against[list(defensive_data[1].keys())[0]] += \
@@ -259,15 +343,27 @@ def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
         list(defensive_data[2].values())[1][0]
     penalty_kill[list(defensive_data[2].keys())[1]][1] += \
         list(defensive_data[2].values())[1][1]
+    
+    # add to games played
+    games_played[list(defensive_data[0].keys())[0]] += 1
+    games_played[list(defensive_data[0].keys())[1]] += 1
 
 
-def defensive_rating_calculate_penalty_kill() -> None:
+def defensive_rating_calculate_all() -> None:
     for team in penalty_kill.keys():
+
+        # shots against divided by game
+        shots_against[team] /= games_played[team]
+
+        # goals against divided by game
+        goals_against[team] /= games_played[team]
+
+        # pk converted to percentage
         pk_goals_against = penalty_kill[team][0]
-        pk_oppertunities = penalty_kill[team][1]
-        if (pk_oppertunities > 0):
+        pk_oppertunities[team] = penalty_kill[team][1]
+        if (pk_oppertunities[team] > 0):
             penalty_kill[team] = \
-                1.0 - (pk_goals_against / pk_oppertunities)
+                1.0 - (pk_goals_against / pk_oppertunities[team])
         else:
             penalty_kill[team] = 0.0
 

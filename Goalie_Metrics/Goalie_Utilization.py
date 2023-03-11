@@ -32,7 +32,7 @@ def goalie_utilization_add_match_data(goalie_utilization_data : dict={}) \
         else:
             goalie_utilization_rating[goalie] = \
                 goalie_utilization_data[goalie][1]
-        goalie_teams[goalie] = goalie_utilization_data[goalie][0]
+            goalie_teams[goalie] = goalie_utilization_data[goalie][0]
 
 
 def goalie_utilization_scale_by_game(games_played : dict={}) -> None:

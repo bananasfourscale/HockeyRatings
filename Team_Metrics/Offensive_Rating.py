@@ -176,6 +176,9 @@ offensive_rating_trends = {
 }
 
 
+pp_oppertunities = {}
+
+
 class offensive_rating_weights(Enum):
     POWER_PLAY_STRENGTH = 0.20
     GOALS_PER_GAME = 0.50
@@ -200,6 +203,10 @@ def offensive_rating_get_pp_dict() -> dict:
 
 def offensive_rating_get_trend_dict() -> dict:
     return offensive_rating_trends
+
+
+def offensive_rating_get_pp_oppertunities_dict() -> dict:
+    return pp_oppertunities
 
 
 def offensive_rating_get_data_set(match_data : dict={}) -> list:
@@ -264,9 +271,9 @@ def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
 def offensive_rating_calculate_power_play() -> None:
     for team in power_play.keys():
         pp_goals_for = power_play[team][0]
-        pp_oppertunities = power_play[team][1]
-        if (pp_oppertunities > 0):
-            power_play[team] = (pp_goals_for / pp_oppertunities)
+        pp_oppertunities[team] = power_play[team][1]
+        if (pp_oppertunities[team] > 0):
+            power_play[team] = (pp_goals_for / pp_oppertunities[team])
         else:
             power_play[team] = 0.0
 

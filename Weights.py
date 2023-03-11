@@ -49,18 +49,20 @@ class total_rating_weights(Enum):
 
 
 class goalie_rating_weights(Enum):
-    UTILIZATION_WEIGHT = 0.30
-    WIN_RATING_WEIGHT = 0.10
-    SAVE_PERCENTAGE_WEIGHT = 0.40
-    GOALS_AGAINST_WEIGHT = 0.20
+    UTILIZATION_WEIGHT = 0.40
+    SAVE_PERCENTAGE_WEIGHT = 0.50
+    GOALS_AGAINST_WEIGHT = 0.10
+
 
 class defensemen_rating_weights(Enum):
-    UTILIZATION_WEIGHT = 0.35
-    HITS_WEIGHT = 0.05
-    DISIPLINE_WEIGHT = 0.25
+    UTILIZATION_WEIGHT = 0.20
+    HITS_WEIGHT = 0.10
+    DISIPLINE_WEIGHT = 0.15
     SHOT_BLOCKING_WEIGHT = 0.10
-    PLUS_MINUS_WEIGHT = 0.05
+    PLUS_MINUS_WEIGHT = 0.10
     POINTS_WEIGHT = 0.20
+    TAKEAWAYS_WEIGHT = 0.15
+
 
 class forward_rating_weights(Enum):
     UTILIZATION_WEIGHT = 0.25

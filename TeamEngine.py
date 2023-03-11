@@ -20,15 +20,17 @@ from Team_Metrics.Clutch import clutch_rating_get_dict, \
     clutch_add_match_data
 from Team_Metrics.Defensive_Rating import defensive_rating_get_dict, \
     defensive_rating_get_shots_against_dict, \
+    defensive_rating_get_unscaled_shots_against_dict, \
     defensive_rating_get_goals_against_dict, defensive_rating_get_pk_dict, \
-    defensive_rating_get_trend_dict, defensive_rating_get_data_set, \
-    defensive_rating_add_match_data, defensive_rating_calculate_penalty_kill, \
-    defensive_rating_combine_metrics
+    defensive_rating_get_trend_dict, defensive_rating_get_pk_oppertunities_dict, \
+    defensive_rating_get_data_set, defensive_rating_add_match_data, \
+    defensive_rating_calculate_all, defensive_rating_combine_metrics
 from Team_Metrics.Offensive_Rating import offensive_rating_get_dict, \
     offensive_rating_get_shots_for_dict, offensive_rating_get_goals_for_dict, \
     offensive_rating_get_pp_dict, offensive_rating_get_trend_dict, \
-    offensive_rating_get_data_set, offensive_rating_add_match_data, \
-    offensive_rating_calculate_power_play, offensive_rating_combine_metrics
+    offensive_rating_get_pp_oppertunities_dict, offensive_rating_get_data_set, \
+    offensive_rating_add_match_data, offensive_rating_calculate_power_play, \
+    offensive_rating_combine_metrics
 from Team_Metrics.Recent_Form import recent_form_get_dict, \
     recent_form_get_streak_dict, recent_form_get_last_10_dict, \
     recent_form_get_last_20_dict, recent_form_get_last_40_dict, \
@@ -41,13 +43,58 @@ from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
     strength_of_schedule_add_match_data, strength_of_schedule_scale_by_game
 
 # import all custom player modules for statistical analysis
+### GOALIES
 from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
     goalie_utlization_get_goalie_teams_dict, goalie_utilization_get_data_set, \
     goalie_utilization_add_match_data, goalie_utilization_scale_by_game
+from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
+    goalie_goals_against_get_goalie_teams_dict, \
+    goalie_goals_against_get_data_set, goalie_goals_against_add_match_data, \
+    goalie_goals_against_scale_by_game
+from Goalie_Metrics.Goalie_Save_Percentage import \
+    goalie_save_percentage_get_dict, \
+    goalie_save_percentage_get_goalie_teams_dict, \
+    goalie_save_percentage_get_data_set, goalie_save_percentage_add_match_data, \
+    goalie_save_percentage_calculate_all, goalie_save_percentage_combine_metrics
+
+### DEFENSEMEN
+from Defensemen_Metrics.Defensemen_Utilization import \
+    defensemen_utilization_get_dict, defensemen_utilization_get_even_time_dict, \
+    defensemen_utilization_get_pp_time_dict, \
+    defensemen_utilization_get_pk_time_dict, \
+    defensemen_utilization_get_teams_dict, defensemen_utilization_get_data_set, \
+    defensemen_utilization_add_match_data, defensemen_utilization_scale_all, \
+    defensemen_utilization_combine_metrics
+from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
+    defensemen_blocks_get_defensemen_teams_dict, defensemen_blocks_get_data_set, \
+    defensemen_blocks_add_match_data, defensemen_blocks_scale_by_shots_against
+from Defensemen_Metrics.Defensemen_Discipline import \
+    defensemen_discipline_get_dict, \
+    defensemen_discipline_get_defensemen_teams_dict, \
+    defensemen_discipline_get_data, defensemen_discipline_add_match_data, \
+    defensemen_discipline_calculate
+from Defensemen_Metrics.Defensemen_Hits import \
+    defensemen_hits_get_dict, defensemen_hits_get_teams_dict, \
+    defensemen_hits_get_data_set, defensemen_hits_add_match_data, \
+    defensemen_hits_scale_by_games
+from Defensemen_Metrics.Defensemen_PlusMinus import \
+    defensemen_plus_minus_get_dict, defensemen_plus_minus_get_teams_dict, \
+    defensemen_plus_minus_get_data_set, defensemen_plus_minus_add_match_data, \
+    defensemen_plus_minus_scale_by_utilization
+from Defensemen_Metrics.Defensemen_Points import \
+    defensemen_points_get_dict, defensemen_points_get_teams_dict, \
+    defensemen_points_get_data_set, defensemen_points_add_match_data, \
+    defensemen_points_scale_by_utilization
+from Defensemen_Metrics.Defensemen_Takeaways import \
+    defensemen_takeaways_get_dict, defensemen_takeaways_get_teams_dict, \
+    defensemen_takeaways_get_data_set, defensemen_takeaways_add_match_data, \
+    defensemen_takeaways_scale_by_utilization
+
 
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
-from Weights import total_rating_weights
+from Weights import total_rating_weights, goalie_rating_weights, \
+    defensemen_rating_weights
 from Plotter import plot_data_set, plot_trend_set, plot_player_ranking
 from CSV_Writer import write_out_file, update_trend_file, write_out_player_file
 
@@ -124,13 +171,6 @@ total_rating_trend = {
     'Vegas Golden Knights' : [],
     'Washington Capitals' : [],
     'Winnipeg Jets' : [],
-}
-
-
-active_players = {
-    'Forward':{},
-    'Defenseman':{},
-    'Goalie':{},
 }
 
 
@@ -445,7 +485,7 @@ def run_player_match_parser() -> None:
                 elif (position == 'Forward') and (stats != None):
                     forwards[name] = [home_team, stats]
                 elif (stats != None):
-                    forwards[name] = [home_team, stats]
+                    defensemen[name] = [home_team, stats]
 
             # then do away team players
             players = match['boxscore']["teams"]["away"]["players"]
@@ -470,7 +510,7 @@ def run_player_match_parser() -> None:
                 elif (position == 'Forward') and (stats != None):
                     forwards[name] = [away_team, stats]
                 elif (stats != None):
-                    forwards[name] = [away_team, stats]
+                    defensemen[name] = [away_team, stats]
 
             # feed the match information with the scale factors for each team
             # into the match parser which will call all metrics to get all
@@ -500,26 +540,26 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     ### defensive rating ###
     # shots against
     defensive_data = defensive_rating_get_data_set(match_data)
-    defensive_data[0][home_team] *= \
+    defensive_data[0][home_team] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
-    defensive_data[0][away_team] *= \
+    defensive_data[0][away_team] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     
     # goals against
-    defensive_data[1][home_team] *= \
+    defensive_data[1][home_team] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
-    defensive_data[1][away_team] *= \
+    defensive_data[1][away_team] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     
     # penalty kill oppertunities
-    defensive_data[2][home_team][0] *= \
+    defensive_data[2][home_team][0] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
-    defensive_data[2][away_team][0] *= \
+    defensive_data[2][away_team][0] /= \
         relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     metric_data.append(defensive_data)
@@ -577,14 +617,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
                             player_list : list=[]) -> list:
     metric_data = []
     goalie_metrics = []
+    defensemen_metrics = []
 
     # get home and away team
     home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
     away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
 
     ### Goalie Stats ###
-    # Utilization
     goalie_utilization_data = goalie_utilization_get_data_set(player_list[0])
+    goalie_goals_against_data = goalie_goals_against_get_data_set(
+        player_list[0])
+    goalie_save_per_data = goalie_save_percentage_get_data_set(player_list[0])
 
     # unlike team engine, run all relative scaling at the end of the section
     for goalie in player_list[0]:
@@ -596,14 +639,132 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             goalie_utilization_data[goalie][1] *= \
                 relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.AWAY.value]
+            
+            # Goals Against
+            goalie_goals_against_data[goalie][1] += \
+                (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
+            
+            # Save Percentage
+            goalie_save_per_data[1][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            goalie_save_per_data[2][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            goalie_save_per_data[3][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
         else:
 
             # Utilization
             goalie_utilization_data[goalie][1] *= \
                 relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.HOME.value]
+            
+            # Goals Against
+            goalie_goals_against_data[goalie][1] =+ \
+                (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
+            
+            # Save Percentage
+            goalie_save_per_data[1][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            goalie_save_per_data[1][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            goalie_save_per_data[1][goalie][0] *= \
+                relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+    
+    # Append Goalie metrics
     goalie_metrics.append(goalie_utilization_data)
+    goalie_metrics.append(goalie_goals_against_data)
+    goalie_metrics.append(goalie_save_per_data)
+
+    ### Defensemen Metrics
+    defensemen_blocks_data = defensemen_blocks_get_data_set(player_list[2])
+    defensemen_discipline_data = defensemen_discipline_get_data(player_list[2])
+    defensemen_utilization_data = defensemen_utilization_get_data_set(
+        player_list[2])
+    defensemen_hits_data = defensemen_hits_get_data_set(player_list[2])
+    defensemen_plus_minus_data = defensemen_plus_minus_get_data_set(
+        player_list[2])
+    defensemen_points_data = defensemen_points_get_data_set(player_list[2])
+    defensemen_takeaway_data = defensemen_takeaways_get_data_set(player_list[2])
+    for defensemen in player_list[2]:
+        
+        # if the player is on the home team
+        if player_list[2][defensemen][0] == home_team:
+            defensemen_utilization_data[1][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
+            defensemen_utilization_data[2][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
+            defensemen_utilization_data[3][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
+            defensemen_blocks_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
+            defensemen_discipline_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
+            defensemen_hits_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
+            defensemen_plus_minus_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
+            defensemen_points_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value])
+            defensemen_takeaway_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
+        else:
+            defensemen_utilization_data[1][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
+            defensemen_utilization_data[2][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
+            defensemen_utilization_data[3][defensemen] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
+            defensemen_blocks_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
+            defensemen_discipline_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
+            defensemen_hits_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
+            defensemen_plus_minus_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
+            defensemen_points_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value])
+            defensemen_takeaway_data[defensemen][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
+    
+    # Append Defensemen Metrics
+    defensemen_metrics.append(defensemen_utilization_data)
+    defensemen_metrics.append(defensemen_blocks_data)
+    defensemen_metrics.append(defensemen_discipline_data)
+    defensemen_metrics.append(defensemen_hits_data)
+    defensemen_metrics.append(defensemen_plus_minus_data)
+    defensemen_metrics.append(defensemen_points_data)
+    defensemen_metrics.append(defensemen_takeaway_data)
+
+    # Append all player metrics
     metric_data.append(goalie_metrics)
+    metric_data.append(defensemen_metrics)
     return(metric_data)
 
 
@@ -792,7 +953,10 @@ def plot_scaled_team_metrics() -> None:
         "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
     
 
-def plot_unscaled_player_metrics() -> None:
+def plot_uncorrected_player_metrics() -> None:
+
+    ### Goalies
+    # Utilization
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
@@ -801,6 +965,235 @@ def plot_unscaled_player_metrics() -> None:
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base"], 0.0, 0.0, [],
         "Graphs/Goalies/Utilization/utilization_base.png")))
+    
+    # Goals Against
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
+        ["Goalie", "Goals Against Avg Base", "Team"],
+        goalie_goals_against_get_dict(),
+        goalie_goals_against_get_goalie_teams_dict(), False)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
+        ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],
+        "Graphs/Goalies/Goals_Against/goals_against_base.png", True)))
+    
+    # Save Percentage
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
+        ["Goalie", "Save Percentage Scaled", "Team"],
+        goalie_save_percentage_get_dict(),
+        goalie_save_percentage_get_goalie_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
+        ["Goalie", "Save Percentage Scaled"], 0.0, 0.0, [],
+        "Graphs/Goalies/Save_Percentage/save_percentage_scaled.png")))
+    
+    ### Defensemen
+    # Blocks
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
+        ["Defensemen", "Blocks Base", "Team"],
+        defensemen_blocks_get_dict(),
+        defensemen_blocks_get_defensemen_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
+        ["Defensemen", "Blocks Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Blocks/blocks_base.png")))
+    
+    # Discipline
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
+        ["Defensemen", "Discipline Base", "Team"],
+        defensemen_discipline_get_dict(),
+        defensemen_discipline_get_defensemen_teams_dict(), False)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
+        ["Defensemen", "Discipline Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Discipline/discipline_base.png", True)))
+    
+    # Utilization
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Defensemen", "Even Strength Utilization Base", "Team"],
+        defensemen_utilization_get_even_time_dict(),
+        defensemen_utilization_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
+        ["Defensemen", "Even Strength Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/even_utilzation_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Defensemen", "Power Play Utilization Base", "Team"],
+        defensemen_utilization_get_pp_time_dict(),
+        defensemen_utilization_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
+        ["Defensemen", "Power Play Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/pp_utilization_base.png", False)))
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Defensemen", "Penalty Kill Utilization Base", "Team"],
+        defensemen_utilization_get_pk_time_dict(),
+        defensemen_utilization_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
+        ["Defensemen", "Penalty Kill Utilization Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Utilization/pk_utilization_base.png", False)))
+    
+    # Hits
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
+        ["Defensemen", "Hits Base", "Team"],
+        defensemen_hits_get_dict(), defensemen_hits_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
+        ["Defensemen", "Hits Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Hits/hits_base.png", False)))
+    
+    # Plus Minus
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Defensemen", "Plus_Minus Base", "Team"],
+        defensemen_plus_minus_get_dict(),
+        defensemen_plus_minus_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
+        ["Defensemen", "Plus_Minus Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Plus_Minus/plus_minus_base.png", False)))
+    
+    # Points
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
+        ["Defensemen", "Points Base", "Team"],
+        defensemen_points_get_dict(), defensemen_points_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
+        ["Defensemen", "Points Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Points/points_base.png", False)))
+    
+    # Takeaways
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Base.csv",
+        ["Defensemen", "Takeaways Base", "Team"],
+        defensemen_takeaways_get_dict(), defensemen_takeaways_get_teams_dict(),
+        True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Base.csv",
+        ["Defensemen", "Takeaways Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Takeaways/takeaways_base.png", False)))
+
+
+def plot_corrected_player_metrics() -> None:
+
+    ### Goalies
+    # Utilization
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
+        ["Goalie", "Utilization Corrected", "Team"],
+        goalie_utilization_get_dict(),
+        goalie_utlization_get_goalie_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
+        ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Goalies/Utilization/utilization_corrected.png")))
+    
+    # Goals Against
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
+        ["Goalie", "Goals Against Avg Corrected", "Team"],
+        goalie_goals_against_get_dict(),
+        goalie_goals_against_get_goalie_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
+        ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Goalies/Goals_Against/goals_against_corrected.png")))
+    
+    # Save Percentage
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
+        ["Goalie", "Save Percentage Corrected", "Team"],
+        goalie_save_percentage_get_dict(),
+        goalie_save_percentage_get_goalie_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
+        ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Goalies/Save_Percentage/save_percentage_corrected.png")))
+
+    ### Defensemen
+    # Blocks
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
+        ["Defensemen", "Blocks Corrected", "Team"],
+        defensemen_blocks_get_dict(),
+        defensemen_blocks_get_defensemen_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
+        ["Defensemen", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Blocks/blocks_corrected.png")))
+    
+    # Discipline
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
+        ["Defensemen", "Discipline Corrected", "Team"],
+        defensemen_discipline_get_dict(),
+        defensemen_discipline_get_defensemen_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
+        ["Defensemen", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Discipline/discipline_corrected.png")))
+    
+    # Utilization
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating", "Team"],
+        defensemen_utilization_get_dict(),
+        defensemen_utilization_get_teams_dict(), True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/utilization_rating.png", False)))
+    
+    # Hits
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
+        ["Defensemen", "Hits Corrected", "Team"],
+        defensemen_hits_get_dict(), defensemen_hits_get_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
+        ["Defensemen", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Hits/hits_corrected.png")))
+    
+    # Plus Minus
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Defensemen", "Plus_Minus Corrected", "Team"],
+        defensemen_plus_minus_get_dict(),
+        defensemen_plus_minus_get_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
+        ["Defensemen", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Plus_Minus/plus_minus_corrected.png")))
+    
+    # Points
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
+        ["Defensemen", "Points Corrected", "Team"],
+        defensemen_points_get_dict(), defensemen_points_get_teams_dict())
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
+        ["Defensemen", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Points/points_corrected.png")))
+    
+    # Takeaways
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Corrected.csv",
+        ["Defensemen", "Takeaways Corrected", "Team"],
+        defensemen_takeaways_get_dict(), defensemen_takeaways_get_teams_dict(),
+        True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Corrected.csv",
+        ["Defensemen", "Takeaways Corrected"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Takeaways/takeaways_corrected.png", False)))
 
 
 def combine_all_team_factors(update_trends : bool=True) -> None:
@@ -886,7 +1279,7 @@ def run_team_engine():
             strength_of_schedule_add_match_data(sos_return)
 
     # call any cleanup calculations required
-    defensive_rating_calculate_penalty_kill()
+    defensive_rating_calculate_all()
     offensive_rating_calculate_power_play()
     recent_form_calculate_all()
     print_time_diff(match_parsing_start, time.time())
@@ -1066,7 +1459,6 @@ def run_player_engine() -> None:
     match_parsing_start = time.time()
     print("Feeding in matches to workers")
     run_player_match_parser()
-
     
     # let the metric workers know there are no more matches
     for i in range(subprocess_count):
@@ -1076,13 +1468,65 @@ def run_player_engine() -> None:
     print("Combining jobs from worker nodes")
     for i in range(subprocess_count):
         for output_list in iter(match_output_queue.get, 'STOP'):
+
+            # Goalies
             goalie_metrics = output_list[0]
             goalie_utilization = goalie_metrics[0]  
-            goalie_utilization_add_match_data(goalie_utilization)    
+            goalie_utilization_add_match_data(goalie_utilization)  
+            goalie_goals_against = goalie_metrics[1]
+            goalie_goals_against_add_match_data(goalie_goals_against)  
+            goalie_save_percentage = goalie_metrics[2]
+            goalie_save_percentage_add_match_data(goalie_save_percentage)
+
+            # Defensemen
+            defensemen_metrics = output_list[1]
+            defensemen_utilization = defensemen_metrics[0]
+            defensemen_utilization_add_match_data(defensemen_utilization)
+            defensemen_blocks = defensemen_metrics[1]
+            defensemen_blocks_add_match_data(defensemen_blocks)
+            defensemen_discipline = defensemen_metrics[2]
+            defensemen_discipline_add_match_data(defensemen_discipline)
+            defensemen_hits = defensemen_metrics[3]
+            defensemen_hits_add_match_data(defensemen_hits)
+            defensemen_plus_minus = defensemen_metrics[4]
+            defensemen_plus_minus_add_match_data(defensemen_plus_minus)
+            defensemen_points = defensemen_metrics[5]
+            defensemen_points_add_match_data(defensemen_points)
+            defensemen_takeaways = defensemen_metrics[6]
+            defensemen_takeaways_add_match_data(defensemen_takeaways)
 
     # clean up any stats after collection
+    # Goalies
     goalie_utilization_scale_by_game(
         strength_of_schedule_get_games_played_dict())
+    goalie_goals_against_scale_by_game()
+    goalie_save_percentage_calculate_all()
+    goalie_save_percentage_combine_metrics(
+        strength_of_schedule_get_games_played_dict(),
+        offensive_rating_get_pp_oppertunities_dict(),
+        defensive_rating_get_pk_oppertunities_dict())
+    
+    
+    # Defensemen
+    # (Utilization used for scaling all other metrics so sigmoid correct early)
+    defensemen_utilization_scale_all(
+        strength_of_schedule_get_games_played_dict(),
+        offensive_rating_get_pp_oppertunities_dict(),
+        defensive_rating_get_pk_oppertunities_dict())
+    defensemen_utilization_combine_metrics([
+        defensemen_utilization_get_even_time_dict(),
+        defensemen_utilization_get_pp_time_dict(),
+        defensemen_utilization_get_pk_time_dict()])
+    apply_sigmoid_correction(defensemen_utilization_get_dict())
+    defensemen_blocks_scale_by_shots_against(
+        defensive_rating_get_unscaled_shots_against_dict())
+    defensemen_discipline_calculate(defensive_rating_get_pk_dict(),
+        defensemen_utilization_get_dict())
+    defensemen_hits_scale_by_games(defensemen_utilization_get_dict())
+    defensemen_plus_minus_scale_by_utilization(
+        defensemen_utilization_get_dict())
+    defensemen_points_scale_by_utilization(defensemen_utilization_get_dict())
+    defensemen_takeaways_scale_by_utilization(defensemen_utilization_get_dict())
     print_time_diff(match_parsing_start, time.time())
     
     # now start the processes for plotting
@@ -1095,19 +1539,84 @@ def run_player_engine() -> None:
     
     # write out any plots before sigmoid correction
     print("Plot data before correction")
-    plot_unscaled_player_metrics()
+    plot_uncorrected_player_metrics()
 
     ### apply all sigmoid corrections ###
     print("Apply corrections")
     sigmoid_start = time.time()
 
+    # Goalies
+    apply_sigmoid_correction(goalie_utilization_get_dict())
+    apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
+    apply_sigmoid_correction(goalie_save_percentage_get_dict())
+
+    # Defensemen
+    apply_sigmoid_correction(defensemen_blocks_get_dict())
+    apply_sigmoid_correction(defensemen_discipline_get_dict(), True)
+    apply_sigmoid_correction(defensemen_hits_get_dict())
+    apply_sigmoid_correction(defensemen_plus_minus_get_dict())
+    apply_sigmoid_correction(defensemen_points_get_dict())
+    apply_sigmoid_correction(defensemen_takeaways_get_dict())
     print_time_diff(sigmoid_start, time.time())
 
     # write out any plots after sigmoid correction #
     print("Plot data after correction")
+    plot_corrected_player_metrics()
 
     ### combine metrics to overall score and plot ###
     print("Combining All Metrics")
+
+    # Goalies
+    print("\tCombining Goalie Metrics")
+    goalie_total_rating = {}
+    for goalie in goalie_utilization_get_dict().keys():
+        goalie_total_rating[goalie] = \
+            (goalie_utilization_get_dict()[goalie] * \
+                goalie_rating_weights.UTILIZATION_WEIGHT.value) + \
+            (goalie_save_percentage_get_dict()[goalie] * \
+                goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) + \
+            (goalie_goals_against_get_dict()[goalie] * \
+                goalie_rating_weights.GOALS_AGAINST_WEIGHT.value)
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+        ["Goalie", "Total Rating", "Team"], goalie_total_rating,
+        goalie_utlization_get_goalie_teams_dict())
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+        ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
+    
+    # Forwards
+
+    # Defense
+    print("\tCombining Defensemen Metrics")
+    defensemen_total_rating = {}
+    for defensemen in defensemen_utilization_get_dict().keys():
+        defensemen_total_rating[defensemen] = \
+            (defensemen_hits_get_dict()[defensemen] * \
+                defensemen_rating_weights.HITS_WEIGHT.value) + \
+            (defensemen_blocks_get_dict()[defensemen] * \
+                defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
+            (defensemen_utilization_get_dict()[defensemen] * \
+                defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
+            (defensemen_discipline_get_dict()[defensemen] * \
+                defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
+            (defensemen_plus_minus_get_dict()[defensemen] * \
+                defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) + \
+            (defensemen_points_get_dict()[defensemen] * \
+                defensemen_rating_weights.POINTS_WEIGHT.value) + \
+            (defensemen_takeaways_get_dict()[defensemen] * \
+                defensemen_rating_weights.TAKEAWAYS_WEIGHT.value)
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
+        defensemen_utilization_get_teams_dict())
+    plot_player_ranking(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
 
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
@@ -1117,7 +1626,7 @@ def run_player_engine() -> None:
         while process.is_alive():
             pass
 
-     # remove all the instance files
+    # remove all the instance files
     for dir in \
         os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
         for file in dir[2]:
