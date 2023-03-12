@@ -89,8 +89,8 @@ def defensemen_utilization_add_match_data(defensemen_utilization_data : list=[])
                 defensemen_utilization_data[2][defensemen]
             defensemen_pk_time[defensemen] = \
                 defensemen_utilization_data[3][defensemen]
-            defensemen_teams[defensemen] = \
-                defensemen_utilization_data[0][defensemen]
+        defensemen_teams[defensemen] = \
+            defensemen_utilization_data[0][defensemen]
             
 
 def defensemen_utilization_scale_all(team_games_played : dict={},

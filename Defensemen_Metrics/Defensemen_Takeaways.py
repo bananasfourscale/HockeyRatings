@@ -32,8 +32,8 @@ def defensemen_takeaways_add_match_data(defensemen_takeaways_data : dict={}) \
         else:
             defensemen_takeaways_rating[defensemen] = \
                 defensemen_takeaways_data[defensemen][1]
-            defensemen_teams[defensemen] = \
-                defensemen_takeaways_data[defensemen][0]
+        defensemen_teams[defensemen] = \
+            defensemen_takeaways_data[defensemen][0]
             
 
 def defensemen_takeaways_scale_by_utilization(player_utilization : dict={}) \

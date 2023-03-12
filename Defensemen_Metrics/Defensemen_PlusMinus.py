@@ -31,8 +31,8 @@ def defensemen_plus_minus_add_match_data(defensemen_plus_minus_data : dict={}) \
         else:
             defensemen_plus_minus_rating[defensemen] = \
                 defensemen_plus_minus_data[defensemen][1]
-            defensemen_teams[defensemen] = \
-                defensemen_plus_minus_data[defensemen][0]
+        defensemen_teams[defensemen] = \
+            defensemen_plus_minus_data[defensemen][0]
             
 
 def defensemen_plus_minus_scale_by_utilization(player_utilization : dict={}) \

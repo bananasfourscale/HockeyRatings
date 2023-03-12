@@ -50,17 +50,16 @@ def defensemen_discipline_add_match_data(defensemen_discipline_data : dict={}) \
             defensemen_time_on_ice[defensemen] = \
                 defensemen_discipline_data[defensemen][2]
             defensemen_games_played[defensemen] = 1
-            defensemen_teams[defensemen] = \
-                defensemen_discipline_data[defensemen][0]
+        defensemen_teams[defensemen] = \
+            defensemen_discipline_data[defensemen][0]
   
 
 def defensemen_discipline_calculate(team_penalty_kill : dict={},
     defensemen_utilization : dict={}) -> None:
 
-    # ((PIM / TOI) / TeamPKRating)
+    # (PIM / TeamPKRating) * (2 - PlayerUtilizationRating)
+    # team_penalty_kill[defensemen_teams[defensemen]])
     for defensemen in defensemen_penalty_min.keys():
         defensemen_discipline_rating[defensemen] = \
-            (((defensemen_penalty_min[defensemen] + 1) / \
-                defensemen_time_on_ice[defensemen]) / \
-                team_penalty_kill[defensemen_teams[defensemen]]) * \
+            (defensemen_penalty_min[defensemen] + 1) * \
             (2 - defensemen_utilization[defensemen])

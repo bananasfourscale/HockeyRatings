@@ -3,7 +3,6 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plotter
 
-
 team_color_hex_codes = {
     'Anaheim Ducks' : "#F47A38",
     'Arizona Coyotes' : "#8C2633",
@@ -44,9 +43,9 @@ def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
                   tick_set : list = [], image_file : str = "",
                   ascending : bool=False) -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
     plotter.figure(figsize=(25, 10), dpi=100)
     player_color_sorted_list = []
     for player in plot_data.loc[:,"Team"]:
@@ -80,7 +79,7 @@ def plot_trend_set(csv_file : str = "", axis : list = [],
                    upper_bound : float = 0.0, lower_bound : float = 0.0,
                    tick_set : list = [], image_file : str = "") -> None:
     plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-8')
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
     plotter.figure(figsize=(25, 10), dpi=100)
     team_palette = sns.color_palette(list(team_color_hex_codes.values()))
     plot = sns.lineplot(data=plot_data, x=axis[0], y=axis[1],
@@ -98,9 +97,9 @@ def plot_player_ranking(csv_file : str = "", axis : list = [],
                         upper_bound : float = 0.0, lower_bound : float = 0.0,
                         tick_set : list = [], image_file : str = "",
                         ascending: bool=False) -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
 
     # determine the number of players to scale the graph accordingly
     num_players = plot_data.count().loc["Team"]

@@ -30,7 +30,7 @@ def defensemen_hits_add_match_data(defensemen_hits_data : dict={}) -> None:
         else:
             defensemen_hits_rating[defensemen] = \
                 defensemen_hits_data[defensemen][1]
-            defensemen_teams[defensemen] = defensemen_hits_data[defensemen][0]
+        defensemen_teams[defensemen] = defensemen_hits_data[defensemen][0]
 
 
 def defensemen_hits_scale_by_games(player_utilization : dict={}) -> None:

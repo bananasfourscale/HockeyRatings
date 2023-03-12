@@ -5,7 +5,7 @@ from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 def write_out_file(file_name : str = "", header_row : list = [],
                    rating_list : dict = {}) -> None:
-    with open(file_name, 'w', newline='', encoding='utf-8') as csv_data_file:
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header_row)
@@ -17,7 +17,7 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
                           rating_list : dict = {}, player_team_list : dict = {},
                           ascending=True) \
                                                                     -> None:
-    with open(file_name, 'w', newline='', encoding='utf-8') as csv_date_file:
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
 
@@ -39,7 +39,7 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
                 streak += 1
             prev_data = rating_list[key]
             data_list = \
-                [str(count) + " " + key, rating_list[key],
+                [str(count) + " " + key.replace("", "c"), rating_list[key],
                     player_team_list[key]]
             csv_writer.writerow(data_list)
 
