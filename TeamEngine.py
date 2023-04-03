@@ -330,6 +330,8 @@ def get_game_records() -> None:
         for output_list in iter(match_output_queue.get, 'STOP'):
             if (output_list is not None) and (len(output_list) > 0):
                 season_matches[output_list[0]['date']] = output_list
+    for process in match_parser_process_list:
+        process.join()
 
 
 def worker_node(input_queue : Queue=None, output_queue : Queue=None,
@@ -1581,6 +1583,8 @@ def run_team_engine():
             ### strength of schedule data ###
             sos_return = output_list[Metric_Order.SOS.value]
             strength_of_schedule_add_match_data(sos_return)
+    for process in metric_process_list:
+        process.join()
 
     # call any cleanup calculations required
     defensive_rating_calculate_all()
@@ -1736,8 +1740,10 @@ def run_team_engine():
     for i in range(subprocess_count):
         plotting_queue.put('STOP')
     for process in plotting_process_list:
-        while process.is_alive():
-            pass
+        process.join()
+    # for process in plotting_process_list:
+    #     while process.is_alive():
+    #         pass
 
     # remove all the instance files
     for dir in \
@@ -1871,7 +1877,7 @@ def run_player_engine() -> None:
     
     # now start the processes for plotting
     plotting_process_list = []
-    for i in range(subprocess_count):
+    for i in range(int(subprocess_count/2)):
         plotting_process_list.append(Process(target=worker_node,
             args=(plotting_queue, dummy_queue, i)))
     for process in plotting_process_list:
@@ -1996,7 +2002,7 @@ def run_player_engine() -> None:
 
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
-    for i in range(subprocess_count):
+    for i in range(int(subprocess_count/2)):
         plotting_queue.put('STOP')
     for process in plotting_process_list:
         while process.is_alive():
@@ -2012,7 +2018,7 @@ def run_player_engine() -> None:
 
 if __name__ == "__main__":
 
-    UPDATE_TRENDS = True
+    UPDATE_TRENDS = False
     start = time.time()
     freeze_support()
 

@@ -54,11 +54,9 @@ def forward_discipline_add_match_data(forward_discipline_data : dict={}) \
             forward_discipline_data[forward][0]
   
 
-def forward_discipline_calculate(team_penalty_kill : dict={},
-    forward_utilization : dict={}) -> None:
+def forward_discipline_calculate(forward_utilization : dict={}) -> None:
 
-    # (PIM / TeamPKRating) * (2 - PlayerUtilizationRating)
-    # team_penalty_kill[forward_teams[forward]]) * \
+    # (PIM + 1) * (2 - PlayerUtilizationRating)
     for forward in forward_penalty_min.keys():
         forward_discipline_rating[forward] = \
             (forward_penalty_min[forward] + 1) * \

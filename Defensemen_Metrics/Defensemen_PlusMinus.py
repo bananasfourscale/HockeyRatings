@@ -38,5 +38,9 @@ def defensemen_plus_minus_add_match_data(defensemen_plus_minus_data : dict={}) \
 def defensemen_plus_minus_scale_by_utilization(player_utilization : dict={}) \
                                                                         -> None:
     for defensemen in defensemen_plus_minus_rating.keys():
-        defensemen_plus_minus_rating[defensemen] *= \
-            (1 + player_utilization[defensemen])
+        if defensemen_plus_minus_rating[defensemen] > 0:
+            defensemen_plus_minus_rating[defensemen] *= \
+                (1 + player_utilization[defensemen])
+        else:
+            defensemen_plus_minus_rating[defensemen] /= \
+                (1 + player_utilization[defensemen])

@@ -39,5 +39,9 @@ def forward_takeaways_add_match_data(forward_takeaways_data : dict={}) \
 def forward_takeaways_scale_by_utilization(player_utilization : dict={}) \
                                                                         -> None:
     for forward in forward_takeaways_rating.keys():
-        forward_takeaways_rating[forward] *= \
-            (1 + player_utilization[forward])
+        if forward_takeaways_rating[forward] > 0:
+            forward_takeaways_rating[forward] *= \
+                (1 + player_utilization[forward])
+        else:
+            forward_takeaways_rating[forward] /= \
+                (1 + player_utilization[forward])

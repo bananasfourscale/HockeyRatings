@@ -57,8 +57,7 @@ def defensemen_discipline_add_match_data(defensemen_discipline_data : dict={}) \
 def defensemen_discipline_calculate(team_penalty_kill : dict={},
     defensemen_utilization : dict={}) -> None:
 
-    # (PIM / TeamPKRating) * (2 - PlayerUtilizationRating)
-    # team_penalty_kill[defensemen_teams[defensemen]])
+    # (PIM + 1) * (2 - PlayerUtilizationRating)
     for defensemen in defensemen_penalty_min.keys():
         defensemen_discipline_rating[defensemen] = \
             (defensemen_penalty_min[defensemen] + 1) * \

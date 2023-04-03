@@ -38,5 +38,9 @@ def forward_plus_minus_add_match_data(forward_plus_minus_data : dict={}) \
 def forward_plus_minus_scale_by_utilization(player_utilization : dict={}) \
                                                                         -> None:
     for forward in forward_plus_minus_rating.keys():
-        forward_plus_minus_rating[forward] *= \
-            (1 + player_utilization[forward])
+        if forward_plus_minus_rating[forward] > 0:
+            forward_plus_minus_rating[forward] *= \
+                (1 + player_utilization[forward])
+        else:
+            forward_plus_minus_rating[forward] /= \
+                (1 + player_utilization[forward])
