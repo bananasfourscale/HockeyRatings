@@ -1,9 +1,6 @@
 defensemen_discipline_rating = {}
 
 
-defensemen_teams = {}
-
-
 defensemen_penalty_min = {}
 
 
@@ -15,10 +12,6 @@ defensemen_games_played ={}
 
 def defensemen_discipline_get_dict() -> dict:
     return defensemen_discipline_rating
-
-
-def defensemen_discipline_get_defensemen_teams_dict() -> dict:
-    return defensemen_teams
 
 
 def defensemen_discipline_get_data(match_data : dict={}) -> dict:
@@ -50,8 +43,6 @@ def defensemen_discipline_add_match_data(defensemen_discipline_data : dict={}) \
             defensemen_time_on_ice[defensemen] = \
                 defensemen_discipline_data[defensemen][2]
             defensemen_games_played[defensemen] = 1
-        defensemen_teams[defensemen] = \
-            defensemen_discipline_data[defensemen][0]
   
 
 def defensemen_discipline_calculate(defensemen_utilization : dict={}) -> None:

@@ -1,15 +1,8 @@
 defensemen_takeaways_rating = {}
 
 
-defensemen_teams = {}
-
-
 def defensemen_takeaways_get_dict() -> dict:
     return defensemen_takeaways_rating
-
-
-def defensemen_takeaways_get_teams_dict() -> dict:
-    return defensemen_teams
 
 
 def defensemen_takeaways_get_data_set(match_data : dict={}) -> dict:
@@ -32,8 +25,6 @@ def defensemen_takeaways_add_match_data(defensemen_takeaways_data : dict={}) \
         else:
             defensemen_takeaways_rating[defensemen] = \
                 defensemen_takeaways_data[defensemen][1]
-        defensemen_teams[defensemen] = \
-            defensemen_takeaways_data[defensemen][0]
             
 
 def defensemen_takeaways_scale_by_utilization(player_utilization : dict={}) \

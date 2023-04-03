@@ -1,18 +1,8 @@
 goalie_goals_against_rating = {}
 
 
-goalie_teams = {}
-
-
-goalie_games_played = {}
-
-
 def goalie_goals_against_get_dict() -> dict:
     return goalie_goals_against_rating
-
-
-def goalie_goals_against_get_goalie_teams_dict() -> dict:
-    return goalie_teams
 
 
 def goalie_goals_against_get_data_set(match_data : dict={}) -> dict:
@@ -30,16 +20,13 @@ def goalie_goals_against_add_match_data(goalie_goals_against_data : dict={}) \
         if goalie in goalie_goals_against_rating.keys():
             goalie_goals_against_rating[goalie] += \
                 goalie_goals_against_data[goalie][1]
-            goalie_games_played[goalie] += 1
         else:
             goalie_goals_against_rating[goalie] = \
                 goalie_goals_against_data[goalie][1]
-            goalie_games_played[goalie] = 1
-            goalie_teams[goalie] = goalie_goals_against_data[goalie][0]
 
 
-def goalie_goals_against_scale_by_game() -> None:
+def goalie_goals_against_scale_by_game(goalie_utilzation : dict={}) -> None:
     for goalie in goalie_goals_against_rating.keys():
         goalie_goals_against_rating[goalie] = \
             (goalie_goals_against_rating[goalie] + 1) / \
-                (goalie_games_played[goalie])
+                (goalie_utilzation[goalie])

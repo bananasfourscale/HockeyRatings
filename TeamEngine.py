@@ -45,83 +45,69 @@ from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
 # import all custom player modules for statistical analysis
 ### GOALIES
 from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
-    goalie_utlization_get_goalie_teams_dict, goalie_utilization_get_data_set, \
-    goalie_utilization_add_match_data, goalie_utilization_scale_by_game
+    goalie_utilization_get_data_set, goalie_utilization_add_match_data, \
+    goalie_utilization_scale_by_game
 from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
-    goalie_goals_against_get_goalie_teams_dict, \
     goalie_goals_against_get_data_set, goalie_goals_against_add_match_data, \
     goalie_goals_against_scale_by_game
 from Goalie_Metrics.Goalie_Save_Percentage import \
-    goalie_save_percentage_get_dict, \
-    goalie_save_percentage_get_goalie_teams_dict, \
-    goalie_save_percentage_get_data_set, goalie_save_percentage_add_match_data, \
-    goalie_save_percentage_calculate_all, goalie_save_percentage_combine_metrics
+    goalie_save_percentage_get_dict, goalie_save_percentage_get_data_set, \
+    goalie_save_percentage_add_match_data, goalie_save_percentage_calculate_all,\
+    goalie_save_percentage_combine_metrics
 
 ### FORWARDS
+from Forward_Metrics.Forward_Blocks import forward_blocks_get_dict, \
+    forward_blocks_get_data_set, forward_blocks_add_match_data, \
+    forward_blocks_scale_by_shots_against
+from Forward_Metrics.Forward_Discipline import \
+    forward_discipline_get_dict, forward_discipline_get_data, \
+    forward_discipline_add_match_data, forward_discipline_calculate
+from Forward_Metrics.Forward_Hits import \
+    forward_hits_get_dict, forward_hits_get_data_set, \
+    forward_hits_add_match_data, forward_hits_scale_by_games
+from Forward_Metrics.Forward_PlusMinus import \
+    forward_plus_minus_get_dict, forward_plus_minus_get_data_set, \
+    forward_plus_minus_add_match_data, forward_plus_minus_scale_by_utilization
+from Forward_Metrics.Forward_Points import \
+    forward_points_get_dict, forward_points_get_data_set, \
+    forward_points_add_match_data, forward_points_scale_by_utilization
+from Forward_Metrics.Forward_Takeaways import \
+    forward_takeaways_get_dict, forward_takeaways_get_data_set, \
+    forward_takeaways_add_match_data, forward_takeaways_scale_by_utilization
 from Forward_Metrics.Forward_Utilization import \
     forward_utilization_get_dict, forward_utilization_get_even_time_dict, \
     forward_utilization_get_pp_time_dict, \
-    forward_utilization_get_pk_time_dict, \
-    forward_utilization_get_teams_dict, forward_utilization_get_data_set, \
+    forward_utilization_get_pk_time_dict, forward_utilization_get_data_set, \
     forward_utilization_add_match_data, forward_utilization_scale_all, \
     forward_utilization_combine_metrics
-from Forward_Metrics.Forward_Blocks import forward_blocks_get_dict, \
-    forward_blocks_get_forward_teams_dict, forward_blocks_get_data_set, \
-    forward_blocks_add_match_data, forward_blocks_scale_by_shots_against
-from Forward_Metrics.Forward_Discipline import \
-    forward_discipline_get_dict, \
-    forward_discipline_get_forward_teams_dict, \
-    forward_discipline_get_data, forward_discipline_add_match_data, \
-    forward_discipline_calculate
-from Forward_Metrics.Forward_Hits import \
-    forward_hits_get_dict, forward_hits_get_teams_dict, \
-    forward_hits_get_data_set, forward_hits_add_match_data, \
-    forward_hits_scale_by_games
-from Forward_Metrics.Forward_PlusMinus import \
-    forward_plus_minus_get_dict, forward_plus_minus_get_teams_dict, \
-    forward_plus_minus_get_data_set, forward_plus_minus_add_match_data, \
-    forward_plus_minus_scale_by_utilization
-from Forward_Metrics.Forward_Points import \
-    forward_points_get_dict, forward_points_get_teams_dict, \
-    forward_points_get_data_set, forward_points_add_match_data, \
-    forward_points_scale_by_utilization
-from Forward_Metrics.Forward_Takeaways import \
-    forward_takeaways_get_dict, forward_takeaways_get_teams_dict, \
-    forward_takeaways_get_data_set, forward_takeaways_add_match_data, \
-    forward_takeaways_scale_by_utilization
 
 ### DEFENSEMEN
+from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
+    defensemen_blocks_get_data_set, defensemen_blocks_add_match_data, \
+    defensemen_blocks_scale_by_shots_against
+from Defensemen_Metrics.Defensemen_Discipline import \
+    defensemen_discipline_get_dict, defensemen_discipline_get_data, \
+    defensemen_discipline_add_match_data, defensemen_discipline_calculate
+from Defensemen_Metrics.Defensemen_Hits import \
+    defensemen_hits_get_dict, defensemen_hits_get_data_set, \
+    defensemen_hits_add_match_data, defensemen_hits_scale_by_games
+from Defensemen_Metrics.Defensemen_PlusMinus import \
+    defensemen_plus_minus_get_dict, defensemen_plus_minus_get_data_set, \
+    defensemen_plus_minus_add_match_data, \
+    defensemen_plus_minus_scale_by_utilization
+from Defensemen_Metrics.Defensemen_Points import \
+    defensemen_points_get_dict, defensemen_points_get_data_set, \
+    defensemen_points_add_match_data, defensemen_points_scale_by_utilization
+from Defensemen_Metrics.Defensemen_Takeaways import \
+    defensemen_takeaways_get_dict, defensemen_takeaways_get_data_set, \
+    defensemen_takeaways_add_match_data, \
+    defensemen_takeaways_scale_by_utilization
 from Defensemen_Metrics.Defensemen_Utilization import \
     defensemen_utilization_get_dict, defensemen_utilization_get_even_time_dict, \
     defensemen_utilization_get_pp_time_dict, \
     defensemen_utilization_get_pk_time_dict, \
-    defensemen_utilization_get_teams_dict, defensemen_utilization_get_data_set, \
-    defensemen_utilization_add_match_data, defensemen_utilization_scale_all, \
-    defensemen_utilization_combine_metrics
-from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
-    defensemen_blocks_get_defensemen_teams_dict, defensemen_blocks_get_data_set, \
-    defensemen_blocks_add_match_data, defensemen_blocks_scale_by_shots_against
-from Defensemen_Metrics.Defensemen_Discipline import \
-    defensemen_discipline_get_dict, \
-    defensemen_discipline_get_defensemen_teams_dict, \
-    defensemen_discipline_get_data, defensemen_discipline_add_match_data, \
-    defensemen_discipline_calculate
-from Defensemen_Metrics.Defensemen_Hits import \
-    defensemen_hits_get_dict, defensemen_hits_get_teams_dict, \
-    defensemen_hits_get_data_set, defensemen_hits_add_match_data, \
-    defensemen_hits_scale_by_games
-from Defensemen_Metrics.Defensemen_PlusMinus import \
-    defensemen_plus_minus_get_dict, defensemen_plus_minus_get_teams_dict, \
-    defensemen_plus_minus_get_data_set, defensemen_plus_minus_add_match_data, \
-    defensemen_plus_minus_scale_by_utilization
-from Defensemen_Metrics.Defensemen_Points import \
-    defensemen_points_get_dict, defensemen_points_get_teams_dict, \
-    defensemen_points_get_data_set, defensemen_points_add_match_data, \
-    defensemen_points_scale_by_utilization
-from Defensemen_Metrics.Defensemen_Takeaways import \
-    defensemen_takeaways_get_dict, defensemen_takeaways_get_teams_dict, \
-    defensemen_takeaways_get_data_set, defensemen_takeaways_add_match_data, \
-    defensemen_takeaways_scale_by_utilization
+    defensemen_utilization_get_data_set, defensemen_utilization_add_match_data, \
+    defensemen_utilization_scale_all, defensemen_utilization_combine_metrics
 
 
 # shared engine tools
@@ -208,6 +194,12 @@ total_rating_trend = {
 
 
 season_matches = {}
+
+goalie_teams = {}
+
+forward_teams = {}
+
+defensemen_teams = {}
 
 
 match_input_queue = Queue()
@@ -1097,7 +1089,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base", "Team"], goalie_utilization_get_dict(),
-        goalie_utlization_get_goalie_teams_dict())
+        goalie_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Base.csv",
         ["Goalie", "Utilization Base"], 0.0, 0.0, [],
@@ -1107,8 +1099,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
         ["Goalie", "Goals Against Avg Base", "Team"],
-        goalie_goals_against_get_dict(),
-        goalie_goals_against_get_goalie_teams_dict(), False)
+        goalie_goals_against_get_dict(), goalie_teams, False)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Base.csv",
         ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],
@@ -1118,8 +1109,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
         ["Goalie", "Save Percentage Scaled", "Team"],
-        goalie_save_percentage_get_dict(),
-        goalie_save_percentage_get_goalie_teams_dict())
+        goalie_save_percentage_get_dict(), goalie_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Weighted.csv",
         ["Goalie", "Save Percentage Scaled"], 0.0, 0.0, [],
@@ -1130,8 +1120,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Blocks_Base.csv",
         ["Forward", "Blocks Base", "Team"],
-        forward_blocks_get_dict(),
-        forward_blocks_get_forward_teams_dict())
+        forward_blocks_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Blocks_Base.csv",
         ["Forward", "Blocks Base"], 0.0, 0.0, [],
@@ -1141,8 +1130,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Discipline_Base.csv",
         ["Forward", "Discipline Base", "Team"],
-        forward_discipline_get_dict(),
-        forward_discipline_get_forward_teams_dict(), False)
+        forward_discipline_get_dict(), forward_teams, False)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Discipline_Base.csv",
         ["Forward", "Discipline Base"], 0.0, 0.0, [],
@@ -1152,8 +1140,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Base.csv",
         ["Forward", "Even Strength Utilization Base", "Team"],
-        forward_utilization_get_even_time_dict(),
-        forward_utilization_get_teams_dict(), True)
+        forward_utilization_get_even_time_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/EvnUtilization_Base.csv",
         ["Forward", "Even Strength Utilization Base"], 0.0, 0.0, [],
@@ -1161,8 +1148,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/PPUtilization_Base.csv",
         ["Forward", "Power Play Utilization Base", "Team"],
-        forward_utilization_get_pp_time_dict(),
-        forward_utilization_get_teams_dict(), True)
+        forward_utilization_get_pp_time_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/PPUtilization_Base.csv",
         ["Forward", "Power Play Utilization Base"], 0.0, 0.0, [],
@@ -1170,8 +1156,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/PKUtilization_Base.csv",
         ["Forward", "Penalty Kill Utilization Base", "Team"],
-        forward_utilization_get_pk_time_dict(),
-        forward_utilization_get_teams_dict(), True)
+        forward_utilization_get_pk_time_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/PKUtilization_Base.csv",
         ["Forward", "Penalty Kill Utilization Base"], 0.0, 0.0, [],
@@ -1181,7 +1166,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Hits_Base.csv",
         ["Forward", "Hits Base", "Team"],
-        forward_hits_get_dict(), forward_hits_get_teams_dict(), True)
+        forward_hits_get_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Hits_Base.csv",
         ["Forward", "Hits Base"], 0.0, 0.0, [],
@@ -1191,8 +1176,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Base.csv",
         ["Forward", "Plus_Minus Base", "Team"],
-        forward_plus_minus_get_dict(),
-        forward_plus_minus_get_teams_dict(), True)
+        forward_plus_minus_get_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Base.csv",
         ["Forward", "Plus_Minus Base"], 0.0, 0.0, [],
@@ -1202,7 +1186,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Points_Base.csv",
         ["Forward", "Points Base", "Team"],
-        forward_points_get_dict(), forward_points_get_teams_dict(), True)
+        forward_points_get_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Points_Base.csv",
         ["Forward", "Points Base"], 0.0, 0.0, [],
@@ -1212,7 +1196,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Takeaways_Base.csv",
         ["Forward", "Takeaways Base", "Team"],
-        forward_takeaways_get_dict(), forward_takeaways_get_teams_dict(), True)
+        forward_takeaways_get_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Takeaways_Base.csv",
         ["Forward", "Takeaways Base"], 0.0, 0.0, [],
@@ -1223,8 +1207,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
         ["Defensemen", "Blocks Base", "Team"],
-        defensemen_blocks_get_dict(),
-        defensemen_blocks_get_defensemen_teams_dict())
+        defensemen_blocks_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Blocks_Base.csv",
         ["Defensemen", "Blocks Base"], 0.0, 0.0, [],
@@ -1234,8 +1217,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
         ["Defensemen", "Discipline Base", "Team"],
-        defensemen_discipline_get_dict(),
-        defensemen_discipline_get_defensemen_teams_dict(), False)
+        defensemen_discipline_get_dict(), defensemen_teams, False)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Base.csv",
         ["Defensemen", "Discipline Base"], 0.0, 0.0, [],
@@ -1245,8 +1227,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
         ["Defensemen", "Even Strength Utilization Base", "Team"],
-        defensemen_utilization_get_even_time_dict(),
-        defensemen_utilization_get_teams_dict(), True)
+        defensemen_utilization_get_even_time_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/EvnUtilization_Base.csv",
         ["Defensemen", "Even Strength Utilization Base"], 0.0, 0.0, [],
@@ -1254,8 +1235,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
         ["Defensemen", "Power Play Utilization Base", "Team"],
-        defensemen_utilization_get_pp_time_dict(),
-        defensemen_utilization_get_teams_dict(), True)
+        defensemen_utilization_get_pp_time_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/PPUtilization_Base.csv",
         ["Defensemen", "Power Play Utilization Base"], 0.0, 0.0, [],
@@ -1263,8 +1243,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
         ["Defensemen", "Penalty Kill Utilization Base", "Team"],
-        defensemen_utilization_get_pk_time_dict(),
-        defensemen_utilization_get_teams_dict(), True)
+        defensemen_utilization_get_pk_time_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/PKUtilization_Base.csv",
         ["Defensemen", "Penalty Kill Utilization Base"], 0.0, 0.0, [],
@@ -1274,7 +1253,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
         ["Defensemen", "Hits Base", "Team"],
-        defensemen_hits_get_dict(), defensemen_hits_get_teams_dict(), True)
+        defensemen_hits_get_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
         ["Defensemen", "Hits Base"], 0.0, 0.0, [],
@@ -1284,8 +1263,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
         ["Defensemen", "Plus_Minus Base", "Team"],
-        defensemen_plus_minus_get_dict(),
-        defensemen_plus_minus_get_teams_dict(), True)
+        defensemen_plus_minus_get_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Base.csv",
         ["Defensemen", "Plus_Minus Base"], 0.0, 0.0, [],
@@ -1295,7 +1273,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
         ["Defensemen", "Points Base", "Team"],
-        defensemen_points_get_dict(), defensemen_points_get_teams_dict(), True)
+        defensemen_points_get_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Points_Base.csv",
         ["Defensemen", "Points Base"], 0.0, 0.0, [],
@@ -1305,8 +1283,7 @@ def plot_uncorrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Base.csv",
         ["Defensemen", "Takeaways Base", "Team"],
-        defensemen_takeaways_get_dict(), defensemen_takeaways_get_teams_dict(),
-        True)
+        defensemen_takeaways_get_dict(), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Base.csv",
         ["Defensemen", "Takeaways Base"], 0.0, 0.0, [],
@@ -1320,8 +1297,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected", "Team"],
-        goalie_utilization_get_dict(),
-        goalie_utlization_get_goalie_teams_dict())
+        goalie_utilization_get_dict(), goalie_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Utilization_Corr.csv",
         ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1331,8 +1307,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
         ["Goalie", "Goals Against Avg Corrected", "Team"],
-        goalie_goals_against_get_dict(),
-        goalie_goals_against_get_goalie_teams_dict())
+        goalie_goals_against_get_dict(), goalie_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Goals_Against_Corrected.csv",
         ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1342,8 +1317,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
         ["Goalie", "Save Percentage Corrected", "Team"],
-        goalie_save_percentage_get_dict(),
-        goalie_save_percentage_get_goalie_teams_dict())
+        goalie_save_percentage_get_dict(), goalie_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Goalie_Files/Instance_Files/Save_Percentage_Corrected.csv",
         ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1354,8 +1328,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Blocks_Corrected.csv",
         ["Forward", "Blocks Corrected", "Team"],
-        forward_blocks_get_dict(),
-        forward_blocks_get_forward_teams_dict())
+        forward_blocks_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Blocks_Corrected.csv",
         ["Forward", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1365,29 +1338,17 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Discipline_Corrected.csv",
         ["Forward", "Discipline Corrected", "Team"],
-        forward_discipline_get_dict(),
-        forward_discipline_get_forward_teams_dict())
+        forward_discipline_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Discipline_Corrected.csv",
         ["Forward", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Forward/Discipline/discipline_corrected.png")))
     
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
-        ["Forward", "Utilization Rating", "Team"],
-        forward_utilization_get_dict(),
-        forward_utilization_get_teams_dict(), True)
-    plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
-        ["Forward", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Utilization/utilization_rating.png", False)))
-    
     # Hits
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Hits_Corrected.csv",
         ["Forward", "Hits Corrected", "Team"],
-        forward_hits_get_dict(), forward_hits_get_teams_dict())
+        forward_hits_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Hits_Corrected.csv",
         ["Forward", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1397,8 +1358,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Corrected.csv",
         ["Forward", "Plus_Minus Corrected", "Team"],
-        forward_plus_minus_get_dict(),
-        forward_plus_minus_get_teams_dict())
+        forward_plus_minus_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Plus_Minus_Corrected.csv",
         ["Forward", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1408,7 +1368,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Points_Corrected.csv",
         ["Forward", "Points Corrected", "Team"],
-        forward_points_get_dict(), forward_points_get_teams_dict())
+        forward_points_get_dict(), forward_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Points_Corrected.csv",
         ["Forward", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1418,20 +1378,28 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/Takeaways_Corrected.csv",
         ["Forward", "Takeaways Corrected", "Team"],
-        forward_takeaways_get_dict(), forward_takeaways_get_teams_dict(),
-        True)
+        forward_takeaways_get_dict(), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/Takeaways_Corrected.csv",
         ["Forward", "Takeaways Corrected"], 0.0, 0.0, [],
         "Graphs/Forward/Takeaways/takeaways_corrected.png", False)))
+    
+    # Utilization
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
+        ["Forward", "Utilization Rating", "Team"],
+        forward_utilization_get_dict(), forward_teams, True)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Forward_Files/Instance_Files/UtilizationRating.csv",
+        ["Forward", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Utilization/utilization_rating.png", False)))
 
     ### Defensemen
     # Blocks
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
         ["Defensemen", "Blocks Corrected", "Team"],
-        defensemen_blocks_get_dict(),
-        defensemen_blocks_get_defensemen_teams_dict())
+        defensemen_blocks_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Blocks_Corrected.csv",
         ["Defensemen", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1441,29 +1409,17 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
         ["Defensemen", "Discipline Corrected", "Team"],
-        defensemen_discipline_get_dict(),
-        defensemen_discipline_get_defensemen_teams_dict())
+        defensemen_discipline_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Discipline_Corrected.csv",
         ["Defensemen", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensemen/Discipline/discipline_corrected.png")))
     
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
-        ["Defensemen", "Utilization Rating", "Team"],
-        defensemen_utilization_get_dict(),
-        defensemen_utilization_get_teams_dict(), True)
-    plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
-        ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Utilization/utilization_rating.png", False)))
-    
     # Hits
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
         ["Defensemen", "Hits Corrected", "Team"],
-        defensemen_hits_get_dict(), defensemen_hits_get_teams_dict())
+        defensemen_hits_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Hits_Corrected.csv",
         ["Defensemen", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1473,8 +1429,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
         ["Defensemen", "Plus_Minus Corrected", "Team"],
-        defensemen_plus_minus_get_dict(),
-        defensemen_plus_minus_get_teams_dict())
+        defensemen_plus_minus_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Plus_Minus_Corrected.csv",
         ["Defensemen", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1484,7 +1439,7 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
         ["Defensemen", "Points Corrected", "Team"],
-        defensemen_points_get_dict(), defensemen_points_get_teams_dict())
+        defensemen_points_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Points_Corrected.csv",
         ["Defensemen", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
@@ -1494,12 +1449,21 @@ def plot_corrected_player_metrics() -> None:
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Corrected.csv",
         ["Defensemen", "Takeaways Corrected", "Team"],
-        defensemen_takeaways_get_dict(), defensemen_takeaways_get_teams_dict(),
-        True)
+        defensemen_takeaways_get_dict(), defensemen_teams)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Defensemen_Files/Instance_Files/Takeaways_Corrected.csv",
         ["Defensemen", "Takeaways Corrected"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Takeaways/takeaways_corrected.png", False)))
+        "Graphs/Defensemen/Takeaways/takeaways_corrected.png")))
+    
+    # Utilization
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating", "Team"],
+        defensemen_utilization_get_dict(), defensemen_teams)
+    plotting_queue.put((plot_player_ranking, (
+        "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
+        ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Utilization/utilization_rating.png")))
 
 
 def combine_all_team_factors(update_trends : bool=True) -> None:
@@ -1787,6 +1751,8 @@ def run_player_engine() -> None:
             goalie_goals_against_add_match_data(goalie_goals_against)  
             goalie_save_percentage = goalie_metrics[2]
             goalie_save_percentage_add_match_data(goalie_save_percentage)
+            for goalie in goalie_utilization.keys():
+                goalie_teams[goalie] = goalie_utilization[goalie][0]
 
             # Forwards
             forward_metrics = output_list[1]
@@ -1804,6 +1770,8 @@ def run_player_engine() -> None:
             forward_points_add_match_data(forward_points)
             forward_takeaways = forward_metrics[6]
             forward_takeaways_add_match_data(forward_takeaways)
+            for forward in forward_utilization[0].keys():
+                forward_teams[forward] = forward_utilization[0][forward]
 
             # Defensemen
             defensemen_metrics = output_list[2]
@@ -1821,30 +1789,39 @@ def run_player_engine() -> None:
             defensemen_points_add_match_data(defensemen_points)
             defensemen_takeaways = defensemen_metrics[6]
             defensemen_takeaways_add_match_data(defensemen_takeaways)
+            for defensemen in defensemen_utilization[0].keys():
+                defensemen_teams[defensemen] = defensemen_utilization[0][
+                    defensemen]
 
     # clean up any stats after collection
     # Goalies
     goalie_utilization_scale_by_game(
-        strength_of_schedule_get_games_played_dict())
-    goalie_goals_against_scale_by_game()
+        strength_of_schedule_get_games_played_dict(), goalie_teams)
+    
+    # Apply utilization correction premptively for other stats to use
+    apply_sigmoid_correction(goalie_utilization_get_dict())
+    goalie_goals_against_scale_by_game(goalie_utilization_get_dict())
     goalie_save_percentage_calculate_all()
     goalie_save_percentage_combine_metrics(
         strength_of_schedule_get_games_played_dict(),
         offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict())
+        defensive_rating_get_pk_oppertunities_dict(),
+        goalie_utilization_get_dict(), goalie_teams)
     
     # Forwards
     forward_utilization_scale_all(
         strength_of_schedule_get_games_played_dict(),
         offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict())
+        defensive_rating_get_pk_oppertunities_dict(), forward_teams)
     forward_utilization_combine_metrics([
         forward_utilization_get_even_time_dict(),
         forward_utilization_get_pp_time_dict(),
         forward_utilization_get_pk_time_dict()])
+    
+    # Apply utilization correction premptively for other stats to use
     apply_sigmoid_correction(forward_utilization_get_dict())
     forward_blocks_scale_by_shots_against(
-        defensive_rating_get_unscaled_shots_against_dict())
+        defensive_rating_get_unscaled_shots_against_dict(), forward_teams)
     forward_discipline_calculate(forward_utilization_get_dict())
     forward_hits_scale_by_games(forward_utilization_get_dict())
     forward_plus_minus_scale_by_utilization(
@@ -1853,18 +1830,19 @@ def run_player_engine() -> None:
     forward_takeaways_scale_by_utilization(forward_utilization_get_dict())
     
     # Defensemen
-    # (Utilization used for scaling all other metrics so sigmoid correct early)
     defensemen_utilization_scale_all(
         strength_of_schedule_get_games_played_dict(),
         offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict())
+        defensive_rating_get_pk_oppertunities_dict(), defensemen_teams)
     defensemen_utilization_combine_metrics([
         defensemen_utilization_get_even_time_dict(),
         defensemen_utilization_get_pp_time_dict(),
         defensemen_utilization_get_pk_time_dict()])
+    
+    # Apply utilization correction premptively for other stats to use
     apply_sigmoid_correction(defensemen_utilization_get_dict())
     defensemen_blocks_scale_by_shots_against(
-        defensive_rating_get_unscaled_shots_against_dict())
+        defensive_rating_get_unscaled_shots_against_dict(), defensemen_teams)
     defensemen_discipline_calculate(defensemen_utilization_get_dict())
     defensemen_hits_scale_by_games(defensemen_utilization_get_dict())
     defensemen_plus_minus_scale_by_utilization(
@@ -1890,7 +1868,6 @@ def run_player_engine() -> None:
     sigmoid_start = time.time()
 
     # Goalies
-    apply_sigmoid_correction(goalie_utilization_get_dict())
     apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
     apply_sigmoid_correction(goalie_save_percentage_get_dict())
 
@@ -1931,8 +1908,7 @@ def run_player_engine() -> None:
                 goalie_rating_weights.GOALS_AGAINST_WEIGHT.value)
     write_out_player_file(
         "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-        ["Goalie", "Total Rating", "Team"], goalie_total_rating,
-        goalie_utlization_get_goalie_teams_dict())
+        ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
     plot_player_ranking(
         "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
         ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
@@ -1961,7 +1937,7 @@ def run_player_engine() -> None:
         "Output_Files/Forward_Files/Instance_Files/" + \
             "Forward_Total_Rating.csv",
         ["Forward", "Total Rating", "Team"], forward_total_rating,
-        forward_utilization_get_teams_dict())
+        forward_teams)
     plot_player_ranking(
         "Output_Files/Forward_Files/Instance_Files/" + \
             "Forward_Total_Rating.csv",
@@ -1991,7 +1967,7 @@ def run_player_engine() -> None:
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",
         ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
-        defensemen_utilization_get_teams_dict())
+        defensemen_teams)
     plot_player_ranking(
         "Output_Files/Defensemen_Files/Instance_Files/" + \
             "Defensemen_Total_Rating.csv",

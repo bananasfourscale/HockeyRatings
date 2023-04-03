@@ -1,15 +1,8 @@
 forward_plus_minus_rating = {}
 
 
-forward_teams = {}
-
-
 def forward_plus_minus_get_dict() -> dict:
     return forward_plus_minus_rating
-
-
-def forward_plus_minus_get_teams_dict() -> dict:
-    return forward_teams
 
 
 def forward_plus_minus_get_data_set(match_data : dict={}) -> dict:
@@ -31,8 +24,6 @@ def forward_plus_minus_add_match_data(forward_plus_minus_data : dict={}) \
         else:
             forward_plus_minus_rating[forward] = \
                 forward_plus_minus_data[forward][1]
-        forward_teams[forward] = \
-            forward_plus_minus_data[forward][0]
             
 
 def forward_plus_minus_scale_by_utilization(player_utilization : dict={}) \

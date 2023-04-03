@@ -13,9 +13,6 @@ forward_pp_time = {}
 forward_pk_time = {}
 
 
-forward_teams = {}
-
-
 class forward_utilization_weights(Enum):
     EVEN_STRENGTH_WEIGHT = 0.75
     PP_STRENGTH_WEIGHT = 0.15
@@ -36,10 +33,6 @@ def forward_utilization_get_pp_time_dict() -> dict:
 
 def forward_utilization_get_pk_time_dict() -> dict:
     return forward_pk_time
-
-
-def forward_utilization_get_teams_dict() -> dict:
-    return forward_teams
 
 
 def forward_utilization_get_data_set(match_data : dict={}) -> list:
@@ -75,7 +68,7 @@ def forward_utilization_get_data_set(match_data : dict={}) -> list:
 def forward_utilization_add_match_data(forward_utilization_data : list=[]) \
                                                                         -> None:
     for forward in forward_utilization_data[0].keys():
-        if forward in forward_teams.keys():
+        if forward in forward_even_time.keys():
             forward_even_time[forward] += \
                 forward_utilization_data[1][forward]
             forward_pp_time[forward] += \
@@ -89,19 +82,18 @@ def forward_utilization_add_match_data(forward_utilization_data : list=[]) \
                 forward_utilization_data[2][forward]
             forward_pk_time[forward] = \
                 forward_utilization_data[3][forward]
-        forward_teams[forward] = \
-            forward_utilization_data[0][forward]
             
 
 def forward_utilization_scale_all(team_games_played : dict={},
-    team_power_play : dict={}, team_penalty_kill : dict={}) -> None:
-    for forward in forward_teams.keys():
+    team_power_play : dict={}, team_penalty_kill : dict={},
+    forward_teams_dict : dict={}) -> None:
+    for forward in forward_teams_dict.keys():
         forward_even_time[forward] /= \
-            team_games_played[forward_teams[forward]]
+            team_games_played[forward_teams_dict[forward]]
         forward_pp_time[forward] /= \
-            team_power_play[forward_teams[forward]]
+            team_power_play[forward_teams_dict[forward]]
         forward_pk_time[forward] /= \
-            team_penalty_kill[forward_teams[forward]]
+            team_penalty_kill[forward_teams_dict[forward]]
 
 def forward_utilization_combine_metrics(metric_list : list=[]) -> None:
     for forward in metric_list[0].keys():

@@ -1,15 +1,8 @@
 defensemen_blocks_rating = {}
 
 
-defensemen_teams = {}
-
-
 def defensemen_blocks_get_dict() -> dict:
     return defensemen_blocks_rating
-
-
-def defensemen_blocks_get_defensemen_teams_dict() -> dict:
-    return defensemen_teams
 
 
 def defensemen_blocks_get_data_set(match_data : dict={}) -> dict:
@@ -30,11 +23,10 @@ def defensemen_blocks_add_match_data(defensemen_blocks_data : dict={}) -> None:
         else:
             defensemen_blocks_rating[defensemen] = \
                 defensemen_blocks_data[defensemen][1]
-        defensemen_teams[defensemen] = defensemen_blocks_data[defensemen][0]
 
 
-def defensemen_blocks_scale_by_shots_against(team_shots_against : dict={}) \
-                                                                        -> None:
+def defensemen_blocks_scale_by_shots_against(team_shots_against : dict={},
+    defensemen_teams_dict : dict={}) -> None:
     for defensemen in defensemen_blocks_rating.keys():
         defensemen_blocks_rating[defensemen] /= \
-            (team_shots_against[defensemen_teams[defensemen]])
+            (team_shots_against[defensemen_teams_dict[defensemen]])

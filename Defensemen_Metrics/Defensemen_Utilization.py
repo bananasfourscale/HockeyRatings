@@ -13,9 +13,6 @@ defensemen_pp_time = {}
 defensemen_pk_time = {}
 
 
-defensemen_teams = {}
-
-
 class defensemen_utilization_weights(Enum):
     EVEN_STRENGTH_WEIGHT = 0.75
     PP_STRENGTH_WEIGHT = 0.10
@@ -36,10 +33,6 @@ def defensemen_utilization_get_pp_time_dict() -> dict:
 
 def defensemen_utilization_get_pk_time_dict() -> dict:
     return defensemen_pk_time
-
-
-def defensemen_utilization_get_teams_dict() -> dict:
-    return defensemen_teams
 
 
 def defensemen_utilization_get_data_set(match_data : dict={}) -> list:
@@ -75,7 +68,7 @@ def defensemen_utilization_get_data_set(match_data : dict={}) -> list:
 def defensemen_utilization_add_match_data(defensemen_utilization_data : list=[]) \
                                                                         -> None:
     for defensemen in defensemen_utilization_data[0].keys():
-        if defensemen in defensemen_teams.keys():
+        if defensemen in defensemen_even_time.keys():
             defensemen_even_time[defensemen] += \
                 defensemen_utilization_data[1][defensemen]
             defensemen_pp_time[defensemen] += \
@@ -89,19 +82,18 @@ def defensemen_utilization_add_match_data(defensemen_utilization_data : list=[])
                 defensemen_utilization_data[2][defensemen]
             defensemen_pk_time[defensemen] = \
                 defensemen_utilization_data[3][defensemen]
-        defensemen_teams[defensemen] = \
-            defensemen_utilization_data[0][defensemen]
             
 
 def defensemen_utilization_scale_all(team_games_played : dict={},
-    team_power_play : dict={}, team_penalty_kill : dict={}) -> None:
-    for defensemen in defensemen_teams.keys():
+    team_power_play : dict={}, team_penalty_kill : dict={},
+    defensemen_teams_dict : dict={}) -> None:
+    for defensemen in defensemen_teams_dict.keys():
         defensemen_even_time[defensemen] /= \
-            team_games_played[defensemen_teams[defensemen]]
+            team_games_played[defensemen_teams_dict[defensemen]]
         defensemen_pp_time[defensemen] /= \
-            team_power_play[defensemen_teams[defensemen]]
+            team_power_play[defensemen_teams_dict[defensemen]]
         defensemen_pk_time[defensemen] /= \
-            team_penalty_kill[defensemen_teams[defensemen]]
+            team_penalty_kill[defensemen_teams_dict[defensemen]]
 
 def defensemen_utilization_combine_metrics(metric_list : list=[]) -> None:
     for defensemen in metric_list[0].keys():

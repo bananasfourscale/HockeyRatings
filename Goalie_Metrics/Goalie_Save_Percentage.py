@@ -1,9 +1,6 @@
 goalie_save_percentage_rating = {}
 
 
-goalie_teams = {}
-
-
 goalie_even_save = {}
 
 
@@ -13,15 +10,8 @@ goalie_pp_save = {}
 goalie_sh_save = {}
 
 
-goalie_games_played = {}
-
-
 def goalie_save_percentage_get_dict() -> dict:
     return goalie_save_percentage_rating
-
-
-def goalie_save_percentage_get_goalie_teams_dict() -> dict:
-    return goalie_teams
 
 
 def goalie_save_percentage_get_data_set(match_data : dict={}) -> list:
@@ -91,13 +81,6 @@ def goalie_save_percentage_add_match_data(goalie_save_percentage_data : dict={})
         else:
             goalie_sh_save[goalie] = goalie_sh[goalie]
             goalie_sh_save[goalie] = goalie_sh[goalie]
-        
-        # games played
-        if goalie in goalie_games_played.keys():
-            goalie_games_played[goalie] += 1
-        else:
-            goalie_games_played[goalie] = 1
-            goalie_teams[goalie] = goalie_teams_set[goalie]
 
 
 def goalie_save_percentage_calculate_all() -> None:
@@ -126,8 +109,8 @@ def goalie_save_percentage_calculate_all() -> None:
 
 
 def goalie_save_percentage_combine_metrics(games_played : dict={},
-                                           pp_oppertunities : dict={},
-                                           pk_oppertunities : dict={}) -> None:
+    pp_oppertunities : dict={}, pk_oppertunities : dict={},
+    goalie_utilization : dict={}, goalie_teams_dict : dict={}) -> None:
     
     # unlike other stats which use a flat weight. Have this weight scale so that
     # roughly the percentage of time at each strength is the percent weight.
@@ -136,26 +119,24 @@ def goalie_save_percentage_combine_metrics(games_played : dict={},
     for goalie in goalie_even_save.keys():
 
         # get roughly the total ice time for the team of this goalie
-        games_played_set = games_played[goalie_teams[goalie]]
+        games_played_set = games_played[goalie_teams_dict[goalie]]
         total_ice_time = games_played_set * 60
 
         # now calculate the percentage of time on the power play, meaning all
         # saves are short handed. Use this as short handed weight
-        pp_time = pp_oppertunities[goalie_teams[goalie]] * 2
+        pp_time = pp_oppertunities[goalie_teams_dict[goalie]] * 2
         short_handed_sp_weight = pp_time / total_ice_time
 
         # now with less available stats in the api do a more roundabout way to
         # get the time on the penalty kill which will become the pp weight
-        sh_time = pk_oppertunities[goalie_teams[goalie]] * 2
+        sh_time = pk_oppertunities[goalie_teams_dict[goalie]] * 2
         power_play_sp_weight = sh_time / total_ice_time
 
         # now the even strength must just be the remainder
         even_strength_sp_weight = (total_ice_time - (sh_time + pp_time)) / \
             total_ice_time
-        goalie_save_percentage_rating[goalie] = \
-            (goalie_even_save[goalie] * even_strength_sp_weight * \
-                goalie_games_played[goalie]) + \
-            (goalie_pp_save[goalie] * power_play_sp_weight * \
-                goalie_games_played[goalie]) + \
-            (goalie_sh_save[goalie] * short_handed_sp_weight * \
-                goalie_games_played[goalie])
+        goalie_save_percentage_rating[goalie] = (
+            (goalie_even_save[goalie] * even_strength_sp_weight) + \
+            (goalie_pp_save[goalie] * power_play_sp_weight) + \
+            (goalie_sh_save[goalie] * short_handed_sp_weight)
+        ) * goalie_utilization[goalie]

@@ -1,15 +1,8 @@
 defensemen_hits_rating = {}
 
 
-defensemen_teams = {}
-
-
 def defensemen_hits_get_dict() -> dict:
     return defensemen_hits_rating
-
-
-def defensemen_hits_get_teams_dict() -> dict:
-    return defensemen_teams
 
 
 def defensemen_hits_get_data_set(match_data : dict={}) -> dict:
@@ -30,7 +23,6 @@ def defensemen_hits_add_match_data(defensemen_hits_data : dict={}) -> None:
         else:
             defensemen_hits_rating[defensemen] = \
                 defensemen_hits_data[defensemen][1]
-        defensemen_teams[defensemen] = defensemen_hits_data[defensemen][0]
 
 
 def defensemen_hits_scale_by_games(player_utilization : dict={}) -> None:
