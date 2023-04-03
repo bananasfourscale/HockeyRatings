@@ -5,7 +5,7 @@ from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 def write_out_file(file_name : str = "", header_row : list = [],
                    rating_list : dict = {}) -> None:
-    with open(file_name, 'w', newline='', encoding='utf-8') as csv_data_file:
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header_row)
@@ -14,10 +14,10 @@ def write_out_file(file_name : str = "", header_row : list = [],
 
 
 def write_out_player_file(file_name : str = "", header_row : list = [],
-                          rating_list : dict = {}, player_list : dict = {},
+                          rating_list : dict = {}, player_team_list : dict = {},
                           ascending=True) \
                                                                     -> None:
-    with open(file_name, 'w', newline='', encoding='utf-8') as csv_date_file:
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
 
@@ -28,12 +28,20 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
 
         # for each player print the player, the stat and the team they're on
         csv_writer.writerow(header_row)
-        count = 1
+        count = 0
+        prev_data = float('inf')
+        streak = 1
         for key in sorted_list.keys():
+            if rating_list[key] != prev_data:
+                count += streak
+                streak = 1
+            else:
+                streak += 1
+            prev_data = rating_list[key]
             data_list = \
-                [str(count) + " " + key, rating_list[key], player_list[key][1]]
+                [str(count) + " " + key.replace("", "c"), rating_list[key],
+                    player_team_list[key]]
             csv_writer.writerow(data_list)
-            count += 1
 
 
 def update_trend_file(file_name : str = "", stat_dict : dict = {}) -> None:

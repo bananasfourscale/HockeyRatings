@@ -1,26 +1,40 @@
-import requests
-import json
-
-
 goalie_utilization_rating = {}
+
+
+goalie_teams = {}
 
 
 def goalie_utilization_get_dict() -> dict:
     return goalie_utilization_rating
 
 
-def goalie_utilization_calculate_time_on_ice(active_goalies : dict={},
-                                             all_team_stats : dict={}) -> None:
+def goalie_utlization_get_goalie_teams_dict() -> dict:
+    return goalie_teams
 
-    # loop through and populate the time on ice
-    for goalie in active_goalies.keys():
 
-        # shortcut to access stats more cleanly
-        player_stats = active_goalies[goalie][0]
-        team_stats = all_team_stats[active_goalies[goalie][1]]
+def goalie_utilization_get_data_set(match_data : dict={}) -> dict:
+    utilization = {}
+    for goalie in match_data.keys():
+        time_on_ice = match_data[goalie][1]["timeOnIce"].split(":")
+        utilization[goalie] = [
+            match_data[goalie][0],
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+        ]
+    return utilization
 
-        # ((TOIm + (TOIs / 60))) / TeamGP
-        time_on_ice = player_stats["timeOnIce"].split(":")
-        goalie_utilization_rating[goalie] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-                team_stats["gamesPlayed"]
+
+def goalie_utilization_add_match_data(goalie_utilization_data : dict={}) \
+                                                                        -> None:
+    for goalie in goalie_utilization_data.keys():
+        if goalie in goalie_utilization_rating.keys():
+            goalie_utilization_rating[goalie] += \
+                goalie_utilization_data[goalie][1]
+        else:
+            goalie_utilization_rating[goalie] = \
+                goalie_utilization_data[goalie][1]
+            goalie_teams[goalie] = goalie_utilization_data[goalie][0]
+
+
+def goalie_utilization_scale_by_game(games_played : dict={}) -> None:
+    for goalie in goalie_utilization_rating.keys():
+        goalie_utilization_rating[goalie] /= games_played[goalie_teams[goalie]]

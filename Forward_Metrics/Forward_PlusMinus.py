@@ -1,17 +1,46 @@
 forward_plus_minus_rating = {}
 
 
+forward_teams = {}
+
+
 def forward_plus_minus_get_dict() -> dict:
     return forward_plus_minus_rating
 
 
-def forward_plus_minus_get_data(active_forwards : dict={}) -> dict:
+def forward_plus_minus_get_teams_dict() -> dict:
+    return forward_teams
+
+
+def forward_plus_minus_get_data_set(match_data : dict={}) -> dict:
+    plus_minus = {}
 
     # loop through and populate the time on ice
-    for forward in active_forwards.keys():
+    for forward in match_data.keys():
+        plus_minus[forward] = [match_data[forward][0],
+            match_data[forward][1]["plusMinus"]]
+    return plus_minus
 
-        # shortcut to access stats more cleanly
-        player_stats = active_forwards[forward][0]
-        time_per_game = player_stats["timeOnIcePerGame"].split(":")
-        forward_plus_minus_rating[forward] = player_stats["plusMinus"] + \
-            (float(time_per_game[0]) + (float(time_per_game[1]) / 60))
+
+def forward_plus_minus_add_match_data(forward_plus_minus_data : dict={}) \
+                                                                        -> None:
+    for forward in forward_plus_minus_data.keys():
+        if forward in forward_plus_minus_rating.keys():
+            forward_plus_minus_rating[forward] += \
+                forward_plus_minus_data[forward][1]
+        else:
+            forward_plus_minus_rating[forward] = \
+                forward_plus_minus_data[forward][1]
+        forward_teams[forward] = \
+            forward_plus_minus_data[forward][0]
+            
+
+def forward_plus_minus_scale_by_utilization(player_utilization : dict={}) \
+                                                                        -> None:
+    for forward in forward_plus_minus_rating.keys():
+        if forward_plus_minus_rating[forward] > 0:
+            forward_plus_minus_rating[forward] *= \
+                (1 + player_utilization[forward])
+        else:
+            forward_plus_minus_rating[forward] /= \
+                (1 + player_utilization[forward])

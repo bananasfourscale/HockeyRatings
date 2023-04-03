@@ -1,19 +1,63 @@
 defensemen_discipline_rating = {}
 
 
+defensemen_teams = {}
+
+
+defensemen_penalty_min = {}
+
+
+defensemen_time_on_ice = {}
+
+
+defensemen_games_played ={}
+
+
 def defensemen_discipline_get_dict() -> dict:
     return defensemen_discipline_rating
 
 
-def defensemen_discipline_get_data(active_defensemen : dict={}) -> dict:
+def defensemen_discipline_get_defensemen_teams_dict() -> dict:
+    return defensemen_teams
+
+
+def defensemen_discipline_get_data(match_data : dict={}) -> dict:
 
     # loop through all defensemen and populate each type of icetime
-    for defensemen in active_defensemen.keys():
-        player_stats = active_defensemen[defensemen][0]
-        time_on_ice = player_stats["timeOnIce"].split(":")
-        time_per_game = player_stats["timeOnIcePerGame"].split(":")
-        defensemen_discipline_rating[defensemen] = (1 - (player_stats["pim"] / \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)))) * \
-            (float(time_per_game[0]) + (float(time_per_game[1]) / 60))
+    discipline = {}
+    for defensemen in match_data.keys():
+        time_on_ice = match_data[defensemen][1]["timeOnIce"].split(":")
+        discipline[defensemen] = [
+            match_data[defensemen][0],
+            match_data[defensemen][1]["penaltyMinutes"],
+            float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)
+        ]
+    return discipline
 
-        
+
+def defensemen_discipline_add_match_data(defensemen_discipline_data : dict={}) \
+                                                                        -> None:
+    for defensemen in defensemen_discipline_data.keys():
+        if defensemen in defensemen_penalty_min.keys():
+            defensemen_penalty_min[defensemen] += \
+                defensemen_discipline_data[defensemen][1]
+            defensemen_time_on_ice[defensemen] += \
+                defensemen_discipline_data[defensemen][2]
+            defensemen_games_played[defensemen] += 1
+        else:
+            defensemen_penalty_min[defensemen] = \
+                defensemen_discipline_data[defensemen][1]
+            defensemen_time_on_ice[defensemen] = \
+                defensemen_discipline_data[defensemen][2]
+            defensemen_games_played[defensemen] = 1
+        defensemen_teams[defensemen] = \
+            defensemen_discipline_data[defensemen][0]
+  
+
+def defensemen_discipline_calculate(defensemen_utilization : dict={}) -> None:
+
+    # (PIM + 1) * (2 - PlayerUtilizationRating)
+    for defensemen in defensemen_penalty_min.keys():
+        defensemen_discipline_rating[defensemen] = \
+            (defensemen_penalty_min[defensemen] + 1) * \
+            (2 - defensemen_utilization[defensemen])

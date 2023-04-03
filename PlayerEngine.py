@@ -15,18 +15,18 @@ from Goalie_Metrics.Goalie_Utilization import goalie_utilization_get_dict, \
 from Goalie_Metrics.Goalie_Win_Rating import goalie_win_rating_get_dict, \
     goalie_win_rating_calculate
 from Goalie_Metrics.Goalie_Save_Percentage import \
-    goalie_save_percentage_get_dict, goalie_save_percentage_get_data, \
+    goalie_save_percentage_get_dict, goalie_save_percentage_get_data_set, \
     goalie_save_percentage_scale_for_volume, \
     goalie_save_percentage_combine_metrics
 from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
     goalie_goals_against_get_data
 
 from Defensemen_Metrics.Defensemen_Hits import defensemen_hits_get_dict, \
-    defensemen_hits_get_data
+    defensemen_hits_get_data_set
 from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
     defensemen_blocks_get_data
 from Defensemen_Metrics.Defensemen_Utilization import \
-    defensemen_utilization_get_dict, defensemen_utilization_get_data, \
+    defensemen_utilization_get_dict, defensemen_utilization_get_data_set, \
     defensemen_utilization_combine_metrics
 from Defensemen_Metrics.Defensemen_Discipline import \
     defensemen_discipline_get_dict, defensemen_discipline_get_data
@@ -242,7 +242,7 @@ def goalie_win_rating() -> None:
 
 
 def goalie_save_percentage() -> None:
-    sp_metrics = goalie_save_percentage_get_data(active_players["Goalie"])
+    sp_metrics = goalie_save_percentage_get_data_set(active_players["Goalie"])
 
     # these metrics being unevenly weighted it makes more sense to do sigmoid
     # correction after combining all the metrics
@@ -347,7 +347,7 @@ def calculate_goalie_metrics() -> None:
 
 
 def defensemen_hits() -> None:
-    defensemen_hits_get_data(active_players["Defenseman"])
+    defensemen_hits_get_data_set(active_players["Defenseman"])
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/Hits_Base.csv",
         ["Defensemen", "Hits Base", "Team"],
@@ -395,7 +395,7 @@ def defensemen_blocks() -> None:
 
 
 def defensemen_utilization() -> None:
-    utilization_metrics = defensemen_utilization_get_data(
+    utilization_metrics = defensemen_utilization_get_data_set(
         active_players["Defenseman"], team_stats)
 
     # plot each metric before sigmoid

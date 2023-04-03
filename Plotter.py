@@ -3,25 +3,24 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plotter
 
-
 team_color_hex_codes = {
     'Anaheim Ducks' : "#F47A38",
     'Arizona Coyotes' : "#8C2633",
     'Boston Bruins' : "#FFB81C",
-    'Buffalo Sabres' : "#ADAFFA",
-    'Calgary Flames' : "#C8102E",
+    'Buffalo Sabres' : "#8F92FE",
+    'Calgary Flames' : "#FF2800",
     'Carolina Hurricanes' : "#CC0000",
-    'Chicago Blackhawks' : "#CF0A2C",
+    'Chicago Blackhawks' : "#501D01",
     'Colorado Avalanche' : "#6F263D",
     'Columbus Blue Jackets' : "#002654",
     'Dallas Stars' : "#006847",
-    'Detroit Red Wings' : "#CE1126",
-    'Edmonton Oilers' : "#FF4C00",
-    'Florida Panthers' : "#B9975B",
+    'Detroit Red Wings' : "#FF0000",
+    'Edmonton Oilers' : "#FC7D00",
+    'Florida Panthers' : "#A96600",
     'Los Angeles Kings' : "#572A84",
     'Minnesota Wild' : "#154734",
-    'Montréal Canadiens' : "#AF1E2D",
-    'Nashville Predators' : "#FFB81C",
+    'Montréal Canadiens' : "#9F1E00",
+    'Nashville Predators' : "#FAEE00",
     'New Jersey Devils' : "#000000",
     'New York Islanders' : "#FF4C00",
     'New York Rangers' : "#0038A8",
@@ -29,13 +28,13 @@ team_color_hex_codes = {
     'Philadelphia Flyers' : "#C83C01",
     'Pittsburgh Penguins' : "#CFC493",
     'San Jose Sharks' : "#006D75",
-    'Seattle Kraken' : "#001628",
+    'Seattle Kraken' : "#001F38",
     'St. Louis Blues' : "#002F87",
     'Tampa Bay Lightning' : "#CCCCFF",
     'Toronto Maple Leafs' : "#00205B",
     'Vancouver Canucks' : "#00843D",
     'Vegas Golden Knights' : "#B4975A",
-    'Washington Capitals' : "#C8102E",
+    'Washington Capitals' : "#880000",
     'Winnipeg Jets' : "#8E9090",
 }
 
@@ -44,9 +43,9 @@ def plot_data_set(csv_file : str = "", axis : list = [],
                   upper_bound : float = 0.0, lower_bound : float = 0.0,
                   tick_set : list = [], image_file : str = "",
                   ascending : bool=False) -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
     plotter.figure(figsize=(25, 10), dpi=100)
     player_color_sorted_list = []
     for player in plot_data.loc[:,"Team"]:
@@ -80,7 +79,7 @@ def plot_trend_set(csv_file : str = "", axis : list = [],
                    upper_bound : float = 0.0, lower_bound : float = 0.0,
                    tick_set : list = [], image_file : str = "") -> None:
     plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-8')
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
     plotter.figure(figsize=(25, 10), dpi=100)
     team_palette = sns.color_palette(list(team_color_hex_codes.values()))
     plot = sns.lineplot(data=plot_data, x=axis[0], y=axis[1],
@@ -98,9 +97,9 @@ def plot_player_ranking(csv_file : str = "", axis : list = [],
                         upper_bound : float = 0.0, lower_bound : float = 0.0,
                         tick_set : list = [], image_file : str = "",
                         ascending: bool=False) -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-8')
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
-    sns.set_theme()
+    sns.set_theme(font='Times New Roman')
 
     # determine the number of players to scale the graph accordingly
     num_players = plot_data.count().loc["Team"]

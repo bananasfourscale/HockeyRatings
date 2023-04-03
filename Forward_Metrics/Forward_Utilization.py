@@ -4,6 +4,18 @@ from enum import Enum
 forward_utilization_rating = {}
 
 
+forward_even_time = {}
+
+
+forward_pp_time = {}
+
+
+forward_pk_time = {}
+
+
+forward_teams = {}
+
+
 class forward_utilization_weights(Enum):
     EVEN_STRENGTH_WEIGHT = 0.75
     PP_STRENGTH_WEIGHT = 0.15
@@ -14,39 +26,82 @@ def forward_utilization_get_dict() -> dict:
     return forward_utilization_rating
 
 
-def forward_utilization_get_data(active_forwards : dict={},
-                                 all_team_stats : dict={}) -> list:
+def forward_utilization_get_even_time_dict() -> dict:
+    return forward_even_time
+
+
+def forward_utilization_get_pp_time_dict() -> dict:
+    return forward_pp_time
+
+
+def forward_utilization_get_pk_time_dict() -> dict:
+    return forward_pk_time
+
+
+def forward_utilization_get_teams_dict() -> dict:
+    return forward_teams
+
+
+def forward_utilization_get_data_set(match_data : dict={}) -> list:
     even_time = {}
     pp_time = {}
     pk_time = {}
+    forward_team_set = {}
 
     # loop through all forward and populate each type of icetime
-    for forward in active_forwards.keys():
+    for forward in match_data.keys():
+        forward_team_set[forward] = match_data[forward][0]
         
         # stats shortcuts
-        player_stats = active_forwards[forward][0]
-        team_stats = all_team_stats[active_forwards[forward][1]]
+        player_stats = match_data[forward][1]
 
         # even strength time directly gathered
         time_on_ice = player_stats["evenTimeOnIce"].split(":")
         even_time[forward] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-            (team_stats["gamesPlayed"] * 60)
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
 
         # power play time relative to how many power plays this team gets
         time_on_ice = player_stats["powerPlayTimeOnIce"].split(":")
         pp_time[forward] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-            (team_stats["powerPlayOpportunities"] * 2)
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
 
         # penalty kill time relative to how many power plays this team gets
         time_on_ice = player_stats["shortHandedTimeOnIce"].split(":")
         pk_time[forward] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)) / \
-            ((team_stats["powerPlayGoalsAgainst"] /
-            (1 - (float(team_stats["penaltyKillPercentage"]) / 100))) * 2)
-    return [even_time, pp_time, pk_time]
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+    return [forward_team_set, even_time, pp_time, pk_time]
 
+
+def forward_utilization_add_match_data(forward_utilization_data : list=[]) \
+                                                                        -> None:
+    for forward in forward_utilization_data[0].keys():
+        if forward in forward_teams.keys():
+            forward_even_time[forward] += \
+                forward_utilization_data[1][forward]
+            forward_pp_time[forward] += \
+                forward_utilization_data[2][forward]
+            forward_pk_time[forward] += \
+                forward_utilization_data[3][forward]
+        else:
+            forward_even_time[forward] = \
+                forward_utilization_data[1][forward]
+            forward_pp_time[forward] = \
+                forward_utilization_data[2][forward]
+            forward_pk_time[forward] = \
+                forward_utilization_data[3][forward]
+        forward_teams[forward] = \
+            forward_utilization_data[0][forward]
+            
+
+def forward_utilization_scale_all(team_games_played : dict={},
+    team_power_play : dict={}, team_penalty_kill : dict={}) -> None:
+    for forward in forward_teams.keys():
+        forward_even_time[forward] /= \
+            team_games_played[forward_teams[forward]]
+        forward_pp_time[forward] /= \
+            team_power_play[forward_teams[forward]]
+        forward_pk_time[forward] /= \
+            team_penalty_kill[forward_teams[forward]]
 
 def forward_utilization_combine_metrics(metric_list : list=[]) -> None:
     for forward in metric_list[0].keys():
