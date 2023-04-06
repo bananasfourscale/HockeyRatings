@@ -1,4 +1,6 @@
 **/__pycache__/*
-Metrics/__pycache__/*
-Parsers/__pycache__/*
 personal_notes.txt
+Output_Files/Defensemen_Files/Instance_Files/*.csv
+Output_Files/Forward_Files/Instance_Files/*.csv
+Output_Files/Goalie_Files/Instance_Files/*.csv
+Output_Files/Team_Files/Instance_Files/*.csv

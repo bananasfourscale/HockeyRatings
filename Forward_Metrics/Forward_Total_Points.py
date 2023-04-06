@@ -12,12 +12,11 @@ def forward_points_get_data_set(match_data : dict={}) -> dict:
     for forward in match_data.keys():
         points[forward] = [match_data[forward][0],
             (match_data[forward][1]["goals"] + \
-                (match_data[forward][1]["assists"] * 0.75))]
+                (match_data[forward][1]["assists"] * 0.90))]
     return points
 
 
-def forward_points_add_match_data(forward_points_data : dict={}) \
-                                                                        -> None:
+def forward_points_add_match_data(forward_points_data : dict={}) -> None:
     for forward in forward_points_data.keys():
         if forward in forward_points_rating.keys():
             forward_points_rating[forward] += \
@@ -27,8 +26,8 @@ def forward_points_add_match_data(forward_points_data : dict={}) \
                 forward_points_data[forward][1]
             
 
-def forward_points_scale_by_utilization(player_utilization : dict={}) \
-                                                                        -> None:
+def forward_points_scale_by_games_played(teams_games_played : dict={},
+    forward_teams_dict : dict={}) -> None:
     for forward in forward_points_rating.keys():
-        forward_points_rating[forward] *= \
-            (1 + player_utilization[forward])
+        forward_points_rating[forward] /= \
+            teams_games_played[forward_teams_dict[forward]]

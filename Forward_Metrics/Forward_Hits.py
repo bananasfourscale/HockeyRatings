@@ -25,7 +25,8 @@ def forward_hits_add_match_data(forward_hits_data : dict={}) -> None:
                 forward_hits_data[forward][1]
 
 
-def forward_hits_scale_by_games(player_utilization : dict={}) -> None:
+def forward_hits_scale_by_games(teams_games_played : dict={},
+    forward_teams_dict : dict={}) -> None:
     for forward in forward_hits_rating.keys():
-        forward_hits_rating[forward] *= \
-            (1 + player_utilization[forward])
+        forward_hits_rating[forward] /= \
+            teams_games_played[forward_teams_dict[forward]]

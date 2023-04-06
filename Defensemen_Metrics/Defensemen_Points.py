@@ -12,7 +12,7 @@ def defensemen_points_get_data_set(match_data : dict={}) -> dict:
     for defensemen in match_data.keys():
         points[defensemen] = [match_data[defensemen][0],
             (match_data[defensemen][1]["goals"] + \
-                (match_data[defensemen][1]["assists"] * 0.75))]
+                (match_data[defensemen][1]["assists"] * 0.90))]
     return points
 
 
