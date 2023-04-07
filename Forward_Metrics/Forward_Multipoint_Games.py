@@ -31,7 +31,7 @@ def forward_multipoint_games_add_match_data(
                 forward_contribution_data[forward][1]
             
 
-def forward_multipoint_games_calculate(teams_games_played : dict={},
+def forward_multipoint_games_scale_by_games(teams_games_played : dict={},
     forward_teams_dict : dict={}) -> None:
     for forward in forward_multipoint_games_rating.keys():
         forward_multipoint_games_rating[forward] /= \

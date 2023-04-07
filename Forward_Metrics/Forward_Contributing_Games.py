@@ -31,8 +31,8 @@ def forward_contributing_games_add_match_data(
                 forward_contribution_data[forward][1]
             
 
-def forward_contributing_games_calculate(teams_games_played : dict={},
-    forward_teams_dict : dict={}) -> None:
+def forward_contributing_games_scale_by_games(
+    teams_games_played : dict={}, forward_teams_dict : dict={}) -> None:
     for forward in forward_contributing_games_rating.keys():
         forward_contributing_games_rating[forward] /= \
             teams_games_played[forward_teams_dict[forward]]

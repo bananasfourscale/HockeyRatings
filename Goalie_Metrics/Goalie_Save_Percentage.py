@@ -52,7 +52,6 @@ def goalie_save_percentage_get_data_set(match_data : dict={}) -> list:
 
 def goalie_save_percentage_add_match_data(goalie_save_percentage_data : dict={})\
                                                                         -> None:
-    goalie_teams_set = goalie_save_percentage_data[0]
     goalie_even = goalie_save_percentage_data[1]
     goalie_pp = goalie_save_percentage_data[2]
     goalie_sh = goalie_save_percentage_data[3]

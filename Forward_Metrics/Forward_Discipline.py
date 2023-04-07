@@ -45,7 +45,8 @@ def forward_discipline_add_match_data(forward_discipline_data : dict={}) \
             forward_games_played[forward] = 1
   
 
-def forward_discipline_calculate(forward_utilization : dict={}) -> None:
+def forward_discipline_scale_by_utilization(forward_utilization : dict={}) \
+                                                                        -> None:
 
     # (PIM + 1) * (2 - PlayerUtilizationRating)
     for forward in forward_penalty_min.keys():

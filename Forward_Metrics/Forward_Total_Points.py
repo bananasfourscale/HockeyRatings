@@ -26,7 +26,7 @@ def forward_points_add_match_data(forward_points_data : dict={}) -> None:
                 forward_points_data[forward][1]
             
 
-def forward_points_scale_by_games_played(teams_games_played : dict={},
+def forward_points_scale_by_games(teams_games_played : dict={},
     forward_teams_dict : dict={}) -> None:
     for forward in forward_points_rating.keys():
         forward_points_rating[forward] /= \

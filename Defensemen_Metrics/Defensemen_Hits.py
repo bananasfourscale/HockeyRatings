@@ -25,7 +25,8 @@ def defensemen_hits_add_match_data(defensemen_hits_data : dict={}) -> None:
                 defensemen_hits_data[defensemen][1]
 
 
-def defensemen_hits_scale_by_games(player_utilization : dict={}) -> None:
+def defensemen_hits_scale_by_games(teams_games_played : dict={},
+    defensemen_teams_dict : dict={}) -> None:
     for defensemen in defensemen_hits_rating.keys():
-        defensemen_hits_rating[defensemen] *= \
-            (1 + player_utilization[defensemen])
+        defensemen_hits_rating[defensemen] /= \
+            teams_games_played[defensemen_teams_dict[defensemen]]

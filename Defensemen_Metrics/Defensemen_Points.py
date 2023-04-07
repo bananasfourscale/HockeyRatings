@@ -27,8 +27,8 @@ def defensemen_points_add_match_data(defensemen_points_data : dict={}) \
                 defensemen_points_data[defensemen][1]
             
 
-def defensemen_points_scale_by_utilization(player_utilization : dict={}) \
-                                                                        -> None:
+def defensemen_points_scale_by_games(teams_games_played : dict={},
+    defensemen_teams_dict : dict={}) -> None:
     for defensemen in defensemen_points_rating.keys():
-        defensemen_points_rating[defensemen] *= \
-            (1 + player_utilization[defensemen])
+       defensemen_points_rating[defensemen] /= \
+            teams_games_played[defensemen_teams_dict[defensemen]]

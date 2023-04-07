@@ -95,6 +95,7 @@ def forward_utilization_scale_all(team_games_played : dict={},
         forward_pk_time[forward] /= \
             team_penalty_kill[forward_teams_dict[forward]]
 
+
 def forward_utilization_combine_metrics(metric_list : list=[]) -> None:
     for forward in metric_list[0].keys():
         forward_utilization_rating[forward] = \

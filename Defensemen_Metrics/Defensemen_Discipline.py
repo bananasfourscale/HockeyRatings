@@ -45,7 +45,8 @@ def defensemen_discipline_add_match_data(defensemen_discipline_data : dict={}) \
             defensemen_games_played[defensemen] = 1
   
 
-def defensemen_discipline_calculate(defensemen_utilization : dict={}) -> None:
+def defensemen_discipline_scale_by_utilization(defensemen_utilization : dict={})\
+                                                                        -> None:
 
     # (PIM + 1) * (2 - PlayerUtilizationRating)
     for defensemen in defensemen_penalty_min.keys():
