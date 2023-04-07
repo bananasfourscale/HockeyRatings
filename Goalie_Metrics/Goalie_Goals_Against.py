@@ -30,4 +30,4 @@ def goalie_goals_against_scale_by_utilization(goalie_utilzation : dict={}) \
     for goalie in goalie_goals_against_rating.keys():
         goalie_goals_against_rating[goalie] = \
             (goalie_goals_against_rating[goalie] + 1) / \
-                (goalie_utilzation[goalie])
+                goalie_utilzation[goalie]

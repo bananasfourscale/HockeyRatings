@@ -205,11 +205,158 @@ total_rating_trend = {
 }
 
 
+average_goalie_rating = {
+    'Anaheim Ducks' : [0,0],
+    'Arizona Coyotes' : [0,0],
+    'Boston Bruins' : [0,0],
+    'Buffalo Sabres' : [0,0],
+    'Calgary Flames' : [0,0],
+    'Carolina Hurricanes' : [0,0],
+    'Chicago Blackhawks' : [0,0],
+    'Colorado Avalanche' : [0,0],
+    'Columbus Blue Jackets' : [0,0],
+    'Dallas Stars' : [0,0],
+    'Detroit Red Wings' : [0,0],
+    'Edmonton Oilers' : [0,0],
+    'Florida Panthers' : [0,0],
+    'Los Angeles Kings' : [0,0],
+    'Minnesota Wild' : [0,0],
+    'Montréal Canadiens' : [0,0],
+    'Nashville Predators' : [0,0],
+    'New Jersey Devils' : [0,0],
+    'New York Islanders' : [0,0],
+    'New York Rangers' : [0,0],
+    'Ottawa Senators' : [0,0],
+    'Philadelphia Flyers' : [0,0],
+    'Pittsburgh Penguins' : [0,0],
+    'San Jose Sharks' : [0,0],
+    'Seattle Kraken' : [0,0],
+    'St. Louis Blues' : [0,0],
+    'Tampa Bay Lightning' : [0,0],
+    'Toronto Maple Leafs' : [0,0],
+    'Vancouver Canucks' : [0,0],
+    'Vegas Golden Knights' : [0,0],
+    'Washington Capitals' : [0,0],
+    'Winnipeg Jets' : [0,0],
+}
+
+
+average_forward_rating = {
+    'Anaheim Ducks' : [0,0],
+    'Arizona Coyotes' : [0,0],
+    'Boston Bruins' : [0,0],
+    'Buffalo Sabres' : [0,0],
+    'Calgary Flames' : [0,0],
+    'Carolina Hurricanes' : [0,0],
+    'Chicago Blackhawks' : [0,0],
+    'Colorado Avalanche' : [0,0],
+    'Columbus Blue Jackets' : [0,0],
+    'Dallas Stars' : [0,0],
+    'Detroit Red Wings' : [0,0],
+    'Edmonton Oilers' : [0,0],
+    'Florida Panthers' : [0,0],
+    'Los Angeles Kings' : [0,0],
+    'Minnesota Wild' : [0,0],
+    'Montréal Canadiens' : [0,0],
+    'Nashville Predators' : [0,0],
+    'New Jersey Devils' : [0,0],
+    'New York Islanders' : [0,0],
+    'New York Rangers' : [0,0],
+    'Ottawa Senators' : [0,0],
+    'Philadelphia Flyers' : [0,0],
+    'Pittsburgh Penguins' : [0,0],
+    'San Jose Sharks' : [0,0],
+    'Seattle Kraken' : [0,0],
+    'St. Louis Blues' : [0,0],
+    'Tampa Bay Lightning' : [0,0],
+    'Toronto Maple Leafs' : [0,0],
+    'Vancouver Canucks' : [0,0],
+    'Vegas Golden Knights' : [0,0],
+    'Washington Capitals' : [0,0],
+    'Winnipeg Jets' : [0,0],
+}
+
+
+average_defenseman_rating = {
+    'Anaheim Ducks' : [0,0],
+    'Arizona Coyotes' : [0,0],
+    'Boston Bruins' : [0,0],
+    'Buffalo Sabres' : [0,0],
+    'Calgary Flames' : [0,0],
+    'Carolina Hurricanes' : [0,0],
+    'Chicago Blackhawks' : [0,0],
+    'Colorado Avalanche' : [0,0],
+    'Columbus Blue Jackets' : [0,0],
+    'Dallas Stars' : [0,0],
+    'Detroit Red Wings' : [0,0],
+    'Edmonton Oilers' : [0,0],
+    'Florida Panthers' : [0,0],
+    'Los Angeles Kings' : [0,0],
+    'Minnesota Wild' : [0,0],
+    'Montréal Canadiens' : [0,0],
+    'Nashville Predators' : [0,0],
+    'New Jersey Devils' : [0,0],
+    'New York Islanders' : [0,0],
+    'New York Rangers' : [0,0],
+    'Ottawa Senators' : [0,0],
+    'Philadelphia Flyers' : [0,0],
+    'Pittsburgh Penguins' : [0,0],
+    'San Jose Sharks' : [0,0],
+    'Seattle Kraken' : [0,0],
+    'St. Louis Blues' : [0,0],
+    'Tampa Bay Lightning' : [0,0],
+    'Toronto Maple Leafs' : [0,0],
+    'Vancouver Canucks' : [0,0],
+    'Vegas Golden Knights' : [0,0],
+    'Washington Capitals' : [0,0],
+    'Winnipeg Jets' : [0,0],
+}
+
+
+average_player_rating = {
+    'Anaheim Ducks' : [0,0],
+    'Arizona Coyotes' : [0,0],
+    'Boston Bruins' : [0,0],
+    'Buffalo Sabres' : [0,0],
+    'Calgary Flames' : [0,0],
+    'Carolina Hurricanes' : [0,0],
+    'Chicago Blackhawks' : [0,0],
+    'Colorado Avalanche' : [0,0],
+    'Columbus Blue Jackets' : [0,0],
+    'Dallas Stars' : [0,0],
+    'Detroit Red Wings' : [0,0],
+    'Edmonton Oilers' : [0,0],
+    'Florida Panthers' : [0,0],
+    'Los Angeles Kings' : [0,0],
+    'Minnesota Wild' : [0,0],
+    'Montréal Canadiens' : [0,0],
+    'Nashville Predators' : [0,0],
+    'New Jersey Devils' : [0,0],
+    'New York Islanders' : [0,0],
+    'New York Rangers' : [0,0],
+    'Ottawa Senators' : [0,0],
+    'Philadelphia Flyers' : [0,0],
+    'Pittsburgh Penguins' : [0,0],
+    'San Jose Sharks' : [0,0],
+    'Seattle Kraken' : [0,0],
+    'St. Louis Blues' : [0,0],
+    'Tampa Bay Lightning' : [0,0],
+    'Toronto Maple Leafs' : [0,0],
+    'Vancouver Canucks' : [0,0],
+    'Vegas Golden Knights' : [0,0],
+    'Washington Capitals' : [0,0],
+    'Winnipeg Jets' : [0,0],
+}
+
+
 season_matches = {}
+
 
 goalie_teams = {}
 
+
 forward_teams = {}
+
 
 defensemen_teams = {}
 
@@ -702,55 +849,55 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
 
             # Utilization
             goalie_utilization_data[goalie][1] *= \
-                relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value]
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value])
             
             # Goals Against
-            goalie_goals_against_data[goalie][1] += \
+            goalie_goals_against_data[goalie][1] *= \
                 (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value])
             
             # Save Percentage
             goalie_save_per_data[1][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
             goalie_save_per_data[2][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
             goalie_save_per_data[3][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
             
             # Save Consistency
-            goalie_save_consistency_data[goalie][1] += \
-                (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
+            goalie_save_consistency_data[goalie][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value])
         else:
 
             # Utilization
             goalie_utilization_data[goalie][1] *= \
-                relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value]
+                (1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value])
             
             # Goals Against
-            goalie_goals_against_data[goalie][1] =+ \
+            goalie_goals_against_data[goalie][1] *= \
                 (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value])
             
             # Save Percentage
             goalie_save_per_data[1][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
             goalie_save_per_data[1][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
             goalie_save_per_data[1][goalie][0] *= \
-                relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value]
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
             
             # Save Consistency
-            goalie_save_consistency_data[goalie][1] += \
-                (1 - relative_metrics[Metric_Order.OFFENSIVE.value][
+            goalie_save_consistency_data[goalie][1] *= \
+                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value])
     
     # Append Goalie metrics
@@ -2168,6 +2315,95 @@ def run_player_engine() -> None:
             "Defensemen_Total_Rating.csv",
         ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
+    
+    # sort players into team rosters
+    ### Goalies ###
+    i = 1
+    sorted_goalies = \
+        dict(sorted(goalie_total_rating.items(), key=lambda item: item[1],
+            reverse=True))
+    for goalie in sorted_goalies:
+
+        # only account for top 3 starters
+        if average_goalie_rating[goalie_teams[goalie]][1] < 4:
+            average_goalie_rating[goalie_teams[goalie]][0] += i
+            average_goalie_rating[goalie_teams[goalie]][1] += 1
+        i += 1
+    for team in average_goalie_rating:
+        average_player_rating[team][0] += average_goalie_rating[team][0]
+        average_player_rating[team][1] += average_goalie_rating[team][1]
+        average_goalie_rating[team] = \
+            average_goalie_rating[team][0] / average_goalie_rating[team][1]
+    write_out_file("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+        ["Team", "Average Goalie"], average_goalie_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+        ["Team", "Average Goalie"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_goalie_rating.png", True)))
+    
+    ### Forwards ###
+    i = 1
+    sorted_forward = \
+        dict(sorted(forward_total_rating.items(), key=lambda item: item[1],
+            reverse=True))
+    for forward in sorted_forward:
+
+        # only account for top 12 starters
+        if average_forward_rating[forward_teams[forward]][1] < 13:
+            average_forward_rating[forward_teams[forward]][0] += i
+            average_forward_rating[forward_teams[forward]][1] += 1
+        i += 1
+    for team in average_forward_rating:
+        average_player_rating[team][0] += average_forward_rating[team][0]
+        average_player_rating[team][1] += average_forward_rating[team][1]
+        average_forward_rating[team] = \
+            average_forward_rating[team][0] / average_forward_rating[team][1]
+    write_out_file("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+        ["Team", "Average Forward"], average_forward_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+        ["Team", "Average Forward"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_forward_rating.png",
+        True)))
+    
+    ### Defensemen ###
+    i = 1
+    sorted_defenseman = \
+        dict(sorted(defensemen_total_rating.items(), key=lambda item: item[1],
+            reverse=True))
+    for defenseman in sorted_defenseman:
+
+        # only account for top 6 starters
+        if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
+            average_defenseman_rating[defensemen_teams[defenseman]][0] += i
+            average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
+        i += 1
+    for team in average_defenseman_rating:
+        average_player_rating[team][0] += average_defenseman_rating[team][0]
+        average_player_rating[team][1] += average_defenseman_rating[team][1]
+        average_defenseman_rating[team] = \
+            average_defenseman_rating[team][0] / \
+                average_defenseman_rating[team][1]
+    write_out_file("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+        ["Team", "Average Defenseman"], average_defenseman_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+        ["Team", "Average Defenseman"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_defenseman_rating.png",
+        True)))
+    
+    ### All Roles ###
+    for team in average_player_rating:
+        average_player_rating[team] = average_player_rating[team][0] / \
+            average_player_rating[team][1]
+    write_out_file("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+        ["Team", "Average Player"], average_player_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+        ["Team", "Average Player"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
+        True)))
+
 
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
@@ -2183,6 +2419,16 @@ def run_player_engine() -> None:
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Goalie_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Forward_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Defensemen_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
 
 
 if __name__ == "__main__":
