@@ -1,214 +1,18 @@
 from enum import Enum
 
-shots_against = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+shots_against = {}
 
-shots_against_unscaled = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+shots_against_unscaled = {}
 
-goals_against = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+goals_against = {}
 
-penalty_kill = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+penalty_kill = {}
 
-games_played = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+pk_oppertunities = {}
 
-defensive_rating = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+games_played = {}
+
+defensive_rating = {}
 
 defensive_rating_trends = {
     'Anaheim Ducks' : [],
@@ -244,8 +48,6 @@ defensive_rating_trends = {
     'Washington Capitals' : [],
     'Winnipeg Jets' : [],
 }
-
-pk_oppertunities = {}
 
 class defensive_rating_weights(Enum):
     PENALTY_KILL_STRENGTH = 0.20
@@ -318,35 +120,85 @@ def defensive_rating_get_data_set(match_data : dict={}) -> list:
 
 def defensive_rating_add_match_data(defensive_data : dict={}) -> None:
 
-    # shots against
-    shots_against[list(defensive_data[0].keys())[0]] += \
-        list(defensive_data[0].values())[0]
-    shots_against[list(defensive_data[0].keys())[1]] += \
-        list(defensive_data[0].values())[1]
-    shots_against_unscaled[list(defensive_data[0].keys())[0]] += \
-        list(defensive_data[0].values())[0]
-    shots_against_unscaled[list(defensive_data[0].keys())[1]] += \
-        list(defensive_data[0].values())[1]
+    # home team
+    home_team = list(defensive_data[0].keys())[0] 
+    away_team = list(defensive_data[0].keys())[1] 
+    if home_team in shots_against.keys():
 
-    # goals against
-    goals_against[list(defensive_data[1].keys())[0]] += \
-        list(defensive_data[1].values())[0]
-    goals_against[list(defensive_data[1].keys())[1]] += \
-        list(defensive_data[1].values())[1]
+        # shots against
+        shots_against[home_team] += \
+            list(defensive_data[0].values())[0]
+        shots_against_unscaled[home_team] += \
+            list(defensive_data[0].values())[0]
+        
+        # goals against
+        goals_against[home_team] += \
+            list(defensive_data[1].values())[0]
+        
+        # penalty kill
+        penalty_kill[home_team][0] += \
+            list(defensive_data[2].values())[0][0]
+        penalty_kill[home_team][1] += \
+            list(defensive_data[2].values())[0][1]
+        
+        # games played
+        games_played[home_team] += 1
+    else:
 
-    # penalty kill stats (needs to be converted after collection)
-    penalty_kill[list(defensive_data[2].keys())[0]][0] += \
-        list(defensive_data[2].values())[0][0]
-    penalty_kill[list(defensive_data[2].keys())[0]][1] += \
-        list(defensive_data[2].values())[0][1]
-    penalty_kill[list(defensive_data[2].keys())[1]][0] += \
-        list(defensive_data[2].values())[1][0]
-    penalty_kill[list(defensive_data[2].keys())[1]][1] += \
-        list(defensive_data[2].values())[1][1]
+        # shots against
+        shots_against[home_team] = \
+            list(defensive_data[0].values())[0]
+        shots_against_unscaled[home_team] = \
+            list(defensive_data[0].values())[0]
+        
+        # goals against
+        goals_against[home_team] = \
+            list(defensive_data[1].values())[0]
+        
+        # penalty kill
+        penalty_kill[home_team] = [list(defensive_data[2].values())[0][0],
+            list(defensive_data[2].values())[0][1]]
+        
+        # games played
+        games_played[home_team] = 1
+        
+    # away team
+    if away_team in shots_against.keys():
+
+        shots_against[away_team] += \
+            list(defensive_data[0].values())[1]
+        shots_against_unscaled[away_team] += \
+            list(defensive_data[0].values())[1]
+
+        # goals against    
+        goals_against[away_team] += \
+            list(defensive_data[1].values())[1]
+
+        # penalty kill stats (needs to be converted after collection)
+        penalty_kill[away_team][0] += \
+            list(defensive_data[2].values())[1][0]
+        penalty_kill[away_team][1] += \
+            list(defensive_data[2].values())[1][1]
     
-    # add to games played
-    games_played[list(defensive_data[0].keys())[0]] += 1
-    games_played[list(defensive_data[0].keys())[1]] += 1
+        # add to games played
+        games_played[away_team] += 1
+    else:
+
+        shots_against[away_team] = \
+            list(defensive_data[0].values())[1]
+        shots_against_unscaled[away_team] = \
+            list(defensive_data[0].values())[1]
+
+        # goals against    
+        goals_against[away_team] = \
+            list(defensive_data[1].values())[1]
+
+        # penalty kill stats (needs to be converted after collection)
+        penalty_kill[away_team] = [list(defensive_data[2].values())[1][0],
+            list(defensive_data[2].values())[1][1]]
+    
+        # add to games played
+        games_played[away_team] = 1
 
 
 def defensive_rating_calculate_all() -> None:
@@ -369,7 +221,7 @@ def defensive_rating_calculate_all() -> None:
 
 
 def defensive_rating_combine_metrics(metric_list : list=[]) -> None:
-    for team in defensive_rating.keys():
+    for team in metric_list[0].keys():
         defensive_rating[team] = \
             (metric_list[0][team] * \
                 defensive_rating_weights.SHOTS_AGAINST_PER_GAME.value) + \

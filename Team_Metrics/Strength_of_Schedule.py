@@ -1,77 +1,8 @@
 from enum import Enum
-import datetime
-import csv
 
-strength_of_schedule = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+strength_of_schedule = {}
 
-strength_of_schedule_games_played = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
-
+strength_of_schedule_games_played = {}
 
 strength_of_schedule_trends = {
     'Anaheim Ducks' : [],
@@ -174,10 +105,16 @@ def strength_of_schedule_add_match_data(sos_data : dict={}) -> None:
         
         # first just increment the games played for each team which will be used
         # to scale the score later
-        strength_of_schedule_games_played[team] += 1
+        if team in strength_of_schedule_games_played.keys():
+            strength_of_schedule_games_played[team] += 1
+        else:
+            strength_of_schedule_games_played[team] = 1
 
         # then add the game value for this specific game to the unscaled result
-        strength_of_schedule[team] += sos_data[team]
+        if team in strength_of_schedule.keys():
+            strength_of_schedule[team] += sos_data[team]
+        else:
+            strength_of_schedule[team] = sos_data[team]
 
 
 def strength_of_schedule_scale_by_game() -> None:

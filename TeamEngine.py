@@ -133,40 +133,7 @@ from CSV_Writer import write_out_file, update_trend_file, write_out_player_file
 sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 
-total_rating = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+total_rating = {}
 
 
 total_rating_trend = {
@@ -205,148 +172,16 @@ total_rating_trend = {
 }
 
 
-average_goalie_rating = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+average_goalie_rating = {}
 
 
-average_forward_rating = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+average_forward_rating = {}
 
 
-average_defenseman_rating = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+average_defenseman_rating = {}
 
 
-average_player_rating = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+average_player_rating = {}
 
 
 season_matches = {}
@@ -675,8 +510,17 @@ def run_player_match_parser() -> None:
             for player_by_ID in players:
 
                 # find the players position
-                position = players[player_by_ID]["person"][
-                    "primaryPosition"]["type"]
+                # if we can't determine the position, skip getting stats
+                position = players[player_by_ID]["person"].get(
+                    "primaryPosition")
+                if position is not None:
+                    position = position["type"]
+                else:
+                    position = players[player_by_ID]["position"]["type"]
+                if position == "Unknown":
+                    continue
+
+                # read out the players name
                 name = players[player_by_ID]["person"]["fullName"]
 
                 # determine if the player had any stats for this game
@@ -700,8 +544,17 @@ def run_player_match_parser() -> None:
             for player_by_ID in players:
 
                 # find the players position
-                position = players[player_by_ID]["person"][
-                    "primaryPosition"]["type"]
+                # if we can't determine the position, skip getting stats
+                position = players[player_by_ID]["person"].get(
+                    "primaryPosition")
+                if position is not None:
+                    position = position["type"]
+                else:
+                    position = players[player_by_ID]["position"]["type"]
+                if position == "Unknown":
+                    continue
+
+                # read out the players name
                 name = players[player_by_ID]["person"]["fullName"]
 
                 # determine if the player had any stats for this game
@@ -1785,17 +1638,17 @@ def plot_corrected_player_metrics() -> None:
 def combine_all_team_factors(update_trends : bool=True) -> None:
     
     # calculate the final rating for all teams using the forms above
-    for team in total_rating.keys():
+    for team in clutch_rating_get_dict().keys():
         total_rating[team] = \
-            (clutch_rating_get_dict()[team] * \
+            (clutch_rating_get_dict()[team] *
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
-            (defensive_rating_get_dict()[team] * \
+            (defensive_rating_get_dict()[team] *
                 total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) + \
-            (offensive_rating_get_dict()[team] * \
+            (offensive_rating_get_dict()[team] *
                 total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) + \
-            (recent_form_get_dict()[team] * \
+            (recent_form_get_dict()[team] *
                 total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) + \
-            (strength_of_schedule_get_dict()[team] * \
+            (strength_of_schedule_get_dict()[team] *
                 total_rating_weights.SOS_RATING_WEIGHT.value)
             
 
@@ -2021,16 +1874,13 @@ def run_team_engine():
         plotting_queue.put('STOP')
     for process in plotting_process_list:
         process.join()
-    # for process in plotting_process_list:
-    #     while process.is_alive():
-    #         pass
 
     # remove all the instance files
     for dir in \
-        os.walk(os.getcwd() + "\Output_Files/Team_Files/\Instance_Files"):
+        os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
         for file in dir[2]:
             os.remove(os.getcwd() +
-                "\Output_Files/Team_Files/\Instance_Files\\" + file)
+                "\Output_Files\Team_Files\Instance_Files\\" + file)
             
 
 def run_player_engine() -> None:
@@ -2325,13 +2175,20 @@ def run_player_engine() -> None:
     for goalie in sorted_goalies:
 
         # only account for top 3 starters
-        if average_goalie_rating[goalie_teams[goalie]][1] < 4:
-            average_goalie_rating[goalie_teams[goalie]][0] += i
-            average_goalie_rating[goalie_teams[goalie]][1] += 1
+        if goalie_teams[goalie] in average_goalie_rating.keys():
+            if average_goalie_rating[goalie_teams[goalie]][1] < 4:
+                average_goalie_rating[goalie_teams[goalie]][0] += i
+                average_goalie_rating[goalie_teams[goalie]][1] += 1
+        else:
+            average_goalie_rating[goalie_teams[goalie]] = [i, 1]
         i += 1
     for team in average_goalie_rating:
-        average_player_rating[team][0] += average_goalie_rating[team][0]
-        average_player_rating[team][1] += average_goalie_rating[team][1]
+        if team in average_player_rating.keys():
+            average_player_rating[team][0] += average_goalie_rating[team][0]
+            average_player_rating[team][1] += average_goalie_rating[team][1]
+        else:
+            average_player_rating[team] = [average_goalie_rating[team][0],
+                average_goalie_rating[team][1]]
         average_goalie_rating[team] = \
             average_goalie_rating[team][0] / average_goalie_rating[team][1]
     write_out_file("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
@@ -2349,9 +2206,12 @@ def run_player_engine() -> None:
     for forward in sorted_forward:
 
         # only account for top 12 starters
-        if average_forward_rating[forward_teams[forward]][1] < 13:
-            average_forward_rating[forward_teams[forward]][0] += i
-            average_forward_rating[forward_teams[forward]][1] += 1
+        if forward_teams[forward] in average_forward_rating.keys():
+            if average_forward_rating[forward_teams[forward]][1] < 13:
+                average_forward_rating[forward_teams[forward]][0] += i
+                average_forward_rating[forward_teams[forward]][1] += 1
+        else:
+            average_forward_rating[forward_teams[forward]] = [i, 1]
         i += 1
     for team in average_forward_rating:
         average_player_rating[team][0] += average_forward_rating[team][0]
@@ -2374,9 +2234,12 @@ def run_player_engine() -> None:
     for defenseman in sorted_defenseman:
 
         # only account for top 6 starters
-        if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
-            average_defenseman_rating[defensemen_teams[defenseman]][0] += i
-            average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
+        if defensemen_teams[defenseman] in average_defenseman_rating.keys():
+            if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
+                average_defenseman_rating[defensemen_teams[defenseman]][0] += i
+                average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
+        else:
+            average_defenseman_rating[defensemen_teams[defenseman]] = [i, 1]
         i += 1
     for team in average_defenseman_rating:
         average_player_rating[team][0] += average_defenseman_rating[team][0]
@@ -2434,6 +2297,7 @@ def run_player_engine() -> None:
 if __name__ == "__main__":
 
     UPDATE_TRENDS = False
+    REG_SEASON_COMPLETE = False
     start = time.time()
     freeze_support()
 

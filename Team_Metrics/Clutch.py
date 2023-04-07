@@ -1,39 +1,4 @@
-import csv
-
-clutch_rating = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+clutch_rating = {}
 
 clutch_trends = {
     'Anaheim Ducks' : [],
@@ -163,7 +128,16 @@ def clutch_calculate_lead_protection(match_data : dict={}) -> None:
     return clutch_data
 
 def clutch_add_match_data(clutch_data : dict={}) -> None:
-    clutch_rating[list(clutch_data[0].keys())[0]] += \
-        list(clutch_data[0].values())[0]
-    clutch_rating[list(clutch_data[1].keys())[0]] += \
-        list(clutch_data[1].values())[0]
+    if list(clutch_data[0].keys())[0] in clutch_rating.keys():
+        clutch_rating[list(clutch_data[0].keys())[0]] += \
+            list(clutch_data[0].values())[0]
+    else:
+        clutch_rating[list(clutch_data[0].keys())[0]] = \
+            list(clutch_data[0].values())[0]
+        
+    if list(clutch_data[1].keys())[0] in clutch_rating.keys():
+        clutch_rating[list(clutch_data[1].keys())[0]] += \
+            list(clutch_data[1].values())[0]
+    else:
+        clutch_rating[list(clutch_data[1].keys())[0]] = \
+            list(clutch_data[1].values())[0]

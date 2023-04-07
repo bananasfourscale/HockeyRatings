@@ -1,144 +1,16 @@
 from enum import Enum
 
-shots_for = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+shots_for = {}
 
-goals_for = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+goals_for = {}
 
-power_play = {
-    'Anaheim Ducks' : [0,0],
-    'Arizona Coyotes' : [0,0],
-    'Boston Bruins' : [0,0],
-    'Buffalo Sabres' : [0,0],
-    'Calgary Flames' : [0,0],
-    'Carolina Hurricanes' : [0,0],
-    'Chicago Blackhawks' : [0,0],
-    'Colorado Avalanche' : [0,0],
-    'Columbus Blue Jackets' : [0,0],
-    'Dallas Stars' : [0,0],
-    'Detroit Red Wings' : [0,0],
-    'Edmonton Oilers' : [0,0],
-    'Florida Panthers' : [0,0],
-    'Los Angeles Kings' : [0,0],
-    'Minnesota Wild' : [0,0],
-    'Montréal Canadiens' : [0,0],
-    'Nashville Predators' : [0,0],
-    'New Jersey Devils' : [0,0],
-    'New York Islanders' : [0,0],
-    'New York Rangers' : [0,0],
-    'Ottawa Senators' : [0,0],
-    'Philadelphia Flyers' : [0,0],
-    'Pittsburgh Penguins' : [0,0],
-    'San Jose Sharks' : [0,0],
-    'Seattle Kraken' : [0,0],
-    'St. Louis Blues' : [0,0],
-    'Tampa Bay Lightning' : [0,0],
-    'Toronto Maple Leafs' : [0,0],
-    'Vancouver Canucks' : [0,0],
-    'Vegas Golden Knights' : [0,0],
-    'Washington Capitals' : [0,0],
-    'Winnipeg Jets' : [0,0],
-}
+power_play = {}
 
-offensive_rating = {
-    'Anaheim Ducks' : 0,
-    'Arizona Coyotes' : 0,
-    'Boston Bruins' : 0,
-    'Buffalo Sabres' : 0,
-    'Calgary Flames' : 0,
-    'Carolina Hurricanes' : 0,
-    'Chicago Blackhawks' : 0,
-    'Colorado Avalanche' : 0,
-    'Columbus Blue Jackets' : 0,
-    'Dallas Stars' : 0,
-    'Detroit Red Wings' : 0,
-    'Edmonton Oilers' : 0,
-    'Florida Panthers' : 0,
-    'Los Angeles Kings' : 0,
-    'Minnesota Wild' : 0,
-    'Montréal Canadiens' : 0,
-    'Nashville Predators' : 0,
-    'New Jersey Devils' : 0,
-    'New York Islanders' : 0,
-    'New York Rangers' : 0,
-    'Ottawa Senators' : 0,
-    'Philadelphia Flyers' : 0,
-    'Pittsburgh Penguins' : 0,
-    'San Jose Sharks' : 0,
-    'Seattle Kraken' : 0,
-    'St. Louis Blues' : 0,
-    'Tampa Bay Lightning' : 0,
-    'Toronto Maple Leafs' : 0,
-    'Vancouver Canucks' : 0,
-    'Vegas Golden Knights' : 0,
-    'Washington Capitals' : 0,
-    'Winnipeg Jets' : 0,
-}
+pp_oppertunities = {}
+
+games_played = {}
+
+offensive_rating = {}
 
 offensive_rating_trends = {
     'Anaheim Ducks' : [],
@@ -174,10 +46,6 @@ offensive_rating_trends = {
     'Washington Capitals' : [],
     'Winnipeg Jets' : [],
 }
-
-
-pp_oppertunities = {}
-
 
 class offensive_rating_weights(Enum):
     POWER_PLAY_STRENGTH = 0.20
@@ -245,31 +113,87 @@ def offensive_rating_get_data_set(match_data : dict={}) -> list:
 
 
 def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
-    # shots for
-    shots_for[list(offensive_data[0].keys())[0]] += \
-        list(offensive_data[0].values())[0]
-    shots_for[list(offensive_data[0].keys())[1]] += \
-        list(offensive_data[0].values())[1]
 
-    # goals for
-    goals_for[list(offensive_data[1].keys())[0]] += \
-        list(offensive_data[1].values())[0]
-    goals_for[list(offensive_data[1].keys())[1]] += \
-        list(offensive_data[1].values())[1]
+    home_team = list(offensive_data[0].keys())[0] 
+    away_team = list(offensive_data[0].keys())[1]
+    if home_team in shots_for.keys():
 
-    # power play stats (needs to be converted after collection)
-    power_play[list(offensive_data[2].keys())[0]][0] += \
-        list(offensive_data[2].values())[0][0]
-    power_play[list(offensive_data[2].keys())[0]][1] += \
-        list(offensive_data[2].values())[0][1]
-    power_play[list(offensive_data[2].keys())[1]][0] += \
-        list(offensive_data[2].values())[1][0]
-    power_play[list(offensive_data[2].keys())[1]][1] += \
-        list(offensive_data[2].values())[1][1]
+        # shots against
+        shots_for[home_team] += \
+            list(offensive_data[0].values())[0]
+        
+        # goals against
+        goals_for[home_team] += \
+            list(offensive_data[1].values())[0]
+        
+        # penalty kill
+        power_play[home_team][0] += \
+            list(offensive_data[2].values())[0][0]
+        power_play[home_team][1] += \
+            list(offensive_data[2].values())[0][1]
+        
+        # games played
+        games_played[home_team] += 1
+    else:
+
+        # shots against
+        shots_for[home_team] = \
+            list(offensive_data[0].values())[0]
+
+        # goals against
+        goals_for[home_team] = \
+            list(offensive_data[1].values())[0]
+        
+        # penalty kill
+        power_play[home_team] = [list(offensive_data[2].values())[0][0],
+            list(offensive_data[2].values())[0][1]]
+        
+        # add to games played
+        games_played[home_team] = 1
+        
+    # away team
+    if away_team in shots_for.keys():
+        shots_for[away_team] += \
+            list(offensive_data[0].values())[1]
+
+        # goals against    
+        goals_for[away_team] += \
+            list(offensive_data[1].values())[1]
+
+        # penalty kill stats (needs to be converted after collection)
+        power_play[away_team][0] += \
+            list(offensive_data[2].values())[1][0]
+        power_play[away_team][1] += \
+            list(offensive_data[2].values())[1][1]
+        
+        # add to games played
+        games_played[away_team] += 1
+    else:
+        shots_for[away_team] = \
+            list(offensive_data[0].values())[1]
+
+        # goals against    
+        goals_for[away_team] = \
+            list(offensive_data[1].values())[1]
+
+        # penalty kill stats (needs to be converted after collection)
+        power_play[away_team] = [list(offensive_data[2].values())[1][0],
+            list(offensive_data[2].values())[1][1]]
+        
+        # add to games played
+        games_played[away_team] = 1
 
 
 def offensive_rating_calculate_power_play() -> None:
     for team in power_play.keys():
+
+        # shots for divided by game
+        shots_for[team] /= games_played[team]
+
+        # goals for divided by game
+        goals_for[team] /= games_played[team]
+
+        # pp converted to percentage
         pp_goals_for = power_play[team][0]
         pp_oppertunities[team] = power_play[team][1]
         if (pp_oppertunities[team] > 0):
@@ -279,7 +203,7 @@ def offensive_rating_calculate_power_play() -> None:
 
 
 def offensive_rating_combine_metrics(metric_list : list=[]) -> None:
-    for team in offensive_rating.keys():
+    for team in metric_list[0].keys():
         offensive_rating[team] = \
             (metric_list[0][team] * \
                 offensive_rating_weights.SHOTS_PER_GAME.value) + \
