@@ -87,6 +87,53 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     plotter.close()
 
 
+def plot_player_ranking(csv_file : str = "", axis : list = [],
+    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
+    image_file : str = "", ascending: bool=False) -> None:
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
+    plot_data = plot_data.sort_values(axis[1], ascending=ascending)
+    sns.set_theme(font='Times New Roman')
+
+    # determine the number of players to scale the graph accordingly
+    num_players = plot_data.count().loc["Team"]
+    plotter.figure(figsize=(20, num_players/4), dpi=100)
+
+    # assign the correct Team color to each player in the list
+    player_color_sorted_list = []
+    for player in plot_data.loc[:,"Team"]:
+        player_color_sorted_list.append(team_color_hex_codes[player])
+    team_palette = sns.color_palette(player_color_sorted_list)
+
+    # make player plots horizontal bar plots
+    sns.barplot(data=plot_data, x=axis[1], y=axis[0], palette=team_palette)
+    plotter.tick_params(axis='y', which='major', labelsize=12)
+    plotter.tick_params(axis='x', which='major', labelsize=24)
+    plotter.tight_layout()
+
+    # determine the bounds either based on the input, or based on the data set
+    if (upper_bound == 0.0) and (lower_bound == 0.0):
+        plot_min = \
+            plot_data.min().loc[axis[1]] - (plot_data.min().loc[axis[1]] * 0.10)
+        plot_max = \
+            plot_data.max().loc[axis[1]] + (plot_data.min().loc[axis[1]] * 0.10)
+        
+        # if the data is empty then just clear the figure and return
+        if (plot_min == 0) and (plot_max == 0):
+            plotter.clf()
+            plotter.close()
+            return
+        plotter.xlim(plot_min, plot_max)
+    else:
+        plotter.xlim(lower_bound, upper_bound)
+    if len(tick_set) > 0:
+        plotter.xticks(tick_set)
+
+    # save the figure to file and then close to save memory
+    plotter.savefig(image_file, bbox_inches='tight')
+    plotter.clf()
+    plotter.close()
+
+
 def plot_team_trend_set(csv_file : str = "", axis : list = [],
     upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
     image_file : str = "") -> None:
@@ -134,58 +181,11 @@ def plot_player_trend_set(csv_file : str = "", axis : list = [],
             team_list.append(team)
     team_palette = sns.color_palette(team_color_sorted_list)
     plot = sns.lineplot(data=plot_data, x=str(axis[0]), y=axis[1],
-        hue="Team", palette=team_palette, marker='s')
+        hue="Team", style=axis[2], palette=team_palette, marker='s')
     plot.set(yticks=tick_set)
     plotter.tick_params(axis='x', which='major', labelsize=16)
     plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
     plotter.ylim(lower_bound, upper_bound)
-    plotter.savefig(image_file, bbox_inches='tight')
-    plotter.clf()
-    plotter.close()
-
-
-def plot_player_ranking(csv_file : str = "", axis : list = [],
-    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
-    image_file : str = "", ascending: bool=False) -> None:
-    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
-    plot_data = plot_data.sort_values(axis[1], ascending=ascending)
-    sns.set_theme(font='Times New Roman')
-
-    # determine the number of players to scale the graph accordingly
-    num_players = plot_data.count().loc["Team"]
-    plotter.figure(figsize=(20, num_players/4), dpi=100)
-
-    # assign the correct Team color to each player in the list
-    player_color_sorted_list = []
-    for player in plot_data.loc[:,"Team"]:
-        player_color_sorted_list.append(team_color_hex_codes[player])
-    team_palette = sns.color_palette(player_color_sorted_list)
-
-    # make player plots horizontal bar plots
-    sns.barplot(data=plot_data, x=axis[1], y=axis[0], palette=team_palette)
-    plotter.tick_params(axis='y', which='major', labelsize=12)
-    plotter.tick_params(axis='x', which='major', labelsize=24)
-    plotter.tight_layout()
-
-    # determine the bounds either based on the input, or based on the data set
-    if (upper_bound == 0.0) and (lower_bound == 0.0):
-        plot_min = \
-            plot_data.min().loc[axis[1]] - (plot_data.min().loc[axis[1]] * 0.10)
-        plot_max = \
-            plot_data.max().loc[axis[1]] + (plot_data.min().loc[axis[1]] * 0.10)
-        
-        # if the data is empty then just clear the figure and return
-        if (plot_min == 0) and (plot_max == 0):
-            plotter.clf()
-            plotter.close()
-            return
-        plotter.xlim(plot_min, plot_max)
-    else:
-        plotter.xlim(lower_bound, upper_bound)
-    if len(tick_set) > 0:
-        plotter.xticks(tick_set)
-
-    # save the figure to file and then close to save memory
     plotter.savefig(image_file, bbox_inches='tight')
     plotter.clf()
     plotter.close()

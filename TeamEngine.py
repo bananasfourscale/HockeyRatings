@@ -438,7 +438,6 @@ def run_player_match_parser() -> None:
     # ranking marker is reached
     sorted_date_list = sorted(season_matches)
     for date in sorted_date_list:
-        print(date)
         parsed_date = date.split("-")
         parsed_date = datetime.date(int(parsed_date[0]), int(parsed_date[1]),
             int(parsed_date[2]))
@@ -2339,7 +2338,7 @@ def run_player_engine() -> None:
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for row in row_list:
                 writeout = [SEASON[0:4] + "-" + SEASON[4:]]
-                writeout.append(row[0])
+                writeout.append(row[0].split(" ")[1] + " " + row[0].split(" ")[2])
                 writeout.append(row[2])
                 writeout.append(row[1])
                 csv_writer.writerow(writeout)
@@ -2348,7 +2347,7 @@ def run_player_engine() -> None:
         # plot the updated year on year data
         plotting_queue.put((plot_player_trend_set,
             ("Output_Files\Goalie_Files\Trend_Files\GoalieYearlyRanking.csv",
-            ["Season", "Total Rating"], 1.1, -.1, sigmoid_ticks,
+            ["Season", "Total Rating", "Goalie"], 0.0, 0.0, sigmoid_ticks,
             "Graphs/Goalies/Goalie_Total_Rating/year_on_year_score.png")))
         
     # stop all the running workers
@@ -2380,7 +2379,7 @@ def run_player_engine() -> None:
 if __name__ == "__main__":
 
     UPDATE_TRENDS = False
-    REG_SEASON_COMPLETE = False
+    REG_SEASON_COMPLETE = True
     SEASON = "20222023"
     start = time.time()
     freeze_support()
