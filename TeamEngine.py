@@ -99,7 +99,8 @@ from Defensemen_Metrics.Defensemen_Blocks import defensemen_blocks_get_dict, \
     defensemen_blocks_scale_by_shots_against
 from Defensemen_Metrics.Defensemen_Discipline import \
     defensemen_discipline_get_dict, defensemen_discipline_get_data, \
-    defensemen_discipline_add_match_data, defensemen_discipline_scale_by_utilization
+    defensemen_discipline_add_match_data, \
+    defensemen_discipline_scale_by_utilization
 from Defensemen_Metrics.Defensemen_Hits import \
     defensemen_hits_get_dict, defensemen_hits_get_data_set, \
     defensemen_hits_add_match_data, defensemen_hits_scale_by_games
@@ -125,8 +126,9 @@ from Defensemen_Metrics.Defensemen_Utilization import \
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import total_rating_weights, goalie_rating_weights, \
-    forward_rating_weights, defensemen_rating_weights
-from Plotter import plot_data_set, plot_trend_set, plot_player_ranking
+    forward_rating_weights, defensemen_rating_weights, divisions
+from Plotter import plot_data_set, plot_team_trend_set, plot_player_trend_set, \
+    plot_player_ranking
 from CSV_Writer import write_out_file, update_trend_file, write_out_player_file
 
 
@@ -220,7 +222,7 @@ def parse_trend_file(file_name, trend_dict) -> dict:
     header_row = True
 
     # open the average rating file
-    with open(file_name, newline='') as csv_data_file:
+    with open(file_name, newline='', encoding='utf-16') as csv_data_file:
         ratings = csv.reader(csv_data_file, delimiter = ',')
 
         # loop through the lines of file
@@ -287,7 +289,7 @@ def parse_web_match_data(game_date : dict={}) -> list:
 
 def get_game_records() -> None:
     schedule = \
-        "https://statsapi.web.nhl.com/api/v1/schedule?season=20222023" + \
+        "https://statsapi.web.nhl.com/api/v1/schedule?season=" + SEASON + \
             "&gameType=R&expand=schedule.linescore"
     schedule_web_data = requests.get(schedule)
     schedule_parsed_data = json.loads(schedule_web_data.content)
@@ -345,7 +347,8 @@ def run_team_match_parsers() -> None:
 
     # roll through all the dates updating the trend data when a different
     # ranking marker is reached
-    for date in season_matches:
+    sorted_date_list = sorted(season_matches)
+    for date in sorted_date_list:
         parsed_date = date.split("-")
         parsed_date = datetime.date(int(parsed_date[0]), int(parsed_date[1]),
             int(parsed_date[2]))
@@ -433,7 +436,9 @@ def run_player_match_parser() -> None:
 
     # roll through all the dates updating the trend data when a different
     # ranking marker is reached
-    for date in season_matches:
+    sorted_date_list = sorted(season_matches)
+    for date in sorted_date_list:
+        print(date)
         parsed_date = date.split("-")
         parsed_date = datetime.date(int(parsed_date[0]), int(parsed_date[1]),
             int(parsed_date[2]))
@@ -1664,7 +1669,7 @@ def combine_all_team_factors(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
             total_rating)
-    plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
         ["Rating Date", "Rating Score"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))
@@ -1811,7 +1816,7 @@ def run_team_engine():
         # clutch
         update_trend_file("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
             clutch_rating_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
             ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
@@ -1819,7 +1824,7 @@ def run_team_engine():
         # defensive rating
         update_trend_file("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
             defensive_rating_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
             ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
@@ -1827,7 +1832,7 @@ def run_team_engine():
         # offensive rating
         update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             offensive_rating_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
@@ -1835,7 +1840,7 @@ def run_team_engine():
         # recent form
         update_trend_file("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
             recent_form_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
             ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Recent_Form/recent_form_trend.png")))
@@ -1843,7 +1848,7 @@ def run_team_engine():
         # strenght of schedule
         update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
             strength_of_schedule_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
             ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
@@ -1853,7 +1858,7 @@ def run_team_engine():
         update_trend_file(
             "Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
             absolute_rankings_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
             ["Rating Date", "Absolute Ranking"], 0, 33, range(1, 33, 1),
             "Graphs/Teams/Final_Rating_Score/absolute_ranking_trend.png")))
@@ -1863,11 +1868,48 @@ def run_team_engine():
         update_trend_file(
             "Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
             average_rankings_get_dict())
-        plotting_queue.put((plot_trend_set,
+        plotting_queue.put((plot_team_trend_set,
             ("Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
             ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
             "Graphs/Teams/Final_Rating_Score/average_ranking_trend.png")))
 
+    # remove all the instance files
+    # if REG_SEASON_COMPLETE:
+    #     header_row = True
+    #     row_list = []
+
+    #     # open the total rating file for all teams and copy out the data
+    #     with open("Output_Files\Team_Files\Instance_Files\TotalRating.csv",
+    #         'r', newline='', encoding='utf-16') as csv_read_file:
+    #         csv_reader = csv.reader(csv_read_file, delimiter='\t', quotechar='|',
+    #             quoting=csv.QUOTE_MINIMAL)
+    #         for row in csv_reader:
+    #             if header_row:
+    #                 header_row = False
+    #                 continue
+    #             row_list.append(row)
+    #     csv_read_file.close()
+
+    #     # now rewrite the data to a year on year trend file with extra headers
+    #     with open(
+    #         "Output_Files\Team_Files\Trend_Files\TeamYearlyRanking.csv",
+    #         'a+', newline='', encoding='utf-16') as csv_write_file:
+    #         csv_writer = csv.writer(csv_write_file, delimiter=',',
+    #             quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    #         for row in row_list:
+    #             writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+    #             writeout.append(row[0])
+    #             writeout.append(divisions[row[0]])
+    #             writeout.append(row[1])
+    #             csv_writer.writerow(writeout)
+    #     csv_write_file.close()
+
+    #     # plot the updated year on year data
+    #     plotting_queue.put((plot_team_trend_set,
+    #         ("Output_Files\Team_Files\Trend_Files\TeamYearlyRanking.csv",
+    #         ["Season", "Rating Score"], 1.1, -.1, sigmoid_ticks,
+    #         "Graphs/Teams/Final_Rating_Score/year_on_year_score.png")))
+        
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
     for i in range(subprocess_count):
@@ -1875,7 +1917,7 @@ def run_team_engine():
     for process in plotting_process_list:
         process.join()
 
-    # remove all the instance files
+    # remove all the instance files to save clutter
     for dir in \
         os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
         for file in dir[2]:
@@ -2267,7 +2309,48 @@ def run_player_engine() -> None:
         "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
         True)))
 
+    # remove all the instance files
+    if REG_SEASON_COMPLETE:
+        header_row = True
+        row_list = []        
 
+        # open the total rating file for all teams and copy out the data
+        print("Reading Out Goalie Total File")
+        with open(
+            "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+            'r', newline='', encoding='utf-16') as csv_read_file:
+            csv_reader = csv.reader(csv_read_file, delimiter='\t', quotechar='|',
+                quoting=csv.QUOTE_MINIMAL)
+            for row in csv_reader:
+                if header_row:
+                    header_row = False
+                    continue
+                row_list.append(row)
+                if len(row_list) == 10:
+                    break
+        csv_read_file.close()
+
+        # now rewrite the data to a year on year trend file with extra headers
+        print("Writing Out Goalie Updates")
+        with open(
+            "Output_Files\Goalie_Files\Trend_Files\GoalieYearlyRanking.csv",
+            'a+', newline='', encoding='utf-16') as csv_write_file:
+            csv_writer = csv.writer(csv_write_file, delimiter=',',
+                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            for row in row_list:
+                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout.append(row[0])
+                writeout.append(row[2])
+                writeout.append(row[1])
+                csv_writer.writerow(writeout)
+        csv_write_file.close()
+
+        # plot the updated year on year data
+        plotting_queue.put((plot_player_trend_set,
+            ("Output_Files\Goalie_Files\Trend_Files\GoalieYearlyRanking.csv",
+            ["Season", "Total Rating"], 1.1, -.1, sigmoid_ticks,
+            "Graphs/Goalies/Goalie_Total_Rating/year_on_year_score.png")))
+        
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
     for i in range(int(subprocess_count/2)):
@@ -2276,7 +2359,6 @@ def run_player_engine() -> None:
         while process.is_alive():
             pass
 
-    # remove all the instance files
     for dir in \
         os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
         for file in dir[2]:
@@ -2288,7 +2370,8 @@ def run_player_engine() -> None:
             os.remove(os.getcwd() +
                 "\Output_Files\Forward_Files\Instance_Files\\" + file)
     for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Defensemen_Files\Instance_Files"):
+        os.walk(os.getcwd() +
+            "\Output_Files\Defensemen_Files\Instance_Files"):
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
@@ -2298,6 +2381,7 @@ if __name__ == "__main__":
 
     UPDATE_TRENDS = False
     REG_SEASON_COMPLETE = False
+    SEASON = "20222023"
     start = time.time()
     freeze_support()
 

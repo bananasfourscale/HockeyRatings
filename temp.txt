@@ -59,7 +59,7 @@ def calculate_defensive_rating(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
             defensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
+    team_engine_plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
         ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
@@ -125,7 +125,7 @@ def calculate_offensive_rating(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
             offensive_rating_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
+    team_engine_plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
         ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
@@ -185,7 +185,7 @@ def calculate_recent_form(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
             recent_form_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
+    team_engine_plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
         ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Recent_Form/recent_form_trend.png")))
@@ -224,7 +224,7 @@ def calculate_strenght_of_schedule(update_trends : bool=True) -> None:
     if update_trends:
         update_trend_file("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
             strength_of_schedule_get_dict())
-    team_engine_plotting_queue.put((plot_trend_set,
+    team_engine_plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
         ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
         "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))

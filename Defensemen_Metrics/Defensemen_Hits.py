@@ -10,8 +10,11 @@ def defensemen_hits_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for defensemen in match_data.keys():
-        hits[defensemen] = \
-            [match_data[defensemen][0], match_data[defensemen][1]["hits"]]
+        try:
+            hits[defensemen] = \
+                [match_data[defensemen][0], match_data[defensemen][1]["hits"]]
+        except KeyError:
+            hits[defensemen] = [match_data[defensemen][0], 0]
     return hits
 
 

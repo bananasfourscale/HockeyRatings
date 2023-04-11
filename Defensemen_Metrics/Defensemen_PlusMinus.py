@@ -10,8 +10,11 @@ def defensemen_plus_minus_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for defensemen in match_data.keys():
-        plus_minus[defensemen] = [match_data[defensemen][0],
-            match_data[defensemen][1]["plusMinus"]]
+        try:
+            plus_minus[defensemen] = [match_data[defensemen][0],
+                match_data[defensemen][1]["plusMinus"]]
+        except KeyError:
+            plus_minus[defensemen] = [match_data[defensemen][0], 0]
     return plus_minus
 
 

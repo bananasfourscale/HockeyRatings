@@ -52,7 +52,7 @@ def average_rankings_parse(file_name : str = "") -> None:
     header_row = True
 
     # open the average rating file
-    with open(file_name, newline='', encoding='utf-8') as csv_data_file:
+    with open(file_name, newline='', encoding='utf-16') as csv_data_file:
         ratings = csv.reader(csv_data_file, delimiter = ',')
 
         # loop through the lines of file

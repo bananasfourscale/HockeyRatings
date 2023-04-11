@@ -28,6 +28,7 @@ def goalie_goals_against_add_match_data(goalie_goals_against_data : dict={}) \
 def goalie_goals_against_scale_by_utilization(goalie_utilzation : dict={}) \
                                                                         -> None:
     for goalie in goalie_goals_against_rating.keys():
+        # print(goalie, goalie_goals_against_rating[goalie])
         goalie_goals_against_rating[goalie] = \
             (goalie_goals_against_rating[goalie] + 1) / \
                 goalie_utilzation[goalie]

@@ -10,8 +10,12 @@ def defensemen_blocks_get_data_set(match_data : dict={}) -> dict:
     # loop through and populate the time on ice
     blocks = {}
     for defensemen in match_data.keys():
-        blocks[defensemen] = \
-            [match_data[defensemen][0], match_data[defensemen][1]["blocked"]]
+        try:
+            blocks[defensemen] = \
+                [match_data[defensemen][0],
+                match_data[defensemen][1]["blocked"]]
+        except KeyError:
+            blocks[defensemen] = [match_data[defensemen][0], 0]
     return blocks
         
 

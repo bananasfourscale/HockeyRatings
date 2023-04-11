@@ -25,28 +25,36 @@ def goalie_save_percentage_get_data_set(match_data : dict={}) -> list:
         goalie_teams_set[goalie] = match_data[goalie][0]
 
         # get even strength data
-        even_strength_sp[goalie] = [
-            match_data[goalie][1]["evenSaves"]**2,
-            match_data[goalie][1]["evenShotsAgainst"]
-        ]
+        try:
+            even_strength_sp[goalie] = [match_data[goalie][1]["evenSaves"]**2,
+                match_data[goalie][1]["evenShotsAgainst"]]
+        except KeyError:
+            even_strength_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+                match_data[goalie][1]["shots"]]
 
         # get powerplay data if it exist (own team short handed)
-        if match_data[goalie][1]["powerPlayShotsAgainst"] > 0:
-            power_play_sp[goalie] = [
-            match_data[goalie][1]["powerPlaySaves"]**2,
-            match_data[goalie][1]["powerPlayShotsAgainst"]
-        ]
-        else:
-            power_play_sp[goalie] = [0,0]
+        try:
+            if match_data[goalie][1]["powerPlayShotsAgainst"] > 0:
+                power_play_sp[goalie] = [
+                    match_data[goalie][1]["powerPlaySaves"]**2,
+                    match_data[goalie][1]["powerPlayShotsAgainst"]]
+            else:
+                power_play_sp[goalie] = [0,0]
+        except KeyError:
+            power_play_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+                match_data[goalie][1]["shots"]]
 
         # get short handed data if it exist (own team power play)
-        if match_data[goalie][1]["shortHandedShotsAgainst"] > 0:
-            penalty_kill_sp[goalie] = [
-            match_data[goalie][1]["shortHandedSaves"]**2,
-            match_data[goalie][1]["shortHandedShotsAgainst"]
-        ]
-        else:
-            penalty_kill_sp[goalie] = [0,0]
+        try:
+            if match_data[goalie][1]["shortHandedShotsAgainst"] > 0:
+                penalty_kill_sp[goalie] = [
+                    match_data[goalie][1]["shortHandedSaves"]**2,
+                    match_data[goalie][1]["shortHandedShotsAgainst"]]
+            else:
+                penalty_kill_sp[goalie] = [0,0]
+        except KeyError:
+            penalty_kill_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+                match_data[goalie][1]["shots"]]
     return [goalie_teams_set, even_strength_sp, power_play_sp, penalty_kill_sp]
 
 

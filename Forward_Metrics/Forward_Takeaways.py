@@ -10,9 +10,12 @@ def forward_takeaways_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for forward in match_data.keys():
-        takeaways[forward] = [match_data[forward][0],
-            (match_data[forward][1]["takeaways"] - \
+        try:
+            takeaways[forward] = [match_data[forward][0],
+                (match_data[forward][1]["takeaways"] - \
                 match_data[forward][1]["giveaways"])]
+        except KeyError:
+            takeaways[forward] = [match_data[forward][0], 0]
     return takeaways
 
 

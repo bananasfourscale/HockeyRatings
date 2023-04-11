@@ -20,11 +20,14 @@ def forward_discipline_get_data(match_data : dict={}) -> dict:
     discipline = {}
     for forward in match_data.keys():
         time_on_ice = match_data[forward][1]["timeOnIce"].split(":")
-        discipline[forward] = [
-            match_data[forward][0],
-            match_data[forward][1]["penaltyMinutes"],
-            float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)
-        ]
+        try:
+            discipline[forward] = [
+                match_data[forward][0],
+                match_data[forward][1]["penaltyMinutes"],
+                float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)]
+        except KeyError:
+            discipline[forward] = [match_data[forward][0], 0,
+                float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)]
     return discipline
 
 

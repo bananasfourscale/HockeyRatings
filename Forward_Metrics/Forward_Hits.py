@@ -10,8 +10,11 @@ def forward_hits_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for forward in match_data.keys():
-        hits[forward] = \
-            [match_data[forward][0], match_data[forward][1]["hits"]]
+        try:
+            hits[forward] = \
+                [match_data[forward][0], match_data[forward][1]["hits"]]
+        except:
+            hits[forward] = [match_data[forward][0], 0]
     return hits
 
 

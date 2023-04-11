@@ -47,10 +47,10 @@ recent_form_trends = {
 
 
 class recent_form_weights(Enum):
-    LAST_10 = 0.25
-    LAST_20 = 0.15
-    LAST_40 = 0.10
-    STREAK = 0.50
+    LAST_10 = 0.35
+    LAST_20 = 0.25
+    LAST_40 = 0.15
+    STREAK = 0.25
 
 
 def recent_form_get_dict() -> dict:

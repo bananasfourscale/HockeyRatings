@@ -36,21 +36,33 @@ team_color_hex_codes = {
     'Vegas Golden Knights' : "#B4975A",
     'Washington Capitals' : "#880000",
     'Winnipeg Jets' : "#8E9090",
+    'Phoenix Coyotes' : "#8C2633",
+    'Atlanta Thrashers' : "#041E42",
+    'Winnipeg Jets (1979)' : "#8E9090",
+    'Hartford Whalers' : "#046A38",
+    'Quebec Nordiques' : "#6F263D",
+    'Minnesota North Stars' : "#006847",
+    'Colorado Rockies' : "#001F38",
+    'Atlanta Flames' : "#041E42",
+    'Kansas City Scouts' : "#001F38",
+    'California Golden Seals' : "#FAEE00",
+    'Oakland Seals' : "#FAEE00",
+    'Cleveland Barons' : "#CC0000",
 }
 
 
 def plot_data_set(csv_file : str = "", axis : list = [],
-                  upper_bound : float = 0.0, lower_bound : float = 0.0,
-                  tick_set : list = [], image_file : str = "",
-                  ascending : bool=False) -> None:
+    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
+    image_file : str = "", ascending : bool=False) -> None:
+
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
     sns.set_theme(font='Times New Roman')
     plotter.figure(figsize=(25, 10), dpi=100)
-    player_color_sorted_list = []
-    for player in plot_data.loc[:,"Team"]:
-        player_color_sorted_list.append(team_color_hex_codes[player])
-    team_palette = sns.color_palette(player_color_sorted_list)
+    team_color_sorted_list = []
+    for team in plot_data.loc[:,"Team"]:
+        team_color_sorted_list.append(team_color_hex_codes[team])
+    team_palette = sns.color_palette(team_color_sorted_list)
     plot = sns.barplot(data=plot_data, x=axis[0], y=axis[1],
         palette=team_palette)
     plot.set(xticks=range(len(list(team_color_hex_codes.values()))))
@@ -75,17 +87,56 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     plotter.close()
 
 
-def plot_trend_set(csv_file : str = "", axis : list = [],
-                   upper_bound : float = 0.0, lower_bound : float = 0.0,
-                   tick_set : list = [], image_file : str = "") -> None:
-    plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-8')
+def plot_team_trend_set(csv_file : str = "", axis : list = [],
+    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
+    image_file : str = "") -> None:
+    plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-16')
     sns.set_theme(font='Times New Roman')
-    plotter.figure(figsize=(25, 10), dpi=100)
-    team_palette = sns.color_palette(list(team_color_hex_codes.values()))
-    plot = sns.lineplot(data=plot_data, x=axis[0], y=axis[1],
+    team_color_sorted_list = []
+    season_list = []
+    team_list = []
+    for date in plot_data.loc[:,axis[0]]:
+        if date not in season_list:
+            season_list.append(date)
+    plotter.figure(figsize=(len(season_list)*4, 20), dpi=100)
+    for team in plot_data.loc[:,"Team"]:
+        if team not in team_list:
+            team_color_sorted_list.append(team_color_hex_codes[team])
+            team_list.append(team)
+    team_palette = sns.color_palette(team_color_sorted_list)
+    plot = sns.lineplot(data=plot_data, x=str(axis[0]), y=axis[1],
         hue="Team", style="Division",palette=team_palette, marker='s')
     plot.set(yticks=tick_set)
-    plotter.tick_params(axis='x', which='major', labelsize=8)
+    plotter.tick_params(axis='x', which='major', labelsize=16)
+    plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    plotter.ylim(lower_bound, upper_bound)
+    plotter.savefig(image_file, bbox_inches='tight')
+    plotter.clf()
+    plotter.close()
+
+
+def plot_player_trend_set(csv_file : str = "", axis : list = [],
+    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
+    image_file : str = "", ascending: bool=False)  -> None:
+    plot_data = pd.read_csv(csv_file, delimiter=',', encoding='utf-16')
+    plot_data = plot_data.sort_values(axis[1], ascending=ascending)
+    sns.set_theme(font='Times New Roman')
+    team_color_sorted_list = []
+    season_list = []
+    team_list = []
+    for date in plot_data.loc[:,axis[0]]:
+        if date not in season_list:
+            season_list.append(date)
+    plotter.figure(figsize=(len(season_list)*4, 20), dpi=100)
+    for team in plot_data.loc[:,"Team"]:
+        if team not in team_list:
+            team_color_sorted_list.append(team_color_hex_codes[team])
+            team_list.append(team)
+    team_palette = sns.color_palette(team_color_sorted_list)
+    plot = sns.lineplot(data=plot_data, x=str(axis[0]), y=axis[1],
+        hue="Team", palette=team_palette, marker='s')
+    plot.set(yticks=tick_set)
+    plotter.tick_params(axis='x', which='major', labelsize=16)
     plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
     plotter.ylim(lower_bound, upper_bound)
     plotter.savefig(image_file, bbox_inches='tight')
@@ -94,9 +145,8 @@ def plot_trend_set(csv_file : str = "", axis : list = [],
 
 
 def plot_player_ranking(csv_file : str = "", axis : list = [],
-                        upper_bound : float = 0.0, lower_bound : float = 0.0,
-                        tick_set : list = [], image_file : str = "",
-                        ascending: bool=False) -> None:
+    upper_bound : float = 0.0, lower_bound : float = 0.0, tick_set : list = [],
+    image_file : str = "", ascending: bool=False) -> None:
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     plot_data = plot_data.sort_values(axis[1], ascending=ascending)
     sns.set_theme(font='Times New Roman')
@@ -123,6 +173,12 @@ def plot_player_ranking(csv_file : str = "", axis : list = [],
             plot_data.min().loc[axis[1]] - (plot_data.min().loc[axis[1]] * 0.10)
         plot_max = \
             plot_data.max().loc[axis[1]] + (plot_data.min().loc[axis[1]] * 0.10)
+        
+        # if the data is empty then just clear the figure and return
+        if (plot_min == 0) and (plot_max == 0):
+            plotter.clf()
+            plotter.close()
+            return
         plotter.xlim(plot_min, plot_max)
     else:
         plotter.xlim(lower_bound, upper_bound)

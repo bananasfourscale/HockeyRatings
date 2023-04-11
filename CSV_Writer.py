@@ -4,7 +4,7 @@ from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 
 def write_out_file(file_name : str = "", header_row : list = [],
-                   rating_list : dict = {}) -> None:
+    rating_list : dict = {}) -> None:
     with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
@@ -14,9 +14,8 @@ def write_out_file(file_name : str = "", header_row : list = [],
 
 
 def write_out_player_file(file_name : str = "", header_row : list = [],
-                          rating_list : dict = {}, player_team_list : dict = {},
-                          ascending=True) \
-                                                                    -> None:
+    rating_list : dict = {}, player_team_list : dict = {}, ascending=True) \
+                                                                        -> None:
     with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
@@ -52,7 +51,7 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {}) -> None:
     # get the current date and version for that column
     date_rating = date_split[2] + "/" + date_split[1] + "/" + date_split[0] + \
         " (v" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + ")"
-    with open(file_name, 'a+', newline='', encoding='utf-8') as csv_date_file:
+    with open(file_name, 'a+', newline='', encoding='utf-16') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter=',', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
 

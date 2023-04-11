@@ -20,11 +20,14 @@ def defensemen_discipline_get_data(match_data : dict={}) -> dict:
     discipline = {}
     for defensemen in match_data.keys():
         time_on_ice = match_data[defensemen][1]["timeOnIce"].split(":")
-        discipline[defensemen] = [
-            match_data[defensemen][0],
-            match_data[defensemen][1]["penaltyMinutes"],
-            float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)
-        ]
+        try:
+            discipline[defensemen] = [
+                match_data[defensemen][0],
+                match_data[defensemen][1]["penaltyMinutes"],
+                float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)]
+        except KeyError:
+            discipline[defensemen] = [match_data[defensemen][0], 0,
+                float(time_on_ice[0]) + (float(time_on_ice[1]) / 60)]
     return discipline
 
 

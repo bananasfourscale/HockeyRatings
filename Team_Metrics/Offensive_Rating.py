@@ -93,22 +93,36 @@ def offensive_rating_get_data_set(match_data : dict={}) -> list:
         "teamStats"]["teamSkaterStats"]["shots"]
     goals_for_data[home_team] = match_data['boxscore']["teams"]["home"][
         "teamStats"]["teamSkaterStats"]["goals"]
-    power_play_data[home_team] = [
-        match_data['boxscore']["teams"]["home"]["teamStats"][
-            "teamSkaterStats"]["powerPlayGoals"],
-        match_data['boxscore']["teams"]["home"]["teamStats"][
-            "teamSkaterStats"]["powerPlayOpportunities"]]
+    try:
+        power_play_data[home_team] = [
+            match_data['boxscore']["teams"]["home"]["teamStats"][
+                "teamSkaterStats"]["powerPlayGoals"],
+            match_data['boxscore']["teams"]["home"]["teamStats"][
+                "teamSkaterStats"]["powerPlayOpportunities"]]
+    except KeyError:
+        power_play_data[home_team] = [
+            match_data['boxscore']["teams"]["home"]["teamStats"][
+                "teamSkaterStats"]["powerPlayGoals"],
+            (match_data['boxscore']["teams"]["away"]["teamStats"][
+                "teamSkaterStats"]["pim"] / 2)]
     
     # away data
     shots_for_data[away_team] = match_data['boxscore']["teams"]["away"][
         "teamStats"]["teamSkaterStats"]["shots"]
     goals_for_data[away_team] = match_data['boxscore']["teams"]["away"][
         "teamStats"]["teamSkaterStats"]["goals"]
-    power_play_data[away_team] = [
-        match_data['boxscore']["teams"]["away"]["teamStats"][
-            "teamSkaterStats"]["powerPlayGoals"],
-        match_data['boxscore']["teams"]["away"]["teamStats"][
-            "teamSkaterStats"]["powerPlayOpportunities"]]
+    try:
+        power_play_data[away_team] = [
+            match_data['boxscore']["teams"]["away"]["teamStats"][
+                "teamSkaterStats"]["powerPlayGoals"],
+            match_data['boxscore']["teams"]["away"]["teamStats"][
+                "teamSkaterStats"]["powerPlayOpportunities"]]
+    except KeyError:
+        power_play_data[away_team] = [
+            match_data['boxscore']["teams"]["away"]["teamStats"][
+                "teamSkaterStats"]["powerPlayGoals"],
+            (match_data['boxscore']["teams"]["home"]["teamStats"][
+                "teamSkaterStats"]["pim"] / 2)]
     return [shots_for_data, goals_for_data, power_play_data]
 
 

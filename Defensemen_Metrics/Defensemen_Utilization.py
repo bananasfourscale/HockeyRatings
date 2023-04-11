@@ -48,20 +48,30 @@ def defensemen_utilization_get_data_set(match_data : dict={}) -> list:
         # stats shortcuts
         player_stats = match_data[defensemen][1]
 
-        # even strength time directly gathered
-        time_on_ice = player_stats["evenTimeOnIce"].split(":")
-        even_time[defensemen] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+        try:
 
-        # power play time relative to how many power plays this team gets
-        time_on_ice = player_stats["powerPlayTimeOnIce"].split(":")
-        pp_time[defensemen] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+            # even strength time directly gathered
+            time_on_ice = player_stats["evenTimeOnIce"].split(":")
+            even_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
 
-        # penalty kill time relative to how many power plays this team gets
-        time_on_ice = player_stats["shortHandedTimeOnIce"].split(":")
-        pk_time[defensemen] = \
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+            # power play time relative to how many power plays this team gets
+            time_on_ice = player_stats["powerPlayTimeOnIce"].split(":")
+            pp_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+
+            # penalty kill time relative to how many power plays this team gets
+            time_on_ice = player_stats["shortHandedTimeOnIce"].split(":")
+            pk_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+        except KeyError:
+            time_on_ice = player_stats["timeOnIce"].split(":")
+            even_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+            pp_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
+            pk_time[defensemen] = \
+                (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
     return [defensemen_team_set, even_time, pp_time, pk_time]
 
 

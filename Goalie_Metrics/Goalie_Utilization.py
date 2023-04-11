@@ -9,10 +9,8 @@ def goalie_utilization_get_data_set(match_data : dict={}) -> dict:
     utilization = {}
     for goalie in match_data.keys():
         time_on_ice = match_data[goalie][1]["timeOnIce"].split(":")
-        utilization[goalie] = [
-            match_data[goalie][0],
-            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))
-        ]
+        utilization[goalie] = [match_data[goalie][0],
+            (float(time_on_ice[0]) + (float(time_on_ice[1]) / 60))]
     return utilization
 
 

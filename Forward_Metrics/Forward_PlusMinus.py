@@ -10,8 +10,11 @@ def forward_plus_minus_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice
     for forward in match_data.keys():
-        plus_minus[forward] = [match_data[forward][0],
-            match_data[forward][1]["plusMinus"]]
+        try:
+            plus_minus[forward] = [match_data[forward][0],
+                match_data[forward][1]["plusMinus"]]
+        except KeyError:
+            plus_minus[forward] = [match_data[forward][0], 0]
     return plus_minus
 
 

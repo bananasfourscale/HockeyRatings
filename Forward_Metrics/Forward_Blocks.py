@@ -10,8 +10,11 @@ def forward_blocks_get_data_set(match_data : dict={}) -> dict:
     # loop through and populate the time on ice
     blocks = {}
     for forward in match_data.keys():
-        blocks[forward] = \
-            [match_data[forward][0], match_data[forward][1]["blocked"]]
+        try:
+            blocks[forward] = \
+                [match_data[forward][0], match_data[forward][1]["blocked"]]
+        except KeyError:
+            blocks[forward] = [match_data[forward][0], 0]
     return blocks
         
 

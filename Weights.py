@@ -33,6 +33,18 @@ divisions = {
     'Vegas Golden Knights' : "PAC",
     'Washington Capitals' : "MET",
     'Winnipeg Jets' : "CEN",
+    'Phoenix Coyotes' : "CEN",
+    'Atlanta Thrashers' : "MET",
+    'Winnipeg Jets (1979)' : "CEN",
+    'Hartford Whalers' : "MET",
+    'Quebec Nordiques' : "CEN",
+    'Minnesota North Stars' : "CEN",
+    'Colorado Rockies' : "CEN",
+    'Atlanta Flames' : "MET",
+    'Kansas City Scouts' : "CEN",
+    'California Golden Seals' : "PAC",
+    'Oakland Seals' : "PAC",
+    'Cleveland Barons' : "CEN",
 }
 
 
