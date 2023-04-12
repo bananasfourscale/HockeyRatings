@@ -4,40 +4,9 @@ strength_of_schedule = {}
 
 strength_of_schedule_games_played = {}
 
-strength_of_schedule_trends = {
-    'Anaheim Ducks' : [],
-    'Arizona Coyotes' : [],
-    'Boston Bruins' : [],
-    'Buffalo Sabres' : [],
-    'Calgary Flames' : [],
-    'Carolina Hurricanes' : [],
-    'Chicago Blackhawks' : [],
-    'Colorado Avalanche' : [],
-    'Columbus Blue Jackets' : [],
-    'Dallas Stars' : [],
-    'Detroit Red Wings' : [],
-    'Edmonton Oilers' : [],
-    'Florida Panthers' : [],
-    'Los Angeles Kings' : [],
-    'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
-    'Nashville Predators' : [],
-    'New Jersey Devils' : [],
-    'New York Islanders' : [],
-    'New York Rangers' : [],
-    'Ottawa Senators' : [],
-    'Philadelphia Flyers' : [],
-    'Pittsburgh Penguins' : [],
-    'San Jose Sharks' : [],
-    'Seattle Kraken' : [],
-    'St. Louis Blues' : [],
-    'Tampa Bay Lightning' : [],
-    'Toronto Maple Leafs' : [],
-    'Vancouver Canucks' : [],
-    'Vegas Golden Knights' : [],
-    'Washington Capitals' : [],
-    'Winnipeg Jets' : [],
-}
+sos_rating = {}
+
+strength_of_schedule_trends = {}
 
 class strength_of_schedule_weights(Enum):
     WIN_REGULATION_WEIGHT = 1.0
@@ -57,7 +26,7 @@ class match_indecies(Enum):
 
 
 def strength_of_schedule_get_dict() -> dict:
-    return strength_of_schedule
+    return sos_rating
 
 
 def strength_of_schedule_get_games_played_dict() -> dict:
@@ -103,17 +72,12 @@ def strength_of_schedule_get_data_set(match_data : dict={}) -> dict:
 def strength_of_schedule_add_match_data(sos_data : dict={}) -> None:
     for team in sos_data.keys():
         
-        # first just increment the games played for each team which will be used
-        # to scale the score later
+        # add games played and sos data for each team to be scaled later
         if team in strength_of_schedule_games_played.keys():
             strength_of_schedule_games_played[team] += 1
-        else:
-            strength_of_schedule_games_played[team] = 1
-
-        # then add the game value for this specific game to the unscaled result
-        if team in strength_of_schedule.keys():
             strength_of_schedule[team] += sos_data[team]
         else:
+            strength_of_schedule_games_played[team] = 1
             strength_of_schedule[team] = sos_data[team]
 
 
@@ -121,5 +85,14 @@ def strength_of_schedule_scale_by_game() -> None:
 
     # place the requried data into a dictionary for later use
     for team in strength_of_schedule.keys():
-        strength_of_schedule[team] /= \
-            strength_of_schedule_games_played[team]
+        sos_rating[team] = (
+            strength_of_schedule[team] / strength_of_schedule_games_played[team]
+        )
+
+
+def strength_of_schedule_update_trends() -> None:
+    for team in sos_rating.keys():
+        if team in strength_of_schedule_trends.keys():
+            strength_of_schedule_trends[team].append(sos_rating[team])
+        else:
+            strength_of_schedule_trends[team] = list(sos_rating[team])

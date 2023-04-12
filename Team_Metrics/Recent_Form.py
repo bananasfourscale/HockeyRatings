@@ -1,49 +1,24 @@
 from enum import Enum
 
-recent_form_rating = {}
-
 streak_info = {}
+
+streak_rating = {}
 
 last_10_info = {}
 
+last_10_rating = {}
+
 last_20_info = {}
+
+last_20_rating = {}
 
 last_40_info = {}
 
-recent_form_trends = {
-    'Anaheim Ducks' : [],
-    'Arizona Coyotes' : [],
-    'Boston Bruins' : [],
-    'Buffalo Sabres' : [],
-    'Calgary Flames' : [],
-    'Carolina Hurricanes' : [],
-    'Chicago Blackhawks' : [],
-    'Colorado Avalanche' : [],
-    'Columbus Blue Jackets' : [],
-    'Dallas Stars' : [],
-    'Detroit Red Wings' : [],
-    'Edmonton Oilers' : [],
-    'Florida Panthers' : [],
-    'Los Angeles Kings' : [],
-    'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
-    'Nashville Predators' : [],
-    'New Jersey Devils' : [],
-    'New York Islanders' : [],
-    'New York Rangers' : [],
-    'Ottawa Senators' : [],
-    'Philadelphia Flyers' : [],
-    'Pittsburgh Penguins' : [],
-    'San Jose Sharks' : [],
-    'Seattle Kraken' : [],
-    'St. Louis Blues' : [],
-    'Tampa Bay Lightning' : [],
-    'Toronto Maple Leafs' : [],
-    'Vancouver Canucks' : [],
-    'Vegas Golden Knights' : [],
-    'Washington Capitals' : [],
-    'Winnipeg Jets' : [],
-}
+last_40_rating = {}
+
+recent_form_rating = {}
+
+recent_form_trends = {}
 
 
 class recent_form_weights(Enum):
@@ -58,19 +33,19 @@ def recent_form_get_dict() -> dict:
 
 
 def recent_form_get_streak_dict() -> dict:
-    return streak_info
+    return streak_rating
 
 
 def recent_form_get_last_10_dict() -> dict:
-    return last_10_info
+    return last_10_rating
 
 
 def recent_form_get_last_20_dict() -> dict:
-    return last_20_info
+    return last_20_rating
 
 
 def recent_form_get_last_40_dict() -> dict:
-    return last_40_info
+    return last_40_rating
 
 
 def recent_form_get_trend_dict() -> dict:
@@ -164,27 +139,36 @@ def recent_form_add_match_to_recent_lists(match_score : dict={}) -> None:
             last_40_info[team] = [match_score[team]]
 
 
-def recent_form_add_match_data(recent_form_data : dict={}) -> None:
+def recent_form_add_match_data(recent_form_data : list=[]) -> None:
     recent_form_add_match_to_streak(recent_form_data[0])
     recent_form_add_match_to_recent_lists(recent_form_data[1])
 
 
 def recent_form_calculate_all() -> None:
     for team in streak_info.keys():
-        streak_info[team] = streak_info[team][1] / streak_info[team][2]
-        last_10_info[team] = sum(last_10_info[team])
-        last_20_info[team] = sum(last_20_info[team])
-        last_40_info[team] = sum(last_40_info[team])
+        streak_rating[team] = streak_info[team][1] / streak_info[team][2]
+        last_10_rating[team] = sum(last_10_info[team])
+        last_20_rating[team] = sum(last_20_info[team])
+        last_40_rating[team] = sum(last_40_info[team])
 
 
 def recent_form_combine_metrics() -> None:
     for team in streak_info.keys():
-        recent_form_rating[team] = \
-            (streak_info[team] * \
-                recent_form_weights.STREAK.value) + \
-            (last_10_info[team] * \
-                recent_form_weights.LAST_10.value) + \
-            (last_20_info[team] * \
-                recent_form_weights.LAST_20.value) + \
-            (last_40_info[team] * \
+        recent_form_rating[team] = (
+            (streak_info[team] *
+                recent_form_weights.STREAK.value) +
+            (last_10_info[team] *
+                recent_form_weights.LAST_10.value) +
+            (last_20_info[team] *
+                recent_form_weights.LAST_20.value) +
+            (last_40_info[team] *
                 recent_form_weights.LAST_40.value)
+        )
+
+
+def recent_form_update_trends() -> None:
+    for team in recent_form_rating.keys():
+        if team in recent_form_trends.keys():
+            recent_form_trends[team].append(recent_form_rating[team])
+        else:
+            recent_form_trends[team] = list(recent_form_rating[team])

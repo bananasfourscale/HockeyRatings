@@ -1,39 +1,6 @@
 clutch_rating = {}
 
-clutch_trends = {
-    'Anaheim Ducks' : [],
-    'Arizona Coyotes' : [],
-    'Boston Bruins' : [],
-    'Buffalo Sabres' : [],
-    'Calgary Flames' : [],
-    'Carolina Hurricanes' : [],
-    'Chicago Blackhawks' : [],
-    'Colorado Avalanche' : [],
-    'Columbus Blue Jackets' : [],
-    'Dallas Stars' : [],
-    'Detroit Red Wings' : [],
-    'Edmonton Oilers' : [],
-    'Florida Panthers' : [],
-    'Los Angeles Kings' : [],
-    'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
-    'Nashville Predators' : [],
-    'New Jersey Devils' : [],
-    'New York Islanders' : [],
-    'New York Rangers' : [],
-    'Ottawa Senators' : [],
-    'Philadelphia Flyers' : [],
-    'Pittsburgh Penguins' : [],
-    'San Jose Sharks' : [],
-    'Seattle Kraken' : [],
-    'St. Louis Blues' : [],
-    'Tampa Bay Lightning' : [],
-    'Toronto Maple Leafs' : [],
-    'Vancouver Canucks' : [],
-    'Vegas Golden Knights' : [],
-    'Washington Capitals' : [],
-    'Winnipeg Jets' : [],
-}
+clutch_trends = {}
 
 
 def clutch_rating_get_dict() -> dict:
@@ -106,7 +73,7 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
 
 
 def clutch_calculate_lead_protection(match_data : dict={}) -> None:
-    clutch_data = []
+    clutch_data = {}
     lead_protection_data = clutch_get_lead_data(match_data)
     for team in lead_protection_data.keys():
 
@@ -123,21 +90,21 @@ def clutch_calculate_lead_protection(match_data : dict={}) -> None:
         else:
             win_lead_second_per = lead_protection_data[team][1][0] / \
                 lead_protection_data[team][1][1]
-        clutch_data.append(
-            {team:(win_lead_first_per) + (win_lead_second_per * 2)})
+        clutch_data[team] = (win_lead_first_per) + (win_lead_second_per * 2)
     return clutch_data
 
+
 def clutch_add_match_data(clutch_data : dict={}) -> None:
-    if list(clutch_data[0].keys())[0] in clutch_rating.keys():
-        clutch_rating[list(clutch_data[0].keys())[0]] += \
-            list(clutch_data[0].values())[0]
-    else:
-        clutch_rating[list(clutch_data[0].keys())[0]] = \
-            list(clutch_data[0].values())[0]
-        
-    if list(clutch_data[1].keys())[0] in clutch_rating.keys():
-        clutch_rating[list(clutch_data[1].keys())[0]] += \
-            list(clutch_data[1].values())[0]
-    else:
-        clutch_rating[list(clutch_data[1].keys())[0]] = \
-            list(clutch_data[1].values())[0]
+    for team in clutch_data.keys():
+        if team in clutch_rating.keys():
+            clutch_rating[team] += clutch_data[team]
+        else:
+            clutch_rating[team] = clutch_data[team]
+
+
+def clutch_update_trend() -> None:
+    for team in clutch_rating.keys():
+        if team in clutch_trends.keys():
+            clutch_trends[team].append(clutch_rating[team])
+        else:
+            clutch_trends[team] = list(clutch_rating[team])

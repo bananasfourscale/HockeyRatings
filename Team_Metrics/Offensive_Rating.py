@@ -2,50 +2,23 @@ from enum import Enum
 
 shots_for = {}
 
+shots_for_unscaled = {}
+
 goals_for = {}
 
-power_play = {}
+goals_for_unscaled = {}
+
+pp_goals = {}
 
 pp_oppertunities = {}
+
+pp_rating = {}
 
 games_played = {}
 
 offensive_rating = {}
 
-offensive_rating_trends = {
-    'Anaheim Ducks' : [],
-    'Arizona Coyotes' : [],
-    'Boston Bruins' : [],
-    'Buffalo Sabres' : [],
-    'Calgary Flames' : [],
-    'Carolina Hurricanes' : [],
-    'Chicago Blackhawks' : [],
-    'Colorado Avalanche' : [],
-    'Columbus Blue Jackets' : [],
-    'Dallas Stars' : [],
-    'Detroit Red Wings' : [],
-    'Edmonton Oilers' : [],
-    'Florida Panthers' : [],
-    'Los Angeles Kings' : [],
-    'Minnesota Wild' : [],
-    'Montréal Canadiens' : [],
-    'Nashville Predators' : [],
-    'New Jersey Devils' : [],
-    'New York Islanders' : [],
-    'New York Rangers' : [],
-    'Ottawa Senators' : [],
-    'Philadelphia Flyers' : [],
-    'Pittsburgh Penguins' : [],
-    'San Jose Sharks' : [],
-    'Seattle Kraken' : [],
-    'St. Louis Blues' : [],
-    'Tampa Bay Lightning' : [],
-    'Toronto Maple Leafs' : [],
-    'Vancouver Canucks' : [],
-    'Vegas Golden Knights' : [],
-    'Washington Capitals' : [],
-    'Winnipeg Jets' : [],
-}
+offensive_rating_trends = {}
 
 class offensive_rating_weights(Enum):
     POWER_PLAY_STRENGTH = 0.20
@@ -66,7 +39,7 @@ def offensive_rating_get_goals_for_dict() -> dict:
 
 
 def offensive_rating_get_pp_dict() -> dict:
-    return power_play
+    return pp_rating
 
 
 def offensive_rating_get_trend_dict() -> dict:
@@ -128,100 +101,68 @@ def offensive_rating_get_data_set(match_data : dict={}) -> list:
 
 def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
 
-    home_team = list(offensive_data[0].keys())[0] 
-    away_team = list(offensive_data[0].keys())[1]
-    if home_team in shots_for.keys():
+    for team in list(offensive_data[0].keys()):
+        if team in shots_for.keys():
 
-        # shots against
-        shots_for[home_team] += \
-            list(offensive_data[0].values())[0]
-        
-        # goals against
-        goals_for[home_team] += \
-            list(offensive_data[1].values())[0]
-        
-        # penalty kill
-        power_play[home_team][0] += \
-            list(offensive_data[2].values())[0][0]
-        power_play[home_team][1] += \
-            list(offensive_data[2].values())[0][1]
-        
-        # games played
-        games_played[home_team] += 1
-    else:
+            # shots against
+            shots_for_unscaled[team] += offensive_data[0][team]
+            
+            # goals against
+            goals_for_unscaled[team] += offensive_data[1][team]
+            
+            # penalty kill
+            pp_goals[team][0] += offensive_data[2][team]
+            pp_oppertunities[team][1] += offensive_data[2][team]
+            
+            # games played
+            games_played[team] += 1
+        else:
 
-        # shots against
-        shots_for[home_team] = \
-            list(offensive_data[0].values())[0]
+            # shots against
+            shots_for_unscaled[team] = offensive_data[0][team]
+            
+            # goals against
+            goals_for_unscaled[team] = offensive_data[1][team]
+            
+            # penalty kill
+            pp_goals[team][0] = offensive_data[2][team]
+            pp_oppertunities[team][1] = offensive_data[2][team]
 
-        # goals against
-        goals_for[home_team] = \
-            list(offensive_data[1].values())[0]
-        
-        # penalty kill
-        power_play[home_team] = [list(offensive_data[2].values())[0][0],
-            list(offensive_data[2].values())[0][1]]
-        
-        # add to games played
-        games_played[home_team] = 1
-        
-    # away team
-    if away_team in shots_for.keys():
-        shots_for[away_team] += \
-            list(offensive_data[0].values())[1]
-
-        # goals against    
-        goals_for[away_team] += \
-            list(offensive_data[1].values())[1]
-
-        # penalty kill stats (needs to be converted after collection)
-        power_play[away_team][0] += \
-            list(offensive_data[2].values())[1][0]
-        power_play[away_team][1] += \
-            list(offensive_data[2].values())[1][1]
-        
-        # add to games played
-        games_played[away_team] += 1
-    else:
-        shots_for[away_team] = \
-            list(offensive_data[0].values())[1]
-
-        # goals against    
-        goals_for[away_team] = \
-            list(offensive_data[1].values())[1]
-
-        # penalty kill stats (needs to be converted after collection)
-        power_play[away_team] = [list(offensive_data[2].values())[1][0],
-            list(offensive_data[2].values())[1][1]]
-        
-        # add to games played
-        games_played[away_team] = 1
+            # games played
+            games_played[team] = 1
 
 
 def offensive_rating_calculate_power_play() -> None:
-    for team in power_play.keys():
+    for team in shots_for_unscaled.keys():
 
         # shots for divided by game
-        shots_for[team] /= games_played[team]
+        shots_for[team] = shots_for_unscaled[team] / games_played[team]
 
         # goals for divided by game
-        goals_for[team] /= games_played[team]
+        goals_for[team] = goals_for_unscaled[team] / games_played[team]
 
         # pp converted to percentage
-        pp_goals_for = power_play[team][0]
-        pp_oppertunities[team] = power_play[team][1]
-        if (pp_oppertunities[team] > 0):
-            power_play[team] = (pp_goals_for / pp_oppertunities[team])
+        if pp_oppertunities[team] > 0:
+            pp_rating[team] = (pp_goals[team] / pp_oppertunities[team])
         else:
-            power_play[team] = 0.0
+            pp_rating[team] = 0.0
 
 
-def offensive_rating_combine_metrics(metric_list : list=[]) -> None:
-    for team in metric_list[0].keys():
-        offensive_rating[team] = \
-            (metric_list[0][team] * \
-                offensive_rating_weights.SHOTS_PER_GAME.value) + \
-            (metric_list[1][team] * \
-                offensive_rating_weights.GOALS_PER_GAME.value) + \
-            (metric_list[2][team] * \
+def offensive_rating_combine_metrics() -> None:
+    for team in shots_for.keys():
+        offensive_rating[team] = (
+            (shots_for[team] *
+                offensive_rating_weights.SHOTS_PER_GAME.value) +
+            (goals_for[team] *
+                offensive_rating_weights.GOALS_PER_GAME.value) +
+            (pp_rating[team] *
                 offensive_rating_weights.POWER_PLAY_STRENGTH.value)
+        )
+
+
+def offensive_rating_update_trends() -> None:
+    for team in offensive_rating.keys():
+        if team in offensive_rating_trends.keys():
+            offensive_rating_trends[team].append(offensive_rating[team])
+        else:
+            offensive_rating_trends[team] = list(offensive_rating[team])
