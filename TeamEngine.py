@@ -2111,16 +2111,23 @@ def run_team_engine():
             for defenseman in sorted_defenseman:
 
                 # only account for top 6 starters
-                if defensemen_teams[defenseman] in average_defenseman_rating.keys():
-                    if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
-                        average_defenseman_rating[defensemen_teams[defenseman]][0] += i
-                        average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
+                if defensemen_teams[defenseman] in \
+                    average_defenseman_rating.keys():
+                    if average_defenseman_rating[
+                        defensemen_teams[defenseman]][1] < 7:
+                        average_defenseman_rating[
+                            defensemen_teams[defenseman]][0] += i
+                        average_defenseman_rating[
+                            defensemen_teams[defenseman]][1] += 1
                 else:
-                    average_defenseman_rating[defensemen_teams[defenseman]] = [i, 1]
+                    average_defenseman_rating[defensemen_teams[defenseman]] = \
+                        [i, 1]
                 i += 1
             for team in average_defenseman_rating:
-                average_player_rating[team][0] += average_defenseman_rating[team][0]
-                average_player_rating[team][1] += average_defenseman_rating[team][1]
+                average_player_rating[team][0] += \
+                    average_defenseman_rating[team][0]
+                average_player_rating[team][1] += \
+                    average_defenseman_rating[team][1]
                 average_defenseman_rating[team] = \
                     average_defenseman_rating[team][0] / \
                         average_defenseman_rating[team][1]
@@ -2184,6 +2191,7 @@ def run_team_engine():
             "Graphs/Teams/Final_Rating_Score/year_on_year_score.png")))
         
         ################ PLAYERS ##############
+        ### Goalies
         header_row = True
         row_list = []        
 
@@ -2224,6 +2232,88 @@ def run_team_engine():
             ["Season", "Total Rating", "Goalie"], 0.0, 0.0, sigmoid_ticks,
             "Graphs/Goalies/Goalie_Total_Rating/year_on_year_score.png")))
         
+        ### Forwards
+        header_row = True
+        row_list = []        
+
+        # open the total rating file for all teams and copy out the data
+        print("Reading Out Forward Total File")
+        with open(
+            "Output_Files/Forward_Files/Instance_Files/Forward_Total_Rating.csv",
+            'r', newline='', encoding='utf-16') as csv_read_file:
+            csv_reader = csv.reader(csv_read_file, delimiter='\t', quotechar='|',
+                quoting=csv.QUOTE_MINIMAL)
+            for row in csv_reader:
+                if header_row:
+                    header_row = False
+                    continue
+                row_list.append(row)
+                if len(row_list) == 10:
+                    break
+        csv_read_file.close()
+
+        # now rewrite the data to a year on year trend file with extra headers
+        print("Writing Out Goalie Updates")
+        with open(
+            "Output_Files\Forward_Files\Trend_Files\ForwardYearlyRanking.csv",
+            'a+', newline='', encoding='utf-16') as csv_write_file:
+            csv_writer = csv.writer(csv_write_file, delimiter=',',
+                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            for row in row_list:
+                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout.append(row[0].split(" ")[1] + " " + row[0].split(" ")[2])
+                writeout.append(row[2])
+                writeout.append(row[1])
+                csv_writer.writerow(writeout)
+        csv_write_file.close()
+
+        # plot the updated year on year data
+        plotting_queue.put((plot_player_trend_set,
+            ("Output_Files\Forward_Files\Trend_Files\ForwardYearlyRanking.csv",
+            ["Season", "Total Rating", "Forward"], 0.0, 0.0, sigmoid_ticks,
+            "Graphs/Forward/Forward_Total_Rating/year_on_year_score.png")))
+        
+        ### Defensemen
+        header_row = True
+        row_list = []        
+
+        # open the total rating file for all teams and copy out the data
+        print("Reading Out Defensemen Total File")
+        with open(
+            "Output_Files/Defensemen_Files/Instance_Files/Defensemen_Total_Rating.csv",
+            'r', newline='', encoding='utf-16') as csv_read_file:
+            csv_reader = csv.reader(csv_read_file, delimiter='\t', quotechar='|',
+                quoting=csv.QUOTE_MINIMAL)
+            for row in csv_reader:
+                if header_row:
+                    header_row = False
+                    continue
+                row_list.append(row)
+                if len(row_list) == 10:
+                    break
+        csv_read_file.close()
+
+        # now rewrite the data to a year on year trend file with extra headers
+        print("Writing Out Goalie Updates")
+        with open(
+            "Output_Files\Defensemen_Files\Trend_Files\DefensemenYearlyRanking.csv",
+            'a+', newline='', encoding='utf-16') as csv_write_file:
+            csv_writer = csv.writer(csv_write_file, delimiter=',',
+                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            for row in row_list:
+                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout.append(row[0].split(" ")[1] + " " + row[0].split(" ")[2])
+                writeout.append(row[2])
+                writeout.append(row[1])
+                csv_writer.writerow(writeout)
+        csv_write_file.close()
+
+        # plot the updated year on year data
+        plotting_queue.put((plot_player_trend_set,
+            ("Output_Files\Defensemen_Files\Trend_Files\DefensemenYearlyRanking.csv",
+            ["Season", "Total Rating", "Defenseman"], 0.0, 0.0, sigmoid_ticks,
+            "Graphs/Defensemen/Defensemen_Total_Rating/year_on_year_score.png")))
+        
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
     for i in range(subprocess_count):
@@ -2237,22 +2327,22 @@ def run_team_engine():
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Team_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Forward_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() +
-    #         "\Output_Files\Defensemen_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Goalie_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Forward_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() +
+            "\Output_Files\Defensemen_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
 
 
 if __name__ == "__main__":

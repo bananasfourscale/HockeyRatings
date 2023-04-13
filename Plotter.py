@@ -180,12 +180,25 @@ def plot_player_trend_set(csv_file : str = "", axis : list = [],
             team_color_sorted_list.append(team_color_hex_codes[team])
             team_list.append(team)
     team_palette = sns.color_palette(team_color_sorted_list)
+    if (upper_bound == 0.0) and (lower_bound == 0.0):
+        plot_min = \
+            plot_data.min().loc[axis[1]] - (plot_data.min().loc[axis[1]] * 0.10)
+        plot_max = \
+            plot_data.max().loc[axis[1]] + (plot_data.min().loc[axis[1]] * 0.10)
+        
+        # if the data is empty then just clear the figure and return
+        if (plot_min == 0) and (plot_max == 0):
+            plotter.clf()
+            plotter.close()
+            return
+        plotter.ylim(plot_min, plot_max)
+    else:
+        plotter.ylim(lower_bound, upper_bound)
     plot = sns.lineplot(data=plot_data, x=str(axis[0]), y=axis[1],
         hue="Team", style=axis[2], palette=team_palette, marker='s')
     plot.set(yticks=tick_set)
     plotter.tick_params(axis='x', which='major', labelsize=16)
     plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
-    plotter.ylim(lower_bound, upper_bound)
     plotter.savefig(image_file, bbox_inches='tight')
     plotter.clf()
     plotter.close()
