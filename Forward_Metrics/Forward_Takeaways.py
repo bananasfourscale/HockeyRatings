@@ -1,3 +1,5 @@
+forward_takeaway_base = {}
+
 forward_takeaways_rating = {}
 
 
@@ -22,20 +24,24 @@ def forward_takeaways_get_data_set(match_data : dict={}) -> dict:
 def forward_takeaways_add_match_data(forward_takeaways_data : dict={}) \
                                                                         -> None:
     for forward in forward_takeaways_data.keys():
-        if forward in forward_takeaways_rating.keys():
-            forward_takeaways_rating[forward] += \
+        if forward in forward_takeaway_base.keys():
+            forward_takeaway_base[forward] += \
                 forward_takeaways_data[forward][1]
         else:
-            forward_takeaways_rating[forward] = \
+            forward_takeaway_base[forward] = \
                 forward_takeaways_data[forward][1]
             
 
 def forward_takeaways_scale_by_utilization(player_utilization : dict={}) \
                                                                         -> None:
-    for forward in forward_takeaways_rating.keys():
-        if forward_takeaways_rating[forward] > 0:
-            forward_takeaways_rating[forward] *= \
-                (1 + player_utilization[forward])
+    for forward in forward_takeaway_base.keys():
+        if forward_takeaway_base[forward] > 0:
+            forward_takeaways_rating[forward] = (
+                forward_takeaway_base[forward] *
+                    (1 + player_utilization[forward])
+            )
         else:
-            forward_takeaways_rating[forward] /= \
-                (1 + player_utilization[forward])
+            forward_takeaways_rating[forward] = (
+                forward_takeaway_base[forward] /
+                    (1 + player_utilization[forward])
+            )

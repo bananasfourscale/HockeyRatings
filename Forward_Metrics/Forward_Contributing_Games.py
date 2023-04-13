@@ -1,3 +1,5 @@
+forward_contribution_base = {}
+
 forward_contributing_games_rating = {}
 
 
@@ -23,16 +25,18 @@ def forward_contributing_games_get_data_set(match_data : dict={}) -> list:
 def forward_contributing_games_add_match_data(
     forward_contribution_data : dict={}) -> None:
     for forward in forward_contribution_data.keys():
-        if forward in forward_contributing_games_rating.keys():
-            forward_contributing_games_rating[forward] += \
+        if forward in forward_contribution_base.keys():
+            forward_contribution_base[forward] += \
                 forward_contribution_data[forward][1]
         else:
-            forward_contributing_games_rating[forward] = \
+            forward_contribution_base[forward] = \
                 forward_contribution_data[forward][1]
             
 
 def forward_contributing_games_scale_by_games(
     teams_games_played : dict={}, forward_teams_dict : dict={}) -> None:
-    for forward in forward_contributing_games_rating.keys():
-        forward_contributing_games_rating[forward] /= \
-            teams_games_played[forward_teams_dict[forward]]
+    for forward in forward_contribution_base.keys():
+        forward_contributing_games_rating[forward] = (
+            forward_contribution_base[forward] /
+                teams_games_played[forward_teams_dict[forward]]
+        )

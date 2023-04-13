@@ -1,3 +1,5 @@
+forward_plus_minus_base = {}
+
 forward_plus_minus_rating = {}
 
 
@@ -21,20 +23,24 @@ def forward_plus_minus_get_data_set(match_data : dict={}) -> dict:
 def forward_plus_minus_add_match_data(forward_plus_minus_data : dict={}) \
                                                                         -> None:
     for forward in forward_plus_minus_data.keys():
-        if forward in forward_plus_minus_rating.keys():
-            forward_plus_minus_rating[forward] += \
+        if forward in forward_plus_minus_base.keys():
+            forward_plus_minus_base[forward] += \
                 forward_plus_minus_data[forward][1]
         else:
-            forward_plus_minus_rating[forward] = \
+            forward_plus_minus_base[forward] = \
                 forward_plus_minus_data[forward][1]
             
 
 def forward_plus_minus_scale_by_utilization(player_utilization : dict={}) \
                                                                         -> None:
-    for forward in forward_plus_minus_rating.keys():
-        if forward_plus_minus_rating[forward] > 0:
-            forward_plus_minus_rating[forward] *= \
-                (1 + player_utilization[forward])
+    for forward in forward_plus_minus_base.keys():
+        if forward_plus_minus_base[forward] > 0:
+            forward_plus_minus_rating[forward] = (
+                forward_plus_minus_base[forward] *
+                    (1 + player_utilization[forward])
+            )
         else:
-            forward_plus_minus_rating[forward] /= \
-                (1 + player_utilization[forward])
+            forward_plus_minus_rating[forward] = (
+                forward_plus_minus_base[forward] /
+                    (1 + player_utilization[forward])
+            )

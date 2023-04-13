@@ -1,3 +1,5 @@
+forward_hits_base = {}
+
 forward_hits_rating = {}
 
 
@@ -20,16 +22,18 @@ def forward_hits_get_data_set(match_data : dict={}) -> dict:
 
 def forward_hits_add_match_data(forward_hits_data : dict={}) -> None:
     for forward in forward_hits_data.keys():
-        if forward in forward_hits_rating.keys():
-            forward_hits_rating[forward] += \
+        if forward in forward_hits_base.keys():
+            forward_hits_base[forward] += \
                 forward_hits_data[forward][1]
         else:
-            forward_hits_rating[forward] = \
+            forward_hits_base[forward] = \
                 forward_hits_data[forward][1]
 
 
 def forward_hits_scale_by_games(teams_games_played : dict={},
     forward_teams_dict : dict={}) -> None:
-    for forward in forward_hits_rating.keys():
-        forward_hits_rating[forward] /= \
-            teams_games_played[forward_teams_dict[forward]]
+    for forward in forward_hits_base.keys():
+        forward_hits_rating[forward] = (
+            forward_hits_base[forward] /
+                teams_games_played[forward_teams_dict[forward]]
+        )

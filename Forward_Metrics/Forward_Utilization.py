@@ -1,16 +1,18 @@
 from enum import Enum
 
-
-forward_utilization_rating = {}
-
+forward_even_base = {}
 
 forward_even_time = {}
 
+forward_pp_base = {}
 
 forward_pp_time = {}
 
+forward_pk_base = {}
 
 forward_pk_time = {}
+
+forward_utilization_rating = {}
 
 
 class forward_utilization_weights(Enum):
@@ -82,19 +84,19 @@ def forward_utilization_get_data_set(match_data : dict={}) -> list:
 def forward_utilization_add_match_data(forward_utilization_data : list=[]) \
                                                                         -> None:
     for forward in forward_utilization_data[0].keys():
-        if forward in forward_even_time.keys():
-            forward_even_time[forward] += \
+        if forward in forward_even_base.keys():
+            forward_even_base[forward] += \
                 forward_utilization_data[1][forward]
-            forward_pp_time[forward] += \
+            forward_pp_base[forward] += \
                 forward_utilization_data[2][forward]
-            forward_pk_time[forward] += \
+            forward_pk_base[forward] += \
                 forward_utilization_data[3][forward]
         else:
-            forward_even_time[forward] = \
+            forward_even_base[forward] = \
                 forward_utilization_data[1][forward]
-            forward_pp_time[forward] = \
+            forward_pp_base[forward] = \
                 forward_utilization_data[2][forward]
-            forward_pk_time[forward] = \
+            forward_pk_base[forward] = \
                 forward_utilization_data[3][forward]
             
 
@@ -102,20 +104,34 @@ def forward_utilization_scale_all(team_games_played : dict={},
     team_power_play : dict={}, team_penalty_kill : dict={},
     forward_teams_dict : dict={}) -> None:
     for forward in forward_teams_dict.keys():
-        forward_even_time[forward] /= \
-            team_games_played[forward_teams_dict[forward]]
-        forward_pp_time[forward] /= \
-            team_power_play[forward_teams_dict[forward]]
-        forward_pk_time[forward] /= \
-            team_penalty_kill[forward_teams_dict[forward]]
+        forward_even_time[forward] = (
+            forward_even_base[forward] /
+                team_games_played[forward_teams_dict[forward]]
+        )
+        if team_power_play[forward_teams_dict[forward]] > 0:
+            forward_pp_time[forward] = (
+                forward_pp_base[forward] /
+                    team_power_play[forward_teams_dict[forward]]
+            )
+        else:
+            forward_pp_time[forward] = 0
+
+        if team_penalty_kill[forward_teams_dict[forward]] > 0:
+            forward_pk_time[forward] = (
+                forward_pk_base[forward] /
+                    team_penalty_kill[forward_teams_dict[forward]]
+            )
+        else:
+            forward_pk_time[forward] = 0
 
 
-def forward_utilization_combine_metrics(metric_list : list=[]) -> None:
-    for forward in metric_list[0].keys():
-        forward_utilization_rating[forward] = \
-            (metric_list[0][forward] * \
-                forward_utilization_weights.EVEN_STRENGTH_WEIGHT.value) + \
-            (metric_list[1][forward] * \
-                forward_utilization_weights.PP_STRENGTH_WEIGHT.value) + \
-            (metric_list[2][forward] * \
+def forward_utilization_combine_metrics() -> None:
+    for forward in forward_even_time.keys():
+        forward_utilization_rating[forward] = (
+            (forward_even_time[forward] *
+                forward_utilization_weights.EVEN_STRENGTH_WEIGHT.value) +
+            (forward_pp_time[forward] *
+                forward_utilization_weights.PP_STRENGTH_WEIGHT.value) +
+            (forward_pk_time[forward] *
                 forward_utilization_weights.PK_STRENGTH_WEIGHT.value)
+        )

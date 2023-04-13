@@ -1,3 +1,5 @@
+defensemen_hits_base = {}
+
 defensemen_hits_rating = {}
 
 
@@ -20,16 +22,18 @@ def defensemen_hits_get_data_set(match_data : dict={}) -> dict:
 
 def defensemen_hits_add_match_data(defensemen_hits_data : dict={}) -> None:
     for defensemen in defensemen_hits_data.keys():
-        if defensemen in defensemen_hits_rating.keys():
-            defensemen_hits_rating[defensemen] += \
+        if defensemen in defensemen_hits_base.keys():
+            defensemen_hits_base[defensemen] += \
                 defensemen_hits_data[defensemen][1]
         else:
-            defensemen_hits_rating[defensemen] = \
+            defensemen_hits_base[defensemen] = \
                 defensemen_hits_data[defensemen][1]
 
 
 def defensemen_hits_scale_by_games(teams_games_played : dict={},
     defensemen_teams_dict : dict={}) -> None:
-    for defensemen in defensemen_hits_rating.keys():
-        defensemen_hits_rating[defensemen] /= \
-            teams_games_played[defensemen_teams_dict[defensemen]]
+    for defensemen in defensemen_hits_base.keys():
+        defensemen_hits_rating[defensemen] = (
+            defensemen_hits_base[defensemen] /
+                teams_games_played[defensemen_teams_dict[defensemen]]
+        )

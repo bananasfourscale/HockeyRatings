@@ -1,13 +1,16 @@
-goalie_save_percentage_rating = {}
-
-
 goalie_even_save = {}
 
+goalie_even_save_percent = {}
 
 goalie_pp_save = {}
 
+goalie_pp_save_percent = {}
 
 goalie_sh_save = {}
+
+goalie_sh_save_percent = {}
+
+goalie_save_percentage_rating = {}
 
 
 def goalie_save_percentage_get_dict() -> dict:
@@ -95,24 +98,24 @@ def goalie_save_percentage_calculate_all() -> None:
 
         # even strength
         if goalie_even_save[goalie][1] > 0:
-            goalie_even_save[goalie] = \
+            goalie_even_save_percent[goalie] = \
                 goalie_even_save[goalie][0] / goalie_even_save[goalie][1]
         else:
-            goalie_even_save[goalie] = 0.0
+            goalie_even_save_percent[goalie] = 0.0
 
         # pp strength
         if goalie_pp_save[goalie][1] > 0:
-            goalie_pp_save[goalie] = \
+            goalie_pp_save_percent[goalie] = \
                 goalie_pp_save[goalie][0] / goalie_pp_save[goalie][1]
         else:
-            goalie_pp_save[goalie] = 0.0
+            goalie_pp_save_percent[goalie] = 0.0
 
         # pk strength
         if goalie_sh_save[goalie][1] > 0:
-            goalie_sh_save[goalie] = \
+            goalie_sh_save_percent[goalie] = \
                 goalie_sh_save[goalie][0] / goalie_sh_save[goalie][1]
         else:
-            goalie_sh_save[goalie] = 0.0
+            goalie_sh_save_percent[goalie] = 0.0
 
 
 def goalie_save_percentage_combine_metrics(games_played : dict={},
@@ -140,10 +143,11 @@ def goalie_save_percentage_combine_metrics(games_played : dict={},
         power_play_sp_weight = sh_time / total_ice_time
 
         # now the even strength must just be the remainder
-        even_strength_sp_weight = (total_ice_time - (sh_time + pp_time)) / \
-            total_ice_time
+        even_strength_sp_weight = (
+            (total_ice_time - (sh_time + pp_time)) / total_ice_time
+        )
         goalie_save_percentage_rating[goalie] = (
-            (goalie_even_save[goalie] * even_strength_sp_weight) + \
-            (goalie_pp_save[goalie] * power_play_sp_weight) + \
-            (goalie_sh_save[goalie] * short_handed_sp_weight)
+            (goalie_even_save_percent[goalie] * even_strength_sp_weight) +
+            (goalie_pp_save_percent[goalie] * power_play_sp_weight) +
+            (goalie_sh_save_percent[goalie] * short_handed_sp_weight)
         ) * goalie_utilization[goalie]

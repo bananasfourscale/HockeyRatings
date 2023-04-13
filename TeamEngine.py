@@ -261,7 +261,8 @@ def run_team_match_parsers(match_dates : list=[], ranking_date : str="") -> None
     recnt_form_trends = recent_form_get_trend_dict()
     for date in match_dates:
         for match in season_matches[date]:
-            
+
+            ################ TEAMS #####################
             # get the home and away team
             away_team = match['linescore']["teams"]["away"]["team"]["name"]
             home_team = match['linescore']["teams"]["home"]["team"]["name"]
@@ -328,101 +329,7 @@ def run_team_match_parsers(match_dates : list=[], ranking_date : str="") -> None
                     total_rating_trend[ranking_date][home_team],
                     total_rating_trend[ranking_date][away_team]
                 ]
-
-            # feed the match information with the scale factors for each team
-            # into the match parser which will call all metrics to get all
-            # relevant information required
-            match_input_queue.put((parse_team_match_data,
-                (match, [clutch_stats, defensive_stats, offensive_stats,
-                    recent_form_stats, sos_stats, total_rating_stats])))
-            
-
-def run_player_match_parser() -> None:
-
-    # get all the different parsed trend data dictionaries
-    #clutch_trends = clutch_rating_get_trend_dict()
-    defensive_trends = defensive_rating_get_trend_dict()
-    offensive_trends = offensive_rating_get_trend_dict()
-    #recent_form_trends = recent_form_get_trend_dict()
-    sos_trends = strength_of_schedule_get_trend_dict()
-    date_count = 0
-    final_period = False
-    current_rating_period = average_ranking_get_ranking_dates()[date_count]
-    next_rating_period = average_ranking_get_ranking_dates()[date_count + 1]
-
-    # roll through all the dates updating the trend data when a different
-    # ranking marker is reached
-    sorted_date_list = sorted(season_matches)
-    for date in sorted_date_list:
-        parsed_date = date.split("-")
-        parsed_date = datetime.date(int(parsed_date[0]), int(parsed_date[1]),
-            int(parsed_date[2]))
-        for match in season_matches[date]:
-            
-            # get the home and away team
-            away_team = match['linescore']["teams"]["away"]["team"]["name"]
-            home_team = match['linescore']["teams"]["home"]["team"]["name"]
-
-            # if the game took place before any rankings were available just
-            # give perfect scores to both teams for weighting
-            if parsed_date < current_rating_period:
-                clutch_stats = [1.0, 1.0]
-                defensive_stats = [1.0, 1.0]
-                offensive_stats = [1.0, 1.0]
-                recent_form_stats = [1.0, 1.0]
-                sos_stats = [1.0, 1.0]
-                total_rating_stats = [1.0, 1.0]
-
-            # otherwise find the correct scale factors for each team
-            else:
-
-                # if the next ranking period has been reached, and this is not
-                # the last known rank, then update the current and next
-                # markers and then keep going
-                if parsed_date >= next_rating_period and final_period is False:
-                    date_count += 1
-                    current_rating_period = next_rating_period
-                    if date_count + 1 <= \
-                        len(average_ranking_get_ranking_dates()) - 1:
-                        next_rating_period = \
-                            average_ranking_get_ranking_dates()[date_count + 1]
-                    else:
-                        final_period = True
-
-                # clutch trends don't really counter eachother so pass total
-                # rating score to scale instead
-                clutch_stats = [
-                    total_rating_trend[home_team][date_count],
-                    total_rating_trend[away_team][date_count]
-                ]
-                defensive_stats = [
-                    defensive_trends[home_team][date_count],
-                    defensive_trends[away_team][date_count]
-                ]
-                offensive_stats = [
-                    offensive_trends[home_team][date_count],
-                    offensive_trends[away_team][date_count]
-                ]
-                # recent form is too variable right now to be used to scale
-                # for now just use the total rating score for the opposing team
-                recent_form_stats = [
-                    total_rating_trend[home_team][date_count],
-                    total_rating_trend[away_team][date_count]
-                ]
-                sos_stats = [
-                    sos_trends[home_team][date_count],
-                    sos_trends[away_team][date_count]
-                ]
-                total_rating_stats = [
-                    total_rating_trend[home_team][date_count],
-                    total_rating_trend[away_team][date_count]
-                ]
-
-            # feed the match information with the scale factors for each team
-            # into the match parser which will call all metrics to get all
-            # relevant information required
-            # while in the game sort player data
-            # start with home team players"]
+            ##################### PLAYERS ######################
             goalies = {}
             forwards = {}
             defensemen = {}
@@ -500,6 +407,9 @@ def run_player_match_parser() -> None:
                 (match, [clutch_stats, defensive_stats, offensive_stats,
                     recent_form_stats, sos_stats, total_rating_stats],
                 [goalies, forwards, defensemen])))
+            match_input_queue.put((parse_team_match_data,
+                (match, [clutch_stats, defensive_stats, offensive_stats,
+                    recent_form_stats, sos_stats, total_rating_stats])))      
 
 
 def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
@@ -641,9 +551,10 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
         if goalies[goalie][0] == home_team:
 
             # Utilization
-            goalie_utilization_data[goalie][1] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            goalie_utilization_data[goalie][1] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Goals Against
             goalie_goals_against_data[goalie][1] *= \
@@ -1648,28 +1559,92 @@ def run_team_engine():
         for i in range(subprocess_count):
             for output_list in iter(match_output_queue.get, 'STOP'):
 
-                ### clutch data ###
-                clutch_return = output_list[Metric_Order.CLUTCH.value]
-                clutch_add_match_data(clutch_return)
+                # check if we are getting a batch of player data or team data
+                # players
+                if len(output_list) == 3:
 
-                ### defensive data ###
-                defensive_return = output_list[Metric_Order.DEFENSIVE.value]
-                defensive_rating_add_match_data(defensive_return)
+                    # Goalies
+                    goalie_metrics = output_list[0]
+                    goalie_utilization = goalie_metrics[0]  
+                    goalie_utilization_add_match_data(goalie_utilization)  
+                    goalie_goals_against = goalie_metrics[1]
+                    goalie_goals_against_add_match_data(goalie_goals_against)  
+                    goalie_save_percentage = goalie_metrics[2]
+                    goalie_save_percentage_add_match_data(goalie_save_percentage)
+                    goalie_save_consistency = goalie_metrics[3]
+                    goalie_save_consistency_add_match_data(goalie_save_consistency)
+                    for goalie in goalie_utilization.keys():
+                        goalie_teams[goalie] = goalie_utilization[goalie][0]
 
-                ### offensive data
-                offensive_return = output_list[Metric_Order.OFFENSIVE.value]
-                offensive_rating_add_match_data(offensive_return)
+                    # Forwards
+                    forward_metrics = output_list[1]
+                    forward_utilization = forward_metrics[0]
+                    forward_utilization_add_match_data(forward_utilization)
+                    forward_blocks = forward_metrics[1]
+                    forward_blocks_add_match_data(forward_blocks)
+                    forward_discipline = forward_metrics[2]
+                    forward_discipline_add_match_data(forward_discipline)
+                    forward_hits = forward_metrics[3]
+                    forward_hits_add_match_data(forward_hits)
+                    forward_plus_minus = forward_metrics[4]
+                    forward_plus_minus_add_match_data(forward_plus_minus)
+                    forward_points = forward_metrics[5]
+                    forward_points_add_match_data(forward_points)
+                    forward_takeaways = forward_metrics[6]
+                    forward_takeaways_add_match_data(forward_takeaways)
+                    forward_contribution = forward_metrics[7]
+                    forward_contributing_games_add_match_data(forward_contribution)
+                    forward_multipoint = forward_metrics[8]
+                    forward_multipoint_games_add_match_data(forward_multipoint)
+                    for forward in forward_utilization[0].keys():
+                        forward_teams[forward] = forward_utilization[0][forward]
 
-                ### recent form data
-                recent_form_return = output_list[Metric_Order.RECENT.value]
-                recent_form_add_match_data(recent_form_return)
+                    # Defensemen
+                    defensemen_metrics = output_list[2]
+                    defensemen_utilization = defensemen_metrics[0]
+                    defensemen_utilization_add_match_data(defensemen_utilization)
+                    defensemen_blocks = defensemen_metrics[1]
+                    defensemen_blocks_add_match_data(defensemen_blocks)
+                    defensemen_discipline = defensemen_metrics[2]
+                    defensemen_discipline_add_match_data(defensemen_discipline)
+                    defensemen_hits = defensemen_metrics[3]
+                    defensemen_hits_add_match_data(defensemen_hits)
+                    defensemen_plus_minus = defensemen_metrics[4]
+                    defensemen_plus_minus_add_match_data(defensemen_plus_minus)
+                    defensemen_points = defensemen_metrics[5]
+                    defensemen_points_add_match_data(defensemen_points)
+                    defensemen_takeaways = defensemen_metrics[6]
+                    defensemen_takeaways_add_match_data(defensemen_takeaways)
+                    for defensemen in defensemen_utilization[0].keys():
+                        defensemen_teams[defensemen] = defensemen_utilization[0][
+                            defensemen]
+                        
+                # teams
+                else:
 
-                ### strength of schedule data ###
-                sos_return = output_list[Metric_Order.SOS.value]
-                strength_of_schedule_add_match_data(sos_return)
+                    ### clutch data ###
+                    clutch_return = output_list[Metric_Order.CLUTCH.value]
+                    clutch_add_match_data(clutch_return)
+
+                    ### defensive data ###
+                    defensive_return = output_list[Metric_Order.DEFENSIVE.value]
+                    defensive_rating_add_match_data(defensive_return)
+
+                    ### offensive data ###
+                    offensive_return = output_list[Metric_Order.OFFENSIVE.value]
+                    offensive_rating_add_match_data(offensive_return)
+
+                    ### recent form data ###
+                    recent_form_return = output_list[Metric_Order.RECENT.value]
+                    recent_form_add_match_data(recent_form_return)
+
+                    ### strength of schedule data ###
+                    sos_return = output_list[Metric_Order.SOS.value]
+                    strength_of_schedule_add_match_data(sos_return)
         for process in metric_process_list:
             process.join()
 
+##################### TEAM RANKING PERIOD PROCESSING ###########################
         # call any cleanup calculations required
         clutch_rating_scale_by_game()
         defensive_rating_calculate_all()
@@ -1689,15 +1664,17 @@ def run_team_engine():
                 process.start()
 
             # write out any plots before sigmoid correction
-            print("Plot data before correction")
+            print("Plot Team data before correction")
             plot_uncorrected_team_metrics()
 
         # Clutch Rating
         apply_sigmoid_correction(clutch_rating_get_dict())
 
         # Defensive Rating
-        apply_sigmoid_correction(defensive_rating_get_shots_against_dict(), True)
-        apply_sigmoid_correction(defensive_rating_get_goals_against_dict(), True)
+        apply_sigmoid_correction(defensive_rating_get_shots_against_dict(),
+            True)
+        apply_sigmoid_correction(defensive_rating_get_goals_against_dict(),
+            True)
         apply_sigmoid_correction(defensive_rating_get_pk_dict())
 
         # Offensive Rating
@@ -1716,7 +1693,7 @@ def run_team_engine():
 
         # write out any plots after sigmoid correction
         if final_date:
-            print("Plot data after correction")
+            print("Plot Team data after correction")
             plot_corrected_team_metrics()
 
         ### plot multifactor metrics and total rating ###
@@ -1807,11 +1784,191 @@ def run_team_engine():
         for team in total_rating.keys():
             total_rating_trend[ranking_period[-1]][team] = total_rating[team]
 
-        # now update the last ranking date to indicate we have new trends
-        last_ranking_date = ranking_period[-1]
+####################### PLAYER RANKING PERIOD PROCESSING #######################
+        ### Goalies ###
+        goalie_utilization_scale_by_game(
+            strength_of_schedule_get_games_played_dict(), goalie_teams)
+        apply_sigmoid_correction(goalie_utilization_get_dict())
+        goalie_goals_against_scale_by_utilization(goalie_utilization_get_dict())
+        goalie_save_percentage_calculate_all()
+        goalie_save_percentage_combine_metrics(
+            strength_of_schedule_get_games_played_dict(),
+            offensive_rating_get_pp_oppertunities_dict(),
+            defensive_rating_get_pk_oppertunities_dict(),
+            goalie_utilization_get_dict(), goalie_teams)
+        goalie_save_consistency_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), goalie_teams)
+        
+        ### Forwards ###
+        forward_utilization_scale_all(
+            strength_of_schedule_get_games_played_dict(),
+            offensive_rating_get_pp_oppertunities_dict(),
+            defensive_rating_get_pk_oppertunities_dict(), forward_teams)
+        forward_utilization_combine_metrics()
+        apply_sigmoid_correction(forward_utilization_get_dict())
+        forward_blocks_scale_by_shots_against(
+            defensive_rating_get_unscaled_shots_against_dict(), forward_teams)
+        forward_contributing_games_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), forward_teams)
+        forward_discipline_scale_by_utilization(forward_utilization_get_dict())
+        forward_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
+            forward_teams)
+        forward_multipoint_games_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), forward_teams)
+        forward_plus_minus_scale_by_utilization(
+            forward_utilization_get_dict())
+        forward_points_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), forward_teams)
+        forward_takeaways_scale_by_utilization(forward_utilization_get_dict())
+
+        ### Defensemen ###
+        defensemen_utilization_scale_all(
+            strength_of_schedule_get_games_played_dict(),
+            offensive_rating_get_pp_oppertunities_dict(),
+            defensive_rating_get_pk_oppertunities_dict(), defensemen_teams)
+        defensemen_utilization_combine_metrics()
+        apply_sigmoid_correction(defensemen_utilization_get_dict())
+        defensemen_blocks_scale_by_shots_against(
+            defensive_rating_get_unscaled_shots_against_dict(), defensemen_teams)
+        defensemen_discipline_scale_by_utilization(
+            defensemen_utilization_get_dict())
+        defensemen_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
+            defensemen_teams)
+        defensemen_plus_minus_scale_by_utilization(
+            defensemen_utilization_get_dict())
+        defensemen_points_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), defensemen_teams)
+        defensemen_takeaways_scale_by_utilization(defensemen_utilization_get_dict())
+        if final_date:
+            print("Plot Player data before correction")
+            plot_uncorrected_player_metrics()
+
+        # Goalies
+        apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
+        apply_sigmoid_correction(goalie_save_percentage_get_dict())
+        apply_sigmoid_correction(goalie_save_consistency_get_dict())
+
+        # Forwards
+        apply_sigmoid_correction(forward_blocks_get_dict())
+        apply_sigmoid_correction(forward_discipline_get_dict(), True)
+        apply_sigmoid_correction(forward_hits_get_dict())
+        apply_sigmoid_correction(forward_plus_minus_get_dict())
+        apply_sigmoid_correction(forward_points_get_dict())
+        apply_sigmoid_correction(forward_takeaways_get_dict())
+        apply_sigmoid_correction(forward_contributing_games_get_dict())
+        apply_sigmoid_correction(forward_multipoint_games_get_dict())
+
+        # Defensemen
+        apply_sigmoid_correction(defensemen_blocks_get_dict())
+        apply_sigmoid_correction(defensemen_discipline_get_dict(), True)
+        apply_sigmoid_correction(defensemen_hits_get_dict())
+        apply_sigmoid_correction(defensemen_plus_minus_get_dict())
+        apply_sigmoid_correction(defensemen_points_get_dict())
+        apply_sigmoid_correction(defensemen_takeaways_get_dict())
 
         if final_date:
+            print("Plot Player data after correction")
+            plot_corrected_player_metrics()
 
+        ### combine metrics to overall score and plot ###
+        print("Combining All Metrics")
+
+        # Goalies
+        print("\tCombining Goalie Metrics")
+        goalie_total_rating = {}
+        for goalie in goalie_utilization_get_dict().keys():
+            goalie_total_rating[goalie] = \
+                (goalie_utilization_get_dict()[goalie] *
+                    goalie_rating_weights.UTILIZATION_WEIGHT.value) + \
+                (goalie_save_percentage_get_dict()[goalie] *
+                    goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) + \
+                (goalie_goals_against_get_dict()[goalie] *
+                    goalie_rating_weights.GOALS_AGAINST_WEIGHT.value) + \
+                (goalie_save_consistency_get_dict()[goalie] *
+                    goalie_rating_weights.SAVE_CONSISTENCY_WEIGHT.value)
+        if final_date:
+            write_out_player_file(
+                "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+                ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
+            plot_player_ranking(
+                "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+                ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+                "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
+            
+        # Forwards
+        print("\tCombining Forward Metrics")
+        forward_total_rating = {}
+        for forward in forward_utilization_get_dict().keys():
+            forward_total_rating[forward] = (
+                (forward_hits_get_dict()[forward] *
+                    forward_rating_weights.HITS_WEIGHT.value) +
+                (forward_blocks_get_dict()[forward] *
+                    forward_rating_weights.SHOT_BLOCKING_WEIGHT.value) +
+                (forward_utilization_get_dict()[forward] *
+                    forward_rating_weights.UTILIZATION_WEIGHT.value) +
+                (forward_discipline_get_dict()[forward] *
+                    forward_rating_weights.DISIPLINE_WEIGHT.value) +
+                (forward_plus_minus_get_dict()[forward] *
+                    forward_rating_weights.PLUS_MINUS_WEIGHT.value) +
+                (forward_points_get_dict()[forward] *
+                    forward_rating_weights.POINTS_WEIGHT.value) +
+                (forward_takeaways_get_dict()[forward] *
+                    forward_rating_weights.TAKEAWAYS_WEIGHT.value) +
+                (forward_contributing_games_get_dict()[forward] *
+                    forward_rating_weights.CONTRIBUTION_WEIGHT.value) +
+                (forward_multipoint_games_get_dict()[forward] *
+                    forward_rating_weights.MULTIPOINT_WEIGHT.value)
+            )
+        if final_date:
+            write_out_player_file(
+                "Output_Files/Forward_Files/Instance_Files/" + \
+                    "Forward_Total_Rating.csv",
+                ["Forward", "Total Rating", "Team"], forward_total_rating,
+                forward_teams)
+            plot_player_ranking(
+                "Output_Files/Forward_Files/Instance_Files/" + \
+                    "Forward_Total_Rating.csv",
+                ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+                "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
+            
+        # Defense
+        print("\tCombining Defensemen Metrics")
+        defensemen_total_rating = {}
+        for defensemen in defensemen_utilization_get_dict().keys():
+            defensemen_total_rating[defensemen] = \
+                (defensemen_hits_get_dict()[defensemen] * \
+                    defensemen_rating_weights.HITS_WEIGHT.value) + \
+                (defensemen_blocks_get_dict()[defensemen] * \
+                    defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
+                (defensemen_utilization_get_dict()[defensemen] * \
+                    defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
+                (defensemen_discipline_get_dict()[defensemen] * \
+                    defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
+                (defensemen_plus_minus_get_dict()[defensemen] * \
+                    defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) + \
+                (defensemen_points_get_dict()[defensemen] * \
+                    defensemen_rating_weights.POINTS_WEIGHT.value) + \
+                (defensemen_takeaways_get_dict()[defensemen] * \
+                    defensemen_rating_weights.TAKEAWAYS_WEIGHT.value)
+        if final_date:
+            write_out_player_file(
+                "Output_Files/Defensemen_Files/Instance_Files/" + \
+                    "Defensemen_Total_Rating.csv",
+                ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
+                defensemen_teams)
+            plot_player_ranking(
+                "Output_Files/Defensemen_Files/Instance_Files/" + \
+                    "Defensemen_Total_Rating.csv",
+                ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+                "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
+
+
+        # now update the last ranking date to indicate we have new trends
+        last_ranking_date = ranking_period[-1]
+############################# END POST PROCESSING ##############################
+        # Print out trend files
+        if final_date:
+            ############## TEAMS ##############
             # clutch
             update_trend_file(
                 "Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
@@ -1875,7 +2032,7 @@ def run_team_engine():
                 ("Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
                 ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
                 "Graphs/Teams/Final_Rating_Score/average_ranking_trend.png")))
-            
+
             # final rating
             update_trend_file(
                 "Output_Files/Team_Files/Trend_Files/RatingScore.csv",
@@ -1883,10 +2040,114 @@ def run_team_engine():
             plotting_queue.put((plot_team_trend_set,
                 ("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
                 ["Rating Date", "Rating Score"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))     
+                "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))
+            
+            ################ PLAYERS ###############
+            # sort players into team rosters
+            ### Goalies ###
+            i = 1
+            sorted_goalies = \
+                dict(sorted(goalie_total_rating.items(), key=lambda item: item[1],
+                    reverse=True))
+            for goalie in sorted_goalies:
+
+                # only account for top 3 starters
+                if goalie_teams[goalie] in average_goalie_rating.keys():
+                    if average_goalie_rating[goalie_teams[goalie]][1] < 4:
+                        average_goalie_rating[goalie_teams[goalie]][0] += i
+                        average_goalie_rating[goalie_teams[goalie]][1] += 1
+                else:
+                    average_goalie_rating[goalie_teams[goalie]] = [i, 1]
+                i += 1
+            for team in average_goalie_rating:
+                if team in average_player_rating.keys():
+                    average_player_rating[team][0] += average_goalie_rating[team][0]
+                    average_player_rating[team][1] += average_goalie_rating[team][1]
+                else:
+                    average_player_rating[team] = [average_goalie_rating[team][0],
+                        average_goalie_rating[team][1]]
+                average_goalie_rating[team] = \
+                    average_goalie_rating[team][0] / average_goalie_rating[team][1]
+            write_out_file("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+                ["Team", "Average Goalie"], average_goalie_rating)
+            plotting_queue.put((plot_data_set,
+                ("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+                ["Team", "Average Goalie"], 0.0, 0.0, [],
+                "Graphs/Teams/Average_Player_Ratings/average_goalie_rating.png", True)))
+            
+            ### Forwards ###
+            i = 1
+            sorted_forward = \
+                dict(sorted(forward_total_rating.items(), key=lambda item: item[1],
+                    reverse=True))
+            for forward in sorted_forward:
+
+                # only account for top 12 starters
+                if forward_teams[forward] in average_forward_rating.keys():
+                    if average_forward_rating[forward_teams[forward]][1] < 13:
+                        average_forward_rating[forward_teams[forward]][0] += i
+                        average_forward_rating[forward_teams[forward]][1] += 1
+                else:
+                    average_forward_rating[forward_teams[forward]] = [i, 1]
+                i += 1
+            for team in average_forward_rating:
+                average_player_rating[team][0] += average_forward_rating[team][0]
+                average_player_rating[team][1] += average_forward_rating[team][1]
+                average_forward_rating[team] = \
+                    average_forward_rating[team][0] / average_forward_rating[team][1]
+            write_out_file("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+                ["Team", "Average Forward"], average_forward_rating)
+            plotting_queue.put((plot_data_set,
+                ("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+                ["Team", "Average Forward"], 0.0, 0.0, [],
+                "Graphs/Teams/Average_Player_Ratings/average_forward_rating.png",
+                True)))
+            
+            ### Defensemen ###
+            i = 1
+            sorted_defenseman = \
+                dict(sorted(defensemen_total_rating.items(), key=lambda item: item[1],
+                    reverse=True))
+            for defenseman in sorted_defenseman:
+
+                # only account for top 6 starters
+                if defensemen_teams[defenseman] in average_defenseman_rating.keys():
+                    if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
+                        average_defenseman_rating[defensemen_teams[defenseman]][0] += i
+                        average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
+                else:
+                    average_defenseman_rating[defensemen_teams[defenseman]] = [i, 1]
+                i += 1
+            for team in average_defenseman_rating:
+                average_player_rating[team][0] += average_defenseman_rating[team][0]
+                average_player_rating[team][1] += average_defenseman_rating[team][1]
+                average_defenseman_rating[team] = \
+                    average_defenseman_rating[team][0] / \
+                        average_defenseman_rating[team][1]
+            write_out_file("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+                ["Team", "Average Defenseman"], average_defenseman_rating)
+            plotting_queue.put((plot_data_set,
+                ("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+                ["Team", "Average Defenseman"], 0.0, 0.0, [],
+                "Graphs/Teams/Average_Player_Ratings/average_defenseman_rating.png",
+                True)))
+            
+            ### All Roles ###
+            for team in average_player_rating:
+                average_player_rating[team] = average_player_rating[team][0] / \
+                    average_player_rating[team][1]
+            write_out_file("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+                ["Team", "Average Player"], average_player_rating)
+            plotting_queue.put((plot_data_set,
+                ("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+                ["Team", "Average Player"], 0.0, 0.0, [],
+                "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
+                True)))
 
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
+
+        ############## TEAMS ################
         header_row = True
         row_list = []
 
@@ -1922,411 +2183,7 @@ def run_team_engine():
             ["Season", "Rating Score"], 1.1, -.1, sigmoid_ticks,
             "Graphs/Teams/Final_Rating_Score/year_on_year_score.png")))
         
-    # stop all the running workers
-    print("Waiting for Plotters to finish their very hard work <3")
-    for i in range(subprocess_count):
-        plotting_queue.put('STOP')
-    for process in plotting_process_list:
-        process.join()
-
-    # remove all the instance files to save clutter
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Team_Files\Instance_Files\\" + file)
-            
-
-def run_player_engine() -> None:
-
-    # loop through all the dates of the given season data until complete
-
-
-    # create a few match parsing processes to speed things up a bit
-    subprocess_count = 15
-    metric_process_list = []
-    for i in range(subprocess_count):
-        metric_process_list.append(Process(target=worker_node,
-            args=(match_input_queue, match_output_queue,
-                i)))
-    for process in metric_process_list:
-        process.start()
-
-    # feed in matches until all completed matches this season have been put into
-    # a process to be parsed
-    match_parsing_start = time.time()
-    print("Feeding in matches to workers")
-    run_player_match_parser()
-    
-    # let the metric workers know there are no more matches
-    for i in range(subprocess_count):
-        match_input_queue.put('STOP')
-    
-    # keep reading the metric output queue until all data is returned
-    print("Combining jobs from worker nodes")
-    for i in range(subprocess_count):
-        for output_list in iter(match_output_queue.get, 'STOP'):
-
-            # Goalies
-            goalie_metrics = output_list[0]
-            goalie_utilization = goalie_metrics[0]  
-            goalie_utilization_add_match_data(goalie_utilization)  
-            goalie_goals_against = goalie_metrics[1]
-            goalie_goals_against_add_match_data(goalie_goals_against)  
-            goalie_save_percentage = goalie_metrics[2]
-            goalie_save_percentage_add_match_data(goalie_save_percentage)
-            goalie_save_consistency = goalie_metrics[3]
-            goalie_save_consistency_add_match_data(goalie_save_consistency)
-            for goalie in goalie_utilization.keys():
-                goalie_teams[goalie] = goalie_utilization[goalie][0]
-
-            # Forwards
-            forward_metrics = output_list[1]
-            forward_utilization = forward_metrics[0]
-            forward_utilization_add_match_data(forward_utilization)
-            forward_blocks = forward_metrics[1]
-            forward_blocks_add_match_data(forward_blocks)
-            forward_discipline = forward_metrics[2]
-            forward_discipline_add_match_data(forward_discipline)
-            forward_hits = forward_metrics[3]
-            forward_hits_add_match_data(forward_hits)
-            forward_plus_minus = forward_metrics[4]
-            forward_plus_minus_add_match_data(forward_plus_minus)
-            forward_points = forward_metrics[5]
-            forward_points_add_match_data(forward_points)
-            forward_takeaways = forward_metrics[6]
-            forward_takeaways_add_match_data(forward_takeaways)
-            forward_contribution = forward_metrics[7]
-            forward_contributing_games_add_match_data(forward_contribution)
-            forward_multipoint = forward_metrics[8]
-            forward_multipoint_games_add_match_data(forward_multipoint)
-            for forward in forward_utilization[0].keys():
-                forward_teams[forward] = forward_utilization[0][forward]
-
-            # Defensemen
-            defensemen_metrics = output_list[2]
-            defensemen_utilization = defensemen_metrics[0]
-            defensemen_utilization_add_match_data(defensemen_utilization)
-            defensemen_blocks = defensemen_metrics[1]
-            defensemen_blocks_add_match_data(defensemen_blocks)
-            defensemen_discipline = defensemen_metrics[2]
-            defensemen_discipline_add_match_data(defensemen_discipline)
-            defensemen_hits = defensemen_metrics[3]
-            defensemen_hits_add_match_data(defensemen_hits)
-            defensemen_plus_minus = defensemen_metrics[4]
-            defensemen_plus_minus_add_match_data(defensemen_plus_minus)
-            defensemen_points = defensemen_metrics[5]
-            defensemen_points_add_match_data(defensemen_points)
-            defensemen_takeaways = defensemen_metrics[6]
-            defensemen_takeaways_add_match_data(defensemen_takeaways)
-            for defensemen in defensemen_utilization[0].keys():
-                defensemen_teams[defensemen] = defensemen_utilization[0][
-                    defensemen]
-
-    # clean up any stats after aggregation
-    ### Goalies ###
-    goalie_utilization_scale_by_game(
-        strength_of_schedule_get_games_played_dict(), goalie_teams)
-    
-    # Apply utilization correction premptively for other stats to use
-    apply_sigmoid_correction(goalie_utilization_get_dict())
-    goalie_goals_against_scale_by_utilization(goalie_utilization_get_dict())
-    goalie_save_percentage_calculate_all()
-    goalie_save_percentage_combine_metrics(
-        strength_of_schedule_get_games_played_dict(),
-        offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict(),
-        goalie_utilization_get_dict(), goalie_teams)
-    goalie_save_consistency_scale_by_games(
-        strength_of_schedule_get_games_played_dict(), goalie_teams)
-    
-    ### Forwards ###
-    forward_utilization_scale_all(
-        strength_of_schedule_get_games_played_dict(),
-        offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict(), forward_teams)
-    forward_utilization_combine_metrics([
-        forward_utilization_get_even_time_dict(),
-        forward_utilization_get_pp_time_dict(),
-        forward_utilization_get_pk_time_dict()])
-    
-    # Apply utilization correction premptively for other stats to use
-    apply_sigmoid_correction(forward_utilization_get_dict())
-    forward_blocks_scale_by_shots_against(
-        defensive_rating_get_unscaled_shots_against_dict(), forward_teams)
-    forward_contributing_games_scale_by_games(
-        strength_of_schedule_get_games_played_dict(), forward_teams)
-    forward_discipline_scale_by_utilization(forward_utilization_get_dict())
-    forward_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
-        forward_teams)
-    forward_multipoint_games_scale_by_games(
-        strength_of_schedule_get_games_played_dict(), forward_teams)
-    forward_plus_minus_scale_by_utilization(
-        forward_utilization_get_dict())
-    forward_points_scale_by_games(
-        strength_of_schedule_get_games_played_dict(), forward_teams)
-    forward_takeaways_scale_by_utilization(forward_utilization_get_dict())
-    
-    ### Defensemen ###
-    defensemen_utilization_scale_all(
-        strength_of_schedule_get_games_played_dict(),
-        offensive_rating_get_pp_oppertunities_dict(),
-        defensive_rating_get_pk_oppertunities_dict(), defensemen_teams)
-    defensemen_utilization_combine_metrics([
-        defensemen_utilization_get_even_time_dict(),
-        defensemen_utilization_get_pp_time_dict(),
-        defensemen_utilization_get_pk_time_dict()])
-    
-    # Apply utilization correction premptively for other stats to use
-    apply_sigmoid_correction(defensemen_utilization_get_dict())
-    defensemen_blocks_scale_by_shots_against(
-        defensive_rating_get_unscaled_shots_against_dict(), defensemen_teams)
-    defensemen_discipline_scale_by_utilization(
-        defensemen_utilization_get_dict())
-    defensemen_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
-        defensemen_teams)
-    defensemen_plus_minus_scale_by_utilization(
-        defensemen_utilization_get_dict())
-    defensemen_points_scale_by_games(
-        strength_of_schedule_get_games_played_dict(), defensemen_teams)
-    defensemen_takeaways_scale_by_utilization(defensemen_utilization_get_dict())
-    print_time_diff(match_parsing_start, time.time())
-    
-    # now start the processes for plotting
-    plotting_process_list = []
-    for i in range(int(subprocess_count/2)):
-        plotting_process_list.append(Process(target=worker_node,
-            args=(plotting_queue, dummy_queue, i)))
-    for process in plotting_process_list:
-        process.start()
-    
-    # write out any plots before sigmoid correction
-    print("Plot data before correction")
-    plot_uncorrected_player_metrics()
-
-    ### apply all sigmoid corrections ###
-    print("Apply corrections")
-    sigmoid_start = time.time()
-
-    # Goalies
-    apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
-    apply_sigmoid_correction(goalie_save_percentage_get_dict())
-    apply_sigmoid_correction(goalie_save_consistency_get_dict())
-
-    # Forwards
-    apply_sigmoid_correction(forward_blocks_get_dict())
-    apply_sigmoid_correction(forward_discipline_get_dict(), True)
-    apply_sigmoid_correction(forward_hits_get_dict())
-    apply_sigmoid_correction(forward_plus_minus_get_dict())
-    apply_sigmoid_correction(forward_points_get_dict())
-    apply_sigmoid_correction(forward_takeaways_get_dict())
-    apply_sigmoid_correction(forward_contributing_games_get_dict())
-    apply_sigmoid_correction(forward_multipoint_games_get_dict())
-
-    # Defensemen
-    apply_sigmoid_correction(defensemen_blocks_get_dict())
-    apply_sigmoid_correction(defensemen_discipline_get_dict(), True)
-    apply_sigmoid_correction(defensemen_hits_get_dict())
-    apply_sigmoid_correction(defensemen_plus_minus_get_dict())
-    apply_sigmoid_correction(defensemen_points_get_dict())
-    apply_sigmoid_correction(defensemen_takeaways_get_dict())
-    print_time_diff(sigmoid_start, time.time())
-
-    # write out any plots after sigmoid correction #
-    print("Plot data after correction")
-    plot_corrected_player_metrics()
-
-    ### combine metrics to overall score and plot ###
-    print("Combining All Metrics")
-
-    # Goalies
-    print("\tCombining Goalie Metrics")
-    goalie_total_rating = {}
-    for goalie in goalie_utilization_get_dict().keys():
-        goalie_total_rating[goalie] = \
-            (goalie_utilization_get_dict()[goalie] *
-                goalie_rating_weights.UTILIZATION_WEIGHT.value) + \
-            (goalie_save_percentage_get_dict()[goalie] *
-                goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) + \
-            (goalie_goals_against_get_dict()[goalie] *
-                goalie_rating_weights.GOALS_AGAINST_WEIGHT.value) + \
-            (goalie_save_consistency_get_dict()[goalie] *
-                goalie_rating_weights.SAVE_CONSISTENCY_WEIGHT.value)
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-        ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
-    plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-        ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
-    
-    # Forwards
-    print("\tCombining Forward Metrics")
-    forward_total_rating = {}
-    for forward in forward_utilization_get_dict().keys():
-        forward_total_rating[forward] = \
-            (forward_hits_get_dict()[forward] *
-                forward_rating_weights.HITS_WEIGHT.value) + \
-            (forward_blocks_get_dict()[forward] *
-                forward_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
-            (forward_utilization_get_dict()[forward] *
-                forward_rating_weights.UTILIZATION_WEIGHT.value) + \
-            (forward_discipline_get_dict()[forward] *
-                forward_rating_weights.DISIPLINE_WEIGHT.value) + \
-            (forward_plus_minus_get_dict()[forward] *
-                forward_rating_weights.PLUS_MINUS_WEIGHT.value) + \
-            (forward_points_get_dict()[forward] *
-                forward_rating_weights.POINTS_WEIGHT.value) + \
-            (forward_takeaways_get_dict()[forward] * \
-                forward_rating_weights.TAKEAWAYS_WEIGHT.value) + \
-            (forward_contributing_games_get_dict()[forward] *
-                forward_rating_weights.CONTRIBUTION_WEIGHT.value) + \
-            (forward_multipoint_games_get_dict()[forward] *
-                forward_rating_weights.MULTIPOINT_WEIGHT.value)
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/" + \
-            "Forward_Total_Rating.csv",
-        ["Forward", "Total Rating", "Team"], forward_total_rating,
-        forward_teams)
-    plot_player_ranking(
-        "Output_Files/Forward_Files/Instance_Files/" + \
-            "Forward_Total_Rating.csv",
-        ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
-
-    # Defense
-    print("\tCombining Defensemen Metrics")
-    defensemen_total_rating = {}
-    for defensemen in defensemen_utilization_get_dict().keys():
-        defensemen_total_rating[defensemen] = \
-            (defensemen_hits_get_dict()[defensemen] * \
-                defensemen_rating_weights.HITS_WEIGHT.value) + \
-            (defensemen_blocks_get_dict()[defensemen] * \
-                defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
-            (defensemen_utilization_get_dict()[defensemen] * \
-                defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
-            (defensemen_discipline_get_dict()[defensemen] * \
-                defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
-            (defensemen_plus_minus_get_dict()[defensemen] * \
-                defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) + \
-            (defensemen_points_get_dict()[defensemen] * \
-                defensemen_rating_weights.POINTS_WEIGHT.value) + \
-            (defensemen_takeaways_get_dict()[defensemen] * \
-                defensemen_rating_weights.TAKEAWAYS_WEIGHT.value)
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/" + \
-            "Defensemen_Total_Rating.csv",
-        ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
-        defensemen_teams)
-    plot_player_ranking(
-        "Output_Files/Defensemen_Files/Instance_Files/" + \
-            "Defensemen_Total_Rating.csv",
-        ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
-    
-    # sort players into team rosters
-    ### Goalies ###
-    i = 1
-    sorted_goalies = \
-        dict(sorted(goalie_total_rating.items(), key=lambda item: item[1],
-            reverse=True))
-    for goalie in sorted_goalies:
-
-        # only account for top 3 starters
-        if goalie_teams[goalie] in average_goalie_rating.keys():
-            if average_goalie_rating[goalie_teams[goalie]][1] < 4:
-                average_goalie_rating[goalie_teams[goalie]][0] += i
-                average_goalie_rating[goalie_teams[goalie]][1] += 1
-        else:
-            average_goalie_rating[goalie_teams[goalie]] = [i, 1]
-        i += 1
-    for team in average_goalie_rating:
-        if team in average_player_rating.keys():
-            average_player_rating[team][0] += average_goalie_rating[team][0]
-            average_player_rating[team][1] += average_goalie_rating[team][1]
-        else:
-            average_player_rating[team] = [average_goalie_rating[team][0],
-                average_goalie_rating[team][1]]
-        average_goalie_rating[team] = \
-            average_goalie_rating[team][0] / average_goalie_rating[team][1]
-    write_out_file("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
-        ["Team", "Average Goalie"], average_goalie_rating)
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
-        ["Team", "Average Goalie"], 0.0, 0.0, [],
-        "Graphs/Teams/Average_Player_Ratings/average_goalie_rating.png", True)))
-    
-    ### Forwards ###
-    i = 1
-    sorted_forward = \
-        dict(sorted(forward_total_rating.items(), key=lambda item: item[1],
-            reverse=True))
-    for forward in sorted_forward:
-
-        # only account for top 12 starters
-        if forward_teams[forward] in average_forward_rating.keys():
-            if average_forward_rating[forward_teams[forward]][1] < 13:
-                average_forward_rating[forward_teams[forward]][0] += i
-                average_forward_rating[forward_teams[forward]][1] += 1
-        else:
-            average_forward_rating[forward_teams[forward]] = [i, 1]
-        i += 1
-    for team in average_forward_rating:
-        average_player_rating[team][0] += average_forward_rating[team][0]
-        average_player_rating[team][1] += average_forward_rating[team][1]
-        average_forward_rating[team] = \
-            average_forward_rating[team][0] / average_forward_rating[team][1]
-    write_out_file("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
-        ["Team", "Average Forward"], average_forward_rating)
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
-        ["Team", "Average Forward"], 0.0, 0.0, [],
-        "Graphs/Teams/Average_Player_Ratings/average_forward_rating.png",
-        True)))
-    
-    ### Defensemen ###
-    i = 1
-    sorted_defenseman = \
-        dict(sorted(defensemen_total_rating.items(), key=lambda item: item[1],
-            reverse=True))
-    for defenseman in sorted_defenseman:
-
-        # only account for top 6 starters
-        if defensemen_teams[defenseman] in average_defenseman_rating.keys():
-            if average_defenseman_rating[defensemen_teams[defenseman]][1] < 7:
-                average_defenseman_rating[defensemen_teams[defenseman]][0] += i
-                average_defenseman_rating[defensemen_teams[defenseman]][1] += 1
-        else:
-            average_defenseman_rating[defensemen_teams[defenseman]] = [i, 1]
-        i += 1
-    for team in average_defenseman_rating:
-        average_player_rating[team][0] += average_defenseman_rating[team][0]
-        average_player_rating[team][1] += average_defenseman_rating[team][1]
-        average_defenseman_rating[team] = \
-            average_defenseman_rating[team][0] / \
-                average_defenseman_rating[team][1]
-    write_out_file("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
-        ["Team", "Average Defenseman"], average_defenseman_rating)
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
-        ["Team", "Average Defenseman"], 0.0, 0.0, [],
-        "Graphs/Teams/Average_Player_Ratings/average_defenseman_rating.png",
-        True)))
-    
-    ### All Roles ###
-    for team in average_player_rating:
-        average_player_rating[team] = average_player_rating[team][0] / \
-            average_player_rating[team][1]
-    write_out_file("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
-        ["Team", "Average Player"], average_player_rating)
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
-        ["Team", "Average Player"], 0.0, 0.0, [],
-        "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
-        True)))
-
-    # remove all the instance files
-    if REG_SEASON_COMPLETE:
+        ################ PLAYERS ##############
         header_row = True
         row_list = []        
 
@@ -2369,34 +2226,39 @@ def run_player_engine() -> None:
         
     # stop all the running workers
     print("Waiting for Plotters to finish their very hard work <3")
-    for i in range(int(subprocess_count/2)):
+    for i in range(subprocess_count):
         plotting_queue.put('STOP')
     for process in plotting_process_list:
-        while process.is_alive():
-            pass
+        process.join()
 
+    # remove all the instance files to save clutter
     for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
+        os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
         for file in dir[2]:
             os.remove(os.getcwd() +
-                "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-    for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
-        for file in dir[2]:
-            os.remove(os.getcwd() +
-                "\Output_Files\Forward_Files\Instance_Files\\" + file)
-    for dir in \
-        os.walk(os.getcwd() +
-            "\Output_Files\Defensemen_Files\Instance_Files"):
-        for file in dir[2]:
-            os.remove(os.getcwd() +
-                "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
+                "\Output_Files\Team_Files\Instance_Files\\" + file)
+    # for dir in \
+    #     os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
+    #     for file in dir[2]:
+    #         os.remove(os.getcwd() +
+    #             "\Output_Files\Goalie_Files\Instance_Files\\" + file)
+    # for dir in \
+    #     os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
+    #     for file in dir[2]:
+    #         os.remove(os.getcwd() +
+    #             "\Output_Files\Forward_Files\Instance_Files\\" + file)
+    # for dir in \
+    #     os.walk(os.getcwd() +
+    #         "\Output_Files\Defensemen_Files\Instance_Files"):
+    #     for file in dir[2]:
+    #         os.remove(os.getcwd() +
+    #             "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
 
 
 if __name__ == "__main__":
 
     REG_SEASON_COMPLETE = False
-    SEASON = "20212022"
+    SEASON = "20222023"
     TREND_FREQUENCY = 0
     TREND_DAY = 5
     start = time.time()
@@ -2411,9 +2273,5 @@ if __name__ == "__main__":
     # first run the team engine which calculates and plots all team stats
     print("Running Team Engine")
     run_team_engine()
-    
-    # now run the player engine
-    # print("Running Player Engine")
-    # run_player_engine()
     print(time.time() - start)
     exit(0)
