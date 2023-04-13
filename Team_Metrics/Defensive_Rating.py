@@ -165,9 +165,7 @@ def defensive_rating_combine_metrics() -> None:
         )
 
 
-def defensive_rating_update_trends() -> None:
+def defensive_rating_update_trends(date : str="") -> None:
+    defensive_rating_trends[date] = {}
     for team in defensive_rating.keys():
-        if team in defensive_rating_trends.keys():
-            defensive_rating_trends[team].append(defensive_rating[team])
-        else:
-            defensive_rating_trends[team] = list(defensive_rating[team])
+        defensive_rating_trends[date][team] = defensive_rating[team]

@@ -1,3 +1,7 @@
+clutch_rating_base = {}
+
+clutch_games_played = {}
+
 clutch_rating = {}
 
 clutch_trends = {}
@@ -47,11 +51,16 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
             win_lead_first[away_team] = [1,1]
         else:
             win_lead_first[away_team] = [0,1]
-    else:
+    elif home_score_first > away_score_first:
         if home_score_final > away_score_final:
             win_lead_first[home_team] = [1,1]
         else:
             win_lead_first[home_team] = [0,1]
+
+    # if teams are tied them give them both full marks
+    else:
+        win_lead_first[away_team] = [1,1]
+        win_lead_first[home_team] = [1,1]
     
     # now do the same for the second period
     if away_score_second > home_score_second:
@@ -59,11 +68,16 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
             win_lead_second[away_team] = [1,1]
         else:
             win_lead_second[away_team] = [0,1]
-    else:
+    elif home_score_second > away_score_second:
         if home_score_final > away_score_final:
             win_lead_second[home_team] = [1,1]
         else:
             win_lead_second[home_team] = [0,1]
+
+    # if teams are tied them give them both full marks
+    else:
+        win_lead_second[away_team] = [1,1]
+        win_lead_second[home_team] = [1,1]
 
     # collect all the different permutations into one data set and return
     clutch_lead_data = {}
@@ -96,15 +110,23 @@ def clutch_calculate_lead_protection(match_data : dict={}) -> None:
 
 def clutch_add_match_data(clutch_data : dict={}) -> None:
     for team in clutch_data.keys():
-        if team in clutch_rating.keys():
-            clutch_rating[team] += clutch_data[team]
+        if team in clutch_rating_base.keys():
+            clutch_rating_base[team] += clutch_data[team]
+            clutch_games_played[team] += 1
         else:
-            clutch_rating[team] = clutch_data[team]
+            clutch_rating_base[team] = clutch_data[team]
+            clutch_games_played[team] = 1
 
 
-def clutch_update_trend() -> None:
+def clutch_rating_scale_by_game() -> None:
+    for team in clutch_rating_base.keys():
+        clutch_rating[team] = (
+            clutch_rating_base[team] / clutch_games_played[team]
+        )
+
+
+
+def clutch_update_trend(date : str="") -> None:
+    clutch_trends[date] = {}
     for team in clutch_rating.keys():
-        if team in clutch_trends.keys():
-            clutch_trends[team].append(clutch_rating[team])
-        else:
-            clutch_trends[team] = list(clutch_rating[team])
+        clutch_trends[date][team] = clutch_rating[team]

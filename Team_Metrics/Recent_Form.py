@@ -155,20 +155,18 @@ def recent_form_calculate_all() -> None:
 def recent_form_combine_metrics() -> None:
     for team in streak_info.keys():
         recent_form_rating[team] = (
-            (streak_info[team] *
+            (streak_rating[team] *
                 recent_form_weights.STREAK.value) +
-            (last_10_info[team] *
+            (last_10_rating[team] *
                 recent_form_weights.LAST_10.value) +
-            (last_20_info[team] *
+            (last_20_rating[team] *
                 recent_form_weights.LAST_20.value) +
-            (last_40_info[team] *
+            (last_40_rating[team] *
                 recent_form_weights.LAST_40.value)
         )
 
 
-def recent_form_update_trends() -> None:
+def recent_form_update_trends(date : str="") -> None:
+    recent_form_trends[date] = {}
     for team in recent_form_rating.keys():
-        if team in recent_form_trends.keys():
-            recent_form_trends[team].append(recent_form_rating[team])
-        else:
-            recent_form_trends[team] = list(recent_form_rating[team])
+        recent_form_trends[date][team] = recent_form_rating[team]

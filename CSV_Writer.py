@@ -1,5 +1,4 @@
 import csv
-import datetime
 from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 
@@ -44,17 +43,10 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
 
 
 def update_trend_file(file_name : str = "", stat_dict : dict = {},
-        date : str="", rating_type : str="") -> None:
+    rating_type : str="") -> None:
     
     # construct the header row in case the file is new
     header_row = ["Rating Date", "Team", "Division", rating_type]
-
-    # split the given trend date into its parts (yyyy-mm-dd)
-    date_split = date.split("-")
-
-    # get the current date and version for that column
-    date_rating = date_split[2] + "/" + date_split[1] + "/" + date_split[0] + \
-        " (v" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + ")"
 
     with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
         csv_writer = csv.writer(csv_date_file, delimiter=',', quotechar='|',
@@ -62,12 +54,22 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {},
         
         # first write out the header row
         csv_writer.writerow(header_row)
+        
+        # now cycle through each date in the given trend data set and writes
+        for date in stat_dict.keys():
 
-        # for each team print the rating with this timestamp
-        for key in stat_dict.keys():
-            if type(stat_dict[key]) == list:
-                csv_writer.writerow([date_rating, key, divisions[key],
-                    stat_dict[key][len(stat_dict[key])-1]])
-            else:
-                csv_writer.writerow([date_rating, key, divisions[key],
-                    stat_dict[key]])
+            # split the given trend date into its parts (yyyy-mm-dd)
+            if date.find('-') == -1:
+                break
+            date_split = date.split("-")
+
+            # get the current date and version for that column
+            date_rating = date_split[2] + "/" + date_split[1] + "/" + \
+                date_split[0] + " (v" + str(VERSION_MAJOR) + "." + \
+                str(VERSION_MINOR) + ")"
+            
+            # for each team print the rating with this timestamp 
+            for team in stat_dict[date].keys():
+                csv_writer.writerow([date_rating, team, divisions[team],
+                    stat_dict[date][team]])
+  

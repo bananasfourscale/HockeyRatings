@@ -111,8 +111,8 @@ def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
             goals_for_unscaled[team] += offensive_data[1][team]
             
             # penalty kill
-            pp_goals[team][0] += offensive_data[2][team]
-            pp_oppertunities[team][1] += offensive_data[2][team]
+            pp_goals[team] += offensive_data[2][team][0]
+            pp_oppertunities[team] += offensive_data[2][team][1]
             
             # games played
             games_played[team] += 1
@@ -125,8 +125,8 @@ def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
             goals_for_unscaled[team] = offensive_data[1][team]
             
             # penalty kill
-            pp_goals[team][0] = offensive_data[2][team]
-            pp_oppertunities[team][1] = offensive_data[2][team]
+            pp_goals[team] = offensive_data[2][team][0]
+            pp_oppertunities[team] = offensive_data[2][team][1]
 
             # games played
             games_played[team] = 1
@@ -160,9 +160,7 @@ def offensive_rating_combine_metrics() -> None:
         )
 
 
-def offensive_rating_update_trends() -> None:
+def offensive_rating_update_trends(date : str="") -> None:
+    offensive_rating_trends[date] = {}
     for team in offensive_rating.keys():
-        if team in offensive_rating_trends.keys():
-            offensive_rating_trends[team].append(offensive_rating[team])
-        else:
-            offensive_rating_trends[team] = list(offensive_rating[team])
+        offensive_rating_trends[date][team] = offensive_rating[team]

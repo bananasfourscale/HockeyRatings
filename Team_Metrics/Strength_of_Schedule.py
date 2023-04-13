@@ -90,9 +90,7 @@ def strength_of_schedule_scale_by_game() -> None:
         )
 
 
-def strength_of_schedule_update_trends() -> None:
+def strength_of_schedule_update_trends(date : str="") -> None:
+    strength_of_schedule_trends[date] = {}
     for team in sos_rating.keys():
-        if team in strength_of_schedule_trends.keys():
-            strength_of_schedule_trends[team].append(sos_rating[team])
-        else:
-            strength_of_schedule_trends[team] = list(sos_rating[team])
+        strength_of_schedule_trends[date][team] = sos_rating[team]
