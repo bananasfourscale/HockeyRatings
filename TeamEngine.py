@@ -1871,10 +1871,7 @@ def run_team_engine():
             plot_corrected_player_metrics()
 
         ### combine metrics to overall score and plot ###
-        print("Combining All Metrics")
-
         # Goalies
-        print("\tCombining Goalie Metrics")
         goalie_total_rating = {}
         for goalie in goalie_utilization_get_dict().keys():
             goalie_total_rating[goalie] = \
@@ -1896,7 +1893,6 @@ def run_team_engine():
                 "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
             
         # Forwards
-        print("\tCombining Forward Metrics")
         forward_total_rating = {}
         for forward in forward_utilization_get_dict().keys():
             forward_total_rating[forward] = (
@@ -1932,7 +1928,6 @@ def run_team_engine():
                 "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
             
         # Defense
-        print("\tCombining Defensemen Metrics")
         defensemen_total_rating = {}
         for defensemen in defensemen_utilization_get_dict().keys():
             defensemen_total_rating[defensemen] = \
@@ -2253,7 +2248,7 @@ def run_team_engine():
         csv_read_file.close()
 
         # now rewrite the data to a year on year trend file with extra headers
-        print("Writing Out Goalie Updates")
+        print("Writing Out Forward Updates")
         with open(
             "Output_Files\Forward_Files\Trend_Files\ForwardYearlyRanking.csv",
             'a+', newline='', encoding='utf-16') as csv_write_file:
@@ -2294,7 +2289,7 @@ def run_team_engine():
         csv_read_file.close()
 
         # now rewrite the data to a year on year trend file with extra headers
-        print("Writing Out Goalie Updates")
+        print("Writing Out Defensemen Updates")
         with open(
             "Output_Files\Defensemen_Files\Trend_Files\DefensemenYearlyRanking.csv",
             'a+', newline='', encoding='utf-16') as csv_write_file:
