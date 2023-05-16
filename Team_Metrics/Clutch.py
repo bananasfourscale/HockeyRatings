@@ -125,7 +125,6 @@ def clutch_rating_scale_by_game() -> None:
         )
 
 
-
 def clutch_update_trend(date : str="") -> None:
     clutch_trends[date] = {}
     for team in clutch_rating.keys():

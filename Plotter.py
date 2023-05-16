@@ -39,7 +39,7 @@ team_color_hex_codes = {
     'Phoenix Coyotes' : "#8C2633",
     'Atlanta Thrashers' : "#041E42",
     'Winnipeg Jets (1979)' : "#8E9090",
-    'Hartford Whalers' : "#046A38",
+    'Hartford Whalers' : "#00FF00",
     'Quebec Nordiques' : "#6F263D",
     'Minnesota North Stars' : "#006847",
     'Colorado Rockies' : "#001F38",
@@ -65,7 +65,7 @@ def plot_data_set(csv_file : str = "", axis : list = [],
     team_palette = sns.color_palette(team_color_sorted_list)
     plot = sns.barplot(data=plot_data, x=axis[0], y=axis[1],
         palette=team_palette)
-    plot.set(xticks=range(len(list(team_color_hex_codes.values()))))
+    plot.set(xticks=range(len(team_palette)))
     plot.set_xticklabels(plot.get_xticklabels(), rotation=90,
         horizontalalignment='center')
     plotter.tick_params(axis='x', which='major', labelsize=24)
@@ -199,6 +199,30 @@ def plot_player_trend_set(csv_file : str = "", axis : list = [],
     plot.set(yticks=tick_set)
     plotter.tick_params(axis='x', which='major', labelsize=16)
     plotter.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    plotter.savefig(image_file, bbox_inches='tight')
+    plotter.clf()
+    plotter.close()
+
+
+def plot_matches_ranking(csv_file : str = "", axis : list = [],
+    tick_set : list = [], image_file : str = "") -> None:
+
+    plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
+    sns.set_theme(font='Times New Roman')
+
+    # determine the number of games to scale the graph accordingly
+    num_games = plot_data.count().loc["Rating"]
+    chart_title = csv_file.split("/")[-1].split(".")[0]
+
+    # make player plots horizontal bar plots
+    plot_data.set_index('Rating').plot(kind='barh', stacked=True,
+        color=[team_color_hex_codes[axis[0]], team_color_hex_codes[axis[1]]],
+        figsize=(20, num_games/2), title=chart_title, xticks=tick_set, xlim=(-0.1, 1.1))
+
+    plotter.tick_params(axis='y', which='major', labelsize=10)
+    plotter.tick_params(axis='x', which='major', labelsize=10)
+
+    # save the figure to file and then close to save memory
     plotter.savefig(image_file, bbox_inches='tight')
     plotter.clf()
     plotter.close()

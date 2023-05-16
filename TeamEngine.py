@@ -121,50 +121,52 @@ from Defensemen_Metrics.Defensemen_Utilization import \
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
 from Weights import total_rating_weights, goalie_rating_weights, \
-    forward_rating_weights, defensemen_rating_weights, divisions
+    forward_rating_weights, defensemen_rating_weights, divisions, \
+    EYE_TEST_WEIGHT
 from Plotter import plot_data_set, plot_team_trend_set, plot_player_trend_set, \
-    plot_player_ranking
-from CSV_Writer import write_out_file, update_trend_file, write_out_player_file
-
+    plot_player_ranking, plot_matches_ranking
+from CSV_Writer import write_out_file, update_trend_file, write_out_player_file, \
+    write_out_matches_file
 
 sigmoid_ticks = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
+team_total_rating = {}
 
-total_rating = {}
+goalie_total_rating = {}
 
+forward_total_rating = {}
+
+defensemen_total_rating = {}
 
 total_rating_trend = {}
 
-
 ranking_absolutes = {}
-
 
 ranking_averages = {}
 
-
 average_goalie_rating = {}
-
 
 average_forward_rating = {}
 
-
 average_defenseman_rating = {}
-
 
 average_player_rating = {}
 
+regular_season_matches = {}
 
-season_matches = {}
+playoff_matches = {}
 
+upcoming_matches = {}
+
+upcoming_playoff_matches = {}
 
 goalie_teams = {}
 
-
 forward_teams = {}
-
 
 defensemen_teams = {}
 
+player_eye_test_rating = {}
 
 match_input_queue = Queue()
 match_output_queue = Queue()
@@ -185,6 +187,7 @@ class Team_Selection(Enum):
     HOME = 0
     AWAY = 1
 
+
 def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
     print("Completed in {} seconds".format(end_time - start_time))
 
@@ -194,27 +197,31 @@ def parse_web_match_data(game_date : dict={}) -> list:
     for game in game_date["games"]:
 
         # if the game is a completed regular season game then add to list
-        if (game["status"]["abstractGameState"] == "Final"):
-            box_score = \
-                "https://statsapi.web.nhl.com/api/v1/game/" + \
-                    "{}/boxscore".format(game["gamePk"])
-            box_score_web_data = requests.get(box_score)
-            box_score_parsed_data = json.loads(box_score_web_data.content)
-            game_data.append({'date':game_date["date"],
-                'boxscore':box_score_parsed_data,
-                'linescore':game})
-        else:
-            return game_data
+        box_score = \
+            "https://statsapi.web.nhl.com/api/v1/game/" + \
+                "{}/boxscore".format(game["gamePk"])
+        box_score_web_data = requests.get(box_score)
+        box_score_parsed_data = json.loads(box_score_web_data.content)
+        game_data.append({'date':game_date["date"],
+            'boxscore':box_score_parsed_data, 'linescore':game})
     return game_data
+
+
+def parse_eye_test_file(file_name : str="") -> None:
+    with open(file_name, "r", newline='', encoding='utf-16') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='|',
+            quoting=csv.QUOTE_MINIMAL)
+        for row in csv_reader:
+            player_eye_test_rating[row[0]] = row[1]
 
 
 def get_game_records() -> None:
     schedule = \
         "https://statsapi.web.nhl.com/api/v1/schedule?season=" + SEASON + \
-            "&gameType=R&expand=schedule.linescore"
+            "&gameType=R&gameType=P&expand=schedule.linescore"
     schedule_web_data = requests.get(schedule)
     schedule_parsed_data = json.loads(schedule_web_data.content)
-
+    current_date = datetime.date.today()
     match_parser_process_list = []
     for i in range(15):
         match_parser_process_list.append(Process(target=worker_node,
@@ -226,19 +233,39 @@ def get_game_records() -> None:
     # matches are orginized by date they take place
     for date in schedule_parsed_data["dates"]:
 
-        # # Skip this date if all the games arn't finished yet
-        if date["games"][0]["status"]["abstractGameState"] != "Final":
-            break
-
         # for each game on a specific date loop through
         match_input_queue.put((parse_web_match_data, ([date])))
-
     for i in range(15):
         match_input_queue.put('STOP')
     for i in range(15):
         for output_list in iter(match_output_queue.get, 'STOP'):
             if (output_list is not None) and (len(output_list) > 0):
-                season_matches[output_list[0]['date']] = output_list
+                parsed_date = output_list[0]['date'].split("-")
+                parsed_date = datetime.date(int(parsed_date[0]),
+                    int(parsed_date[1]), int(parsed_date[2]))
+                
+                # if the date has already passed, then do post processing
+                if parsed_date < current_date:
+
+                    # if regular season then put into that list of dates
+                    if output_list[0]['linescore']['gameType'] == "R":
+                        regular_season_matches[output_list[0]['date']] = \
+                            output_list
+                        
+                    # otherwise put the date and all games into the playoff
+                    # list of matches
+                    else:
+                        playoff_matches[output_list[0]['date']] = output_list
+
+                # otherwise slate it for the prediction engine
+                else:
+                    if output_list[0]['linescore']['gameType'] == "R":
+                        upcoming_matches[output_list[0]['date']] = output_list
+                    else:
+                        upcoming_playoff_matches[output_list[0]['date']] = \
+                            output_list
+
+    # close all parser processes
     for process in match_parser_process_list:
         process.join()
 
@@ -252,7 +279,8 @@ def worker_node(input_queue : Queue=None, output_queue : Queue=None,
     output_queue.put('STOP')
 
 
-def run_team_match_parsers(match_dates : list=[], ranking_date : str="") -> None:
+def run_match_parser(match_dates : list=[], ranking_date : str="",
+    matches_list : list=[]) -> None:
 
     # get all the different parsed trend data dictionaries
     defensive_trends = defensive_rating_get_trend_dict()
@@ -260,7 +288,7 @@ def run_team_match_parsers(match_dates : list=[], ranking_date : str="") -> None
     sos_trends = strength_of_schedule_get_trend_dict()
     recnt_form_trends = recent_form_get_trend_dict()
     for date in match_dates:
-        for match in season_matches[date]:
+        for match in matches_list[date]:
 
             ################ TEAMS #####################
             # get the home and away team
@@ -1035,6 +1063,158 @@ def plot_corrected_team_metrics() -> None:
         "Graphs/Teams/Strength_of_Schedule/strenght_of_schedule_final.png")))
     
 
+def plot_combined_team_metrics() -> None:
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
+        ["Team", "Defensive Rating Final"], defensive_rating_get_dict())
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
+        ["Team", "Defensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Defensive_Rating/defensive_rating_final.png")))
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
+        ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
+        ["Team", "Recent Form Rating"], recent_form_get_dict())
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
+        ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Recent_Form/recent_form_final.png")))
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/TotalRating.csv",
+        ["Team", "Total Rating"], team_total_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
+        ["Team", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Final_Rating_Score/final_rating_score.png")))
+    
+
+def plot_trend_team_metrics() -> None:
+
+    # clutch
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
+        clutch_rating_get_trend_dict(), "Clutch Rating")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
+        ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
+
+    # defensive rating
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
+        defensive_rating_get_trend_dict(), "Defensive Rating")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
+        ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
+    
+    # offensive rating
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+        offensive_rating_get_trend_dict(), "Offensive Rating")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
+        ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
+    
+    # recent form
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/RecentForm.csv",
+        recent_form_get_trend_dict(), "Recent Form")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
+        ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Recent_Form/recent_form_trend.png")))
+    
+    # strength of schedule
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+        strength_of_schedule_get_trend_dict(),
+        "Strength of Schedule")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
+        ["Rating Date", "Strength of Schedule"], 1.1, -.1, 
+        sigmoid_ticks, "Graphs/Teams/Strength_of_Schedule/" + 
+            "strength_of_schedule_trend.png")))
+
+    # absolute ranking
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
+        ranking_absolutes, "Absolute Ranking")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
+        ["Rating Date", "Absolute Ranking"], 0, 33, range(1, 33, 1),
+        "Graphs/Teams/Final_Rating_Score/absolute_ranking_trend.png")))
+
+    # average ranking
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
+        ranking_averages, "Average Ranking")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
+        ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
+        "Graphs/Teams/Final_Rating_Score/average_ranking_trend.png")))
+
+    # final rating
+    update_trend_file(
+        "Output_Files/Team_Files/Trend_Files/RatingScore.csv",
+        total_rating_trend, "Rating Score")
+    plotting_queue.put((plot_team_trend_set,
+        ("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
+        ["Rating Date", "Rating Score"], 1.1, -.1, sigmoid_ticks,
+        "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))
+    
+
+def plot_average_player_team_metrics() -> None:
+
+    # Average Goalie Ranking
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+        ["Team", "Average Goalie"], average_goalie_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
+        ["Team", "Average Goalie"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_goalie_rating.png",
+        True)))
+    
+    # Average Forward Ranking
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+        ["Team", "Average Forward"], average_forward_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
+        ["Team", "Average Forward"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_forward_rating.png",
+        True)))
+    
+    # Average Defensemen Ranking
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+        ["Team", "Average Defenseman"], average_defenseman_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
+        ["Team", "Average Defenseman"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/" +
+            "average_defenseman_rating.png",
+        True)))
+    
+    # Average Roster Ranking
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+        ["Team", "Average Player"], average_player_rating)
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
+        ["Team", "Average Player"], 0.0, 0.0, [],
+        "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
+        True)))
+
+
 def plot_uncorrected_player_metrics() -> None:
 
     ### Goalies
@@ -1477,13 +1657,44 @@ def plot_corrected_player_metrics() -> None:
         "Output_Files/Defensemen_Files/Instance_Files/UtilizationRating.csv",
         ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
         "Graphs/Defensemen/Utilization/utilization_rating.png")))
+    
+
+def plot_combined_player_metrics() -> None:
+    write_out_player_file(
+        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+        ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
+    plot_player_ranking(
+        "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
+        ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
+    write_out_player_file(
+        "Output_Files/Forward_Files/Instance_Files/" + \
+            "Forward_Total_Rating.csv",
+        ["Forward", "Total Rating", "Team"], forward_total_rating,
+        forward_teams)
+    plot_player_ranking(
+        "Output_Files/Forward_Files/Instance_Files/" + \
+            "Forward_Total_Rating.csv",
+        ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
+    write_out_player_file(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
+        defensemen_teams)
+    plot_player_ranking(
+        "Output_Files/Defensemen_Files/Instance_Files/" + \
+            "Defensemen_Total_Rating.csv",
+        ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Defensemen/Defensemen_Total_Rating/" +
+            "defensemen_total_rating.png")
 
 
 def combine_all_team_factors() -> None:
     
     # calculate the final rating for all teams using the forms above
     for team in clutch_rating_get_dict().keys():
-        total_rating[team] = \
+        team_total_rating[team] = \
             (clutch_rating_get_dict()[team] *
                 total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
             (defensive_rating_get_dict()[team] *
@@ -1496,10 +1707,17 @@ def combine_all_team_factors() -> None:
                 total_rating_weights.SOS_RATING_WEIGHT.value)
     
 
-def run_team_engine():
+def run_played_game_parser_engine(game_types : str="R"):
 
     # loop through all gathered match dates until we have parsed all data
-    sorted_date_list = sorted(season_matches)
+    if game_types == "R":
+        sorted_date_list = sorted(regular_season_matches)
+    elif game_types == "P":
+        sorted_date_list = sorted(playoff_matches)
+    else:
+
+        # error input, return here
+        return
 
     # determine at which dates we should collate and mark trend data
     i = 1
@@ -1517,6 +1735,8 @@ def run_team_engine():
                 ranking_dates.append(date)
                 all_ranking_periods.append(ranking_period)
                 ranking_period = []
+            elif date == sorted_date_list[-1]:
+                all_ranking_periods.append(ranking_period)
 
         # otherwise we are doing it based on a specific day of the week
         else:
@@ -1527,6 +1747,8 @@ def run_team_engine():
                 ranking_dates.append(date)
                 all_ranking_periods.append(ranking_period)
                 ranking_period = []
+            elif date == sorted_date_list[-1]:
+                all_ranking_periods.append(ranking_period)
         i += 1
 
     # we've grouped dates together by when trends should be updated to save
@@ -1549,7 +1771,12 @@ def run_team_engine():
             process.start()
 
         # feed in matches until all those in the current date have been parsed
-        run_team_match_parsers(ranking_period, last_ranking_date)
+        if game_types == "R":
+            run_match_parser(ranking_period, last_ranking_date,
+                regular_season_matches)
+        else:
+            run_match_parser(ranking_period, last_ranking_date,
+                playoff_matches)
     
         # let the metric workers know there are no more matches
         for i in range(subprocess_count):
@@ -1570,9 +1797,11 @@ def run_team_engine():
                     goalie_goals_against = goalie_metrics[1]
                     goalie_goals_against_add_match_data(goalie_goals_against)  
                     goalie_save_percentage = goalie_metrics[2]
-                    goalie_save_percentage_add_match_data(goalie_save_percentage)
+                    goalie_save_percentage_add_match_data(
+                        goalie_save_percentage)
                     goalie_save_consistency = goalie_metrics[3]
-                    goalie_save_consistency_add_match_data(goalie_save_consistency)
+                    goalie_save_consistency_add_match_data(
+                        goalie_save_consistency)
                     for goalie in goalie_utilization.keys():
                         goalie_teams[goalie] = goalie_utilization[goalie][0]
 
@@ -1593,7 +1822,8 @@ def run_team_engine():
                     forward_takeaways = forward_metrics[6]
                     forward_takeaways_add_match_data(forward_takeaways)
                     forward_contribution = forward_metrics[7]
-                    forward_contributing_games_add_match_data(forward_contribution)
+                    forward_contributing_games_add_match_data(
+                        forward_contribution)
                     forward_multipoint = forward_metrics[8]
                     forward_multipoint_games_add_match_data(forward_multipoint)
                     for forward in forward_utilization[0].keys():
@@ -1602,7 +1832,8 @@ def run_team_engine():
                     # Defensemen
                     defensemen_metrics = output_list[2]
                     defensemen_utilization = defensemen_metrics[0]
-                    defensemen_utilization_add_match_data(defensemen_utilization)
+                    defensemen_utilization_add_match_data(
+                        defensemen_utilization)
                     defensemen_blocks = defensemen_metrics[1]
                     defensemen_blocks_add_match_data(defensemen_blocks)
                     defensemen_discipline = defensemen_metrics[2]
@@ -1616,8 +1847,8 @@ def run_team_engine():
                     defensemen_takeaways = defensemen_metrics[6]
                     defensemen_takeaways_add_match_data(defensemen_takeaways)
                     for defensemen in defensemen_utilization[0].keys():
-                        defensemen_teams[defensemen] = defensemen_utilization[0][
-                            defensemen]
+                        defensemen_teams[defensemen] = \
+                            defensemen_utilization[0][defensemen]
                         
                 # teams
                 else:
@@ -1702,46 +1933,19 @@ def run_team_engine():
 
         # Defensive Rating
         defensive_rating_combine_metrics()
-        if final_date:
-            write_out_file("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
-                ["Team", "Defensive Rating Final"], defensive_rating_get_dict())
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/DefensiveRating.csv",
-                ["Team", "Defensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Teams/Defensive_Rating/defensive_rating_final.png")))
 
         # Offensive Rating
         offensive_rating_combine_metrics()
-        if final_date:
-            write_out_file("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
-                ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/OffensiveRating.csv",
-                ["Team", "Offensive Rating Final"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Teams/Offensive_Rating/offensive_rating_final.png")))
 
         # Recent Form
         recent_form_combine_metrics()
-        if final_date:
-            write_out_file("Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
-                ["Team", "Recent Form Rating"], recent_form_get_dict())
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/RecentFormFinal.csv",
-                ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Teams/Recent_Form/recent_form_final.png")))
-            
-        # Strength of Schedule
-        # pass
 
         # combine all factors and plot the total rankings
         combine_all_team_factors()
+        
         if final_date:
-            write_out_file("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
-                ["Team", "Total Rating"], total_rating)
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/TotalRating.csv",
-                ["Team", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Teams/Final_Rating_Score/final_rating_score.png")))
+            plot_combined_team_metrics()
+            
 
         ### Update any trend sets if on ranking date ###
         # clutch
@@ -1763,7 +1967,7 @@ def run_team_engine():
         tuple_list = []
         ranking_absolutes[ranking_period[-1]] = {}
         ranking_averages[ranking_period[-1]] = {}
-        for team, rating in total_rating.items():
+        for team, rating in team_total_rating.items():
             tuple_list.append(tuple((team, rating)))
         tuple_list.sort(key = lambda x: x[1], reverse=True)
         for count in range(0, len(tuple_list), 1):
@@ -1774,15 +1978,16 @@ def run_team_engine():
             for date in ranking_absolutes.keys():
                 if date.find('-') == -1:
                     break
-                sum += ranking_absolutes[date][team]
-                ind += 1
+                if team in ranking_absolutes[date]:
+                    sum += ranking_absolutes[date][team]
+                    ind += 1
             sum /= ind
             ranking_averages[ranking_period[-1]][team] = float(sum)
         
         # final rating
         total_rating_trend[ranking_period[-1]] = {}
-        for team in total_rating.keys():
-            total_rating_trend[ranking_period[-1]][team] = total_rating[team]
+        for team in team_total_rating.keys():
+            total_rating_trend[ranking_period[-1]][team] = team_total_rating[team]
 
 ####################### PLAYER RANKING PERIOD PROCESSING #######################
         ### Goalies ###
@@ -1811,7 +2016,8 @@ def run_team_engine():
         forward_contributing_games_scale_by_games(
             strength_of_schedule_get_games_played_dict(), forward_teams)
         forward_discipline_scale_by_utilization(forward_utilization_get_dict())
-        forward_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
+        forward_hits_scale_by_games(
+            strength_of_schedule_get_games_played_dict(),
             forward_teams)
         forward_multipoint_games_scale_by_games(
             strength_of_schedule_get_games_played_dict(), forward_teams)
@@ -1829,16 +2035,19 @@ def run_team_engine():
         defensemen_utilization_combine_metrics()
         apply_sigmoid_correction(defensemen_utilization_get_dict())
         defensemen_blocks_scale_by_shots_against(
-            defensive_rating_get_unscaled_shots_against_dict(), defensemen_teams)
+            defensive_rating_get_unscaled_shots_against_dict(),
+            defensemen_teams)
         defensemen_discipline_scale_by_utilization(
             defensemen_utilization_get_dict())
-        defensemen_hits_scale_by_games(strength_of_schedule_get_games_played_dict(),
+        defensemen_hits_scale_by_games(
+            strength_of_schedule_get_games_played_dict(),
             defensemen_teams)
         defensemen_plus_minus_scale_by_utilization(
             defensemen_utilization_get_dict())
         defensemen_points_scale_by_games(
             strength_of_schedule_get_games_played_dict(), defensemen_teams)
-        defensemen_takeaways_scale_by_utilization(defensemen_utilization_get_dict())
+        defensemen_takeaways_scale_by_utilization(
+            defensemen_utilization_get_dict())
         if final_date:
             print("Plot Player data before correction")
             plot_uncorrected_player_metrics()
@@ -1872,28 +2081,27 @@ def run_team_engine():
 
         ### combine metrics to overall score and plot ###
         # Goalies
-        goalie_total_rating = {}
         for goalie in goalie_utilization_get_dict().keys():
-            goalie_total_rating[goalie] = \
+            goalie_total_rating[goalie] = (
                 (goalie_utilization_get_dict()[goalie] *
-                    goalie_rating_weights.UTILIZATION_WEIGHT.value) + \
+                    goalie_rating_weights.UTILIZATION_WEIGHT.value) +
                 (goalie_save_percentage_get_dict()[goalie] *
-                    goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) + \
+                    goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) +
                 (goalie_goals_against_get_dict()[goalie] *
-                    goalie_rating_weights.GOALS_AGAINST_WEIGHT.value) + \
+                    goalie_rating_weights.GOALS_AGAINST_WEIGHT.value) +
                 (goalie_save_consistency_get_dict()[goalie] *
                     goalie_rating_weights.SAVE_CONSISTENCY_WEIGHT.value)
-        if final_date:
-            write_out_player_file(
-                "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-                ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
-            plot_player_ranking(
-                "Output_Files/Goalie_Files/Instance_Files/Goalie_Total_Rating.csv",
-                ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Goalies/Goalie_Total_Rating/goalie_total_rating.png")
+            )
+            goalie_total_rating[goalie] *= EYE_TEST_WEIGHT
+            if goalie in player_eye_test_rating.keys():
+                goalie_total_rating[goalie] += (
+                    EYE_TEST_WEIGHT * float(player_eye_test_rating[goalie])
+                )
+            else:
+                goalie_total_rating[goalie] *= 2
+            
             
         # Forwards
-        forward_total_rating = {}
         for forward in forward_utilization_get_dict().keys():
             forward_total_rating[forward] = (
                 (forward_hits_get_dict()[forward] *
@@ -1915,140 +2123,65 @@ def run_team_engine():
                 (forward_multipoint_games_get_dict()[forward] *
                     forward_rating_weights.MULTIPOINT_WEIGHT.value)
             )
-        if final_date:
-            write_out_player_file(
-                "Output_Files/Forward_Files/Instance_Files/" + \
-                    "Forward_Total_Rating.csv",
-                ["Forward", "Total Rating", "Team"], forward_total_rating,
-                forward_teams)
-            plot_player_ranking(
-                "Output_Files/Forward_Files/Instance_Files/" + \
-                    "Forward_Total_Rating.csv",
-                ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Forward/Forward_Total_Rating/forward_total_rating.png")
+            forward_total_rating[forward] *= EYE_TEST_WEIGHT
+            if forward in player_eye_test_rating.keys():
+                forward_total_rating[forward] += (
+                    EYE_TEST_WEIGHT * float(player_eye_test_rating[forward])
+                )
+            else:
+                forward_total_rating[forward] *= 2
             
         # Defense
-        defensemen_total_rating = {}
         for defensemen in defensemen_utilization_get_dict().keys():
-            defensemen_total_rating[defensemen] = \
-                (defensemen_hits_get_dict()[defensemen] * \
-                    defensemen_rating_weights.HITS_WEIGHT.value) + \
-                (defensemen_blocks_get_dict()[defensemen] * \
-                    defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) + \
-                (defensemen_utilization_get_dict()[defensemen] * \
-                    defensemen_rating_weights.UTILIZATION_WEIGHT.value) + \
-                (defensemen_discipline_get_dict()[defensemen] * \
-                    defensemen_rating_weights.DISIPLINE_WEIGHT.value) + \
-                (defensemen_plus_minus_get_dict()[defensemen] * \
-                    defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) + \
-                (defensemen_points_get_dict()[defensemen] * \
-                    defensemen_rating_weights.POINTS_WEIGHT.value) + \
-                (defensemen_takeaways_get_dict()[defensemen] * \
+            defensemen_total_rating[defensemen] = (
+                (defensemen_hits_get_dict()[defensemen] *
+                    defensemen_rating_weights.HITS_WEIGHT.value) +
+                (defensemen_blocks_get_dict()[defensemen] *
+                    defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) +
+                (defensemen_utilization_get_dict()[defensemen] *
+                    defensemen_rating_weights.UTILIZATION_WEIGHT.value) +
+                (defensemen_discipline_get_dict()[defensemen] *
+                    defensemen_rating_weights.DISIPLINE_WEIGHT.value) +
+                (defensemen_plus_minus_get_dict()[defensemen] *
+                    defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) +
+                (defensemen_points_get_dict()[defensemen] *
+                    defensemen_rating_weights.POINTS_WEIGHT.value) +
+                (defensemen_takeaways_get_dict()[defensemen] *
                     defensemen_rating_weights.TAKEAWAYS_WEIGHT.value)
+            )
+            defensemen_total_rating[defensemen] *= EYE_TEST_WEIGHT
+            if defensemen in player_eye_test_rating.keys():
+                defensemen_total_rating[defensemen] += (
+                    EYE_TEST_WEIGHT * float(player_eye_test_rating[defensemen])
+                )
+            else:
+                defensemen_total_rating[defensemen] *= 2
         if final_date:
-            write_out_player_file(
-                "Output_Files/Defensemen_Files/Instance_Files/" + \
-                    "Defensemen_Total_Rating.csv",
-                ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
-                defensemen_teams)
-            plot_player_ranking(
-                "Output_Files/Defensemen_Files/Instance_Files/" + \
-                    "Defensemen_Total_Rating.csv",
-                ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-                "Graphs/Defensemen/Defensemen_Total_Rating/defensemen_total_rating.png")
-
+            plot_combined_player_metrics()
 
         # now update the last ranking date to indicate we have new trends
         last_ranking_date = ranking_period[-1]
+
 ############################# END POST PROCESSING ##############################
         # Print out trend files
         if final_date:
             ############## TEAMS ##############
-            # clutch
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
-                clutch_rating_get_trend_dict(), "Clutch Rating")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/ClutchRating.csv",
-                ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Clutch_Rating/clutch_rating_trend.png")))
-
-            # defensive rating
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
-                defensive_rating_get_trend_dict(), "Defensive Rating")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/DefensiveRating.csv",
-                ["Rating Date", "Defensive Rating"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Defensive_Rating/defensive_rating_trend.png")))
             
-            # offensive rating
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
-                offensive_rating_get_trend_dict(), "Offensive Rating")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/OffensiveRating.csv",
-                ["Rating Date", "Offensive Rating"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Offensive_Rating/offensive_rating_trend.png")))
-            
-            # recent form
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/RecentForm.csv",
-                recent_form_get_trend_dict(), "Recent Form")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/RecentForm.csv",
-                ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Recent_Form/recent_form_trend.png")))
-            
-            # strength of schedule
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
-                strength_of_schedule_get_trend_dict(),
-                "Strength of Schedule")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/StrengthOfSchedule.csv",
-                ["Rating Date", "Strength of Schedule"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Strength_of_Schedule/strength_of_schedule_trend.png")))
-
-            # absolute ranking
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
-                ranking_absolutes, "Absolute Ranking")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/AbsoluteRankings.csv",
-                ["Rating Date", "Absolute Ranking"], 0, 33, range(1, 33, 1),
-                "Graphs/Teams/Final_Rating_Score/absolute_ranking_trend.png")))
-
-            # average ranking
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
-                ranking_averages, "Average Ranking")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/AverageRankings.csv",
-                ["Rating Date", "Average Ranking"], 0, 33, range(1, 33, 1),
-                "Graphs/Teams/Final_Rating_Score/average_ranking_trend.png")))
-
-            # final rating
-            update_trend_file(
-                "Output_Files/Team_Files/Trend_Files/RatingScore.csv",
-                total_rating_trend, "Rating Score")
-            plotting_queue.put((plot_team_trend_set,
-                ("Output_Files/Team_Files/Trend_Files/RatingScore.csv",
-                ["Rating Date", "Rating Score"], 1.1, -.1, sigmoid_ticks,
-                "Graphs/Teams/Final_Rating_Score/rating_score_trend.png")))
             
             ################ PLAYERS ###############
             # sort players into team rosters
             ### Goalies ###
             i = 1
             sorted_goalies = \
-                dict(sorted(goalie_total_rating.items(), key=lambda item: item[1],
-                    reverse=True))
+                dict(sorted(goalie_total_rating.items(),
+                    key=lambda item: item[1], reverse=True))
+            average_player_rating = {}
+            average_goalie_rating = {}
             for goalie in sorted_goalies:
 
                 # only account for top 3 starters
                 if goalie_teams[goalie] in average_goalie_rating.keys():
-                    if average_goalie_rating[goalie_teams[goalie]][1] < 4:
+                    if average_goalie_rating[goalie_teams[goalie]][1] < 3:
                         average_goalie_rating[goalie_teams[goalie]][0] += i
                         average_goalie_rating[goalie_teams[goalie]][1] += 1
                 else:
@@ -2056,25 +2189,26 @@ def run_team_engine():
                 i += 1
             for team in average_goalie_rating:
                 if team in average_player_rating.keys():
-                    average_player_rating[team][0] += average_goalie_rating[team][0]
-                    average_player_rating[team][1] += average_goalie_rating[team][1]
+                    average_player_rating[team][0] += \
+                        average_goalie_rating[team][0]
+                    average_player_rating[team][1] += \
+                        average_goalie_rating[team][1]
                 else:
-                    average_player_rating[team] = [average_goalie_rating[team][0],
-                        average_goalie_rating[team][1]]
-                average_goalie_rating[team] = \
-                    average_goalie_rating[team][0] / average_goalie_rating[team][1]
-            write_out_file("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
-                ["Team", "Average Goalie"], average_goalie_rating)
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/AvgGoalie.csv",
-                ["Team", "Average Goalie"], 0.0, 0.0, [],
-                "Graphs/Teams/Average_Player_Ratings/average_goalie_rating.png", True)))
+                    average_player_rating[team] = [
+                        average_goalie_rating[team][0],
+                        average_goalie_rating[team][1]
+                    ]
+                average_goalie_rating[team] = (
+                    average_goalie_rating[team][0] /
+                        average_goalie_rating[team][1])
+            
             
             ### Forwards ###
             i = 1
             sorted_forward = \
-                dict(sorted(forward_total_rating.items(), key=lambda item: item[1],
-                    reverse=True))
+                dict(sorted(forward_total_rating.items(),
+                    key=lambda item: item[1], reverse=True))
+            average_forward_rating = {}
             for forward in sorted_forward:
 
                 # only account for top 12 starters
@@ -2086,23 +2220,27 @@ def run_team_engine():
                     average_forward_rating[forward_teams[forward]] = [i, 1]
                 i += 1
             for team in average_forward_rating:
-                average_player_rating[team][0] += average_forward_rating[team][0]
-                average_player_rating[team][1] += average_forward_rating[team][1]
-                average_forward_rating[team] = \
-                    average_forward_rating[team][0] / average_forward_rating[team][1]
-            write_out_file("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
-                ["Team", "Average Forward"], average_forward_rating)
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/AvgForward.csv",
-                ["Team", "Average Forward"], 0.0, 0.0, [],
-                "Graphs/Teams/Average_Player_Ratings/average_forward_rating.png",
-                True)))
+                if team in average_player_rating.keys():
+                    average_player_rating[team][0] += \
+                        average_forward_rating[team][0]
+                    average_player_rating[team][1] += \
+                        average_forward_rating[team][1]
+                else:
+                    average_player_rating[team] = [
+                        average_forward_rating[team][0],
+                        average_forward_rating[team][1]
+                    ]
+                average_forward_rating[team] = (
+                    average_forward_rating[team][0] /
+                        average_forward_rating[team][1])
+            
             
             ### Defensemen ###
             i = 1
             sorted_defenseman = \
-                dict(sorted(defensemen_total_rating.items(), key=lambda item: item[1],
-                    reverse=True))
+                dict(sorted(defensemen_total_rating.items(),
+                    key=lambda item: item[1], reverse=True))
+            average_defenseman_rating = {}
             for defenseman in sorted_defenseman:
 
                 # only account for top 6 starters
@@ -2119,32 +2257,24 @@ def run_team_engine():
                         [i, 1]
                 i += 1
             for team in average_defenseman_rating:
-                average_player_rating[team][0] += \
-                    average_defenseman_rating[team][0]
-                average_player_rating[team][1] += \
-                    average_defenseman_rating[team][1]
+                if team in average_player_rating.keys():
+                    average_player_rating[team][0] += \
+                        average_defenseman_rating[team][0]
+                    average_player_rating[team][1] += \
+                        average_defenseman_rating[team][1]
+                else:
+                    average_player_rating[team] = [
+                        average_defenseman_rating[team][0],
+                        average_defenseman_rating[team][1]
+                    ]
                 average_defenseman_rating[team] = \
                     average_defenseman_rating[team][0] / \
                         average_defenseman_rating[team][1]
-            write_out_file("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
-                ["Team", "Average Defenseman"], average_defenseman_rating)
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/AvgDefenseman.csv",
-                ["Team", "Average Defenseman"], 0.0, 0.0, [],
-                "Graphs/Teams/Average_Player_Ratings/average_defenseman_rating.png",
-                True)))
             
             ### All Roles ###
             for team in average_player_rating:
                 average_player_rating[team] = average_player_rating[team][0] / \
                     average_player_rating[team][1]
-            write_out_file("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
-                ["Team", "Average Player"], average_player_rating)
-            plotting_queue.put((plot_data_set,
-                ("Output_Files/Team_Files/Instance_Files/AvgPlayer.csv",
-                ["Team", "Average Player"], 0.0, 0.0, [],
-                "Graphs/Teams/Average_Player_Ratings/average_player_rating.png",
-                True)))
 
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
@@ -2338,6 +2468,108 @@ def run_team_engine():
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
+            
+
+def calculate_metric_share(home_rating, away_rating) -> list:
+    rating_total = home_rating + away_rating
+    return [home_rating / rating_total, away_rating / rating_total]
+
+
+def run_upcoming_game_parser_engine() -> None:
+
+    # loop through all gathered match dates until we have parsed all data
+    final_team_ratings = {}
+    sorted_date_list = sorted(upcoming_matches)
+    for date in sorted_date_list:
+        for match in upcoming_matches[date]:
+            home_team = match["linescore"]["teams"]["home"]["team"]["name"]
+            away_team = match["linescore"]["teams"]["away"]["team"]["name"]
+            match_key = "{}: {} vs. {}".format(date, home_team, away_team)
+            clutch_ratings = calculate_metric_share(
+                clutch_rating_get_dict()[home_team],
+                clutch_rating_get_dict()[away_team])
+            defensive_ratings = calculate_metric_share(
+                defensive_rating_get_dict()[home_team],
+                defensive_rating_get_dict()[away_team])
+            offensive_ratings = calculate_metric_share(
+                offensive_rating_get_dict()[home_team],
+                offensive_rating_get_dict()[away_team])
+            recent_form_ratings = calculate_metric_share(
+                recent_form_get_dict()[home_team],
+                recent_form_get_dict()[away_team])
+            strength_of_schedule_ratings = calculate_metric_share(
+                strength_of_schedule_get_dict()[home_team],
+                strength_of_schedule_get_dict()[away_team])
+            goalie_average_ratings = calculate_metric_share(
+                average_goalie_rating[home_team],
+                average_goalie_rating[away_team])
+            forward_average_ratings = calculate_metric_share(
+                average_forward_rating[home_team],
+                average_forward_rating[away_team])
+            defenseman_average_ratings = calculate_metric_share(
+                average_defenseman_rating[home_team],
+                average_defenseman_rating[away_team])
+            final_team_ratings[match_key] = [(
+                ((
+                    (clutch_ratings[0] * total_rating_weights.CLUTCH_RATING_WEIGHT.value) +
+                    (defensive_ratings[0] * total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) +
+                    (offensive_ratings[0] * total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) +
+                    (recent_form_ratings[0] * total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) +
+                    (strength_of_schedule_ratings[0] * total_rating_weights.SOS_RATING_WEIGHT.value)
+                ) * 0.70) +
+                ((
+                    (goalie_average_ratings[1] * 0.30) +
+                    (forward_average_ratings[1] * 0.30) +
+                    (defenseman_average_ratings[1] * 0.40)
+                ) * 0.30)
+            ),
+            (
+                ((
+                    (clutch_ratings[1] * total_rating_weights.CLUTCH_RATING_WEIGHT.value) +
+                    (defensive_ratings[1] * total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) +
+                    (offensive_ratings[1] * total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) +
+                    (recent_form_ratings[1] * total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) +
+                    (strength_of_schedule_ratings[1] * total_rating_weights.SOS_RATING_WEIGHT.value)
+                ) * 0.70) +
+                ((
+                    (goalie_average_ratings[0] * 0.30) +
+                    (forward_average_ratings[0] * 0.30) +
+                    (defenseman_average_ratings[0] * 0.40)
+                ) * 0.30)
+            ),
+                clutch_ratings[0], clutch_ratings[1],
+                defensive_ratings[0], defensive_ratings[1],
+                offensive_ratings[0], offensive_ratings[1],
+                recent_form_ratings[0], recent_form_ratings[1],
+                strength_of_schedule_ratings[0], strength_of_schedule_ratings[1],
+                goalie_average_ratings[1], goalie_average_ratings[0],
+                forward_average_ratings[1], forward_average_ratings[0],
+                defenseman_average_ratings[1], defenseman_average_ratings[0],
+            ]
+
+    for match in final_team_ratings.keys():
+        file_name = match.replace(" ", "_")
+        file_name = file_name.replace(":","")
+        file_name = file_name.replace(".","")
+        team_names = file_name
+        for char in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-']:
+            team_names = team_names.replace(char, "")
+        team_names = team_names.split("vs")
+        team_names[0] = team_names[0].replace("_", "", 1)
+        team_names[0] = team_names[0].replace("_", " ")
+        team_names[0] = team_names[0][0:-1]
+        team_names[1] = team_names[1].replace("_", "", 1)
+        team_names[1] = team_names[1].replace("_", " ")
+        write_out_matches_file(
+            "Output_Files/Team_Files/Trend_Files/{}.csv".format(file_name),
+            ["Rating", "Home Odds", "Away Odds"], ["Total", "Clutch", "Defense",
+                "Offense", "Recent Form", "Strenght of Schedule",
+                "Goalie Rating", "Forward Rating", "Defenseman Rating"],
+            final_team_ratings[match])
+        plot_matches_ranking(
+            "Output_Files/Team_Files/Trend_Files/{}.csv".format(file_name),
+            [team_names[0], team_names[1]], sigmoid_ticks,
+            "Graphs/Teams/Matches/{}.png".format(file_name))
 
 
 if __name__ == "__main__":
@@ -2348,6 +2580,8 @@ if __name__ == "__main__":
     TREND_DAY = 5
     start = time.time()
     freeze_support()
+
+    parse_eye_test_file("player_eye_test.csv")
     
     # get all the match data
     match_data_start = time.time()
@@ -2355,8 +2589,23 @@ if __name__ == "__main__":
     get_game_records()
     print_time_diff(match_data_start, time.time())
 
-    # first run the team engine which calculates and plots all team stats
-    print("Running Team Engine")
-    run_team_engine()
-    print(time.time() - start)
+    # if regular season games have been played then run post processing on those
+    if len(regular_season_matches) > 0:
+        print("Running Regular Season Post Process\n")
+        run_played_game_parser_engine("R")
+
+    # reset all stats to just isolate post season.
+    # TODO
+
+    # if playoffs have started then run post processing on those games
+    if len(playoff_matches) > 0 :
+        print("Running Post Season Post Process\n")
+        run_played_game_parser_engine("P")
+    print_time_diff(start, time.time())
+    start = time.time()
+
+    # if there are matches in the schedule that are still upcoming then process
+    if len(upcoming_matches) > 0:
+        run_upcoming_game_parser_engine()
+    print_time_diff(start, time.time())
     exit(0)

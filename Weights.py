@@ -51,6 +51,7 @@ divisions = {
 VERSION_MAJOR = 7
 VERSION_MINOR = 0
 
+EYE_TEST_WEIGHT = 0.50
 
 class total_rating_weights(Enum):
     CLUTCH_RATING_WEIGHT = 0.05

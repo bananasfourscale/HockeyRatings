@@ -72,4 +72,14 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {},
             for team in stat_dict[date].keys():
                 csv_writer.writerow([date_rating, team, divisions[team],
                     stat_dict[date][team]])
-  
+
+
+def write_out_matches_file(file_name : str = "", header_row : list = [],
+    rating_order : list=[], rating_list : list=[]) -> None:
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
+        csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
+            quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(header_row)
+        for i in range(0, len(rating_list) - 1, 2):
+            row = [rating_order[int(i / 2)], rating_list[i], rating_list[i + 1]]
+            csv_writer.writerow(row)
