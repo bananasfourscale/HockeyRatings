@@ -52,6 +52,19 @@ def recent_form_get_trend_dict() -> dict:
     return recent_form_trends
 
 
+def recent_form_reset() -> None:
+    streak_info.clear()
+    streak_rating.clear()
+    last_10_info.clear()
+    last_10_rating.clear()
+    last_20_info.clear()
+    last_20_rating.clear()
+    last_40_info.clear()
+    last_40_rating.clear()
+    recent_form_rating.clear()
+    recent_form_trends.clear()
+
+
 def recent_form_get_data_set(match_data : dict={}) -> list:
     game_result = {}
     game_value = {}

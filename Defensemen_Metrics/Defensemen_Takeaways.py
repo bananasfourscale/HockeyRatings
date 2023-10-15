@@ -7,6 +7,11 @@ def defensemen_takeaways_get_dict() -> dict:
     return defensemen_takeaways_rating
 
 
+def defensemen_takeaways_reset() -> None:
+    defensemen_takeaways_base.clear()
+    defensemen_takeaways_rating.clear()
+
+
 def defensemen_takeaways_get_data_set(match_data : dict={}) -> dict:
     takeaways = {}
 

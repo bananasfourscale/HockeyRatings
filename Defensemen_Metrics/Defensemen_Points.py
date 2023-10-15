@@ -7,6 +7,11 @@ def defensemen_points_get_dict() -> dict:
     return defensemen_points_rating
 
 
+def defensemen_points_reset() -> None:
+    defensemen_points_base.clear()
+    defensemen_points_rating.clear()
+
+
 def defensemen_points_get_data_set(match_data : dict={}) -> dict:
     points = {}
 

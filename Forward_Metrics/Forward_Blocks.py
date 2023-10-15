@@ -7,6 +7,11 @@ def forward_blocks_get_dict() -> dict:
     return forward_blocks_rating
 
 
+def forward_blocks_reset() -> None:
+    forward_blocks_base.clear()
+    forward_blocks_rating.clear()
+
+
 def forward_blocks_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice

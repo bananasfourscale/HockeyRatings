@@ -54,6 +54,18 @@ def defensive_rating_get_pk_oppertunities_dict() -> dict:
     return pk_oppertunities
 
 
+def defensive_rating_reset() -> None:
+    shots_against.clear()
+    shots_against_unscaled.clear()
+    goals_against.clear()
+    goals_against_unscaled.clear()
+    pk_goals_against.clear()
+    pk_oppertunities.clear()
+    pk_rating.clear()
+    games_played.clear()
+    defensive_rating.clear()
+    defensive_rating_trends.clear()
+
 def defensive_rating_get_data_set(match_data : dict={}) -> list:
 
     # place the requried data into a dictionary for later use

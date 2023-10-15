@@ -37,6 +37,16 @@ def defensemen_utilization_get_pk_time_dict() -> dict:
     return defensemen_pk_time
 
 
+def defensemen_utilization_reset() -> None:
+    defensemen_even_base.clear()
+    defensemen_even_time.clear()
+    defensemen_pp_base.clear()
+    defensemen_pp_time.clear()
+    defensemen_pk_base.clear()
+    defensemen_pk_time.clear()
+    defensemen_utilization_rating.clear()
+
+
 def defensemen_utilization_get_data_set(match_data : dict={}) -> list:
     even_time = {}
     pp_time = {}

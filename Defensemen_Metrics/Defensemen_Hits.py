@@ -7,6 +7,11 @@ def defensemen_hits_get_dict() -> dict:
     return defensemen_hits_rating
 
 
+def defensemen_hits_reset() -> None:
+    defensemen_hits_base.clear()
+    defensemen_hits_rating.clear()
+
+
 def defensemen_hits_get_data_set(match_data : dict={}) -> dict:
     hits = {}
 

@@ -7,6 +7,11 @@ def forward_points_get_dict() -> dict:
     return forward_points_rating
 
 
+def forward_points_reset() -> None:
+    forward_points_base.clear()
+    forward_points_rating.clear()
+
+
 def forward_points_get_data_set(match_data : dict={}) -> dict:
     points = {}
 

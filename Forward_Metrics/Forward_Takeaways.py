@@ -7,6 +7,11 @@ def forward_takeaways_get_dict() -> dict:
     return forward_takeaways_rating
 
 
+def forward_takeaways_reset() -> None:
+    forward_takeaway_base.clear()
+    forward_takeaways_rating.clear()
+
+
 def forward_takeaways_get_data_set(match_data : dict={}) -> dict:
     takeaways = {}
 

@@ -1,11 +1,15 @@
 forward_discipline_rating = {}
 
-
 forward_penalty_min = {}
 
 
 def forward_discipline_get_dict() -> dict:
     return forward_discipline_rating
+
+
+def forward_discipline_reset() -> None:
+    forward_discipline_rating.clear()
+    forward_penalty_min.clear()
 
 
 def forward_discipline_get_data(match_data : dict={}) -> dict:

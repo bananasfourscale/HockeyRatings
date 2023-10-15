@@ -7,6 +7,11 @@ def forward_plus_minus_get_dict() -> dict:
     return forward_plus_minus_rating
 
 
+def forward_plus_minus_reset() -> None:
+    forward_plus_minus_base.clear()
+    forward_plus_minus_rating.clear()
+
+
 def forward_plus_minus_get_data_set(match_data : dict={}) -> dict:
     plus_minus = {}
 

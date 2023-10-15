@@ -37,6 +37,13 @@ def strength_of_schedule_get_trend_dict() -> dict:
     return strength_of_schedule_trends
 
 
+def strength_of_schedule_reset() -> None:
+    strength_of_schedule.clear()
+    strength_of_schedule_games_played.clear()
+    sos_rating.clear()
+    strength_of_schedule_trends.clear()
+
+
 def strength_of_schedule_get_data_set(match_data : dict={}) -> dict:
     game_value = {}
     home_team = match_data['linescore']["teams"]["home"]["team"]["name"]

@@ -7,6 +7,11 @@ def forward_contributing_games_get_dict() -> dict:
     return forward_contributing_games_rating
 
 
+def forward_contributing_games_reset() -> None:
+    forward_contribution_base.clear()
+    forward_contributing_games_rating.clear()
+
+
 def forward_contributing_games_get_data_set(match_data : dict={}) -> list:
     contributing_game = {}
 

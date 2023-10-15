@@ -50,6 +50,19 @@ def offensive_rating_get_pp_oppertunities_dict() -> dict:
     return pp_oppertunities
 
 
+def offensive_rating_reset() -> None:
+    shots_for.clear()
+    shots_for_unscaled.clear()
+    goals_for.clear()
+    goals_for_unscaled.clear()
+    pp_goals.clear()
+    pp_oppertunities.clear()
+    pp_rating.clear()
+    games_played.clear()
+    offensive_rating.clear()
+    offensive_rating_trends.clear()
+
+
 def offensive_rating_get_data_set(match_data : dict={}) -> list:
 
     # place the requried data into a dictionary for later use

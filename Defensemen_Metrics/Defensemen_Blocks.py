@@ -7,6 +7,11 @@ def defensemen_blocks_get_dict() -> dict:
     return defensemen_blocks_rating
 
 
+def defensemen_blocks_reset() -> None:
+    defensemen_blocks_base.clear()
+    defensemen_blocks_rating.clear()
+
+
 def defensemen_blocks_get_data_set(match_data : dict={}) -> dict:
 
     # loop through and populate the time on ice

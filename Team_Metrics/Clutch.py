@@ -15,6 +15,13 @@ def clutch_rating_get_trend_dict() -> dict:
     return clutch_trends
 
 
+def clutch_rating_reset() -> None:
+    clutch_rating_base.clear()
+    clutch_games_played.clear()
+    clutch_rating.clear()
+    clutch_trends.clear()
+
+
 def clutch_get_lead_data(match_data : dict={}) -> dict:
     
     # loop through the lines of file

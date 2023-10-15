@@ -1,11 +1,15 @@
 defensemen_discipline_rating = {}
 
-
 defensemen_penalty_min = {}
 
 
 def defensemen_discipline_get_dict() -> dict:
     return defensemen_discipline_rating
+
+
+def defensemen_discipline_reset() -> None:
+    defensemen_discipline_rating.clear()
+    defensemen_penalty_min.clear()
 
 
 def defensemen_discipline_get_data(match_data : dict={}) -> dict:

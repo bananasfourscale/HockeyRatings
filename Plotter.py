@@ -1,4 +1,6 @@
 # import all assisting built in modules
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plotter
@@ -48,6 +50,7 @@ team_color_hex_codes = {
     'California Golden Seals' : "#FAEE00",
     'Oakland Seals' : "#FAEE00",
     'Cleveland Barons' : "#CC0000",
+    'St Louis Blues' : "#002F87"
 }
 
 
@@ -217,7 +220,8 @@ def plot_matches_ranking(csv_file : str = "", axis : list = [],
     # make player plots horizontal bar plots
     plot_data.set_index('Rating').plot(kind='barh', stacked=True,
         color=[team_color_hex_codes[axis[0]], team_color_hex_codes[axis[1]]],
-        figsize=(20, num_games/2), title=chart_title, xticks=tick_set, xlim=(-0.1, 1.1))
+        figsize=(20, num_games/2), title=chart_title, xticks=tick_set,
+        xlim=(-0.1, 1.1))
 
     plotter.tick_params(axis='y', which='major', labelsize=10)
     plotter.tick_params(axis='x', which='major', labelsize=10)

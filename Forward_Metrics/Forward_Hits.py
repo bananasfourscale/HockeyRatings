@@ -7,6 +7,11 @@ def forward_hits_get_dict() -> dict:
     return forward_hits_rating
 
 
+def forward_hits_reset() -> None:
+    forward_hits_base.clear()
+    forward_hits_rating.clear()
+
+
 def forward_hits_get_data_set(match_data : dict={}) -> dict:
     hits = {}
 

@@ -17,6 +17,16 @@ def goalie_save_percentage_get_dict() -> dict:
     return goalie_save_percentage_rating
 
 
+def goalie_save_percentage_reset() -> None:
+    goalie_even_save.clear()
+    goalie_even_save_percent.clear()
+    goalie_pp_save.clear()
+    goalie_pp_save_percent.clear()
+    goalie_sh_save.clear()
+    goalie_sh_save_percent.clear()
+    goalie_save_percentage_rating.clear()
+
+
 def goalie_save_percentage_get_data_set(match_data : dict={}) -> list:
     even_strength_sp = {}
     power_play_sp = {}

@@ -37,6 +37,16 @@ def forward_utilization_get_pk_time_dict() -> dict:
     return forward_pk_time
 
 
+def forward_utilization_reset() -> None:
+    forward_even_base.clear()
+    forward_even_time.clear()
+    forward_pp_base.clear()
+    forward_pp_time.clear()
+    forward_pk_base.clear()
+    forward_pk_time.clear()
+    forward_utilization_rating.clear()
+
+
 def forward_utilization_get_data_set(match_data : dict={}) -> list:
     even_time = {}
     pp_time = {}

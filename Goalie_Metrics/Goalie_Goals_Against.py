@@ -7,6 +7,11 @@ def goalie_goals_against_get_dict() -> dict:
     return goalie_goals_against_rating
 
 
+def goalie_goals_against_reset() -> None:
+    goalie_goals_against_base.clear()
+    goalie_goals_against_rating.clear()
+
+
 def goalie_goals_against_get_data_set(match_data : dict={}) -> dict:
     goals_against = {}
     for goalie in match_data.keys():

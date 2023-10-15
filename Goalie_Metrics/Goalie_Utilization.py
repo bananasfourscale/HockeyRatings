@@ -7,6 +7,11 @@ def goalie_utilization_get_dict() -> dict:
     return goalie_utilization_rating
 
 
+def goalie_utilization_reset() -> None:
+    goalie_utilization_base.clear()
+    goalie_utilization_rating.clear()
+
+
 def goalie_utilization_get_data_set(match_data : dict={}) -> dict:
     utilization = {}
     for goalie in match_data.keys():
