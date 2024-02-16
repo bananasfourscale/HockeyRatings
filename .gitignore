@@ -4,3 +4,13 @@ Output_Files/Defensemen_Files/Instance_Files/*.csv
 Output_Files/Forward_Files/Instance_Files/*.csv
 Output_Files/Goalie_Files/Instance_Files/*.csv
 Output_Files/Team_Files/Instance_Files/*.csv
+Graphs/**
+Output_Files/Team_Files/Trend_Files/*.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_AbsoluteRankings.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_AverageRankings.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_ClutchRating.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_DefensiveRating.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_DefensiveRating.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_RatingScore.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_RecentForm.csv
+!Output_Files/Team_Files/Trend_Files/Reg_Season_StrengthOfSchedule.csv
