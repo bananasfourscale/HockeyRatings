@@ -68,12 +68,19 @@ def recent_form_reset() -> None:
 def recent_form_get_data_set(match_data : dict={}) -> list:
     game_result = {}
     game_value = {}
-    home_team = match_data['linescore']["teams"]["home"]["team"]["name"]
-    home_score_final = match_data['linescore']["teams"]["home"]["score"]
-    away_team = match_data['linescore']["teams"]["away"]["team"]["name"]
-    away_score_final = match_data['linescore']["teams"]["away"]["score"]
-    final_game_state = match_data['linescore']["linescore"][
-        "currentPeriodOrdinal"]
+
+    home_team = match_data['game_stats']['home_team']
+    home_team_stats = match_data['game_stats'][home_team]["team_stats"]
+    away_team = match_data['game_stats']['away_team']
+    away_team_stats = match_data['game_stats'][away_team]["team_stats"]
+    home_score_final = home_team_stats["first_period_goals"] + \
+        home_team_stats["second_period_goals"] + \
+        home_team_stats["third_period_goals"]
+    away_score_final = away_team_stats["first_period_goals"] + \
+        away_team_stats["second_period_goals"] + \
+        away_team_stats["third_period_goals"]
+    final_game_state = match_data['game_stats']['result']
+    print(final_game_state)
 
     # determin the winner and loser from game score
     # determine who won and lost the game
@@ -87,7 +94,7 @@ def recent_form_get_data_set(match_data : dict={}) -> list:
     # if the home team wins
     game_result[winner] = "W"
     game_value[winner] = 1.0
-    if final_game_state == "3rd":
+    if final_game_state == "REG":
         game_result[loser] = "L"
         game_value[loser] = 0.0
     else:

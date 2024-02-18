@@ -204,6 +204,14 @@ def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
     print("Completed in {} seconds".format(end_time - start_time))
 
 
+def parse_eye_test_file(file_name : str="") -> None:
+    with open(file_name, "r", newline='', encoding='utf-16') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='|',
+            quoting=csv.QUOTE_MINIMAL)
+        for row in csv_reader:
+            player_eye_test_rating[row[0]] = row[1]
+
+
 def parse_play_by_play_data(game_data : dict={}, game_stats : dict={}) -> dict:
     home_team = game_data["box_score"]["homeTeam"]["name"]["default"]
     away_team = game_data["box_score"]["awayTeam"]["name"]["default"]
@@ -296,7 +304,7 @@ def collect_game_stats(game : dict={}) -> dict:
     
     # if the game hasn't been played then just fill out the minimum struct to be
     # able to gather past info for prediction engine to run
-    if game["box_score"]["gameState"] == "FUT" or \
+    if game["box_score"]["gameState"] in ["FUT", "PRE"] or \
         game["box_score"]["gameType"] not in [2, 3]:
         game_stats = {
             "home_team" : home_team,
@@ -306,65 +314,68 @@ def collect_game_stats(game : dict={}) -> dict:
         return game_stats
     
     # if the game is finished create a table of all required data
-    game_stats = {
-        "home_team" : home_team,
-        "away_team" : away_team,
-        "result" : game["box_score"]["periodDescriptor"]["periodType"],
-        "game_type" : game["box_score"]["gameType"],
-        home_team : {
-            "team_stats" : {
-                "first_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [0]["home"],
-                "second_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [1]["home"],
-                "third_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [2]["home"],
-                "shots" : game["box_score"]["homeTeam"]["sog"],
-                "power_play_goals" :
-                    game["box_score"]["homeTeam"]
-                        ["powerPlayConversion"].split("/")[0],
-                "power_play_chances" : 
-                    game["box_score"]["homeTeam"]
-                        ["powerPlayConversion"].split("/")[1],
-                "short_handed_goals" : 0,
-                "short_handed_chances" : 0,
-                "penalty_minutes" : game["box_score"]["homeTeam"]["pim"],
-                "hits" : game["box_score"]["homeTeam"]["hits"],
-                "blocks" : game["box_score"]["homeTeam"]["blocks"],
+    try: 
+        game_stats = {
+            "home_team" : home_team,
+            "away_team" : away_team,
+            "result" : game["box_score"]["periodDescriptor"]["periodType"],
+            "game_type" : game["box_score"]["gameType"],
+            home_team : {
+                "team_stats" : {
+                    "first_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [0]["home"],
+                    "second_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [1]["home"],
+                    "third_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [2]["home"],
+                    "shots" : game["box_score"]["homeTeam"]["sog"],
+                    "power_play_goals" :
+                        game["box_score"]["homeTeam"]
+                            ["powerPlayConversion"].split("/")[0],
+                    "power_play_chances" : 
+                        game["box_score"]["homeTeam"]
+                            ["powerPlayConversion"].split("/")[1],
+                    "short_handed_goals" : 0,
+                    "short_handed_chances" : 0,
+                    "penalty_minutes" : game["box_score"]["homeTeam"]["pim"],
+                    "hits" : game["box_score"]["homeTeam"]["hits"],
+                    "blocks" : game["box_score"]["homeTeam"]["blocks"],
+                },
+                "player_stats" : {}
             },
-            "player_stats" : {}
-        },
-        away_team : {
-            "team_stats" : {
-                "first_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [0]["away"],
-                "second_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [1]["away"],
-                "third_period_goals" :
-                    game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                        [2]["away"],
-                "shots" : game["box_score"]["awayTeam"]["sog"],
-                "power_play_goals" :
-                    game["box_score"]["awayTeam"]
-                        ["powerPlayConversion"].split("/")[0],
-                "power_play_chances" : 
-                    game["box_score"]["awayTeam"]
-                        ["powerPlayConversion"].split("/")[1],
-                "short_handed_goals" : 0,
-                "short_handed_chances" : 0,
-                "penalty_minutes" : game["box_score"]["awayTeam"]["pim"],
-                "hits" : game["box_score"]["awayTeam"]["hits"],
-                "getting_hit" : 0,
-                "blocks" : game["box_score"]["awayTeam"]["blocks"],
+            away_team : {
+                "team_stats" : {
+                    "first_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [0]["away"],
+                    "second_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [1]["away"],
+                    "third_period_goals" :
+                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
+                            [2]["away"],
+                    "shots" : game["box_score"]["awayTeam"]["sog"],
+                    "power_play_goals" :
+                        game["box_score"]["awayTeam"]
+                            ["powerPlayConversion"].split("/")[0],
+                    "power_play_chances" : 
+                        game["box_score"]["awayTeam"]
+                            ["powerPlayConversion"].split("/")[1],
+                    "short_handed_goals" : 0,
+                    "short_handed_chances" : 0,
+                    "penalty_minutes" : game["box_score"]["awayTeam"]["pim"],
+                    "hits" : game["box_score"]["awayTeam"]["hits"],
+                    "getting_hit" : 0,
+                    "blocks" : game["box_score"]["awayTeam"]["blocks"],
+                },
+                "player_stats" : {}
             },
-            "player_stats" : {}
-        },
-    }
+        }
+    except KeyError:
+        print(game["box_score"]["gameState"])
 
     # create a flat list of players by id so we can reference stats from
     # the boxscore when looping through play-by-play
@@ -396,6 +407,7 @@ def collect_game_stats(game : dict={}) -> dict:
                 game_stats[home_team]["player_stats"][player_id] = {
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
+                    "player_position" : player["positionCode"],
                     "even_saves" :
                         players_by_id[player_id]
                             ["evenStrengthShotsAgainst"].split("/")[0],
@@ -428,6 +440,7 @@ def collect_game_stats(game : dict={}) -> dict:
                 game_stats[home_team]["player_stats"][player_id] = {
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
+                    "player_position" : player["positionCode"],
                     "goals" : players_by_id[player_id]["goals"],
                     "assists" : players_by_id[player_id]["assists"],
                     "plus_minus" : players_by_id[player_id]["plusMinus"],
@@ -452,13 +465,14 @@ def collect_game_stats(game : dict={}) -> dict:
                         players_by_id[player_id]["powerPlayToi"],
                     "short_handed_time_on_ice" :
                         players_by_id[player_id]["shorthandedToi"],
-                    "total_time_on_ice" : players_by_id[player_id]["toi"],
+                    "time_on_ice" : players_by_id[player_id]["toi"],
                 }
         else:
             if player["positionCode"] == "G":
                 game_stats[away_team]["player_stats"][player_id] = {
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
+                    "player_position" : player["positionCode"],
                     "even_saves" :
                         players_by_id[player_id]
                             ["evenStrengthShotsAgainst"].split("/")[0],
@@ -491,6 +505,7 @@ def collect_game_stats(game : dict={}) -> dict:
                 game_stats[away_team]["player_stats"][player_id] = {
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
+                    "player_position" : player["positionCode"],
                     "goals" : players_by_id[player_id]["goals"],
                     "assists" : players_by_id[player_id]["assists"],
                     "plus_minus" : players_by_id[player_id]["plusMinus"],
@@ -515,7 +530,7 @@ def collect_game_stats(game : dict={}) -> dict:
                         players_by_id[player_id]["powerPlayToi"],
                     "short_handed_time_on_ice" :
                         players_by_id[player_id]["shorthandedToi"],
-                    "total_time_on_ice" : players_by_id[player_id]["toi"],
+                    "time_on_ice" : players_by_id[player_id]["toi"],
                 }
 
     # now we go through each play in the play-by-play data and get other stats
@@ -564,14 +579,6 @@ def parse_web_match_data(game_date : str="") -> list:
     return game_data
 
 
-def parse_eye_test_file(file_name : str="") -> None:
-    with open(file_name, "r", newline='', encoding='utf-16') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='|',
-            quoting=csv.QUOTE_MINIMAL)
-        for row in csv_reader:
-            player_eye_test_rating[row[0]] = row[1]
-
-
 def get_game_records() -> None:
 
     # first get the list of all seasons to get the start and end date
@@ -594,7 +601,8 @@ def get_game_records() -> None:
     # are parsing the currents season then it doesn't have that info
 
     # create a list of all dates between now and season end
-    dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
+    # dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
+    dates = [start_date]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")
@@ -734,108 +742,13 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
         sos_stats, total_rating_stats]
 
 
-def run_match_parser(match_dates : list=[], ranking_date : str="",
-    matches_list : list=[]) -> None:
-
-    # get all the different parsed trend data dictionaries
-    for date in match_dates:
-        for match in matches_list[date]:
-
-            ################ TEAMS #####################
-            # get the home and away team
-            away_team = match['linescore']["teams"]["away"]["team"]["name"]
-            home_team = match['linescore']["teams"]["home"]["team"]["name"]
-
-            trends_by_date = get_team_trend_by_date(home_team, away_team,
-                ranking_date)
-
-            ##################### PLAYERS ######################
-            goalies = {}
-            forwards = {}
-            defensemen = {}
-            players = match['boxscore']["teams"]["home"]["players"]
-            for player_by_ID in players:
-
-                # find the players position
-                # if we can't determine the position, skip getting stats
-                position = players[player_by_ID]["person"].get(
-                    "primaryPosition")
-                if position is not None:
-                    position = position["type"]
-                else:
-                    position = players[player_by_ID]["position"]["type"]
-                if position == "Unknown":
-                    continue
-
-                # read out the players name
-                name = players[player_by_ID]["person"]["fullName"]
-
-                # determine if the player had any stats for this game
-                if "skaterStats" in players[player_by_ID]["stats"]:
-                    stats = players[player_by_ID]["stats"]["skaterStats"]
-                elif "goalieStats" in players[player_by_ID]["stats"]:
-                    stats = players[player_by_ID]["stats"]["goalieStats"]
-                else:
-                    stats = None
-
-                # sort all the players in this match to parse their data
-                if (position == 'Goalie') and (stats != None):
-                    goalies[name] = [home_team, stats]
-                elif (position == 'Forward') and (stats != None):
-                    forwards[name] = [home_team, stats]
-                elif (stats != None):
-                    defensemen[name] = [home_team, stats]
-
-            # then do away team players
-            players = match['boxscore']["teams"]["away"]["players"]
-            for player_by_ID in players:
-
-                # find the players position
-                # if we can't determine the position, skip getting stats
-                position = players[player_by_ID]["person"].get(
-                    "primaryPosition")
-                if position is not None:
-                    position = position["type"]
-                else:
-                    position = players[player_by_ID]["position"]["type"]
-                if position == "Unknown":
-                    continue
-
-                # read out the players name
-                name = players[player_by_ID]["person"]["fullName"]
-
-                # determine if the player had any stats for this game
-                if "skaterStats" in players[player_by_ID]["stats"]:
-                    stats = players[player_by_ID]["stats"]["skaterStats"]
-                elif "goalieStats" in players[player_by_ID]["stats"]:
-                    stats = players[player_by_ID]["stats"]["goalieStats"]
-                else:
-                    stats = None
-
-                # sort all the players in this match to parse their data
-                if (position == 'Goalie') and (stats != None):
-                    goalies[name] = [away_team, stats]
-                elif (position == 'Forward') and (stats != None):
-                    forwards[name] = [away_team, stats]
-                elif (stats != None):
-                    defensemen[name] = [away_team, stats]
-
-            # feed the match information with the scale factors for each team
-            # into the match parser which will call all metrics to get all
-            # relevant information required
-            match_input_queue.put((parse_player_match_data,
-                (match, trends_by_date, [goalies, forwards, defensemen])))
-            match_input_queue.put((parse_team_match_data,
-                (match, trends_by_date)))      
-
-
 def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
                                                                         -> list:
     metric_data = []
 
     # get home and away team
-    home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
-    away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
+    away_team = match_data["game_stats"]["away_team"]
+    home_team = match_data["game_stats"]["home_team"]
 
     ### clutch rating ###
     clutch_data = clutch_calculate_lead_protection(match_data)
@@ -852,31 +765,31 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     ### defensive rating ###
     # shots against
     defensive_data = defensive_rating_get_data_set(match_data)
-    defensive_data[0][home_team] /= (
+    defensive_data['shots_against'][home_team] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    defensive_data[0][away_team] /= (
+    defensive_data['shots_against'][away_team] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     )
-    
+
     # goals against
-    defensive_data[1][home_team] /= (
+    defensive_data['goals_against'][home_team] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    defensive_data[1][away_team] /= (
+    defensive_data['goals_against'][away_team] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     )
-    
+
     # penalty kill goals against
-    defensive_data[2][home_team][0] /= (
+    defensive_data['penalty_kill_data'][home_team][0] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    defensive_data[2][away_team][0] /= (
+    defensive_data['penalty_kill_data'][away_team][0] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     )
@@ -885,31 +798,31 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     ### offensive rating ###
     # shots for
     offensive_data = offensive_rating_get_data_set(match_data)
-    offensive_data[0][home_team] *= (
+    offensive_data['shots_for'][home_team] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    offensive_data[0][away_team] *= (
+    offensive_data['shots_for'][away_team] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.HOME.value]
     )
 
     # goals for
-    offensive_data[1][home_team] *= (
+    offensive_data['goals_for'][home_team] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    offensive_data[1][away_team] *= (
+    offensive_data['goals_for'][away_team] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.HOME.value]
     )
 
     # power play goals for
-    offensive_data[2][home_team][0] *= (
+    offensive_data['power_play_data'][home_team][0] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    offensive_data[2][away_team][0] *= (
+    offensive_data['power_play_data'][away_team][0] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.HOME.value]
     )
@@ -1272,6 +1185,85 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     metric_data.append(defensemen_metrics)
     return(metric_data)
 
+
+def run_match_parser(match_dates : list=[], ranking_date : str="",
+    matches_list : list=[]) -> None:
+
+    # get all the different parsed trend data dictionaries
+    for date in match_dates:
+        for match in matches_list[date]:
+
+            ################ TEAMS #####################
+            # get the home and away team
+            away_team = match["game_stats"]["away_team"]
+            home_team = match["game_stats"]["home_team"]
+
+            trends_by_date = get_team_trend_by_date(home_team, away_team,
+                ranking_date)
+
+            ##################### PLAYERS ######################
+            goalies = {}
+            forwards = {}
+            defensemen = {}
+            players = match["game_stats"][home_team]["player_stats"]
+            for player_by_ID in players.keys():
+
+                # find the players position
+                # if we can't determine the position, skip getting stats
+                position = players[player_by_ID]["player_position"]
+
+                # read out the players name
+                name = players[player_by_ID]["player_name"]
+
+                # determine if the player had any stats for this game based
+                # on if they played at least 1 second of game time.
+                if int(players[player_by_ID]["time_on_ice"].split(":")[1]) > 0:
+                    stats = players[player_by_ID]
+                else:
+                    stats = None
+
+                # sort all the players in this match to parse their data
+                if (position == 'G') and (stats != None):
+                    goalies[name] = [home_team, stats]
+                elif (position == 'D') and (stats != None):
+                    defensemen[name] = [home_team, stats]
+                elif (stats != None):
+                    forwards[name] = [home_team, stats]
+
+            # then do away team players
+            players = match["game_stats"][away_team]["player_stats"]
+            for player_by_ID in players.keys():
+
+                # find the players position
+                # if we can't determine the position, skip getting stats
+                position = players[player_by_ID]["player_position"]
+
+                # read out the players name
+                name = players[player_by_ID]["player_name"]
+
+                # determine if the player had any stats for this game based
+                # on if they played at least 1 second of game time.
+                if int(players[player_by_ID]["time_on_ice"].split(":")[1]) > 0:
+                    stats = players[player_by_ID]
+                else:
+                    stats = None
+
+                # sort all the players in this match to parse their data
+                if (position == 'G') and (stats != None):
+                    goalies[name] = [away_team, stats]
+                elif (position == 'D') and (stats != None):
+                    defensemen[name] = [away_team, stats]
+                elif (stats != None):
+                    forwards[name] = [away_team, stats]
+
+            # feed the match information with the scale factors for each team
+            # into the match parser which will call all metrics to get all
+            # relevant information required
+            match_input_queue.put((parse_team_match_data,
+                (match, trends_by_date)))
+            match_input_queue.put((parse_player_match_data,
+                (match, trends_by_date, [goalies, forwards, defensemen])))
+            
 
 def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     if game_types == "R":
@@ -2696,7 +2688,7 @@ def run_played_game_parser_engine(game_types : str="R"):
 
             # write out any plots before sigmoid correction
             print("Plot Team data before correction")
-            plot_uncorrected_team_metrics(game_types)
+            # plot_uncorrected_team_metrics(game_types)
 
         # Clutch Rating
         apply_sigmoid_correction(clutch_rating_get_dict())
@@ -2725,7 +2717,7 @@ def run_played_game_parser_engine(game_types : str="R"):
         # write out any plots after sigmoid correction
         if final_date:
             print("Plot Team data after correction")
-            plot_corrected_team_metrics(game_types)
+            # plot_corrected_team_metrics(game_types)
 
         ### plot multifactor metrics and total rating ###
         # Clutch rating
@@ -2744,7 +2736,8 @@ def run_played_game_parser_engine(game_types : str="R"):
         combine_all_team_factors()
         
         if final_date:
-            plot_combined_team_metrics(game_types)
+            pass
+            # plot_combined_team_metrics(game_types)
             
 
         ### Update any trend sets if on ranking date ###
@@ -2878,7 +2871,7 @@ def run_played_game_parser_engine(game_types : str="R"):
 
         if final_date:
             print("Plot Player data after correction")
-            plot_corrected_player_metrics(game_types)
+            # plot_corrected_player_metrics(game_types)
 
         ### combine metrics to overall score and plot ###
         # Goalies
@@ -2963,6 +2956,7 @@ def run_played_game_parser_engine(game_types : str="R"):
                     defensemen_total_rating[defensemen] * EYE_TEST_WEIGHT
                 )
         if final_date:
+            pass
             plot_combined_player_metrics(game_types)
 
         # now update the last ranking date to indicate we have new trends
@@ -2973,7 +2967,7 @@ def run_played_game_parser_engine(game_types : str="R"):
         if final_date:
 
             ############## TEAMS ##############
-            plot_trend_team_metrics(game_types)
+            # plot_trend_team_metrics(game_types)
             
             ################ PLAYERS ###############
             # sort players into team rosters
@@ -3111,7 +3105,7 @@ def run_played_game_parser_engine(game_types : str="R"):
                     average_player_rating[team][1]
             
             # now plot all averge player metrics
-            plot_average_player_team_metrics(game_types)
+            # plot_average_player_team_metrics(game_types)
 
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
@@ -3580,7 +3574,6 @@ if __name__ == "__main__":
     print("Gathering All Match Data")
     get_game_records()
     print_time_diff(match_data_start, time.time())
-    exit()
 
     # automatically determine if the season is over based on the number of
     # unplayed matched found
@@ -3592,6 +3585,8 @@ if __name__ == "__main__":
     if len(regular_season_matches) > 0:
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R")
+
+    exit(0)
 
     # reset all stats to just isolate post season.
     clutch_rating_reset()

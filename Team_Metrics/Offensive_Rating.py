@@ -71,75 +71,77 @@ def offensive_rating_get_data_set(match_data : dict={}) -> list:
     power_play_data = {}
 
     # get home and away team
-    home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
-    away_team = match_data["linescore"]["teams"]["away"]["team"]["name"]
+    home_team = match_data['game_stats']['home_team']
+    home_team_stats = match_data['game_stats'][home_team]["team_stats"]
+    away_team = match_data['game_stats']['away_team']
+    away_team_stats = match_data['game_stats'][away_team]["team_stats"]
 
     # home data
-    shots_for_data[home_team] = match_data['boxscore']["teams"]["home"][
-        "teamStats"]["teamSkaterStats"]["shots"]
-    goals_for_data[home_team] = match_data['boxscore']["teams"]["home"][
-        "teamStats"]["teamSkaterStats"]["goals"]
+    shots_for_data[home_team] = home_team_stats["shots"]
+    goals_for_data[home_team] = home_team_stats["first_period_goals"] + \
+        home_team_stats["second_period_goals"] + \
+        home_team_stats["third_period_goals"]
     try:
         power_play_data[home_team] = [
-            match_data['boxscore']["teams"]["home"]["teamStats"][
-                "teamSkaterStats"]["powerPlayGoals"],
-            match_data['boxscore']["teams"]["home"]["teamStats"][
-                "teamSkaterStats"]["powerPlayOpportunities"]]
+            float(home_team_stats["power_play_goals"]),
+            float(home_team_stats["power_play_chances"])
+        ]
     except KeyError:
         power_play_data[home_team] = [
-            match_data['boxscore']["teams"]["home"]["teamStats"][
-                "teamSkaterStats"]["powerPlayGoals"],
-            (match_data['boxscore']["teams"]["away"]["teamStats"][
-                "teamSkaterStats"]["pim"] / 2)]
+            float(home_team_stats["power_play_goals"]),
+            float(home_team_stats["penalty_minutes"] / 2)
+        ]
     
     # away data
-    shots_for_data[away_team] = match_data['boxscore']["teams"]["away"][
-        "teamStats"]["teamSkaterStats"]["shots"]
-    goals_for_data[away_team] = match_data['boxscore']["teams"]["away"][
-        "teamStats"]["teamSkaterStats"]["goals"]
+    shots_for_data[away_team] = away_team_stats["shots"]
+    goals_for_data[away_team] = away_team_stats["first_period_goals"] + \
+        away_team_stats["second_period_goals"] + \
+        away_team_stats["third_period_goals"]
     try:
         power_play_data[away_team] = [
-            match_data['boxscore']["teams"]["away"]["teamStats"][
-                "teamSkaterStats"]["powerPlayGoals"],
-            match_data['boxscore']["teams"]["away"]["teamStats"][
-                "teamSkaterStats"]["powerPlayOpportunities"]]
+            float(away_team_stats["power_play_goals"]),
+            float(away_team_stats["power_play_chances"])
+        ]
     except KeyError:
         power_play_data[away_team] = [
-            match_data['boxscore']["teams"]["away"]["teamStats"][
-                "teamSkaterStats"]["powerPlayGoals"],
-            (match_data['boxscore']["teams"]["home"]["teamStats"][
-                "teamSkaterStats"]["pim"] / 2)]
-    return [shots_for_data, goals_for_data, power_play_data]
+            float(away_team_stats["power_play_goals"]),
+            float(away_team_stats["penalty_minutes"] / 2)
+        ]
+    return {
+        'shots_for' : shots_for_data,
+        'goals_for' : goals_for_data,
+        'power_play_data' : power_play_data
+    }
 
 
 def offensive_rating_add_match_data(offensive_data : dict={}) -> None:
 
-    for team in list(offensive_data[0].keys()):
+    for team in list(offensive_data['shots_for'].keys()):
         if team in shots_for.keys():
 
             # shots against
-            shots_for_unscaled[team] += offensive_data[0][team]
+            shots_for_unscaled[team] += offensive_data['shots_for'][team]
             
             # goals against
-            goals_for_unscaled[team] += offensive_data[1][team]
+            goals_for_unscaled[team] += offensive_data['goals_for'][team]
             
             # penalty kill
-            pp_goals[team] += offensive_data[2][team][0]
-            pp_oppertunities[team] += offensive_data[2][team][1]
+            pp_goals[team] += offensive_data['power_play_data'][team][0]
+            pp_oppertunities[team] += offensive_data['power_play_data'][team][1]
             
             # games played
             games_played[team] += 1
         else:
 
             # shots against
-            shots_for_unscaled[team] = offensive_data[0][team]
+            shots_for_unscaled[team] = offensive_data['shots_for'][team]
             
             # goals against
-            goals_for_unscaled[team] = offensive_data[1][team]
+            goals_for_unscaled[team] = offensive_data['goals_for'][team]
             
             # penalty kill
-            pp_goals[team] = offensive_data[2][team][0]
-            pp_oppertunities[team] = offensive_data[2][team][1]
+            pp_goals[team] = offensive_data['power_play_data'][team][0]
+            pp_oppertunities[team] = offensive_data['power_play_data'][team][1]
 
             # games played
             games_played[team] = 1

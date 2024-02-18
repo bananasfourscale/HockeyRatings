@@ -29,22 +29,22 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
     win_lead_second = {}
 
     # home team data
-    home_team = match_data['linescore']["teams"]["home"]["team"]["name"]
-    home_score_first = match_data['linescore']["linescore"]["periods"][0][
-        "home"]["goals"]
-    home_score_second = \
-        match_data['linescore']["linescore"]["periods"][1]["home"]["goals"] + \
-        home_score_first
-    home_score_final = match_data['linescore']["teams"]["home"]["score"]
+    home_team = match_data['game_stats']['home_team']
+    home_team_stats = match_data['game_stats'][home_team]["team_stats"]
+    home_score_first = home_team_stats["first_period_goals"]
+    home_score_second = home_score_first + \
+        home_team_stats["second_period_goals"]
+    home_score_final = home_score_first + home_score_second + \
+        home_team_stats["first_period_goals"]
 
-    # away team data    
-    away_team = match_data['linescore']["teams"]["away"]["team"]["name"]
-    away_score_first = match_data['linescore']["linescore"]["periods"][0][
-        "away"]["goals"]
-    away_score_second = \
-        match_data['linescore']["linescore"]["periods"][1]["away"]["goals"] + \
-        away_score_first
-    away_score_final = match_data['linescore']["teams"]["away"]["score"]
+    # away team data
+    away_team = match_data['game_stats']['away_team']
+    away_team_stats = match_data['game_stats'][away_team]["team_stats"]
+    away_score_first = away_team_stats["first_period_goals"]
+    away_score_second = away_score_first + \
+        away_team_stats["second_period_goals"]
+    away_score_final = away_score_first + away_score_second + \
+        away_team_stats["first_period_goals"]
 
     # set default values
     win_lead_first[home_team] = [0,0]
@@ -96,6 +96,8 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
 def clutch_calculate_lead_protection(match_data : dict={}) -> None:
     clutch_data = {}
     lead_protection_data = clutch_get_lead_data(match_data)
+    
+    # the data is formatted with [did_win, was_leading]
     for team in lead_protection_data.keys():
 
         # lead protection first period
