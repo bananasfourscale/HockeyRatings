@@ -323,53 +323,56 @@ def collect_game_stats(game : dict={}) -> dict:
             home_team : {
                 "team_stats" : {
                     "first_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [0]["home"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][0]["home"]),
                     "second_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [1]["home"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][1]["home"]),
                     "third_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [2]["home"],
-                    "shots" : game["box_score"]["homeTeam"]["sog"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][2]["home"]),
+                    "shots" : int(game["box_score"]["homeTeam"]["sog"]),
                     "power_play_goals" :
-                        game["box_score"]["homeTeam"]
-                            ["powerPlayConversion"].split("/")[0],
+                        int(game["box_score"]["homeTeam"]
+                            ["powerPlayConversion"].split("/")[0]),
                     "power_play_chances" : 
-                        game["box_score"]["homeTeam"]
-                            ["powerPlayConversion"].split("/")[1],
+                        int(game["box_score"]["homeTeam"]
+                            ["powerPlayConversion"].split("/")[1]),
                     "short_handed_goals" : 0,
                     "short_handed_chances" : 0,
                     "penalty_minutes" : game["box_score"]["homeTeam"]["pim"],
-                    "hits" : game["box_score"]["homeTeam"]["hits"],
-                    "blocks" : game["box_score"]["homeTeam"]["blocks"],
+                    "hits" : int(game["box_score"]["homeTeam"]["hits"]),
+                    "getting_hit" : 0,
+                    "blocks" : int(game["box_score"]["homeTeam"]["blocks"]),
+                    "blocked_shots" : 0,
                 },
                 "player_stats" : {}
             },
             away_team : {
                 "team_stats" : {
                     "first_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [0]["away"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][0]["away"]),
                     "second_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [1]["away"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][1]["away"]),
                     "third_period_goals" :
-                        game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                            [2]["away"],
-                    "shots" : game["box_score"]["awayTeam"]["sog"],
+                        int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][2]["away"]),
+                    "shots" : int(game["box_score"]["awayTeam"]["sog"]),
                     "power_play_goals" :
-                        game["box_score"]["awayTeam"]
-                            ["powerPlayConversion"].split("/")[0],
+                        int(game["box_score"]["awayTeam"]
+                            ["powerPlayConversion"].split("/")[0]),
                     "power_play_chances" : 
-                        game["box_score"]["awayTeam"]
-                            ["powerPlayConversion"].split("/")[1],
+                        int(game["box_score"]["awayTeam"]
+                            ["powerPlayConversion"].split("/")[1]),
                     "short_handed_goals" : 0,
                     "short_handed_chances" : 0,
                     "penalty_minutes" : game["box_score"]["awayTeam"]["pim"],
-                    "hits" : game["box_score"]["awayTeam"]["hits"],
+                    "hits" : int(game["box_score"]["awayTeam"]["hits"]),
                     "getting_hit" : 0,
-                    "blocks" : game["box_score"]["awayTeam"]["blocks"],
+                    "blocks" : int(game["box_score"]["awayTeam"]["blocks"]),
+                    "blocked_shots" : 0,
                 },
                 "player_stats" : {}
             },
@@ -409,23 +412,23 @@ def collect_game_stats(game : dict={}) -> dict:
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
                     "even_saves" :
-                        players_by_id[player_id]
-                            ["evenStrengthShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["evenStrengthShotsAgainst"].split("/")[0]),
                     "even_shots" :
-                        players_by_id[player_id]
-                            ["evenStrengthShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["evenStrengthShotsAgainst"].split("/")[1]),
                     "power_play_saves" :
-                        players_by_id[player_id]
-                            ["powerPlayShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["powerPlayShotsAgainst"].split("/")[0]),
                     "power_play_shots" :
-                        players_by_id[player_id]
-                            ["powerPlayShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["powerPlayShotsAgainst"].split("/")[1]),
                     "short_handed_saves" :
-                        players_by_id[player_id]
-                            ["shorthandedShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["shorthandedShotsAgainst"].split("/")[0]),
                     "short_handed_shots" :
-                        players_by_id[player_id]
-                            ["shorthandedShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["shorthandedShotsAgainst"].split("/")[1]),
                     "pentaly_minutes" : players_by_id[player_id]["pim"],
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -441,26 +444,26 @@ def collect_game_stats(game : dict={}) -> dict:
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
-                    "goals" : players_by_id[player_id]["goals"],
-                    "assists" : players_by_id[player_id]["assists"],
-                    "plus_minus" : players_by_id[player_id]["plusMinus"],
+                    "goals" : int(players_by_id[player_id]["goals"]),
+                    "assists" : int(players_by_id[player_id]["assists"]),
+                    "plus_minus" : int(players_by_id[player_id]["plusMinus"]),
                     "penalty_minutes" : players_by_id[player_id]["pim"],
                     "penalty_minutes_drawn" : 0,
-                    "hits" : players_by_id[player_id]["hits"],
+                    "hits" : int(players_by_id[player_id]["hits"]),
                     "hits_taken" : 0,
                     "takeaways" : 0,
                     "giveaways" : 0,
-                    "blocks" : players_by_id[player_id]["blockedShots"],
+                    "blocks" : int(players_by_id[player_id]["blockedShots"]),
                     "blocked_shots" : 0,
                     "power_play_goals" :
-                        players_by_id[player_id]["powerPlayGoals"],
+                        int(players_by_id[player_id]["powerPlayGoals"]),
                     "short_handed_goals" :
-                        players_by_id[player_id]["shorthandedGoals"],
-                    "shots_on_goal" : players_by_id[player_id]["shots"],
+                        int(players_by_id[player_id]["shorthandedGoals"]),
+                    "shots_on_goal" : int(players_by_id[player_id]["shots"]),
                     "faceoff_wins" :
-                        players_by_id[player_id]["faceoffs"].split("/")[0],
+                        int(players_by_id[player_id]["faceoffs"].split("/")[0]),
                     "faceoff attempts" :
-                        players_by_id[player_id]["faceoffs"].split("/")[0],
+                        int(players_by_id[player_id]["faceoffs"].split("/")[0]),
                     "power_play_time_on_ice" :
                         players_by_id[player_id]["powerPlayToi"],
                     "short_handed_time_on_ice" :
@@ -474,23 +477,23 @@ def collect_game_stats(game : dict={}) -> dict:
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
                     "even_saves" :
-                        players_by_id[player_id]
-                            ["evenStrengthShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["evenStrengthShotsAgainst"].split("/")[0]),
                     "even_shots" :
-                        players_by_id[player_id]
-                            ["evenStrengthShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["evenStrengthShotsAgainst"].split("/")[1]),
                     "power_play_saves" :
-                        players_by_id[player_id]
-                            ["powerPlayShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["powerPlayShotsAgainst"].split("/")[0]),
                     "power_play_shots" :
-                        players_by_id[player_id]
-                            ["powerPlayShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["powerPlayShotsAgainst"].split("/")[1]),
                     "short_handed_saves" :
-                        players_by_id[player_id]
-                            ["shorthandedShotsAgainst"].split("/")[0],
+                        int(players_by_id[player_id]
+                            ["shorthandedShotsAgainst"].split("/")[0]),
                     "short_handed_shots" :
-                        players_by_id[player_id]
-                            ["shorthandedShotsAgainst"].split("/")[1],
+                        int(players_by_id[player_id]
+                            ["shorthandedShotsAgainst"].split("/")[1]),
                     "pentaly_minutes" : players_by_id[player_id]["pim"],
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -506,26 +509,26 @@ def collect_game_stats(game : dict={}) -> dict:
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
-                    "goals" : players_by_id[player_id]["goals"],
-                    "assists" : players_by_id[player_id]["assists"],
-                    "plus_minus" : players_by_id[player_id]["plusMinus"],
+                    "goals" : int(players_by_id[player_id]["goals"]),
+                    "assists" : int(players_by_id[player_id]["assists"]),
+                    "plus_minus" : int(players_by_id[player_id]["plusMinus"]),
                     "penalty_minutes" : players_by_id[player_id]["pim"],
                     "penalty_minutes_drawn" : 0,
-                    "hits" : players_by_id[player_id]["hits"],
+                    "hits" : int(players_by_id[player_id]["hits"]),
                     "hits_taken" : 0,
                     "takeaways" : 0,
                     "giveaways" : 0,
-                    "blocks" : players_by_id[player_id]["blockedShots"],
+                    "blocks" : int(players_by_id[player_id]["blockedShots"]),
                     "blocked_shots" : 0,
                     "power_play_goals" :
-                        players_by_id[player_id]["powerPlayGoals"],
+                        int(players_by_id[player_id]["powerPlayGoals"]),
                     "short_handed_goals" :
-                        players_by_id[player_id]["shorthandedGoals"],
-                    "shots_on_goal" : players_by_id[player_id]["shots"],
+                        int(players_by_id[player_id]["shorthandedGoals"]),
+                    "shots_on_goal" : int(players_by_id[player_id]["shots"]),
                     "faceoff_wins" :
-                        players_by_id[player_id]["faceoffs"].split("/")[0],
+                        int(players_by_id[player_id]["faceoffs"].split("/")[0]),
                     "faceoff attempts" :
-                        players_by_id[player_id]["faceoffs"].split("/")[0],
+                        int(players_by_id[player_id]["faceoffs"].split("/")[0]),
                     "power_play_time_on_ice" :
                         players_by_id[player_id]["powerPlayToi"],
                     "short_handed_time_on_ice" :
@@ -865,13 +868,14 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     defensemen = player_list[2]
 
     # get home and away team
-    home_team = match_data["linescore"]["teams"]["home"]["team"]["name"]
+    home_team = match_data["game_stats"]["home_team"]
 
     ### Goalie Stats ###
     goalie_utilization_data = goalie_utilization_get_data_set(goalies)
     goalie_goals_against_data = goalie_goals_against_get_data_set(goalies)
     goalie_save_per_data = goalie_save_percentage_get_data_set(goalies)
     goalie_save_consistency_data = goalie_save_consistency_get_data_set(goalies)
+    exit()
 
     # unlike team engine, run all relative scaling at the end of the section
     for goalie in goalies:
@@ -1217,18 +1221,23 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
 
                 # determine if the player had any stats for this game based
                 # on if they played at least 1 second of game time.
-                if int(players[player_by_ID]["time_on_ice"].split(":")[1]) > 0:
+                time_on_ice = \
+                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +\
+                    (float(players[player_by_ID]["time_on_ice"].split(":")[1]) 
+                        / 60)
+                if time_on_ice > 0:
                     stats = players[player_by_ID]
                 else:
                     stats = None
 
                 # sort all the players in this match to parse their data
                 if (position == 'G') and (stats != None):
-                    goalies[name] = [home_team, stats]
+                    print(name)
+                    goalies[name] = {'team' : home_team, 'stats' : stats}
                 elif (position == 'D') and (stats != None):
-                    defensemen[name] = [home_team, stats]
+                    defensemen[name] = {'team' : home_team, 'stats' : stats}
                 elif (stats != None):
-                    forwards[name] = [home_team, stats]
+                    forwards[name] = {'team' : home_team, 'stats' : stats}
 
             # then do away team players
             players = match["game_stats"][away_team]["player_stats"]
@@ -1243,18 +1252,23 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
 
                 # determine if the player had any stats for this game based
                 # on if they played at least 1 second of game time.
-                if int(players[player_by_ID]["time_on_ice"].split(":")[1]) > 0:
+                time_on_ice = \
+                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +\
+                    (float(players[player_by_ID]["time_on_ice"].split(":")[1]) 
+                        / 60)
+                if time_on_ice > 0:
                     stats = players[player_by_ID]
                 else:
                     stats = None
 
                 # sort all the players in this match to parse their data
                 if (position == 'G') and (stats != None):
-                    goalies[name] = [away_team, stats]
+                    print(name)
+                    goalies[name] = {'team' : away_team, 'stats' : stats}
                 elif (position == 'D') and (stats != None):
-                    defensemen[name] = [away_team, stats]
+                    defensemen[name] = {'team' : away_team, 'stats' : stats}
                 elif (stats != None):
-                    forwards[name] = [away_team, stats]
+                    forwards[name] = {'team' : away_team, 'stats' : stats}
 
             # feed the match information with the scale factors for each team
             # into the match parser which will call all metrics to get all
@@ -2594,7 +2608,8 @@ def run_played_game_parser_engine(game_types : str="R"):
                     goalie_save_consistency_add_match_data(
                         goalie_save_consistency)
                     for goalie in goalie_utilization.keys():
-                        goalie_teams[goalie] = goalie_utilization[goalie][0]
+                        goalie_teams[goalie] = \
+                            goalie_utilization[goalie]['team']
 
                     # Forwards
                     forward_metrics = output_list[1]

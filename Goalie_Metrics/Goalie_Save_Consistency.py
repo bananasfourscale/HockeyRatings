@@ -15,15 +15,26 @@ def goalie_save_consistency_reset() -> None:
 def goalie_save_consistency_get_data_set(match_data : dict={}) -> dict:
     save_consistency = {}
     for goalie in match_data.keys():
-        if match_data[goalie][1]["shots"] > 0:
-            save_consistency_game = (match_data[goalie][1]["saves"] /
-                match_data[goalie][1]["shots"])
+        shot_total = (
+            match_data[goalie]['stats']["even_shots"] + 
+            match_data[goalie]['stats']["power_play_shots"] + 
+            match_data[goalie]['stats']["short_handed_shots"]
+        )
+        save_total = (
+            match_data[goalie]['stats']["even_saves"] + 
+            match_data[goalie]['stats']["power_play_saves"] + 
+            match_data[goalie]['stats']["short_handed_saves"]
+        )
+        if shot_total > 0:
+            save_consistency_game = save_total / shot_total
         else:
             save_consistency_game = 0
+
+        # a game with 90%+ save per is considered standard.
         if save_consistency_game > 0.9:
-            save_consistency[goalie] = [match_data[goalie][0], 1]
+            save_consistency[goalie] = 1
         else:
-            save_consistency[goalie] = [match_data[goalie][0], 0]
+            save_consistency[goalie] = 0
     return save_consistency
 
 
@@ -32,10 +43,10 @@ def goalie_save_consistency_add_match_data(
     for goalie in goalie_save_consistency_data.keys():
         if goalie in goalie_save_consistency_base.keys():
             goalie_save_consistency_base[goalie] += \
-                goalie_save_consistency_data[goalie][1]
+                goalie_save_consistency_data[goalie]
         else:
             goalie_save_consistency_base[goalie] = \
-                goalie_save_consistency_data[goalie][1]
+                goalie_save_consistency_data[goalie]
             
 
 def goalie_save_consistency_scale_by_games(teams_games_played : dict={},

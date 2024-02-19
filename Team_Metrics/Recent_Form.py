@@ -80,7 +80,6 @@ def recent_form_get_data_set(match_data : dict={}) -> list:
         away_team_stats["second_period_goals"] + \
         away_team_stats["third_period_goals"]
     final_game_state = match_data['game_stats']['result']
-    print(final_game_state)
 
     # determin the winner and loser from game score
     # determine who won and lost the game

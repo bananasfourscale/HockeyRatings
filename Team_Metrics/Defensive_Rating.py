@@ -86,13 +86,13 @@ def defensive_rating_get_data_set(match_data : dict={}) -> list:
         away_team_stats["third_period_goals"]
     try:
         penalty_kill_data[home_team] = [
-            float(away_team_stats["power_play_goals"]),
-            float(away_team_stats["power_play_chances"])
+            away_team_stats["power_play_goals"],
+            away_team_stats["power_play_chances"]
         ]
     except KeyError:
         penalty_kill_data[home_team] = [
-            float(away_team_stats["power_play_goals"]),
-            float(away_team_stats["penalty_minutes"] / 2)
+            away_team_stats["power_play_goals"],
+            away_team_stats["penalty_minutes"] / 2
         ]
 
     # away data
@@ -102,13 +102,13 @@ def defensive_rating_get_data_set(match_data : dict={}) -> list:
         home_team_stats["third_period_goals"]
     try:
         penalty_kill_data[away_team] = [
-            float(home_team_stats["power_play_goals"]),
-            float(home_team_stats["power_play_chances"])
+            home_team_stats["power_play_goals"],
+            home_team_stats["power_play_chances"]
         ]
     except KeyError:
         penalty_kill_data[away_team] = [
-            float(home_team_stats["power_play_goals"]),
-            float(home_team_stats["penalty_minutes"] / 2)
+            home_team_stats["power_play_goals"],
+            home_team_stats["penalty_minutes"] / 2
         ]
     return {
         'shots_against' : shots_against_data,

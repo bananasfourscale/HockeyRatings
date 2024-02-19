@@ -31,99 +31,105 @@ def goalie_save_percentage_get_data_set(match_data : dict={}) -> list:
     even_strength_sp = {}
     power_play_sp = {}
     penalty_kill_sp = {}
-    goalie_teams_set = {}
 
     # loop through and populate the time on ice
     for goalie in match_data.keys():
-        goalie_teams_set[goalie] = match_data[goalie][0]
 
         # get even strength data
-        try:
-            even_strength_sp[goalie] = [match_data[goalie][1]["evenSaves"]**2,
-                match_data[goalie][1]["evenShotsAgainst"]]
-        except KeyError:
-            even_strength_sp[goalie] = [match_data[goalie][1]["saves"]**2,
-                match_data[goalie][1]["shots"]]
+        # try:
+        even_strength_sp[goalie] = {
+            'saves' : match_data[goalie]['stats']["even_saves"],
+            'shots' : match_data[goalie]['stats']["even_shots"]
+        }
+        # except KeyError:
+        #     even_strength_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+        #         match_data[goalie][1]["shots"]]
 
         # get powerplay data if it exist (own team short handed)
-        try:
-            if match_data[goalie][1]["powerPlayShotsAgainst"] > 0:
-                power_play_sp[goalie] = [
-                    match_data[goalie][1]["powerPlaySaves"]**2,
-                    match_data[goalie][1]["powerPlayShotsAgainst"]]
-            else:
-                power_play_sp[goalie] = [0,0]
-        except KeyError:
-            power_play_sp[goalie] = [match_data[goalie][1]["saves"]**2,
-                match_data[goalie][1]["shots"]]
+        # try:
+        power_play_sp[goalie] = {
+            'saves' : match_data[goalie]['stats']["power_play_saves"],
+            'shots' : match_data[goalie]['stats']["power_play_shots"]
+        }
+        # except KeyError:
+        #     power_play_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+        #         match_data[goalie][1]["shots"]]
 
         # get short handed data if it exist (own team power play)
-        try:
-            if match_data[goalie][1]["shortHandedShotsAgainst"] > 0:
-                penalty_kill_sp[goalie] = [
-                    match_data[goalie][1]["shortHandedSaves"]**2,
-                    match_data[goalie][1]["shortHandedShotsAgainst"]]
-            else:
-                penalty_kill_sp[goalie] = [0,0]
-        except KeyError:
-            penalty_kill_sp[goalie] = [match_data[goalie][1]["saves"]**2,
-                match_data[goalie][1]["shots"]]
-    return [goalie_teams_set, even_strength_sp, power_play_sp, penalty_kill_sp]
+        # try:
+        penalty_kill_sp[goalie] = {
+            'saves' : match_data[goalie]['stats']["short_handed_saves"],
+            'shots' : match_data[goalie]['stats']["short_handed_shots"]
+        }
+        # except KeyError:
+        #     penalty_kill_sp[goalie] = [match_data[goalie][1]["saves"]**2,
+        #         match_data[goalie][1]["shots"]]
+    return {
+        'even_save_per' : even_strength_sp,
+        'pp_save_per' : power_play_sp,
+        'pk_save_per' : penalty_kill_sp
+    }
 
 
 def goalie_save_percentage_add_match_data(goalie_save_percentage_data : dict={})\
                                                                         -> None:
-    goalie_even = goalie_save_percentage_data[1]
-    goalie_pp = goalie_save_percentage_data[2]
-    goalie_sh = goalie_save_percentage_data[3]
-    for goalie in goalie_save_percentage_data[0].keys():
+    goalie_even = goalie_save_percentage_data['even_save_per']
+    goalie_pp = goalie_save_percentage_data['pp_save_per']
+    goalie_sh = goalie_save_percentage_data['pk_save_per']
+    for goalie in goalie_save_percentage_data['even_save_per'].keys():
 
         # even strength
         if goalie in goalie_even_save.keys():
-            goalie_even_save[goalie][0] += goalie_even[goalie][0]
-            goalie_even_save[goalie][1] += goalie_even[goalie][1]
+            goalie_even_save[goalie]['saves'] += goalie_even[goalie]['saves']
+            goalie_even_save[goalie]['shots'] += goalie_even[goalie]['shots']
         else:
-            goalie_even_save[goalie] = goalie_even[goalie]
-            goalie_even_save[goalie] = goalie_even[goalie]
+            goalie_even_save[goalie]['saves'] = goalie_even[goalie]['saves']
+            goalie_even_save[goalie]['shots'] = goalie_even[goalie]['shots']
 
         # pp strengths
         if goalie in goalie_pp_save.keys():
-            goalie_pp_save[goalie][0] += goalie_pp[goalie][0]
-            goalie_pp_save[goalie][1] += goalie_pp[goalie][1]
+            goalie_pp_save[goalie]['saves'] += goalie_pp[goalie]['saves']
+            goalie_pp_save[goalie]['shots'] += goalie_pp[goalie]['shots']
         else:
-            goalie_pp_save[goalie] = goalie_pp[goalie]
-            goalie_pp_save[goalie] = goalie_pp[goalie]
+            goalie_pp_save[goalie]['saves'] = goalie_pp[goalie]['saves']
+            goalie_pp_save[goalie]['shots'] = goalie_pp[goalie]['shots']
 
         # sh strenghts
         if goalie in goalie_sh_save.keys():
-            goalie_sh_save[goalie][0] += goalie_sh[goalie][0]
-            goalie_sh_save[goalie][1] += goalie_sh[goalie][1]
+            goalie_sh_save[goalie]['saves'] += goalie_sh[goalie]['saves']
+            goalie_sh_save[goalie]['shots'] += goalie_sh[goalie]['shots']
         else:
-            goalie_sh_save[goalie] = goalie_sh[goalie]
-            goalie_sh_save[goalie] = goalie_sh[goalie]
+            goalie_sh_save[goalie]['saves'] = goalie_sh[goalie]['saves']
+            goalie_sh_save[goalie]['shots'] = goalie_sh[goalie]['shots']
 
 
 def goalie_save_percentage_calculate_all() -> None:
     for goalie in goalie_even_save.keys():
 
         # even strength
-        if goalie_even_save[goalie][1] > 0:
-            goalie_even_save_percent[goalie] = \
-                goalie_even_save[goalie][0] / goalie_even_save[goalie][1]
+        if goalie_even_save[goalie]['shots'] > 0:
+            goalie_even_save_percent[goalie] = (
+                goalie_even_save[goalie]['saves'] /
+                goalie_even_save[goalie]['shots']
+            )
         else:
             goalie_even_save_percent[goalie] = 0.0
 
         # pp strength
-        if goalie_pp_save[goalie][1] > 0:
-            goalie_pp_save_percent[goalie] = \
-                goalie_pp_save[goalie][0] / goalie_pp_save[goalie][1]
+        if goalie_pp_save[goalie]['shots'] > 0:
+            goalie_pp_save_percent[goalie] = (
+                goalie_pp_save[goalie]['saves'] /
+                goalie_pp_save[goalie]['shots']
+            )
         else:
             goalie_pp_save_percent[goalie] = 0.0
 
         # pk strength
-        if goalie_sh_save[goalie][1] > 0:
-            goalie_sh_save_percent[goalie] = \
-                goalie_sh_save[goalie][0] / goalie_sh_save[goalie][1]
+        if goalie_sh_save[goalie]['shots'] > 0:
+            goalie_sh_save_percent[goalie] = (
+                goalie_sh_save[goalie]['saves'] /
+                goalie_sh_save[goalie]['shots']
+            )
         else:
             goalie_sh_save_percent[goalie] = 0.0
 

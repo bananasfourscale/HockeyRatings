@@ -15,10 +15,17 @@ def goalie_goals_against_reset() -> None:
 def goalie_goals_against_get_data_set(match_data : dict={}) -> dict:
     goals_against = {}
     for goalie in match_data.keys():
-        goals_against_game = (
-            match_data[goalie][1]["shots"] - match_data[goalie][1]["saves"]
+        shot_total = (
+            match_data[goalie]['stats']["even_shots"] + 
+            match_data[goalie]['stats']["power_play_shots"] + 
+            match_data[goalie]['stats']["short_handed_shots"]
         )
-        goals_against[goalie] = [match_data[goalie][0], goals_against_game]
+        save_total = (
+            match_data[goalie]['stats']["even_saves"] + 
+            match_data[goalie]['stats']["power_play_saves"] + 
+            match_data[goalie]['stats']["short_handed_saves"]
+        )
+        goals_against[goalie] = shot_total - save_total
     return goals_against
 
 
@@ -27,10 +34,10 @@ def goalie_goals_against_add_match_data(goalie_goals_against_data : dict={}) \
     for goalie in goalie_goals_against_data.keys():
         if goalie in goalie_goals_against_base.keys():
             goalie_goals_against_base[goalie] += \
-                goalie_goals_against_data[goalie][1]
+                goalie_goals_against_data[goalie]
         else:
             goalie_goals_against_base[goalie] = \
-                goalie_goals_against_data[goalie][1]
+                goalie_goals_against_data[goalie]
 
 
 def goalie_goals_against_scale_by_utilization(goalie_utilization : dict={}) \
