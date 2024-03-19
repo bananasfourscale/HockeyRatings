@@ -29,9 +29,9 @@ def discipline_rating_get_dict(position : str="") -> dict:
 
 def discipline_reset() -> None:
     for key in discipline_base.keys():
-        discipline_base[key].reset()
+        discipline_base[key].clear()
     for key in discipline_rating.keys():
-        discipline_rating[key].reset()
+        discipline_rating[key].clear()
 
 
 def discipline_get_data_set(match_data : dict={}) -> dict:
@@ -40,7 +40,7 @@ def discipline_get_data_set(match_data : dict={}) -> dict:
         discipline[player] = {
             'penalty_net_minutes' : 
                 match_data[player]['stats']['penalty_minutes'] -
-                match_data[player]['stats']['penalty_minutes_drawn'],
+                match_data[player]['stats']['penalty_minutes_drawn']
         }
     return discipline
 

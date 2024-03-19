@@ -28,9 +28,9 @@ def utilization_rating_get_dict(position : str="") -> dict:
 
 def utilization_reset() -> None:
     for key in utilization_base.keys():
-        utilization_base[key].reset()
+        utilization_base[key].clear()
     for key in utilization_rating.keys():
-        utilization_rating[key].reset()
+        utilization_rating[key].clear()
 
 
 def utilization_get_data_set(match_data : dict={}) -> dict:

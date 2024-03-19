@@ -27,9 +27,9 @@ def multipoint_rating_get_dict(position : str="") -> dict:
 
 def multipoint_reset() -> None:
     for key in multipoint_base.keys():
-        multipoint_base[key].reset()
+        multipoint_base[key].clear()
     for key in multipoint_rating.keys():
-        multipoint_rating[key].reset()
+        multipoint_rating[key].clear()
 
 
 def multipoint_get_data_set(match_data : dict={}) -> dict:

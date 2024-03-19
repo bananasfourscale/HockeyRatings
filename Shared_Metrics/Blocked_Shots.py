@@ -34,15 +34,16 @@ def blocks_rating_get_dict(position : str="") -> dict:
 
 def blocks_reset() -> None:
     for key in blocks_base.keys():
-        blocks_base[key].reset()
+        blocks_base[key].clear()
     for key in blocks_rating.keys():
-        blocks_rating[key].reset()
+        blocks_rating[key].clear()
 
 
 def blocks_get_data_set(match_data : dict={}) -> dict:
     blocks = {}
     for player in match_data.keys():
         blocks[player] = {'blocks' : match_data[player]['stats']['blocks']}
+    return blocks
 
 
 def blocks_add_match_data(blocks_data : dict={}, position : str="") -> None:
@@ -61,5 +62,6 @@ def blocks_scale_by_shots_against(team_shots_against : dict={},
         return
     for player in blocks_base[position].keys():
         blocks_rating[position][player] = (
-            blocks_base[position] / team_shots_against[teams_dict[player]]
+            blocks_base[position][player] /
+            team_shots_against[teams_dict[player]]
         )

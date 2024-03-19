@@ -59,6 +59,15 @@ from Shared_Metrics.Hitting import hitting_base_get_dict, \
 from Shared_Metrics.Muiltipoint_Games import multipoint_base_get_dict, \
     multipoint_rating_get_dict, multipoint_reset, multipoint_get_data_set, \
     multipoint_add_match_data, multipoint_scale_by_game
+from Shared_Metrics.PlusMinus import plus_minus_base_get_dict, \
+    plus_minus_rating_get_dict, plus_minus_reset, plus_minus_get_data_set, \
+    plus_minus_add_match_data, plus_minus_scale_by_utilization
+from Shared_Metrics.Total_Points import total_points_base_get_dict, \
+    total_points_rating_get_dict, total_points_reset, total_points_get_data_set, \
+    total_points_add_match_data, total_points_scale_by_game
+from Shared_Metrics.Turnovers import turnovers_base_get_dict, \
+    turnovers_rating_get_dict, turnovers_reset, turnovers_get_data_set, \
+    turnovers_add_match_data, turnovers_scale_by_utilization
 
 ### GOALIES
 from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
@@ -74,35 +83,6 @@ from Goalie_Metrics.Goalie_Save_Percentage import \
     goalie_save_percentage_get_dict, goalie_save_percentage_reset, \
     goalie_save_percentage_get_data_set, goalie_save_percentage_add_match_data, \
     goalie_save_percentage_calculate_all, goalie_save_percentage_combine_metrics
-
-### FORWARDS
-from Forward_Metrics.Forward_PlusMinus import \
-    forward_plus_minus_get_dict, forward_plus_minus_reset, \
-    forward_plus_minus_get_data_set, forward_plus_minus_add_match_data, \
-    forward_plus_minus_scale_by_utilization
-from Forward_Metrics.Forward_Takeaways import \
-    forward_takeaways_get_dict, forward_takeaways_reset, \
-    forward_takeaways_get_data_set, forward_takeaways_add_match_data, \
-    forward_takeaways_scale_by_utilization
-from Forward_Metrics.Forward_Total_Points import \
-    forward_points_get_dict, forward_points_reset, forward_points_get_data_set, \
-    forward_points_add_match_data, forward_points_scale_by_games
-
-
-### DEFENSEMEN
-from Defensemen_Metrics.Defensemen_PlusMinus import \
-    defensemen_plus_minus_get_dict, defensmen_plus_minus_reset, \
-    defensemen_plus_minus_get_data_set, defensemen_plus_minus_add_match_data, \
-    defensemen_plus_minus_scale_by_utilization
-from Defensemen_Metrics.Defensemen_Points import \
-    defensemen_points_get_dict, defensemen_points_reset, \
-    defensemen_points_get_data_set, defensemen_points_add_match_data, \
-    defensemen_points_scale_by_games
-from Defensemen_Metrics.Defensemen_Takeaways import \
-    defensemen_takeaways_get_dict, defensemen_takeaways_reset, \
-    defensemen_takeaways_get_data_set, defensemen_takeaways_add_match_data, \
-    defensemen_takeaways_scale_by_utilization
-
 
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
@@ -289,7 +269,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
         1 + relative_metrics[Metric_Order.CLUTCH.value][
             Team_Selection.HOME.value]
     )
-    metric_data['clutch_data'] = clutch_data
+    metric_data['team_data']['clutch_data'] = clutch_data
 
     ### defensive rating ###
     # shots against
@@ -322,7 +302,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     )
-    metric_data['defensive_data'] = defensive_data
+    metric_data['team_data']['defensive_data'] = defensive_data
 
     ### offensive rating ###
     # shots for
@@ -355,7 +335,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.HOME.value]
     )
-    metric_data['offensive_data'] = offensive_data
+    metric_data['team_data']['offensive_data'] = offensive_data
 
     ### recent form ###
     recent_form_data = recent_form_get_data_set(match_data)
@@ -367,7 +347,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
         1 + relative_metrics[Metric_Order.RECENT.value][
             Team_Selection.HOME.value]
     )
-    metric_data['recent_form_data'] = recent_form_data
+    metric_data['team_data']['recent_form_data'] = recent_form_data
 
     ### strength of schedule
     sos_data = strength_of_schedule_get_data_set(match_data)
@@ -377,7 +357,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     sos_data[away_team] *= (
         1 + relative_metrics[Metric_Order.SOS.value][Team_Selection.HOME.value]
     )
-    metric_data['sos_data'] = sos_data
+    metric_data['team_data']['sos_data'] = sos_data
 
     # return the list of all metric data for this match
     return metric_data
@@ -502,107 +482,124 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     forward_discipline_data = discipline_get_data_set(forwards)
     forward_hits_data = hitting_get_data_set(forwards)
     forward_multipoint_game_data = multipoint_get_data_set(forwards)
-    forward_plus_minus_data = forward_plus_minus_get_data_set(
-        forwards)
-    forward_points_data = forward_points_get_data_set(forwards)
-    forward_takeaway_data = forward_takeaways_get_data_set(forwards)
+    forward_plus_minus_data = plus_minus_get_data_set(forwards)
+    forward_points_data = total_points_get_data_set(forwards)
+    forward_takeaway_data = turnovers_get_data_set(forwards)
     for forward in forwards:
         
         # if the player is on the home team
         if forward_utilization_data[forward]['team'] == home_team:
             
             # Blocks
-            forward_blocks_data[forward]['blocks'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            forward_blocks_data[forward]['blocks'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Contributing Games
-            forward_contributing_games_data[forward]['contributing_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            forward_contributing_games_data[forward]['contributing_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Discipline
-            forward_discipline_data[forward]['penalty_net_minutes'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            forward_discipline_data[forward]['penalty_net_minutes'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Hits
-            forward_hits_data[forward]['hitting_net'] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            forward_hits_data[forward]['hitting'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Multipoint Games
-            forward_multipoint_game_data[forward]['multipoint_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            forward_multipoint_game_data[forward]['multipoint_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Plus Minus
-            forward_plus_minus_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            forward_plus_minus_data[forward]['plus_minus'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Total Points
-            forward_points_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            forward_points_data[forward]['total_points'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
-            # Takeaways
-            forward_takeaway_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            # Turnovers
+            forward_takeaway_data[forward]['turnovers'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Utilization
-            forward_utilization_data[forward]["time_on_ice"] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            forward_utilization_data[forward]["time_on_ice"] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
         # if the player is on the away_team
         else:
             
             # Blocks
-            forward_blocks_data[forward]['blocks'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            forward_blocks_data[forward]['blocks'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Contributing Games
-            forward_contributing_games_data[forward]['contributing_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            forward_contributing_games_data[forward]['contributing_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Discipline
-            forward_discipline_data[forward]['penalty_net_minutes'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            forward_discipline_data[forward]['penalty_net_minutes'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Hits
-            forward_hits_data[forward]['hitting_net'] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            forward_hits_data[forward]['hitting'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Multipoint Games
-            forward_multipoint_game_data[forward]['multipoint_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            forward_multipoint_game_data[forward]['multipoint_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Plus Minus
-            forward_plus_minus_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            forward_plus_minus_data[forward]['plus_minus'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Total Points
-            forward_points_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            forward_points_data[forward]['total_points'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
-            # Takeaways
-            forward_takeaway_data[forward][1] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            # Turnovers
+            forward_takeaway_data[forward]['turnovers'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Utilization
-            forward_utilization_data[forward]["time_on_ice"] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            forward_utilization_data[forward]["time_on_ice"] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
     
     # Append Forward Metrics
     forward_metrics['utilization'] = forward_utilization_data
@@ -613,7 +610,7 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     forward_metrics['multipoint_games'] = forward_multipoint_game_data
     forward_metrics['plus_minus'] = forward_plus_minus_data
     forward_metrics['total_points'] = forward_points_data
-    forward_metrics['takeaways_and_giveaways'] = forward_takeaway_data
+    forward_metrics['turnovers'] = forward_takeaway_data
 
     ### Defensemen Metrics
     defensemen_utilization_data = utilization_get_data_set(
@@ -624,107 +621,124 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     defensemen_discipline_data = discipline_get_data_set(defensemen)
     defensemen_hits_data = hitting_get_data_set(defensemen)
     defensemen_muiltipoint_data = multipoint_get_data_set(defensemen)
-    defensemen_plus_minus_data = defensemen_plus_minus_get_data_set(
-        defensemen)
-    defensemen_points_data = defensemen_points_get_data_set(defensemen)
-    defensemen_takeaway_data = defensemen_takeaways_get_data_set(defensemen)
+    defensemen_plus_minus_data = plus_minus_get_data_set(defensemen)
+    defensemen_points_data = total_points_get_data_set(defensemen)
+    defensemen_takeaway_data = turnovers_get_data_set(defensemen)
     for defenseman in defensemen:
         
         # if the player is on the home team
         if defensemen_utilization_data[defenseman]['team'] == home_team:
 
             # Blocks
-            defensemen_blocks_data[defenseman]['blocks'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            defensemen_blocks_data[defenseman]['blocks'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Contributing Games
-            defensemen_contributing_games_data[defensemen][
-                'contributing_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            defensemen_contributing_games_data[defenseman][
+                'contributing_games'] *= (
+                    1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Discipline
-            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Hits
-            defensemen_hits_data[defenseman]['hitting_net'] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            defensemen_hits_data[defenseman]['hitting'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Muiltipoint Games
-            defensemen_muiltipoint_data[defenseman]['multipoint_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            defensemen_muiltipoint_data[defenseman]['multipoint_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Plus Minus
-            defensemen_plus_minus_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            defensemen_plus_minus_data[defenseman]['plus_minus'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
             
-            # Takeaways
-            defensemen_takeaway_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            # Turnovers
+            defensemen_takeaway_data[defenseman]['turnovers'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Total Points
-            defensemen_points_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.AWAY.value])
+            defensemen_points_data[defenseman]['total_points'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
             
             # Utilization
-            defensemen_utilization_data[defenseman]["time_on_ice"] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            defensemen_utilization_data[defenseman]["time_on_ice"] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.AWAY.value]
+            )
         else:
 
             # Blocks
-            defensemen_blocks_data[defenseman]['blocks'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            defensemen_blocks_data[defenseman]['blocks'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Contributing Games
-            defensemen_contributing_games_data[defensemen][
-                'contributing_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            defensemen_contributing_games_data[defenseman][
+                'contributing_games'] *= (
+                    1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Discipline
-            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Hits
-            defensemen_hits_data[defenseman]['hitting_net'] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            defensemen_hits_data[defenseman]['hitting'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Muiltipoint Games
-            defensemen_muiltipoint_data[defenseman]['multipoint_games'] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            defensemen_muiltipoint_data[defenseman]['multipoint_games'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Plus Minus
-            defensemen_plus_minus_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            defensemen_plus_minus_data[defenseman]['plus_minus'] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
             
-            # Takeaways
-            defensemen_takeaway_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
-                    Team_Selection.HOME.value])
+            # Turnovers
+            defensemen_takeaway_data[defenseman]['turnovers'] *= (
+                1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Total Points
-            defensemen_points_data[defenseman][1] *= \
-                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
-                    Team_Selection.HOME.value])
+            defensemen_points_data[defenseman]['total_points'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
             
             # Utilization
-            defensemen_utilization_data[defenseman]["time_on_ice"] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
+            defensemen_utilization_data[defenseman]["time_on_ice"] *= (
+                1 + relative_metrics[Metric_Order.TOTAL.value][
+                    Team_Selection.HOME.value]
+            )
     
     # Append Defensemen Metrics
     defensemen_metrics['utilization'] = defensemen_utilization_data
@@ -736,7 +750,7 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     defensemen_metrics['multipoint_games'] = defensemen_muiltipoint_data
     defensemen_metrics['plus_minus'] = defensemen_plus_minus_data
     defensemen_metrics['total_points'] = defensemen_points_data
-    defensemen_metrics['takeaways_and_giveaways'] = defensemen_takeaway_data
+    defensemen_metrics['turnovers'] = defensemen_takeaway_data
 
     # Append all player metrics
     metric_data['player_data']['goalie_metrics'] = goalie_metrics
@@ -1527,7 +1541,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Base.csv",
         ["Forward", "Plus_Minus Base", "Team"],
-        forward_plus_minus_get_dict(), forward_teams, True)
+        plus_minus_base_get_dict("C"), forward_teams, True)
     plotting_queue.put((plot_player_ranking, 
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Base.csv",
@@ -1536,19 +1550,19 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         False)
     ))
     
-    # Takeaways
+    # Turnovers
     write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}Takeaways_Base.csv".format(
+        "Output_Files/Forward_Files/Instance_Files/{}Turnovers_Base.csv".format(
             prefix
         ),
-        ["Forward", "Takeaways Base", "Team"],
-        forward_takeaways_get_dict(), forward_teams, True)
+        ["Forward", "Turnovers Base", "Team"],
+        turnovers_base_get_dict("C"), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Forward_Files/Instance_Files/{}Takeaways_Base.csv".format(
+        "Output_Files/Forward_Files/Instance_Files/{}Turnovers_Base.csv".format(
             prefix
         ),
-        ["Forward", "Takeaways Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Takeaways/{}takeaways_base.png".format(prefix),
+        ["Forward", "Turnovers Base"], 0.0, 0.0, [],
+        "Graphs/Forward/Turnovers/{}takeaways_base.png".format(prefix),
             False)
     ))
     
@@ -1557,7 +1571,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Total_Points_Base.csv",
         ["Forward", "Points Base", "Team"],
-        forward_points_get_dict(), forward_teams, True)
+        total_points_base_get_dict("C"), forward_teams, True)
     plotting_queue.put((plot_player_ranking, (
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Total_Points_Base.csv",
@@ -1599,7 +1613,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Base.csv",
         ["Defensemen", "Contribution Base", "Team"],
-        contributing_games_base_get_dict("C"), defensemen_teams)
+        contributing_games_base_get_dict("D"), defensemen_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Base.csv",
@@ -1668,7 +1682,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Base.csv",
         ["Defensemen", "Plus_Minus Base", "Team"],
-        defensemen_plus_minus_get_dict(), defensemen_teams, True)
+        plus_minus_base_get_dict("D"), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Base.csv",
@@ -1682,7 +1696,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}Points_Base.csv".format(
             prefix),
         ["Defensemen", "Points Base", "Team"],
-        defensemen_points_get_dict(), defensemen_teams, True)
+        total_points_base_get_dict("D"), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Points_Base.csv",
@@ -1691,17 +1705,17 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         False)
     ))
     
-    # Takeaways
+    # Turnovers
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Base.csv",
-        ["Defensemen", "Takeaways Base", "Team"],
-        defensemen_takeaways_get_dict(), defensemen_teams, True)
+            "Turnovers_Base.csv",
+        ["Defensemen", "Turnovers Base", "Team"],
+        turnovers_base_get_dict("D"), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Base.csv",
-        ["Defensemen", "Takeaways Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Takeaways/{}takeaways_base.png".format(prefix),
+            "Turnovers_Base.csv",
+        ["Defensemen", "Turnovers Base"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Turnovers/{}takeaways_base.png".format(prefix),
         False)
     ))
 
@@ -1841,7 +1855,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Corrected.csv",
         ["Forward", "Plus_Minus Corrected", "Team"],
-        forward_plus_minus_get_dict(), forward_teams)
+        plus_minus_rating_get_dict("C"), forward_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Corrected.csv",
@@ -1849,17 +1863,17 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Graphs/Forward/Plus_Minus/{}plus_minus_corrected.png".format(prefix))
     ))
     
-    # Takeaways
+    # Turnovers
     write_out_player_file(
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Corrected.csv",
-        ["Forward", "Takeaways Corrected", "Team"],
-        forward_takeaways_get_dict(), forward_teams, True)
+            "Turnovers_Corrected.csv",
+        ["Forward", "Turnovers Corrected", "Team"],
+        turnovers_rating_get_dict("C"), forward_teams, True)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Corrected.csv",
-        ["Forward", "Takeaways Corrected"], 0.0, 0.0, [],
-        "Graphs/Forward/Takeaways/{}takeaways_corrected.png".format(prefix),
+            "Turnovers_Corrected.csv",
+        ["Forward", "Turnovers Corrected"], 0.0, 0.0, [],
+        "Graphs/Forward/Turnovers/{}takeaways_corrected.png".format(prefix),
         False)
     ))
     
@@ -1868,7 +1882,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Total_Points_Corrected.csv",
         ["Forward", "Points Corrected", "Team"],
-        forward_points_get_dict(), forward_teams)
+        total_points_rating_get_dict("C"), forward_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Total_Points_Corrected.csv",
@@ -1909,7 +1923,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Corrected.csv",
         ["Defensemen", "Contribution Corrected", "Team"],
-        contributing_games_rating_get_dict("C"), defensemen_teams)
+        contributing_games_rating_get_dict("D"), defensemen_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Corrected.csv",
@@ -1949,7 +1963,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Multipoint_Corrected.csv",
         ["Defensemen", "Multipoint Corrected", "Team"],
-        multipoint_rating_get_dict("C"), defensemen_teams, True)
+        multipoint_rating_get_dict("D"), defensemen_teams, True)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Multipoint_Corrected.csv",
@@ -1964,7 +1978,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Corrected.csv",
         ["Defensemen", "Plus_Minus Corrected", "Team"],
-        defensemen_plus_minus_get_dict(), defensemen_teams)
+        plus_minus_rating_get_dict("D"), defensemen_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Plus_Minus_Corrected.csv",
@@ -1977,7 +1991,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Points_Corrected.csv",
         ["Defensemen", "Points Corrected", "Team"],
-        defensemen_points_get_dict(), defensemen_teams)
+        total_points_rating_get_dict("D"), defensemen_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Points_Corrected.csv",
@@ -1985,17 +1999,17 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Graphs/Defensemen/Points/{}points_corrected.png".format(prefix))
     ))
     
-    # Takeaways
+    # Turnovers
     write_out_player_file(
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Corrected.csv",
-        ["Defensemen", "Takeaways Corrected", "Team"],
-        defensemen_takeaways_get_dict(), defensemen_teams)
+            "Turnovers_Corrected.csv",
+        ["Defensemen", "Turnovers Corrected", "Team"],
+        turnovers_rating_get_dict("D"), defensemen_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Takeaways_Corrected.csv",
-        ["Defensemen", "Takeaways Corrected"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Takeaways/{}takeaways_corrected.png".format(prefix))
+            "Turnovers_Corrected.csv",
+        ["Defensemen", "Turnovers Corrected"], 0.0, 0.0, [],
+        "Graphs/Defensemen/Turnovers/{}takeaways_corrected.png".format(prefix))
     ))
     
     # Utilization
@@ -2169,17 +2183,16 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     discipline_add_match_data(forward_metrics['discipline'],
                         "C")
                     hitting_add_match_data(forward_metrics['hits'], "C")
-                    forward_plus_minus_add_match_data(
-                        forward_metrics['plus_minus'])
-                    forward_points_add_match_data(
-                        forward_metrics['total_points'])
-                    forward_takeaways_add_match_data(
-                        forward_metrics['takeaways_and_giveaways'])
+                    plus_minus_add_match_data(forward_metrics['plus_minus'],
+                        "C")
+                    total_points_add_match_data(forward_metrics['total_points'],
+                        "C")
+                    turnovers_add_match_data(forward_metrics['turnovers'], "C")
                     multipoint_add_match_data(
                         forward_metrics['multipoint_games'], "C")
                     for forward in forward_metrics['utilization'].keys():
                         forward_teams[forward] = \
-                            forward_metrics['utilization'][forward]
+                            forward_metrics['utilization'][forward]['team']
 
                     # Defensemen
                     defensemen_metrics = \
@@ -2193,16 +2206,17 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                         "D")
                     hitting_add_match_data(defensemen_metrics['hits'], "D")
                     multipoint_add_match_data(
-                        defensemen_metrics['multipoint_games'], "C")
-                    defensemen_plus_minus_add_match_data(
-                        defensemen_metrics['plus_minus'])
-                    defensemen_points_add_match_data(
-                        defensemen_metrics['total_points'])
-                    defensemen_takeaways_add_match_data(
-                        defensemen_metrics['takeaways_and_giveaways'])
-                    for defensemen in defensemen_metrics['utilization'].keys():
-                        defensemen_teams[defensemen] = \
-                            defensemen_metrics['utilization'][defensemen]
+                        defensemen_metrics['multipoint_games'], "D")
+                    plus_minus_add_match_data(defensemen_metrics['plus_minus'],
+                        "D")
+                    total_points_add_match_data(
+                        defensemen_metrics['total_points'], "D")
+                    turnovers_add_match_data(defensemen_metrics['turnovers'],
+                        "D")
+                    for defenseman in defensemen_metrics['utilization'].keys():
+                        defensemen_teams[defenseman] = \
+                            defensemen_metrics['utilization'][defenseman][
+                                'team']
                         
                 # teams
                 else:
@@ -2249,7 +2263,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
             # write out any plots before sigmoid correction
             print("Plot Team data before correction")
-            # plot_uncorrected_team_metrics(game_types)
+            plot_uncorrected_team_metrics(game_types)
 
         # Clutch Rating
         apply_sigmoid_correction(clutch_rating_get_dict())
@@ -2278,7 +2292,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # write out any plots after sigmoid correction
         if final_date:
             print("Plot Team data after correction")
-            # plot_corrected_team_metrics(game_types)
+            plot_corrected_team_metrics(game_types)
 
         ### plot multifactor metrics and total rating ###
         # Clutch rating
@@ -2298,7 +2312,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         
         if final_date:
             pass
-            # plot_combined_team_metrics(game_types)
+            plot_combined_team_metrics(game_types)
             
 
         ### Update any trend sets if on ranking date ###
@@ -2385,13 +2399,12 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         multipoint_scale_by_game(strength_of_schedule_get_games_played_dict(),
             forward_teams, "C")
 
-        forward_plus_minus_scale_by_utilization(
-            utilization_rating_get_dict("C"))
+        plus_minus_scale_by_utilization(utilization_rating_get_dict("C"), "C")
 
-        forward_points_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), forward_teams)
+        total_points_scale_by_game(strength_of_schedule_get_games_played_dict(),
+            forward_teams, "C")
 
-        forward_takeaways_scale_by_utilization(utilization_rating_get_dict("C"))
+        turnovers_scale_by_utilization(utilization_rating_get_dict("C"), "C")
 
         ### Defensemen ###
         utilization_scale_by_game(
@@ -2401,6 +2414,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(),
             defensemen_teams, "D")
+        
+        contributing_games_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
 
         discipline_scale_by_utilization(utilization_rating_get_dict("D"), "D")
 
@@ -2408,16 +2424,14 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             defensemen_teams, "D")
         
         multipoint_scale_by_game(strength_of_schedule_get_games_played_dict(),
-            forward_teams, "D")
+            defensemen_teams, "D")
 
-        defensemen_plus_minus_scale_by_utilization(
-            utilization_rating_get_dict("D"))
+        plus_minus_scale_by_utilization(utilization_rating_get_dict("D"), "D")
 
-        defensemen_points_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), defensemen_teams)
+        total_points_scale_by_game(strength_of_schedule_get_games_played_dict(),
+            defensemen_teams, "D")
 
-        defensemen_takeaways_scale_by_utilization(
-            utilization_rating_get_dict("D"))
+        turnovers_scale_by_utilization(utilization_rating_get_dict("D"), "D")
         if final_date:
             print("Plot Player data before correction")
             plot_uncorrected_player_metrics(game_types)
@@ -2434,9 +2448,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         apply_sigmoid_correction(discipline_base_get_dict("C"), True)
         apply_sigmoid_correction(hitting_base_get_dict("C"))
         apply_sigmoid_correction(multipoint_base_get_dict("C"))
-        apply_sigmoid_correction(forward_plus_minus_get_dict())
-        apply_sigmoid_correction(forward_points_get_dict())
-        apply_sigmoid_correction(forward_takeaways_get_dict())
+        apply_sigmoid_correction(plus_minus_base_get_dict("C"))
+        apply_sigmoid_correction(total_points_base_get_dict("C"))
+        apply_sigmoid_correction(turnovers_base_get_dict("C"))
 
         # Defensemen
         apply_sigmoid_correction(blocks_rating_get_dict("D"))
@@ -2444,13 +2458,13 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         apply_sigmoid_correction(discipline_base_get_dict("D"), True)
         apply_sigmoid_correction(hitting_base_get_dict("D"))
         apply_sigmoid_correction(multipoint_base_get_dict("D"))
-        apply_sigmoid_correction(defensemen_plus_minus_get_dict())
-        apply_sigmoid_correction(defensemen_points_get_dict())
-        apply_sigmoid_correction(defensemen_takeaways_get_dict())
+        apply_sigmoid_correction(plus_minus_base_get_dict("D"))
+        apply_sigmoid_correction(total_points_base_get_dict("D"))
+        apply_sigmoid_correction(turnovers_base_get_dict("D"))
 
         if final_date:
             print("Plot Player data after correction")
-            # plot_corrected_player_metrics(game_types)
+            plot_corrected_player_metrics(game_types)
 
         ### combine metrics to overall score and plot ###
         # Goalies
@@ -2488,11 +2502,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     forward_rating_weights.UTILIZATION_WEIGHT.value) +
                 (discipline_rating_get_dict("C")[forward] *
                     forward_rating_weights.DISIPLINE_WEIGHT.value) +
-                (forward_plus_minus_get_dict()[forward] *
+                (plus_minus_rating_get_dict("C")[forward] *
                     forward_rating_weights.PLUS_MINUS_WEIGHT.value) +
-                (forward_points_get_dict()[forward] *
+                (total_points_rating_get_dict("C")[forward] *
                     forward_rating_weights.POINTS_WEIGHT.value) +
-                (forward_takeaways_get_dict()[forward] *
+                (turnovers_rating_get_dict("C")[forward] *
                     forward_rating_weights.TAKEAWAYS_WEIGHT.value) +
                 (contributing_games_rating_get_dict("C")[forward] *
                     forward_rating_weights.CONTRIBUTION_WEIGHT.value) +
@@ -2520,11 +2534,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     defensemen_rating_weights.UTILIZATION_WEIGHT.value) +
                 (discipline_rating_get_dict("D")[defensemen] *
                     defensemen_rating_weights.DISIPLINE_WEIGHT.value) +
-                (defensemen_plus_minus_get_dict()[defensemen] *
+                (plus_minus_rating_get_dict("D")[defensemen] *
                     defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) +
-                (defensemen_points_get_dict()[defensemen] *
+                (total_points_rating_get_dict("D")[defensemen] *
                     defensemen_rating_weights.POINTS_WEIGHT.value) +
-                (defensemen_takeaways_get_dict()[defensemen] *
+                (turnovers_rating_get_dict("D")[defensemen] *
                     defensemen_rating_weights.TAKEAWAYS_WEIGHT.value) +
                 (contributing_games_rating_get_dict("D")[defensemen] *
                     defensemen_rating_weights.CONTRIBUTION_WEIGHT.value) +
@@ -2541,7 +2555,6 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     defensemen_total_rating[defensemen] * EYE_TEST_WEIGHT
                 )
         if final_date:
-            pass
             plot_combined_player_metrics(game_types)
 
         # now update the last ranking date to indicate we have new trends
@@ -2552,7 +2565,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         if final_date:
 
             ############## TEAMS ##############
-            # plot_trend_team_metrics(game_types)
+            plot_trend_team_metrics(game_types)
             
             ################ PLAYERS ###############
             # sort players into team rosters
@@ -2690,7 +2703,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     average_player_rating[team][1]
             
             # now plot all averge player metrics
-            # plot_average_player_team_metrics(game_types)
+            plot_average_player_team_metrics(game_types)
 
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
@@ -2723,7 +2736,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for row in row_list:
-                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout = [str(SEASON)[0:4] + "-" + str(SEASON)[4:]]
                 writeout.append(row[0])
                 writeout.append(divisions[row[0]])
                 writeout.append(row[1])
@@ -2766,7 +2779,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for row in row_list:
-                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout = [str(SEASON)[0:4] + "-" + str(SEASON)[4:]]
                 writeout.append(
                     row[0].split(" ")[1] + " " + row[0].split(" ")[2])
                 writeout.append(row[2])
@@ -2809,7 +2822,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for row in row_list:
-                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout = [str(SEASON)[0:4] + "-" + str(SEASON)[4:]]
                 writeout.append(
                     row[0].split(" ")[1] + " " + row[0].split(" ")[2])
                 writeout.append(row[2])
@@ -2853,7 +2866,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for row in row_list:
-                writeout = [SEASON[0:4] + "-" + SEASON[4:]]
+                writeout = [str(SEASON)[0:4] + "-" + str(SEASON)[4:]]
                 writeout.append(
                     row[0].split(" ")[1] + " " + row[0].split(" ")[2])
                 writeout.append(row[2])
@@ -3172,8 +3185,6 @@ if __name__ == "__main__":
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R", regular_season_matches)
 
-    exit(0)
-
     # reset all stats to just isolate post season.
     clutch_rating_reset()
     defensive_rating_reset()
@@ -3186,15 +3197,10 @@ if __name__ == "__main__":
     discipline_reset()
     hitting_reset()
     multipoint_reset()
+    plus_minus_reset()
     utilization_reset()
-
-    defensmen_plus_minus_reset()
-    defensemen_points_reset()
-    defensemen_takeaways_reset()
-
-    forward_plus_minus_reset()
-    forward_takeaways_reset()
-    forward_points_reset()
+    total_points_reset()
+    turnovers_reset()
 
     goalie_goals_against_reset()
     goalie_save_consistency_reset()
@@ -3208,6 +3214,8 @@ if __name__ == "__main__":
     goalie_teams.clear()
     forward_teams.clear()
     defensemen_teams.clear()
+
+    exit(0)
 
     REG_SEASON_COMPLETE = False
 

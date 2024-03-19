@@ -27,9 +27,9 @@ def contributing_games_rating_get_dict(position : str="") -> dict:
 
 def contributing_games_reset() -> None:
     for key in contribution_base.keys():
-        contribution_base[key].reset()
+        contribution_base[key].clear()
     for key in contribution_rating.keys():
-        contribution_rating[key].reset()
+        contribution_rating[key].clear()
     
 
 def contributing_games_get_data_set(match_data : dict={}) -> dict:

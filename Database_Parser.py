@@ -1,9 +1,7 @@
 from multiprocessing import Process, Queue, freeze_support
 import requests
 import json
-import time
-import os
-import csv
+import pandas
 import datetime
 
 
@@ -143,73 +141,77 @@ def parse_play_by_play_shots(home_team : str="", away_team : str="",
     if play_type == "blocked-shot":
 
         # shots blocked
-        if play["details"]["blockingPlayerId"] in \
-            game_stats[home_team]["player_stats"]:
-            game_stats[home_team]["player_stats"]\
-                [play["details"]["blockingPlayerId"]]\
-                ["blocks"] += 1
-        elif play["details"]["blockingPlayerId"] in \
-            game_stats[away_team]["player_stats"]:
-            game_stats[away_team]["player_stats"]\
-                [play["details"]["blockingPlayerId"]]\
-                ["blocks"] += 1
-        else:
-            print("Shot-Block By Player\n" + 
-                "Player Id Not in Either Teams Roster:",
-                play["details"]["blockingPlayerId"])
-            print(game_stats[home_team]["player_stats"].keys())
+        if "blockingPlayerId" in play["details"].keys():
+            if play["details"]["blockingPlayerId"] in \
+                game_stats[home_team]["player_stats"]:
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["blockingPlayerId"]]\
+                    ["blocks"] += 1
+            elif play["details"]["blockingPlayerId"] in \
+                game_stats[away_team]["player_stats"]:
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["blockingPlayerId"]]\
+                    ["blocks"] += 1
+            else:
+                print("Shot-Block By Player\n" + 
+                    "Player Id Not in Either Teams Roster:",
+                    play["details"]["blockingPlayerId"])
+                print(game_stats[home_team]["player_stats"].keys())
 
         # own shots blocked
-        if play["details"]["shootingPlayerId"] in \
-            game_stats[home_team]["player_stats"]:
-            game_stats[home_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["blocked_shots"] += 1
-        elif play["details"]["shootingPlayerId"] in \
-            game_stats[away_team]["player_stats"]:
-            game_stats[away_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["blocked_shots"] += 1
-        else:
-            print("Own Shot Blocked By Player\n" + 
-                "Player Id Not in Either Teams Roster:",
-                play["details"]["shootingPlayerId"])
-            print(game_stats[home_team]["player_stats"].keys())
+        if "shootingPlayerId" in play["details"].keys():
+            if play["details"]["shootingPlayerId"] in \
+                game_stats[home_team]["player_stats"]:
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["blocked_shots"] += 1
+            elif play["details"]["shootingPlayerId"] in \
+                game_stats[away_team]["player_stats"]:
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["blocked_shots"] += 1
+            else:
+                print("Own Shot Blocked By Player\n" + 
+                    "Player Id Not in Either Teams Roster:",
+                    play["details"]["shootingPlayerId"])
+                print(game_stats[home_team]["player_stats"].keys())
     
     # missed shot
     if play_type == "missed-shot":
-        if play["details"]["shootingPlayerId"] in \
-            game_stats[home_team]["player_stats"]:
-            game_stats[home_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["missed_shots"] += 1
-        elif play["details"]["shootingPlayerId"] in \
-            game_stats[away_team]["player_stats"]:
-            game_stats[away_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["missed_shots"] += 1
-        else:
-            print("Missed Shot By Player\n" + 
-                "Player Id Not in Either Teams Roster:",
-                play["details"]["shootingPlayerId"])
-            print(game_stats[home_team]["player_stats"].keys())
+        if "shootingPlayerId" in play["details"].keys():
+            if play["details"]["shootingPlayerId"] in \
+                game_stats[home_team]["player_stats"]:
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["missed_shots"] += 1
+            elif play["details"]["shootingPlayerId"] in \
+                game_stats[away_team]["player_stats"]:
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["missed_shots"] += 1
+            else:
+                print("Missed Shot By Player\n" + 
+                    "Player Id Not in Either Teams Roster:",
+                    play["details"]["shootingPlayerId"])
+                print(game_stats[home_team]["player_stats"].keys())
             
     if play_type == "shot-on-goal":
-        if play["details"]["shootingPlayerId"] in \
-            game_stats[home_team]["player_stats"]:
-            game_stats[home_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["shots_on_goal"] += 1
-        elif play["details"]["shootingPlayerId"] in \
-            game_stats[away_team]["player_stats"]:
-            game_stats[away_team]["player_stats"]\
-                [play["details"]["shootingPlayerId"]]\
-                ["shots_on_goal"] += 1
-        else:
-            print("Shot By Player\n" + 
-                "Player Id Not in Either Teams Roster:",
-                play["details"]["shootingPlayerId"])
-            print(game_stats[home_team]["player_stats"].keys())
+        if "shootingPlayerId" in play["details"].keys():
+            if play["details"]["shootingPlayerId"] in \
+                game_stats[home_team]["player_stats"]:
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["shots_on_goal"] += 1
+            elif play["details"]["shootingPlayerId"] in \
+                game_stats[away_team]["player_stats"]:
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["shootingPlayerId"]]\
+                    ["shots_on_goal"] += 1
+            else:
+                print("Shot By Player\n" + 
+                    "Player Id Not in Either Teams Roster:",
+                    play["details"]["shootingPlayerId"])
+                print(game_stats[home_team]["player_stats"].keys())
     return game_stats
 
 
@@ -269,32 +271,66 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
     # home shorthanded
     if ((home_goalie_in and away_goalie_in) and home_strength < away_strength) \
         or ((not home_goalie_in) and home_strength <= away_strength):
+
+        # home team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["short_handed_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+            
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["short_handed_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+                
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["short_handed_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+                
+        # away team player
         elif play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["power_play_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["power_play_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["power_play_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
             print("Shorthanded Goal By Player\n" + 
                 "Player Id Not in Either Teams Roster:",
@@ -304,170 +340,340 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
     # away shorthanded
     elif ((home_goalie_in and away_goalie_in) and away_strength < home_strength) \
         or ((not away_goalie_in) and away_strength <= home_strength):
+
+        # away team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["short_handed_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["short_handed_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["short_handed_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+        # home team player
         elif play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["power_play_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["power_play_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["power_play_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
             print("Shorthanded Goal By Player\n" + 
                 "Player Id Not in Either Teams Roster:",
                 play["details"]["scoringPlayerId"])
             print(game_stats[home_team]["player_stats"].keys())
-            
+
     # empty net goals
     elif (not home_goalie_in):
+
+        # away team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["empty_net_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["empty_net_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["empty_net_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
             pass
     elif (not away_goalie_in):
+
+        # home team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["empty_net_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["empty_net_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["empty_net_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
             pass
 
     # 4-on-4
     elif (home_strength == 4 and away_strength == 4):
+
+        # home team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["4-on-4_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["4-on-4_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["4-on-4_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+        # away team player
         elif play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["4-on-4_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["4-on-4_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["4-on-4_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
-            print("Faceoff Lost By Player\n" + 
+            print("4-on-4 Goal By Player\n" + 
                 "Player Id Not in Either Teams Roster:",
                 play["details"]["scoringPlayerId"])
             print(game_stats[home_team]["player_stats"].keys())
-    
+
     # 3-on-3
     elif (home_strength == 3 and away_strength == 3):
+
+        # home team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["3-on-3_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["3-on-3_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["3-on-3_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+        # away team player
         elif play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["3-on-3_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["3-on-3_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["3-on-3_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
-            print("Faceoff Lost By Player\n" + 
+            print("3-on-3 Goal By Player\n" + 
                 "Player Id Not in Either Teams Roster:",
                 play["details"]["scoringPlayerId"])
             print(game_stats[home_team]["player_stats"].keys())
 
     # even strength
     else:
+
+        # home team player
         if play["details"]["scoringPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            # goal
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["even_goals"] += 1
+            game_stats[home_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["even_assists_primary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[home_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["even_assists_secondary"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+        # away team player
         elif play["details"]["scoringPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            # goal
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["even_goals"] += 1
+            game_stats[away_team]["player_stats"]\
+                [play["details"]["scoringPlayerId"]]\
+                ["goals"] += 1
+
+            # assist1
             if "assist1PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist1PlayerId"]]\
                     ["even_assists_primary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
+
+            # assist2
             if "assist2PlayerId" in play["details"].keys():
                 game_stats[away_team]["player_stats"]\
                     [play["details"]["assist2PlayerId"]]\
                     ["even_assists_secondary"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["scoringPlayerId"]]\
+                    ["assists"] += 1
         else:
-            print("Faceoff Lost By Player\n" + 
+            print("Goal By Player\n" + 
                 "Player Id Not in Either Teams Roster:",
                 play["details"]["scoringPlayerId"])
             print(game_stats[home_team]["player_stats"].keys())
@@ -524,7 +730,7 @@ def collect_game_stats(game : dict={}) -> dict:
     
     # if the game hasn't been played then just fill out the minimum struct to be
     # able to gather past info for prediction engine to run
-    if game["box_score"]["gameState"] in ["FUT", "PRE"] or \
+    if game["box_score"]["gameState"] in ["FUT", "PRE", "LIVE"] or \
         game["box_score"]["gameType"] not in [2, 3]:
         game_stats = {
             "home_team" : home_team,
@@ -615,6 +821,10 @@ def collect_game_stats(game : dict={}) -> dict:
         print(game["box_score"]["gameState"])
         print(game["box_score"]["id"])
         raise e
+    except IndexError as i:
+        print(game["box_score"]["gameState"])
+        print(game["box_score"]["id"])
+        raise i
 
     # create a flat list of players by id so we can reference stats from
     # the boxscore when looping through play-by-play
@@ -665,6 +875,26 @@ def collect_game_stats(game : dict={}) -> dict:
                     "short_handed_shots" :
                         int(players_by_id[player_id]
                             ["shorthandedShotsAgainst"].split("/")[1]),
+                    "goals" : 0,
+                    "even_goals" : 0,
+                    "power_play_goals" : 0,
+                    "short_handed_goals" : 0,
+                    "empty_net_goals" : 0,
+                    "4-on-4_goals" : 0,
+                    "3-on-3_goals" : 0,
+                    "assists" : 0,
+                    "even_assists_primary" : 0,
+                    "power_play_assists_primary" : 0,
+                    "short_handed_assists_primary" : 0,
+                    "empty_net_assists_primary" : 0,
+                    "4-on-4_assists_primary" : 0,
+                    "3-on-3_assists_primary" : 0,
+                    "even_assists_secondary" : 0,
+                    "power_play_assists_secondary" : 0,
+                    "short_handed_assists_secondary" : 0,
+                    "empty_net_assists_secondary" : 0,
+                    "4-on-4_assists_secondary" : 0,
+                    "3-on-3_assists_secondary" : 0,
                     "penalty_minutes" : 0,
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -673,6 +903,10 @@ def collect_game_stats(game : dict={}) -> dict:
                     "giveaways" : 0,
                     "blocks" : 0,
                     "blocked_shots" : 0,
+                    "missed_shots" : 0,
+                    "shots_on_goal" : 0,
+                    "faceoff_wins" : 0,
+                    "faceoff_attempts" : 0,
                     "time_on_ice" : players_by_id[player_id]["toi"],
                 }
             else:
@@ -739,6 +973,26 @@ def collect_game_stats(game : dict={}) -> dict:
                     "short_handed_shots" :
                         int(players_by_id[player_id]
                             ["shorthandedShotsAgainst"].split("/")[1]),
+                    "goals" : 0,
+                    "even_goals" : 0,
+                    "power_play_goals" : 0,
+                    "short_handed_goals" : 0,
+                    "empty_net_goals" : 0,
+                    "4-on-4_goals" : 0,
+                    "3-on-3_goals" : 0,
+                    "assists" : 0,
+                    "even_assists_primary" : 0,
+                    "power_play_assists_primary" : 0,
+                    "short_handed_assists_primary" : 0,
+                    "empty_net_assists_primary" : 0,
+                    "4-on-4_assists_primary" : 0,
+                    "3-on-3_assists_primary" : 0,
+                    "even_assists_secondary" : 0,
+                    "power_play_assists_secondary" : 0,
+                    "short_handed_assists_secondary" : 0,
+                    "empty_net_assists_secondary" : 0,
+                    "4-on-4_assists_secondary" : 0,
+                    "3-on-3_assists_secondary" : 0,
                     "penalty_minutes" : 0,
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -747,6 +1001,10 @@ def collect_game_stats(game : dict={}) -> dict:
                     "giveaways" : 0,
                     "blocks" : 0,
                     "blocked_shots" : 0,
+                    "missed_shots" : 0,
+                    "shots_on_goal" : 0,
+                    "faceoff_wins" : 0,
+                    "faceoff_attempts" : 0,
                     "time_on_ice" : players_by_id[player_id]["toi"],
                 }
             else:
@@ -870,8 +1128,8 @@ def get_game_records(season_year_id : str="") -> None:
     # are parsing the currents season then it doesn't have that info
 
     # create a list of all dates between now and season end
-    # dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    dates = [start_date]
+    dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
+    #dates = [start_date]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")

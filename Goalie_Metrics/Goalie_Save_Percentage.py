@@ -83,24 +83,30 @@ def goalie_save_percentage_add_match_data(goalie_save_percentage_data : dict={})
             goalie_even_save[goalie]['saves'] += goalie_even[goalie]['saves']
             goalie_even_save[goalie]['shots'] += goalie_even[goalie]['shots']
         else:
-            goalie_even_save[goalie]['saves'] = goalie_even[goalie]['saves']
-            goalie_even_save[goalie]['shots'] = goalie_even[goalie]['shots']
+            goalie_even_save[goalie] = {
+                'saves' : goalie_even[goalie]['saves'],
+                'shots' : goalie_even[goalie]['shots']
+            }
 
         # pp strengths
         if goalie in goalie_pp_save.keys():
             goalie_pp_save[goalie]['saves'] += goalie_pp[goalie]['saves']
             goalie_pp_save[goalie]['shots'] += goalie_pp[goalie]['shots']
         else:
-            goalie_pp_save[goalie]['saves'] = goalie_pp[goalie]['saves']
-            goalie_pp_save[goalie]['shots'] = goalie_pp[goalie]['shots']
+            goalie_pp_save[goalie] = {
+                'saves' : goalie_pp[goalie]['saves'],
+                'shots' : goalie_pp[goalie]['shots']
+            }
 
         # sh strenghts
         if goalie in goalie_sh_save.keys():
             goalie_sh_save[goalie]['saves'] += goalie_sh[goalie]['saves']
             goalie_sh_save[goalie]['shots'] += goalie_sh[goalie]['shots']
         else:
-            goalie_sh_save[goalie]['saves'] = goalie_sh[goalie]['saves']
-            goalie_sh_save[goalie]['shots'] = goalie_sh[goalie]['shots']
+            goalie_sh_save[goalie] = {
+                'saves' : goalie_sh[goalie]['saves'],
+                'shots' : goalie_sh[goalie]['shots']
+            }
 
 
 def goalie_save_percentage_calculate_all() -> None:
