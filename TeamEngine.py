@@ -46,6 +46,10 @@ from Shared_Metrics.Utilization import utilization_base_get_dict, \
 from Shared_Metrics.Blocked_Shots import blocks_base_get_dict, \
     blocks_rating_get_dict, blocks_reset, blocks_get_data_set, \
     blocks_add_match_data, blocks_scale_by_shots_against
+from Shared_Metrics.Contributing_Games import contributing_games_base_get_dict,\
+    contributing_games_rating_get_dict, contributing_games_reset, \
+    contributing_games_get_data_set, contributing_games_add_match_data, \
+    contributing_games_scale_by_games
 
 ### GOALIES
 from Goalie_Metrics.Goalie_Goals_Against import goalie_goals_against_get_dict, \
@@ -63,11 +67,6 @@ from Goalie_Metrics.Goalie_Save_Percentage import \
     goalie_save_percentage_calculate_all, goalie_save_percentage_combine_metrics
 
 ### FORWARDS
-from Forward_Metrics.Forward_Contributing_Games import \
-    forward_contributing_games_get_dict, forward_contributing_games_reset, \
-    forward_contributing_games_get_data_set, \
-    forward_contributing_games_add_match_data, \
-    forward_contributing_games_scale_by_games
 from Forward_Metrics.Forward_Discipline import \
     forward_discipline_get_dict, forward_discipline_reset, \
     forward_discipline_get_data, forward_discipline_add_match_data, \
@@ -1387,7 +1386,7 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     forward_utilization_data = utilization_get_data_set(
         forwards)
     forward_blocks_data = blocks_get_data_set(forwards)
-    forward_contributing_games_data = forward_contributing_games_get_data_set(
+    forward_contributing_games_data = contributing_games_get_data_set(
         forwards)
     forward_discipline_data = forward_discipline_get_data(forwards)
     forward_hits_data = forward_hits_get_data_set(forwards)
@@ -1400,15 +1399,15 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     for forward in forwards:
         
         # if the player is on the home team
-        if forwards[forward][0] == home_team:
+        if forward_utilization_data[forward]['team'] == home_team:
             
             # Blocks
-            forward_blocks_data[forward][1] *= \
+            forward_blocks_data[forward]['blocks'] *= \
                 (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value])
             
             # Contributing Games
-            forward_contributing_games_data[forward][1] *= \
+            forward_contributing_games_data[forward]['contributing_games'] *= \
                 (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
                     Team_Selection.AWAY.value])
             
@@ -1443,24 +1442,20 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
                     Team_Selection.AWAY.value])
             
             # Utilization
-            forward_utilization_data[1][forward] *= \
+            forward_utilization_data[forward]["time_on_ice"] *= \
                 (1 + relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.AWAY.value])
-            forward_utilization_data[2][forward] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
-            forward_utilization_data[3][forward] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
+            
+        # if the player is on the away_team
         else:
             
             # Blocks
-            forward_blocks_data[forward][1] *= \
+            forward_blocks_data[forward]['blocks'] *= \
                 (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value])
             
             # Contributing Games
-            forward_contributing_games_data[forward][1] *= \
+            forward_contributing_games_data[forward]['contributing_games'] *= \
                 (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
                     Team_Selection.HOME.value])
             
@@ -1495,13 +1490,7 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
                     Team_Selection.HOME.value])
             
             # Utilization
-            forward_utilization_data[1][forward] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
-            forward_utilization_data[2][forward] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
-            forward_utilization_data[3][forward] *= \
+            forward_utilization_data[forward]["time_on_ice"] *= \
                 (1 + relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.HOME.value])
     
@@ -1520,6 +1509,8 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     defensemen_utilization_data = utilization_get_data_set(
         defensemen)
     defensemen_blocks_data = blocks_get_data_set(defensemen)
+    defensemen_contributing_games_data = \
+        contributing_games_get_data_set(defensemen)
     defensemen_discipline_data = defensemen_discipline_get_data(defensemen)
     defensemen_hits_data = defensemen_hits_get_data_set(defensemen)
     defensemen_plus_minus_data = defensemen_plus_minus_get_data_set(
@@ -1529,11 +1520,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     for defenseman in defensemen:
         
         # if the player is on the home team
-        if defensemen[defenseman][0] == home_team:
+        if defensemen_utilization_data[defenseman]['team'] == home_team:
 
             # Blocks
-            defensemen_blocks_data[defenseman][1] *= \
+            defensemen_blocks_data[defenseman]['blocks'] *= \
                 (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.AWAY.value])
+            
+            # Contributing Games
+            defensemen_contributing_games_data[defensemen][
+                'contributing_games'] *= \
+                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
                     Team_Selection.AWAY.value])
             
             # Discipline
@@ -1562,20 +1559,20 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
                     Team_Selection.AWAY.value])
             
             # Utilization
-            defensemen_utilization_data[1][defenseman] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
-            defensemen_utilization_data[2][defenseman] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.AWAY.value])
-            defensemen_utilization_data[3][defenseman] *= \
+            defensemen_utilization_data[defenseman]["time_on_ice"] *= \
                 (1 + relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.AWAY.value])
         else:
 
             # Blocks
-            defensemen_blocks_data[defenseman][1] *= \
+            defensemen_blocks_data[defenseman]['blocks'] *= \
                 (1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+                    Team_Selection.HOME.value])
+            
+            # Contributing Games
+            defensemen_contributing_games_data[defensemen][
+                'contributing_games'] *= \
+                (1 + relative_metrics[Metric_Order.DEFENSIVE.value][
                     Team_Selection.HOME.value])
             
             # Discipline
@@ -1604,19 +1601,14 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
                     Team_Selection.HOME.value])
             
             # Utilization
-            defensemen_utilization_data[1][defenseman] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
-            defensemen_utilization_data[2][defenseman] *= \
-                (1 + relative_metrics[Metric_Order.TOTAL.value][
-                    Team_Selection.HOME.value])
-            defensemen_utilization_data[3][defenseman] *= \
+            defensemen_utilization_data[defenseman]["time_on_ice"] *= \
                 (1 + relative_metrics[Metric_Order.TOTAL.value][
                     Team_Selection.HOME.value])
     
     # Append Defensemen Metrics
     defensemen_metrics.append(defensemen_utilization_data)
     defensemen_metrics.append(defensemen_blocks_data)
+    defensemen_metrics.append(defensemen_contributing_games_data)
     defensemen_metrics.append(defensemen_discipline_data)
     defensemen_metrics.append(defensemen_hits_data)
     defensemen_metrics.append(defensemen_plus_minus_data)
@@ -2359,7 +2351,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Base.csv",
         ["Forward", "Contribution Base", "Team"],
-        forward_contributing_games_get_dict(), forward_teams)
+        contributing_games_base_get_dict("C"), forward_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Base.csv",
@@ -2696,7 +2688,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Corrected.csv",
         ["Forward", "Contribution Corrected", "Team"],
-        forward_contributing_games_get_dict(), forward_teams)
+        contributing_games_rating_get_dict("C"), forward_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Contribution_Corrected.csv",
@@ -3067,8 +3059,8 @@ def run_played_game_parser_engine(game_types : str="R"):
                     forward_takeaways = forward_metrics[6]
                     forward_takeaways_add_match_data(forward_takeaways)
                     forward_contribution = forward_metrics[7]
-                    forward_contributing_games_add_match_data(
-                        forward_contribution)
+                    contributing_games_add_match_data(
+                        forward_contribution, "C")
                     forward_multipoint = forward_metrics[8]
                     forward_multipoint_games_add_match_data(forward_multipoint)
                     for forward in forward_utilization[0].keys():
@@ -3264,8 +3256,8 @@ def run_played_game_parser_engine(game_types : str="R"):
             defensive_rating_get_unscaled_shots_against_dict(), forward_teams,
             "C")
 
-        forward_contributing_games_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), forward_teams)
+        contributing_games_scale_by_games(
+            strength_of_schedule_get_games_played_dict(), forward_teams, "F")
 
         forward_discipline_scale_by_utilization(
             utilization_rating_get_dict("C"))
@@ -3323,7 +3315,7 @@ def run_played_game_parser_engine(game_types : str="R"):
         apply_sigmoid_correction(forward_plus_minus_get_dict())
         apply_sigmoid_correction(forward_points_get_dict())
         apply_sigmoid_correction(forward_takeaways_get_dict())
-        apply_sigmoid_correction(forward_contributing_games_get_dict())
+        apply_sigmoid_correction(contributing_games_base_get_dict("C"))
         apply_sigmoid_correction(forward_multipoint_games_get_dict())
 
         # Defensemen
@@ -3378,7 +3370,7 @@ def run_played_game_parser_engine(game_types : str="R"):
                     forward_rating_weights.POINTS_WEIGHT.value) +
                 (forward_takeaways_get_dict()[forward] *
                     forward_rating_weights.TAKEAWAYS_WEIGHT.value) +
-                (forward_contributing_games_get_dict()[forward] *
+                (contributing_games_rating_get_dict("C")[forward] *
                     forward_rating_weights.CONTRIBUTION_WEIGHT.value) +
                 (forward_multipoint_games_get_dict()[forward] *
                     forward_rating_weights.MULTIPOINT_WEIGHT.value)
@@ -4061,6 +4053,7 @@ if __name__ == "__main__":
     strength_of_schedule_reset()
 
     blocks_reset()
+    contributing_games_reset()
     utilization_reset()
 
     defensemen_discipline_reset()
@@ -4069,7 +4062,6 @@ if __name__ == "__main__":
     defensemen_points_reset()
     defensemen_takeaways_reset()
 
-    forward_contributing_games_reset()
     forward_discipline_reset()
     forward_hits_reset()
     forward_multipoint_games_reset()
