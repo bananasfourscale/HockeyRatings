@@ -6,27 +6,37 @@ blocks_base_defense = {}
 
 blocks_rating_defense = {}
 
+blocks_base = {
+    'D' : {},
+    'C' : {},
+    'L' : {},
+    'R' : {},
+}
+
+blocks_rating = {
+    'D' : {},
+    'C' : {},
+    'L' : {},
+    'R' : {},
+}
+
 def blocks_base_get_dict(position : str="") -> dict:
-    if position == "D":
-        return blocks_base_defense
-    if position in ["C", "L", "R"]:
-        return blocks_base_forward
+    if position in blocks_base.keys():
+        return blocks_base[position]
     return {}
 
 
 def blocks_rating_get_dict(position : str="") -> dict:
-    if position == "D":
-        return blocks_rating_defense
-    if position in ["C", "L", "R"]:
-        return blocks_rating_forward
+    if position in blocks_rating.keys():
+        return blocks_rating[position]
     return {}
 
 
 def blocks_reset() -> None:
-    blocks_base_forward.reset()
-    blocks_rating_forward.reset()
-    blocks_base_defense.reset()
-    blocks_rating_defense.reset()
+    for key in blocks_base.keys():
+        blocks_base[key].reset()
+    for key in blocks_rating.keys():
+        blocks_rating[key].reset()
 
 
 def blocks_get_data_set(match_data : dict={}) -> dict:
@@ -36,30 +46,20 @@ def blocks_get_data_set(match_data : dict={}) -> dict:
 
 
 def blocks_add_match_data(blocks_data : dict={}, position : str="") -> None:
+    if position not in blocks_base.keys():
+        return {}
     for player in blocks_data.keys():
-        if position == "D":
-            if player in blocks_base_defense.keys():
-                blocks_base_defense[player] += blocks_data[player]['blocks']
-            else:
-                blocks_base_defense[player] = blocks_data[player]['blocks']
-        if position in ["C", "L", "R"]:
-            if player in blocks_base_forward.keys():
-                blocks_base_forward[player] += blocks_data[player]['blocks']
-            else:
-                blocks_base_forward[player] = blocks_data[player]['blocks']
+        if player in blocks_base[position].keys():
+            blocks_base[position][player] += blocks_data[player]['blocks']
+        else:
+            blocks_base[position][player] = blocks_data[player]['blocks']
 
 
 def blocks_scale_by_shots_against(team_shots_against : dict={},
     teams_dict : dict={}, position : str="") -> None:
-    if position == "D":
-        for player in blocks_base_defense.keys():
-            blocks_rating_defense[player] = (
-                blocks_base_defense / team_shots_against[teams_dict[player]]
-            )
-    if position in ["C", "L", "R"]:
-        for player in blocks_base_forward.keys():
-            blocks_rating_forward[player] = (
-                blocks_base_forward / team_shots_against[teams_dict[player]]
-            )
-
-
+    if position not in blocks_base.keys():
+        return
+    for player in blocks_base[position].keys():
+        blocks_rating[position][player] = (
+            blocks_base[position] / team_shots_against[teams_dict[player]]
+        )

@@ -51,7 +51,7 @@ divisions = {
 VERSION_MAJOR = 7
 VERSION_MINOR = 0
 
-EYE_TEST_WEIGHT = 0.10
+EYE_TEST_WEIGHT = 0.01
 
 class total_rating_weights(Enum):
     CLUTCH_RATING_WEIGHT = 0.05
@@ -63,7 +63,8 @@ class total_rating_weights(Enum):
 
 class goalie_rating_weights(Enum):
     UTILIZATION_WEIGHT = 0.30
-    SAVE_PERCENTAGE_WEIGHT = 0.40
+    DISCIPLINE_WEIGHT = 0.05
+    SAVE_PERCENTAGE_WEIGHT = 0.35
     GOALS_AGAINST_WEIGHT = 0.10
     SAVE_CONSISTENCY_WEIGHT = 0.20
 
@@ -85,6 +86,7 @@ class defensemen_rating_weights(Enum):
     HITS_WEIGHT = 0.10
     DISIPLINE_WEIGHT = 0.05
     SHOT_BLOCKING_WEIGHT = 0.10
-    PLUS_MINUS_WEIGHT = 0.10
-    POINTS_WEIGHT = 0.25
+    PLUS_MINUS_WEIGHT = 0.05
+    POINTS_WEIGHT = 0.20
     TAKEAWAYS_WEIGHT = 0.15
+    CONTRIBUTION_WEIGHT = 0.10
