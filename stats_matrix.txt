@@ -50,7 +50,7 @@ Goalie Stats:
     "short_handed_shots" :
         players_by_id[player_id]
             ["shorthandedShotsAgainst"].split("/")[1],
-    "pentaly_minutes" : players_by_id[player_id]["pim"],
+    "penalty_minutes" : 0,
     "penalty_minutes_drawn" : 0,
     "hits" : 0,
     "hits_taken" : 0,
