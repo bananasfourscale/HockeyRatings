@@ -759,36 +759,36 @@ def collect_game_stats(game : dict={}) -> dict:
             home_team : {
                 "team_stats" : {
                     "first_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][0]["home"]),
                     "second_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][1]["home"]),
                     "third_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][2]["home"]),
                     "OT_goals" : 0,
                     "SO_goals" : 0,
                     "shots" : int(game["box_score"]["homeTeam"]["sog"]),
                     "power_play_goals" :
-                        int(game["box_score"]["boxscore"]["teamGameStats"][2][
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
                             "homeValue"].split("/")[0]),
                     "power_play_chances" : 
-                        int(game["box_score"]["boxscore"]["teamGameStats"][2][
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
                             "homeValue"].split("/")[1]),
                     "short_handed_goals" : 0,
                     "short_handed_chances" : 0,
-                    "penalty_minutes" : int(game["box_score"]["boxscore"][
+                    "penalty_minutes" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["homeValue"]),
-                    "penalties_drawn" : int(game["box_score"]["boxscore"][
+                    "penalties_drawn" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["awayValue"]),
-                    "hits" : int(game["box_score"]["boxscore"][
+                    "hits" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["homeValue"]),
-                    "getting_hit" : int(game["box_score"]["boxscore"][
+                    "getting_hit" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["awayValue"]),
-                    "blocks" : int(game["box_score"]["boxscore"][
+                    "blocks" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["homeValue"]),
-                    "blocked_shots" : int(game["box_score"]["boxscore"][
+                    "blocked_shots" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["awayValue"]),
                 },
                 "player_stats" : {}
@@ -796,36 +796,36 @@ def collect_game_stats(game : dict={}) -> dict:
             away_team : {
                 "team_stats" : {
                     "first_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][0]["away"]),
                     "second_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][1]["away"]),
                     "third_period_goals" :
-                        int(game["box_score"]["boxscore"]["linescore"]
+                        int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][2]["away"]),
                     "OT_goals" : 0,
                     "SO_goals" : 0,
                     "shots" : int(game["box_score"]["awayTeam"]["sog"]),
                     "power_play_goals" :
-                        int(game["box_score"]["boxscore"]["teamGameStats"][2][
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
                             "awayValue"].split("/")[0]),
                     "power_play_chances" : 
-                        int(game["box_score"]["boxscore"]["teamGameStats"][2][
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
                             "awayValue"].split("/")[1]),
                     "short_handed_goals" : 0,
                     "short_handed_chances" : 0,
-                    "penalty_minutes" : int(game["box_score"]["boxscore"][
+                    "penalty_minutes" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["awayValue"]),
-                    "penalties_drawn" : int(game["box_score"]["boxscore"][
+                    "penalties_drawn" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["homeValue"]),
-                    "hits" : int(game["box_score"]["boxscore"][
+                    "hits" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["awayValue"]),
-                    "getting_hit" : int(game["box_score"]["boxscore"][
+                    "getting_hit" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["homeValue"]),
-                    "blocks" : int(game["box_score"]["boxscore"][
+                    "blocks" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["awayValue"]),
-                    "blocked_shots" : int(game["box_score"]["boxscore"][
+                    "blocked_shots" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["homeValue"]),
                 },
                 "player_stats" : {}
@@ -834,6 +834,7 @@ def collect_game_stats(game : dict={}) -> dict:
     except KeyError as e:
         print(game["box_score"]["gameState"])
         print(game["box_score"]["id"])
+        print(game["box_score"])
         raise e
     except IndexError as i:
         print(game["box_score"]["gameState"])
@@ -841,33 +842,33 @@ def collect_game_stats(game : dict={}) -> dict:
         raise i
     if game_stats["result"] in ["OT", "SO"]:
         game_stats[home_team]["OT_goals"] = \
-            int(game["box_score"]["boxscore"]["linescore"]
+            int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][3]["home"])
         game_stats[away_team]["OT_goals"] = \
-            int(game["box_score"]["boxscore"]["linescore"]
+            int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][3]["away"])
     if game_stats["result"] == "SO":
         game_stats[home_team]["SO_goals"] = \
-            int(game["box_score"]["boxscore"]["linescore"]
+            int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][4]["home"])
         game_stats[away_team]["SO_goals"] = \
-            int(game["box_score"]["boxscore"]["linescore"]
+            int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][4]["away"])
 
     # create a flat list of players by id so we can reference stats from
     # the boxscore when looping through play-by-play
     list_of_players = \
-        game["box_score"]["boxscore"]["playerByGameStats"]["awayTeam"] \
+        game["box_score"]["playerByGameStats"]["awayTeam"] \
             ["forwards"] + \
-        game["box_score"]["boxscore"]["playerByGameStats"]["awayTeam"] \
+        game["box_score"]["playerByGameStats"]["awayTeam"] \
             ["defense"] + \
-        game["box_score"]["boxscore"]["playerByGameStats"]["awayTeam"] \
+        game["box_score"]["playerByGameStats"]["awayTeam"] \
             ["goalies"] + \
-        game["box_score"]["boxscore"]["playerByGameStats"]["homeTeam"] \
+        game["box_score"]["playerByGameStats"]["homeTeam"] \
             ["forwards"] + \
-        game["box_score"]["boxscore"]["playerByGameStats"]["homeTeam"] \
+        game["box_score"]["playerByGameStats"]["homeTeam"] \
             ["defense"] + \
-        game["box_score"]["boxscore"]["playerByGameStats"]["homeTeam"] \
+        game["box_score"]["playerByGameStats"]["homeTeam"] \
             ["goalies"]
     players_by_id = {}
     for player in list_of_players:
