@@ -1626,7 +1626,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Discipline_Base.csv",
         ["Defensemen", "Discipline Base", "Team"],
-        discipline_rating_get_dict("D"), defensemen_teams, False)
+        discipline_base_get_dict("D"), defensemen_teams, False)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Discipline_Base.csv",
@@ -1815,7 +1815,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Discipline_Corrected.csv",
         ["Forward", "Discipline Corrected", "Team"],
-        discipline_base_get_dict("C"), forward_teams)
+        discipline_rating_get_dict("C"), forward_teams)
     plotting_queue.put((plot_player_ranking,
         ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
             "Discipline_Corrected.csv",
@@ -2362,7 +2362,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Goalies ###
         utilization_scale_by_game(strength_of_schedule_get_games_played_dict(),
             goalie_teams, "G")
-        apply_sigmoid_correction(utilization_base_get_dict("G"))
+        apply_sigmoid_correction(utilization_rating_get_dict("G"))
 
         discipline_scale_by_utilization(utilization_rating_get_dict("G"), "G")
 
@@ -2409,7 +2409,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Defensemen ###
         utilization_scale_by_game(
             strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
-        apply_sigmoid_correction(utilization_base_get_dict("D"))
+        apply_sigmoid_correction(utilization_rating_get_dict("D"))
 
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(),
@@ -2437,30 +2437,30 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_player_metrics(game_types)
 
         # Goalies
-        apply_sigmoid_correction(discipline_base_get_dict("G"), True)
+        apply_sigmoid_correction(discipline_rating_get_dict("G"))
         apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
         apply_sigmoid_correction(goalie_save_percentage_get_dict())
         apply_sigmoid_correction(goalie_save_consistency_get_dict())
 
         # Forwards
         apply_sigmoid_correction(blocks_rating_get_dict("C"))
-        apply_sigmoid_correction(contributing_games_base_get_dict("C"))
-        apply_sigmoid_correction(discipline_base_get_dict("C"), True)
-        apply_sigmoid_correction(hitting_base_get_dict("C"))
-        apply_sigmoid_correction(multipoint_base_get_dict("C"))
-        apply_sigmoid_correction(plus_minus_base_get_dict("C"))
-        apply_sigmoid_correction(total_points_base_get_dict("C"))
-        apply_sigmoid_correction(turnovers_base_get_dict("C"))
+        apply_sigmoid_correction(contributing_games_rating_get_dict("C"))
+        apply_sigmoid_correction(discipline_rating_get_dict("C"), True)
+        apply_sigmoid_correction(hitting_rating_get_dict("C"))
+        apply_sigmoid_correction(multipoint_rating_get_dict("C"))
+        apply_sigmoid_correction(plus_minus_rating_get_dict("C"))
+        apply_sigmoid_correction(total_points_rating_get_dict("C"))
+        apply_sigmoid_correction(turnovers_rating_get_dict("C"))
 
         # Defensemen
         apply_sigmoid_correction(blocks_rating_get_dict("D"))
-        apply_sigmoid_correction(contributing_games_base_get_dict("D"))
-        apply_sigmoid_correction(discipline_base_get_dict("D"), True)
-        apply_sigmoid_correction(hitting_base_get_dict("D"))
-        apply_sigmoid_correction(multipoint_base_get_dict("D"))
-        apply_sigmoid_correction(plus_minus_base_get_dict("D"))
-        apply_sigmoid_correction(total_points_base_get_dict("D"))
-        apply_sigmoid_correction(turnovers_base_get_dict("D"))
+        apply_sigmoid_correction(contributing_games_rating_get_dict("D"))
+        apply_sigmoid_correction(discipline_rating_get_dict("D"), True)
+        apply_sigmoid_correction(hitting_rating_get_dict("D"))
+        apply_sigmoid_correction(multipoint_rating_get_dict("D"))
+        apply_sigmoid_correction(plus_minus_rating_get_dict("D"))
+        apply_sigmoid_correction(total_points_rating_get_dict("D"))
+        apply_sigmoid_correction(turnovers_rating_get_dict("D"))
 
         if final_date:
             print("Plot Player data after correction")

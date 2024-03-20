@@ -730,12 +730,21 @@ def collect_game_stats(game : dict={}) -> dict:
     
     # if the game hasn't been played then just fill out the minimum struct to be
     # able to gather past info for prediction engine to run
-    if game["box_score"]["gameState"] in ["FUT", "PRE", "LIVE"] or \
+    if game["box_score"]["gameState"] != "OFF" or \
         game["box_score"]["gameType"] not in [2, 3]:
         game_stats = {
             "home_team" : home_team,
             "away_team" : away_team,
             "game_type" : game["box_score"]["gameType"],
+            "game_state" : game["box_score"]["gameState"],
+            home_team : {
+                "team_stats" : {},
+                "player_stats" : {}
+            },
+            away_team : {
+                "team_stats" : {},
+                "player_stats" : {}
+            }
         }
         return game_stats
     
@@ -746,6 +755,7 @@ def collect_game_stats(game : dict={}) -> dict:
             "away_team" : away_team,
             "result" : game["box_score"]["periodDescriptor"]["periodType"],
             "game_type" : game["box_score"]["gameType"],
+            "game_state" : game["box_score"]["gameState"],
             home_team : {
                 "team_stats" : {
                     "first_period_goals" :
@@ -1147,7 +1157,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:10]
+    # dates = dates[0:30]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")
@@ -1176,7 +1186,7 @@ def get_game_records(season_year_id : str="") -> None:
                     int(parsed_date[1]), int(parsed_date[2]))
 
                 # if the date has already passed, then do post processing
-                if parsed_date < current_date:
+                if output_list[0]['game_stats']["game_state"] == "OFF":
 
                     # if regular season then put into that list of dates
                     if output_list[0]['game_stats']['game_type'] == 2:
@@ -1185,17 +1195,16 @@ def get_game_records(season_year_id : str="") -> None:
 
                     # otherwise put the date and all games into the playoff
                     # list of matches
-                    else:
+                    elif output_list[0]['game_stats']['game_type'] == 2:
                         playoff_matches[output_list[0]['date']] = output_list
 
                 # otherwise slate it for the prediction engine
-                else:
-                    upcoming_matches[output_list[0]['date']] = output_list
-                    # if output_list[0]['linescore']['gameType'] == "R":
-                    #     upcoming_matches[output_list[0]['date']] = output_list
-                    # else:
-                    #     upcoming_playoff_matches[output_list[0]['date']] = \
-                    #         output_list
+                elif output_list[0]['game_stats']["game_state"] == "FUT":
+                    if output_list[0]['game_stats']['game_type'] == 2:
+                        upcoming_matches[output_list[0]['date']] = output_list
+                    else:
+                        upcoming_playoff_matches[output_list[0]['date']] = \
+                            output_list
 
     # close all parser processes
     for process in match_parser_process_list:
