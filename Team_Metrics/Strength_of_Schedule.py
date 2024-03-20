@@ -50,12 +50,18 @@ def strength_of_schedule_get_data_set(match_data : dict={}) -> dict:
     home_team_stats = match_data['game_stats'][home_team]["team_stats"]
     away_team = match_data['game_stats']['away_team']
     away_team_stats = match_data['game_stats'][away_team]["team_stats"]
-    home_score_final = home_team_stats["first_period_goals"] + \
-        home_team_stats["second_period_goals"] + \
-        home_team_stats["third_period_goals"]
-    away_score_final = away_team_stats["first_period_goals"] + \
-        away_team_stats["second_period_goals"] + \
-        away_team_stats["third_period_goals"]
+    home_score_final = (
+        home_team_stats["first_period_goals"] +
+        home_team_stats["second_period_goals"] +
+        home_team_stats["third_period_goals"] + home_team_stats["OT_goals"] +
+        home_team_stats["SO_goals"]
+    )
+    away_score_final = (
+        away_team_stats["first_period_goals"] +
+        away_team_stats["second_period_goals"] +
+        away_team_stats["third_period_goals"] + away_team_stats["OT_goals"] +
+        away_team_stats["SO_goals"]
+    )
     final_game_state = match_data['game_stats']['result']
 
     # determine who won and lost the game

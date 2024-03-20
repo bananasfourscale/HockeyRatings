@@ -32,25 +32,37 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
     home_team = match_data['game_stats']['home_team']
     home_team_stats = match_data['game_stats'][home_team]["team_stats"]
     home_score_first = home_team_stats["first_period_goals"]
-    home_score_second = home_score_first + \
-        home_team_stats["second_period_goals"]
-    home_score_final = home_score_first + home_score_second + \
-        home_team_stats["first_period_goals"]
+    home_score_second = (
+        home_score_first + home_team_stats["second_period_goals"]
+    )
+    home_score_final = (
+        home_score_second + home_team_stats["third_period_goals"] +
+        home_team_stats["OT_goals"] + home_team_stats["SO_goals"]
+    )
 
     # away team data
     away_team = match_data['game_stats']['away_team']
     away_team_stats = match_data['game_stats'][away_team]["team_stats"]
     away_score_first = away_team_stats["first_period_goals"]
-    away_score_second = away_score_first + \
-        away_team_stats["second_period_goals"]
-    away_score_final = away_score_first + away_score_second + \
-        away_team_stats["first_period_goals"]
+    away_score_second = (
+        away_score_first + away_team_stats["second_period_goals"]
+    )
+    away_score_final = (
+        away_score_second + away_team_stats["third_period_goals"] +
+        away_team_stats["OT_goals"] + away_team_stats["SO_goals"]
+    )
 
     # set default values
     win_lead_first[home_team] = [0,0]
     win_lead_first[away_team] = [0,0]
     win_lead_second[home_team] = [0,0]
     win_lead_second[away_team] = [0,0]
+    # print("First\n\tHome - ", home_team, ":", home_score_first,
+    #     " | Away - ", away_team, ":", away_score_first)
+    # print("Second\n\tHome - ", home_team, ":", home_score_second,
+    #     " | Away - ", away_team, ":", away_score_second)
+    # print("Final\n\tHome - ", home_team, ":", home_score_final,
+    #     " | Away - ", away_team, ":", away_score_final)
 
     # determine who was leading after one period
     if away_score_first > home_score_first:
@@ -64,10 +76,10 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
         else:
             win_lead_first[home_team] = [0,1]
 
-    # if teams are tied them give them both full marks
+    # if teams are tied them give them both no marks
     else:
-        win_lead_first[away_team] = [1,1]
-        win_lead_first[home_team] = [1,1]
+        win_lead_first[away_team] = [0,0]
+        win_lead_first[home_team] = [0,0]
     
     # now do the same for the second period
     if away_score_second > home_score_second:
@@ -81,10 +93,10 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
         else:
             win_lead_second[home_team] = [0,1]
 
-    # if teams are tied them give them both full marks
+    # if teams are tied them give them both no marks
     else:
-        win_lead_second[away_team] = [1,1]
-        win_lead_second[home_team] = [1,1]
+        win_lead_second[away_team] = [0,0]
+        win_lead_second[home_team] = [0,0]
 
     # collect all the different permutations into one data set and return
     clutch_lead_data = {}

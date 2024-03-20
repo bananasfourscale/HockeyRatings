@@ -757,6 +757,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "third_period_goals" :
                         int(game["box_score"]["boxscore"]["linescore"]
                             ["byPeriod"][2]["home"]),
+                    "OT_goals" : 0,
+                    "SO_goals" : 0,
                     "shots" : int(game["box_score"]["homeTeam"]["sog"]),
                     "power_play_goals" :
                         int(game["box_score"]["boxscore"]["teamGameStats"][2][
@@ -785,34 +787,36 @@ def collect_game_stats(game : dict={}) -> dict:
                 "team_stats" : {
                     "first_period_goals" :
                         int(game["box_score"]["boxscore"]["linescore"]
-                            ["byPeriod"][0]["home"]),
+                            ["byPeriod"][0]["away"]),
                     "second_period_goals" :
                         int(game["box_score"]["boxscore"]["linescore"]
-                            ["byPeriod"][1]["home"]),
+                            ["byPeriod"][1]["away"]),
                     "third_period_goals" :
                         int(game["box_score"]["boxscore"]["linescore"]
-                            ["byPeriod"][2]["home"]),
-                    "shots" : int(game["box_score"]["homeTeam"]["sog"]),
+                            ["byPeriod"][2]["away"]),
+                    "OT_goals" : 0,
+                    "SO_goals" : 0,
+                    "shots" : int(game["box_score"]["awayTeam"]["sog"]),
                     "power_play_goals" :
                         int(game["box_score"]["boxscore"]["teamGameStats"][2][
-                            "homeValue"].split("/")[0]),
+                            "awayValue"].split("/")[0]),
                     "power_play_chances" : 
                         int(game["box_score"]["boxscore"]["teamGameStats"][2][
-                            "homeValue"].split("/")[1]),
+                            "awayValue"].split("/")[1]),
                     "short_handed_goals" : 0,
                     "short_handed_chances" : 0,
                     "penalty_minutes" : int(game["box_score"]["boxscore"][
-                        "teamGameStats"][4]["homeValue"]),
-                    "penalties_drawn" : int(game["box_score"]["boxscore"][
                         "teamGameStats"][4]["awayValue"]),
+                    "penalties_drawn" : int(game["box_score"]["boxscore"][
+                        "teamGameStats"][4]["homeValue"]),
                     "hits" : int(game["box_score"]["boxscore"][
-                        "teamGameStats"][5]["homeValue"]),
-                    "getting_hit" : int(game["box_score"]["boxscore"][
                         "teamGameStats"][5]["awayValue"]),
+                    "getting_hit" : int(game["box_score"]["boxscore"][
+                        "teamGameStats"][5]["homeValue"]),
                     "blocks" : int(game["box_score"]["boxscore"][
-                        "teamGameStats"][6]["homeValue"]),
-                    "blocked_shots" : int(game["box_score"]["boxscore"][
                         "teamGameStats"][6]["awayValue"]),
+                    "blocked_shots" : int(game["box_score"]["boxscore"][
+                        "teamGameStats"][6]["homeValue"]),
                 },
                 "player_stats" : {}
             },
@@ -825,6 +829,20 @@ def collect_game_stats(game : dict={}) -> dict:
         print(game["box_score"]["gameState"])
         print(game["box_score"]["id"])
         raise i
+    if game_stats["result"] in ["OT", "SO"]:
+        game_stats[home_team]["OT_goals"] = \
+            int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][3]["home"])
+        game_stats[away_team]["OT_goals"] = \
+            int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][3]["away"])
+    if game_stats["result"] == "SO":
+        game_stats[home_team]["SO_goals"] = \
+            int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][4]["home"])
+        game_stats[away_team]["SO_goals"] = \
+            int(game["box_score"]["boxscore"]["linescore"]
+                            ["byPeriod"][4]["away"])
 
     # create a flat list of players by id so we can reference stats from
     # the boxscore when looping through play-by-play
@@ -1129,7 +1147,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    #dates = [start_date]
+    # dates = dates[0:10]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")
