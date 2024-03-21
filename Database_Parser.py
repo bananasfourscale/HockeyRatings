@@ -1157,7 +1157,7 @@ def get_game_records(season_year_id : str="") -> None:
     # are parsing the currents season then it doesn't have that info
 
     # create a list of all dates between now and season end
-    dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
+    dates = pandas.date_range(start_date, gi).to_pydatetime().tolist()
     # dates = dates[0:5]
     i = 0
     for date in dates:
