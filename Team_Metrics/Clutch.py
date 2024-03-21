@@ -1,3 +1,5 @@
+from math import pow, log
+
 clutch_rating_base = {}
 
 clutch_games_played = {}
@@ -5,6 +7,14 @@ clutch_games_played = {}
 clutch_rating = {}
 
 clutch_trends = {}
+
+LOG_FACTOR = 2
+
+POW_FACTOR = 1.5
+
+SECOND_FACTOR = 1.25
+
+THIRD_FACTOR = 1.5
 
 
 def clutch_rating_get_dict() -> dict:
@@ -23,110 +33,159 @@ def clutch_rating_reset() -> None:
 
 
 def clutch_get_lead_data(match_data : dict={}) -> dict:
-    
-    # loop through the lines of file
-    win_lead_first = {}
-    win_lead_second = {}
 
     # home team data
+    home_points = 0.0
     home_team = match_data['game_stats']['home_team']
     home_team_stats = match_data['game_stats'][home_team]["team_stats"]
     home_score_first = home_team_stats["first_period_goals"]
     home_score_second = (
-        home_score_first + home_team_stats["second_period_goals"]
+        home_team_stats["first_period_goals"] +
+        home_team_stats["second_period_goals"]
+    )
+    home_score_third = (
+        home_team_stats["first_period_goals"] +
+        home_team_stats["second_period_goals"] +
+        home_team_stats["third_period_goals"]
+    )
+    home_score_OT = (
+        home_team_stats["first_period_goals"] +
+        home_team_stats["second_period_goals"] +
+        home_team_stats["third_period_goals"] + home_team_stats["OT_goals"]
     )
     home_score_final = (
-        home_score_second + home_team_stats["third_period_goals"] +
-        home_team_stats["OT_goals"] + home_team_stats["SO_goals"]
+        home_team_stats["first_period_goals"] +
+        home_team_stats["second_period_goals"] +
+        home_team_stats["third_period_goals"] + home_team_stats["OT_goals"] +
+        home_team_stats["SO_goals"]
     )
 
     # away team data
+    away_points = 0.0
     away_team = match_data['game_stats']['away_team']
     away_team_stats = match_data['game_stats'][away_team]["team_stats"]
     away_score_first = away_team_stats["first_period_goals"]
     away_score_second = (
-        away_score_first + away_team_stats["second_period_goals"]
+        away_team_stats["first_period_goals"] +
+        away_team_stats["second_period_goals"]
+    )
+    away_score_third = (
+        away_team_stats["first_period_goals"] +
+        away_team_stats["second_period_goals"] +
+        away_team_stats["third_period_goals"]
+    )
+    away_score_OT = (
+        away_team_stats["first_period_goals"] +
+        away_team_stats["second_period_goals"] +
+        away_team_stats["third_period_goals"] + away_team_stats["OT_goals"]
     )
     away_score_final = (
-        away_score_second + away_team_stats["third_period_goals"] +
-        away_team_stats["OT_goals"] + away_team_stats["SO_goals"]
+        away_team_stats["first_period_goals"] +
+        away_team_stats["second_period_goals"] +
+        away_team_stats["third_period_goals"] + away_team_stats["OT_goals"] +
+        away_team_stats["SO_goals"]
     )
 
-    # set default values
-    win_lead_first[home_team] = [0,0]
-    win_lead_first[away_team] = [0,0]
-    win_lead_second[home_team] = [0,0]
-    win_lead_second[away_team] = [0,0]
-    # print("First\n\tHome - ", home_team, ":", home_score_first,
-    #     " | Away - ", away_team, ":", away_score_first)
-    # print("Second\n\tHome - ", home_team, ":", home_score_second,
-    #     " | Away - ", away_team, ":", away_score_second)
-    # print("Final\n\tHome - ", home_team, ":", home_score_final,
-    #     " | Away - ", away_team, ":", away_score_final)
+    # get diff from each period
+    first_diff = abs(away_score_first - home_score_first)
+    second_diff = abs(away_score_second - home_score_second)
+    third_diff = abs(away_score_third - home_score_third)
 
-    # determine who was leading after one period
-    if away_score_first > home_score_first:
-        if away_score_final > home_score_final:
-            win_lead_first[away_team] = [1,1]
-        else:
-            win_lead_first[away_team] = [0,1]
-    elif home_score_first > away_score_first:
-        if home_score_final > away_score_final:
-            win_lead_first[home_team] = [1,1]
-        else:
-            win_lead_first[home_team] = [0,1]
+    # print(home_team, ":", away_team)
+    # print("\t", home_score_first, ":", away_score_first)
 
-    # if teams are tied them give them both no marks
+    # if the away team won
+    if away_score_final > home_score_final:
+
+        # first period points
+        if away_score_first < home_score_first:
+            away_points += log(first_diff, LOG_FACTOR)
+            home_points -= pow(first_diff, POW_FACTOR)
+        elif away_score_first > home_score_first:
+            away_points += log(first_diff, LOG_FACTOR)
+        else:
+            away_points += 0.5
+            home_points += 0.5
+        # print("\t", home_points, ":", away_points)
+        # print()
+        # print("\t", home_score_second, ":", away_score_second)
+
+        # second period points
+        if away_score_second < home_score_second:
+            away_points += log(second_diff * SECOND_FACTOR, LOG_FACTOR)
+            home_points -= pow(second_diff * SECOND_FACTOR, POW_FACTOR)
+        elif away_score_second > home_score_second:
+            away_points += log(second_diff * SECOND_FACTOR, LOG_FACTOR)
+        else:
+            away_points += 1
+            home_points += 1
+        # print("\t", home_points, ":", away_points)
+        # print()
+        # print("\t", home_score_third, ":", away_score_third)
+
+        # third period points. If not equal at this point away team has won
+        if away_score_third != home_score_third:
+            away_points += log(third_diff * THIRD_FACTOR, LOG_FACTOR)
+
+        # if OT scores are equal we went to shootout so give both teams very
+        # few points for getting this far.
+        elif away_score_OT == home_score_OT:
+            away_points += 0.1
+            home_points += 0.1
+
+        # otherwise the game ended in OT so give more than SO but not much
+        else:
+            away_points += 0.3
+            home_points += 0.3
+
+    # if the home team won
     else:
-        win_lead_first[away_team] = [0,0]
-        win_lead_first[home_team] = [0,0]
-    
-    # now do the same for the second period
-    if away_score_second > home_score_second:
-        if away_score_final > home_score_final:
-            win_lead_second[away_team] = [1,1]
-        else:
-            win_lead_second[away_team] = [0,1]
-    elif home_score_second > away_score_second:
-        if home_score_final > away_score_final:
-            win_lead_second[home_team] = [1,1]
-        else:
-            win_lead_second[home_team] = [0,1]
 
-    # if teams are tied them give them both no marks
-    else:
-        win_lead_second[away_team] = [0,0]
-        win_lead_second[home_team] = [0,0]
+        # first period points
+        if home_score_first < away_score_first:
+            home_points += log(first_diff, LOG_FACTOR)
+            away_points -= pow(first_diff, POW_FACTOR)
+        elif home_score_first > away_score_first:
+            home_points += log(first_diff, LOG_FACTOR)
+        else:
+            home_points += 0.5
+            away_points += 0.5
+        # print("\t", home_points, ":", away_points)
+        # print()
+        # print("\t", home_score_second, ":", away_score_second)
+
+        # second period points
+        if home_score_second < away_score_second:
+            home_points += log(second_diff * SECOND_FACTOR, LOG_FACTOR)
+            away_points -= pow(second_diff * SECOND_FACTOR, POW_FACTOR)
+        elif home_score_second > away_score_second:
+            home_points += log(second_diff * SECOND_FACTOR, LOG_FACTOR)
+        else:
+            home_points += 1
+            away_points += 1
+        # print("\t", home_points, ":", away_points)
+        # print()
+        # print("\t", home_score_third, ":", away_score_third)
+
+        # third period points. If not equal at this point away team has won
+        if home_score_third != away_score_third:
+            home_points += log(third_diff * THIRD_FACTOR, LOG_FACTOR)
+
+        # if OT scores are equal we went to shootout so give both teams very
+        # few points for getting this far.
+        elif home_score_OT == away_score_OT:
+            home_points += 0.1
+            away_points += 0.1
+
+        # otherwise the game ended in OT so give more than SO but not much
+        else:
+            home_points += 0.3
+            away_points += 0.3
+        
+    # print("\t", home_points, ":", away_points)
 
     # collect all the different permutations into one data set and return
-    clutch_lead_data = {}
-    for team in win_lead_first.keys():
-        clutch_lead_data[team] = [win_lead_first[team], win_lead_second[team]]
-    return clutch_lead_data
-
-
-def clutch_calculate_lead_protection(match_data : dict={}) -> None:
-    clutch_data = {}
-    lead_protection_data = clutch_get_lead_data(match_data)
-    
-    # the data is formatted with [did_win, was_leading]
-    for team in lead_protection_data.keys():
-
-        # lead protection first period
-        if lead_protection_data[team][0][1] == 0:
-            win_lead_first_per = 0.0
-        else:
-            win_lead_first_per = lead_protection_data[team][0][0] / \
-                lead_protection_data[team][0][1]
-
-        # lead protection second period
-        if lead_protection_data[team][1][1] == 0:
-            win_lead_second_per = 0.0
-        else:
-            win_lead_second_per = lead_protection_data[team][1][0] / \
-                lead_protection_data[team][1][1]
-        clutch_data[team] = (win_lead_first_per) + (win_lead_second_per * 2)
-    return clutch_data
+    return {home_team : home_points, away_team : away_points}
 
 
 def clutch_add_match_data(clutch_data : dict={}) -> None:

@@ -65,5 +65,5 @@ def turnovers_scale_by_utilization(utilization : dict={}, position : str="")\
         return
     for player in turnovers_base[position].keys():
         turnovers_rating[position][player] = (
-            turnovers_base[position][player] * (1 - utilization[player])
+            turnovers_base[position][player] * utilization[player]
         )

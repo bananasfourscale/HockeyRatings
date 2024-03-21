@@ -83,7 +83,7 @@ def strength_of_schedule_get_data_set(match_data : dict={}) -> dict:
         game_value[loser] = strength_of_schedule_weights.LOSE_OT_WEIGHT.value
     else:
         game_value[winner] = strength_of_schedule_weights.WIN_SO_WEIGHT.value
-        game_value[loser] = strength_of_schedule_weights.LOSE_OT_WEIGHT.value
+        game_value[loser] = strength_of_schedule_weights.LOSE_SO_WEIGHT.value
     return game_value
 
 

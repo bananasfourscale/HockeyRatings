@@ -10,7 +10,7 @@ from Database_Parser import get_game_records
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
     clutch_rating_get_trend_dict, clutch_rating_reset, \
-    clutch_calculate_lead_protection, clutch_add_match_data, \
+    clutch_get_lead_data, clutch_add_match_data, \
     clutch_rating_scale_by_game, clutch_update_trend
 from Team_Metrics.Defensive_Rating import defensive_rating_get_dict, \
     defensive_rating_get_shots_against_dict, \
@@ -260,7 +260,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     home_team = match_data["game_stats"]["home_team"]
 
     ### clutch rating ###
-    clutch_data = clutch_calculate_lead_protection(match_data)
+    clutch_data = clutch_get_lead_data(match_data)
     clutch_data[home_team] *= (
         1 + relative_metrics[Metric_Order.CLUTCH.value][
             Team_Selection.AWAY.value]
