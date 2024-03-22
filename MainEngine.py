@@ -1701,7 +1701,7 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Points_Base.csv",
         ["Defensemen", "Points Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Points/points_base.png".format(prefix),
+        "Graphs/Defensemen/Total_Points/points_base.png".format(prefix),
         False)
     ))
     
@@ -1996,7 +1996,7 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
         ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
             "Points_Corrected.csv",
         ["Defensemen", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Points/{}points_corrected.png".format(prefix))
+        "Graphs/Defensemen/Total_Points/{}points_corrected.png".format(prefix))
     ))
     
     # Turnovers
