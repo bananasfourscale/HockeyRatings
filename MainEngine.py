@@ -28,11 +28,12 @@ from Team_Metrics.Offensive_Rating import offensive_rating_get_dict, \
     offensive_rating_calculate_power_play, offensive_rating_combine_metrics, \
     offensive_rating_update_trends
 from Team_Metrics.Recent_Form import recent_form_get_dict, \
-    recent_form_get_streak_dict, recent_form_get_last_10_dict, \
-    recent_form_get_last_20_dict, recent_form_get_last_40_dict, \
-    recent_form_get_trend_dict, recent_form_reset, recent_form_get_data_set, \
-    recent_form_add_match_data, recent_form_calculate_all, \
-    recent_form_combine_metrics, recent_form_update_trends
+    recent_form_get_streak_dict, recent_form_get_longest_streak_dict, \
+    recent_form_get_last_10_dict, recent_form_get_last_20_dict, \
+    recent_form_get_last_40_dict, recent_form_get_trend_dict, recent_form_reset, \
+    recent_form_get_data_set, recent_form_add_match_data, \
+    recent_form_calculate_all, recent_form_combine_metrics, \
+    recent_form_update_trends
 from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
     strength_of_schedule_get_games_played_dict, \
     strength_of_schedule_get_trend_dict, strength_of_schedule_reset, \
@@ -118,13 +119,13 @@ average_defenseman_rating = {}
 
 average_player_rating = {}
 
-regular_season_matches = {}
+# regular_season_matches = {}
 
-playoff_matches = {}
+# playoff_matches = {}
 
-upcoming_matches = {}
+# upcoming_matches = {}
 
-upcoming_playoff_matches = {}
+# upcoming_playoff_matches = {}
 
 goalie_teams = {}
 
@@ -339,11 +340,11 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
 
     ### recent form ###
     recent_form_data = recent_form_get_data_set(match_data)
-    recent_form_data[1][home_team] *= (
+    recent_form_data['game value'][home_team] *= (
         1 + relative_metrics[Metric_Order.RECENT.value][
             Team_Selection.AWAY.value]
     )
-    recent_form_data[1][away_team] *= (
+    recent_form_data['game value'][away_team] *= (
         1 + relative_metrics[Metric_Order.RECENT.value][
             Team_Selection.HOME.value]
     )
@@ -936,6 +937,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     ))
 
     ### Recent Form ###
+    # total streak
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakBase.csv",
@@ -944,8 +946,25 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakBase.csv",
         ["Team", "Average Streak Score Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}recent_form_streak_base.png".format(prefix))
+        "Graphs/Teams/Recent_Form/{}recent_form_streak_base.png".format(
+            prefix))
     ))
+
+    # longest streak
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
+            "RecentFormLongestStreakBase.csv",
+        ["Team", "Longest Streak Score Base"],
+        recent_form_get_longest_streak_dict())
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
+            "RecentFormLongestStreakBase.csv",
+        ["Team", "Longest Streak Score Base"], 0.0, 0.0, [],
+        "Graphs/Teams/Recent_Form/{}recent_form_longest_streak_base.png".format(
+            prefix))
+    ))
+
+    # last 10
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Base.csv",
@@ -953,11 +972,12 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Base.csv",
-        ["Team", "Last Ten Games"], 10.0, 0,
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        ["Team", "Last Ten Games"], 0.0, 0.0, [],
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_last_ten_base.png")
     ))
+
+    # last 20
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Base.csv",
@@ -965,11 +985,12 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Base.csv",
-        ["Team", "Last Twenty Games"], 20.0, 0,
-        [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
+        ["Team", "Last Twenty Games"], 0.0, 0.0, [],
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_last_twenty_base.png")
     ))
+
+    # last 40
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Base.csv",
@@ -977,8 +998,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Base.csv",
-        ["Team", "Last Fourty Games"], 40.0, 0,
-        [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40],
+        ["Team", "Last Fourty Games"], 0.0, 0.0, [],
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_last_fourty_base.png")
     ))
@@ -1086,6 +1106,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     ))
 
     ### Recent Form ###
+    # total streak
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakCorr.csv",
@@ -1098,6 +1119,22 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_streak_corrected.png")
     ))
+
+    # longest streak
+    write_out_file(
+        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
+            "RecentFormLongestStreakCorr.csv",
+        ["Team", "Longest Streak Score Corrected"],
+        recent_form_get_longest_streak_dict())
+    plotting_queue.put((plot_data_set,
+        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
+            "RecentFormLongestStreakCorr.csv",
+        ["Team", "Longest Streak Score Corrected"], 1.0, 0.0, sigmoid_ticks,
+        "Graphs/Teams/Recent_Form/{}".format(prefix) +
+            "recent_form_longest_streak_corrected.png")
+    ))
+
+    # last 10
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Corr.csv",
@@ -1109,6 +1146,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_last_ten_corrected.png")
     ))
+
+    # last 20
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Corr.csv",
@@ -1120,6 +1159,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Graphs/Teams/Recent_Form/{}".format(prefix) +
             "recent_form_last_twenty_corrected.png")
     ))
+
+    # last 40
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Corr.csv",
@@ -2132,7 +2173,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             final_date = True
 
         # create a few match parsing processes to speed things up a bit
-        subprocess_count = 15
+        subprocess_count = 32
         metric_process_list = []
         for i in range(subprocess_count):
             metric_process_list.append(Process(target=worker_node,
@@ -2282,6 +2323,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # Recent Form
         apply_sigmoid_correction(recent_form_get_streak_dict())
+        apply_sigmoid_correction(recent_form_get_longest_streak_dict())
         apply_sigmoid_correction(recent_form_get_last_10_dict())
         apply_sigmoid_correction(recent_form_get_last_20_dict())
         apply_sigmoid_correction(recent_form_get_last_40_dict())
@@ -2916,24 +2958,32 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 def calculate_metric_share(home_rating, away_rating) -> list:
     rating_total = home_rating + away_rating
     try:
+        # print("Home Rating : ", home_rating, " - Away Rating : ", away_rating)
+        # print("Home Share : ", home_rating / rating_total, " - Away Share : ",
+            # away_rating / rating_total)
         return [home_rating / rating_total, away_rating / rating_total]
     except ZeroDivisionError:
+        print("Home Share : ", 0.5, " - Away Share : ", 0.5)
         return [0.5, 0.5]
 
 
-def calculate_series_predictions(total_home_rating : float=0.0,
-    total_away_rating : float=0.0, home_team : str="", away_team : str="") \
-                                                                        -> None:
+def calculate_series_predictions(game_types : str="",
+    total_home_rating : float=0.0, total_away_rating : float=0.0,
+    home_team : str="", away_team : str="") -> None:
 
     # for any series which is not a 4-0, we must subtract the cases where
     # the losing team would win the last game, as those possbilities could never
     # actually happen. i.e we are not playing 7 random games and calculating the
     # odds of winning 4 which would be the basic (n choose k) we are instead
     # doing a special case were the 4th win by either team ends the set
-
-    # first calculate the 4-0 odds for either team
     print("Base Odds:\n\t{} - {}\n\t{} - {}".format(
         home_team, total_home_rating, away_team, total_away_rating))
+    
+    # if its a regular season game just calculate base odds
+    if game_types == "R":
+        return
+    
+    # first calculate the 4-0 odds for either team
     home_odds = total_home_rating**4
     away_odds = total_away_rating**4
     print("4-0 Odds:\n\t{} - {}\n\t{} - {}".format(home_team, home_odds,
@@ -2973,19 +3023,21 @@ def calculate_series_predictions(total_home_rating : float=0.0,
         away_team, away_odds))
 
 
-def run_upcoming_game_parser_engine() -> None:
+def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
+                                                                        -> None:
 
     # loop through all gathered match dates until we have parsed all data
     final_team_ratings = {}
     sorted_date_list = sorted(upcoming_matches)
 
     # For now only parse the next 7 days of games because its too much damn data
-    parsed_dates = 0
+    sorted_date_list = sorted_date_list[:7]
     for date in sorted_date_list:
         for match in upcoming_matches[date]:
-            home_team = match["linescore"]["teams"]["home"]["team"]["name"]
-            away_team = match["linescore"]["teams"]["away"]["team"]["name"]
+            away_team = match["game_stats"]["away_team"]
+            home_team = match["game_stats"]["home_team"]
             match_key = "{}: {} vs. {}".format(date, home_team, away_team)
+            print(match_key)
 
             # some error catching for missing stats
             # Clutch Rating
@@ -2997,6 +3049,7 @@ def run_upcoming_game_parser_engine() -> None:
                 away_stat = 0
             else:
                 away_stat = clutch_rating_get_dict()[away_team]
+            print("Clutch")
             clutch_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Defensive Ratings
@@ -3008,6 +3061,7 @@ def run_upcoming_game_parser_engine() -> None:
                 away_stat = 0
             else:
                 away_stat = defensive_rating_get_dict()[away_team]
+            print("Defense")
             defensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Offensive Ratings
@@ -3019,6 +3073,7 @@ def run_upcoming_game_parser_engine() -> None:
                 away_stat = 0
             else:
                 away_stat = offensive_rating_get_dict()[away_team]
+            print("Offense")
             offensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Recent Form
@@ -3030,6 +3085,7 @@ def run_upcoming_game_parser_engine() -> None:
                 away_stat = 0
             else:
                 away_stat = recent_form_get_dict()[away_team]
+            print("Recent Form")
             recent_form_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Strength of Schedule
@@ -3041,20 +3097,27 @@ def run_upcoming_game_parser_engine() -> None:
                 away_stat = 0
             else:
                 away_stat = strength_of_schedule_get_dict()[away_team]
+            print("Strength of Schedule")
             strength_of_schedule_ratings = calculate_metric_share(home_stat,
                 away_stat)
             
             # Player rankings will exist if team has played at all no need for
             # extra checking here (I hope)
+            # Because these are averages and not the scaled metrics, we actually
+            # want to swap home and away such that the better (lower) team gets
+            # the larger portion of the share
+            print("Goalies")
             goalie_average_ratings = calculate_metric_share(
-                average_goalie_rating[home_team],
-                average_goalie_rating[away_team])
+                average_goalie_rating[away_team],
+                average_goalie_rating[home_team])
+            print("Forwards")
             forward_average_ratings = calculate_metric_share(
-                average_forward_rating[home_team],
-                average_forward_rating[away_team])
+                average_forward_rating[away_team],
+                average_forward_rating[home_team])
+            print("Defensemen")
             defenseman_average_ratings = calculate_metric_share(
-                average_defenseman_rating[home_team],
-                average_defenseman_rating[away_team])
+                average_defenseman_rating[away_team],
+                average_defenseman_rating[home_team])
             
             # Combine all ratings into final set
             final_team_ratings[match_key] = [(
@@ -3071,9 +3134,9 @@ def run_upcoming_game_parser_engine() -> None:
                         total_rating_weights.SOS_RATING_WEIGHT.value)
                 ) * 0.70) +
                 ((
-                    (goalie_average_ratings[1] * 0.30) +
-                    (forward_average_ratings[1] * 0.30) +
-                    (defenseman_average_ratings[1] * 0.40)
+                    (goalie_average_ratings[0] * 0.30) +
+                    (forward_average_ratings[0] * 0.30) +
+                    (defenseman_average_ratings[0] * 0.40)
                 ) * 0.30)
             ),
             (
@@ -3090,9 +3153,9 @@ def run_upcoming_game_parser_engine() -> None:
                         total_rating_weights.SOS_RATING_WEIGHT.value)
                 ) * 0.70) +
                 ((
-                    (goalie_average_ratings[0] * 0.30) +
-                    (forward_average_ratings[0] * 0.30) +
-                    (defenseman_average_ratings[0] * 0.40)
+                    (goalie_average_ratings[1] * 0.30) +
+                    (forward_average_ratings[1] * 0.30) +
+                    (defenseman_average_ratings[1] * 0.40)
                 ) * 0.30)
             ),
                 clutch_ratings[0], clutch_ratings[1],
@@ -3101,15 +3164,10 @@ def run_upcoming_game_parser_engine() -> None:
                 recent_form_ratings[0], recent_form_ratings[1],
                 strength_of_schedule_ratings[0],
                     strength_of_schedule_ratings[1],
-                goalie_average_ratings[1], goalie_average_ratings[0],
-                forward_average_ratings[1], forward_average_ratings[0],
-                defenseman_average_ratings[1], defenseman_average_ratings[0],
+                goalie_average_ratings[0], goalie_average_ratings[1],
+                forward_average_ratings[0], forward_average_ratings[1],
+                defenseman_average_ratings[0], defenseman_average_ratings[1],
             ]
-
-        # Increment the number of parsed dates
-        parsed_dates += 1
-        if parsed_dates >= 7:
-            break
 
     # run though matches and parse out team names to graph properly
     calculated_matches = []
@@ -3141,8 +3199,12 @@ def run_upcoming_game_parser_engine() -> None:
             # calculate the odds for different types of series wins
             # TODO this only needs to be run for playoff series. The basic
             # calculations by calculate_metric_share will do single game odds
-            calculate_series_predictions(final_team_ratings[match][0],
-                final_team_ratings[match][1], team_names[0], team_names[1])
+            calculate_series_predictions(
+                game_types, final_team_ratings[match][0],
+                final_team_ratings[match][1], team_names[0], team_names[1]
+            )
+            odds_list = "{:.2f}".format(1 / final_team_ratings[match][0]) + \
+                " : " + "{:.2f}".format(1 / final_team_ratings[match][1])
             write_out_matches_file(
                 "Output_Files/Team_Files/Trend_Files/{}.csv".format(file_name),
                 ["Rating", "Home Odds", "Away Odds"],
@@ -3153,7 +3215,7 @@ def run_upcoming_game_parser_engine() -> None:
             plot_matches_ranking(
                 "Output_Files/Team_Files/Trend_Files/{}.csv".format(file_name),
                 [team_names[0], team_names[1]], sigmoid_ticks,
-                "Graphs/Teams/Matches/{}.png".format(file_name))
+                "Graphs/Teams/Matches/{}.png".format(file_name), odds_list)
 
 
 if __name__ == "__main__":
@@ -3185,6 +3247,10 @@ if __name__ == "__main__":
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R", regular_season_matches)
 
+    if len(upcoming_matches) > 0:
+        print("Running Regular Season Match Predicter")
+        run_upcoming_game_parser_engine("R", upcoming_matches)
+
     # reset all stats to just isolate post season.
     clutch_rating_reset()
     defensive_rating_reset()
@@ -3215,8 +3281,6 @@ if __name__ == "__main__":
     forward_teams.clear()
     defensemen_teams.clear()
 
-    exit(0)
-
     REG_SEASON_COMPLETE = False
 
     # if playoffs have started then run post processing on those games
@@ -3228,8 +3292,8 @@ if __name__ == "__main__":
     print_time_diff(start, time.time())
     start = time.time()
 
-    if len(upcoming_matches) > 0:
+    if len(upcoming_playoff_matches) > 0:
         print("Running Post Season Match Predicter")
-        run_upcoming_game_parser_engine()
+        run_upcoming_game_parser_engine("P", upcoming_playoff_matches)
     print_time_diff(start, time.time())
     exit(0)

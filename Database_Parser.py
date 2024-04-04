@@ -3,6 +3,7 @@ import requests
 import json
 import pandas
 import datetime
+import pytz
 
 
 database_parser_input_queue = Queue()
@@ -1158,14 +1159,15 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:5]
+    # dates = dates[0:60]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")
         i += 1
-    current_date = datetime.date.today()
+    current_date = datetime.datetime.now(pytz.timezone('US/Pacific')).date()
     match_parser_process_list = []
-    for i in range(15):
+    subprocess_count = 16
+    for i in range(subprocess_count):
         match_parser_process_list.append(Process(target=worker_node,
             args=(database_parser_input_queue, database_parser_output_queue))
         )
@@ -1177,9 +1179,9 @@ def get_game_records(season_year_id : str="") -> None:
 
         # for each game on a specific date loop through
         database_parser_input_queue.put((parse_web_match_data, ([date])))
-    for i in range(15):
+    for i in range(subprocess_count):
         database_parser_input_queue.put('STOP')
-    for i in range(15):
+    for i in range(subprocess_count):
         for output_list in iter(database_parser_output_queue.get, 'STOP'):
             if (output_list is not None) and (len(output_list) > 0):
                 parsed_date = output_list[0]['date'].split("-")
@@ -1187,16 +1189,19 @@ def get_game_records(season_year_id : str="") -> None:
                     int(parsed_date[1]), int(parsed_date[2]))
 
                 # if the date has already passed, then do post processing
-                if output_list[0]['game_stats']["game_state"] == "OFF":
+                if output_list[0]['game_stats']["game_state"] == "OFF" and\
+                    parsed_date < current_date:
 
                     # if regular season then put into that list of dates
                     if output_list[0]['game_stats']['game_type'] == 2:
+                        if output_list[0]['game_stats']["game_state"] == "LIVE":
+                            print("HOW THE FUCK IS THIS IN HERE")
                         regular_season_matches[output_list[0]['date']] = \
                             output_list
 
                     # otherwise put the date and all games into the playoff
                     # list of matches
-                    elif output_list[0]['game_stats']['game_type'] == 2:
+                    elif output_list[0]['game_stats']['game_type'] == 3:
                         playoff_matches[output_list[0]['date']] = output_list
 
                 # otherwise slate it for the prediction engine

@@ -2,7 +2,9 @@ from enum import Enum
 
 streak_info = {}
 
-streak_rating = {}
+total_streak_rating = {}
+
+longest_streak_rating = {}
 
 last_10_info = {}
 
@@ -25,7 +27,8 @@ class recent_form_weights(Enum):
     LAST_10 = 0.35
     LAST_20 = 0.25
     LAST_40 = 0.15
-    STREAK = 0.25
+    TOTAL_STREAK = 0.15
+    LONGEST_STREAK = 0.10
 
 
 def recent_form_get_dict() -> dict:
@@ -33,7 +36,11 @@ def recent_form_get_dict() -> dict:
 
 
 def recent_form_get_streak_dict() -> dict:
-    return streak_rating
+    return total_streak_rating
+
+
+def recent_form_get_longest_streak_dict() -> dict:
+    return longest_streak_rating
 
 
 def recent_form_get_last_10_dict() -> dict:
@@ -54,7 +61,7 @@ def recent_form_get_trend_dict() -> dict:
 
 def recent_form_reset() -> None:
     streak_info.clear()
-    streak_rating.clear()
+    total_streak_rating.clear()
     last_10_info.clear()
     last_10_rating.clear()
     last_20_info.clear()
@@ -98,35 +105,58 @@ def recent_form_get_data_set(match_data : dict={}) -> list:
         game_value[loser] = 0.0
     else:
         game_result[loser] = "OT"
-        game_value[loser] = (0.33)
-    return [game_result, game_value]
+        game_value[loser] = (-1.0 / 3.0)
+    return {'game result' : game_result, 'game value' : game_value}
 
 
 def recent_form_add_match_to_streak(streak : dict={}) -> None:
     for team in streak.keys():
+
+        # if the team already is in the list of team streaks
         if team in streak_info.keys():
 
             # if the streak is changed, update the number of different streaks
-            # in the season
-            if streak[team][0] != streak_info[team][0]:
-                streak_info[team][2] += 1
+            # in the season, and reset the current streak count
+            if streak[team] != streak_info[team]["current_streak_ordinal"]:
+                streak_info[team]["current_streak_count"] = 1
+                streak_info[team]["current_streak_ordinal"] = streak[team]
+                streak_info[team]["number_streaks"] += 1
+
+            # if the streak continues, update the count for it and check against
+            # the teams longest streak
+            else:
+                streak_info[team]["current_streak_count"] += 1
+                if (streak_info[team]["current_streak_count"] > 
+                    streak_info[team]["longest_streak_count"]):
+                    streak_info[team]["longest_streak_count"] = \
+                        streak_info[team]["current_streak_count"]
+                    streak_info[team]["longest_streak_ordinal"] = streak[team]
             
             # now determine how to adjust the total streak score based on the
             # result type
-            if streak[team][0] == "W":
-                streak_info[team][1] += 1
-            if streak[team][0] == "L":
-                streak_info[team][1] -= 1
+            if streak[team] == "W":
+                streak_info[team]["total_streak_score"] += 1
+            if streak[team] == "L":
+                streak_info[team]["total_streak_score"] -= 1
             else:
-                streak_info[team][1] += (-1 / 3)
+                streak_info[team]["total_streak_score"] += (-1.0 / 3.0)
+
+        # otherwise if we have to add the team to the streak list
         else:
-            if streak[team][0] == "W":
+            if streak[team] == "W":
                 streak_score = 1
-            if streak[team][0] == "L":
+            if streak[team] == "L":
                 streak_score = -1
             else:
-                streak_score = (-1 / 3)
-            streak_info[team] = [streak[team][0], streak_score, 1]
+                streak_score = (-1.0 / 3.0)
+            streak_info[team] = {
+                "current_streak_ordinal" : streak[team],
+                "current_streak_count" : 1,
+                "longest_streak_ordinal" : streak[team],
+                "longest_streak_count" : 1,
+                "total_streak_score" : streak_score,
+                "number_streaks" : 1,
+            }
 
 
 def recent_form_add_match_to_recent_lists(match_score : dict={}) -> None:
@@ -158,14 +188,29 @@ def recent_form_add_match_to_recent_lists(match_score : dict={}) -> None:
             last_40_info[team] = [match_score[team]]
 
 
-def recent_form_add_match_data(recent_form_data : list=[]) -> None:
-    recent_form_add_match_to_streak(recent_form_data[0])
-    recent_form_add_match_to_recent_lists(recent_form_data[1])
+def recent_form_add_match_data(recent_form_data : dict={}) -> None:
+    recent_form_add_match_to_streak(recent_form_data['game result'])
+    recent_form_add_match_to_recent_lists(recent_form_data['game value'])
 
 
 def recent_form_calculate_all() -> None:
     for team in streak_info.keys():
-        streak_rating[team] = streak_info[team][1] / streak_info[team][2]
+        total_streak_rating[team] = (
+            streak_info[team]["total_streak_score"] /
+            streak_info[team]["number_streaks"]
+        )
+        if streak_info[team]['longest_streak_ordinal'] == "W":
+            longest_streak_rating[team] = (
+                streak_info[team]['longest_streak_count']
+            )
+        elif streak_info[team]['longest_streak_ordinal'] == "L":
+            longest_streak_rating[team] = (
+                streak_info[team]['longest_streak_count'] * -1
+            )
+        else:
+            longest_streak_rating[team] = (
+                streak_info[team]['longest_streak_count'] * (-1.0 / 3.0)
+            )
         last_10_rating[team] = sum(last_10_info[team])
         last_20_rating[team] = sum(last_20_info[team])
         last_40_rating[team] = sum(last_40_info[team])
@@ -174,8 +219,10 @@ def recent_form_calculate_all() -> None:
 def recent_form_combine_metrics() -> None:
     for team in streak_info.keys():
         recent_form_rating[team] = (
-            (streak_rating[team] *
-                recent_form_weights.STREAK.value) +
+            (total_streak_rating[team] *
+                recent_form_weights.TOTAL_STREAK.value) +
+            (longest_streak_rating[team] *
+                recent_form_weights.LONGEST_STREAK.value) +
             (last_10_rating[team] *
                 recent_form_weights.LAST_10.value) +
             (last_20_rating[team] *

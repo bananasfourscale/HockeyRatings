@@ -241,7 +241,7 @@ def plot_player_trend_set(csv_file : str = "", axis : list = [],
 
 
 def plot_matches_ranking(csv_file : str = "", axis : list = [],
-    tick_set : list = [], image_file : str = "") -> None:
+    tick_set : list = [], image_file : str = "", odds_list : str="") -> None:
 
     plot_data = pd.read_csv(csv_file, delimiter='\t', encoding='utf-16')
     sns.set_theme(font='Times New Roman')
@@ -249,6 +249,7 @@ def plot_matches_ranking(csv_file : str = "", axis : list = [],
     # determine the number of games to scale the graph accordingly
     num_games = plot_data.count().loc["Rating"]
     chart_title = csv_file.split("/")[-1].split(".")[0]
+    chart_title = chart_title + "\n" + odds_list
 
     # make player plots horizontal bar plots
     plot_data.set_index('Rating').plot(kind='barh', stacked=True,
