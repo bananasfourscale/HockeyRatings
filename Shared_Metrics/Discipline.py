@@ -4,6 +4,7 @@ discipline_base = {
     'C' : {},
     'L' : {},
     'R' : {},
+    'T' : {},
 }
 
 discipline_rating = {
@@ -12,6 +13,7 @@ discipline_rating = {
     'C' : {},
     'L' : {},
     'R' : {},
+    'T' : {},
 }
 
 
@@ -34,13 +36,28 @@ def discipline_reset() -> None:
         discipline_rating[key].clear()
 
 
-def discipline_get_data_set(match_data : dict={}) -> dict:
+def discipline_get_data_set(players : dict={}) -> dict:
     discipline = {}
-    for player in match_data.keys():
+    for player in players.keys():
         discipline[player] = {
-            'penalty_net_minutes' : 
-                match_data[player]['stats']['penalty_minutes'] -
-                match_data[player]['stats']['penalty_minutes_drawn']
+            'penalties_taken' : 
+                players[player]['stats']['penalty_minutes'],
+            'penalties_drawn' : 
+                players[player]['stats']['penalty_minutes_drawn']
+        }
+    return discipline
+
+
+def discipline_get_team_data_set(match_data : dict={}) -> dict:
+    discipline = {}
+    team_list = [match_data['game_stats']['home_team'],
+        match_data['game_stats']['away_team']]
+    for team in team_list:
+        discipline[team] = {
+            'penalties_taken' : 
+                match_data['game_stats'][team]["team_stats"]['penalty_minutes'],
+            'penalties_drawn' :
+                match_data['game_stats'][team]["team_stats"]['penalties_drawn']
         }
     return discipline
 

@@ -32,12 +32,12 @@ def multipoint_reset() -> None:
         multipoint_rating[key].clear()
 
 
-def multipoint_get_data_set(match_data : dict={}) -> dict:
+def multipoint_get_data_set(players : dict={}) -> dict:
     multipoint = {}
-    for player in match_data.keys():
+    for player in players.keys():
         total_points = (
-            match_data[player]['stats']['goals'] +
-            match_data[player]['stats']['assists']
+            players[player]['stats']['goals'] +
+            players[player]['stats']['assists']
         )
         if total_points > 1:
             multipoint[player] = {'multipoint_games' : 1}

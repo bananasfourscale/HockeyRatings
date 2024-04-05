@@ -5,33 +5,48 @@ Team Stats:
     "game_type" : game["box_score"]["gameType"],
     home_team : {
         "team_stats" : {
-            "goals"
+            "goals" : 0,
             "empty_net_goals" : 0,
             "4-on-4_goals" : 0,
             "3-on-3_goals" : 0,
             "first_period_goals" :
-                game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                    [0]["home"],
+                int(game["box_score"]["summary"]["linescore"]
+                    ["byPeriod"][0]["home"]),
             "second_period_goals" :
-                game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                    [1]["home"],
+                int(game["box_score"]["summary"]["linescore"]
+                    ["byPeriod"][1]["home"]),
             "third_period_goals" :
-                game["box_score"]["boxscore"]["linescore"]["byPeriod"]
-                    [2]["home"],
+                int(game["box_score"]["summary"]["linescore"]
+                    ["byPeriod"][2]["home"]),
             "OT_goals" : 0,
             "SO_goals" : 0,
-            "shots" : game["box_score"]["homeTeam"]["sog"],
+            "shots" : int(game["box_score"]["homeTeam"]["sog"]),
             "power_play_goals" :
-                game["box_score"]["homeTeam"]
-                    ["powerPlayConversion"].split("/")[0],
+                int(game["box_score"]["summary"]["teamGameStats"][2][
+                    "homeValue"].split("/")[0]),
             "power_play_chances" : 
-                game["box_score"]["homeTeam"]
-                    ["powerPlayConversion"].split("/")[1],
+                int(game["box_score"]["summary"]["teamGameStats"][2][
+                    "homeValue"].split("/")[1]),
             "short_handed_goals" : 0,
-            "short_handed_chances" : 0,
-            "penalty_minutes" : game["box_score"]["homeTeam"]["pim"],
-            "hits" : game["box_score"]["homeTeam"]["hits"],
-            "blocks" : game["box_score"]["homeTeam"]["blocks"],
+            "short_handed_chances" : 
+                int(game["box_score"]["summary"]["teamGameStats"][2][
+                    "awayValue"].split("/")[1]),
+            "penalty_minutes" : int(game["box_score"]["summary"][
+                "teamGameStats"][4]["homeValue"]),
+            "penalties_drawn" : int(game["box_score"]["summary"][
+                "teamGameStats"][4]["awayValue"]),
+            "hits" : int(game["box_score"]["summary"][
+                "teamGameStats"][5]["homeValue"]),
+            "getting_hit" : int(game["box_score"]["summary"][
+                "teamGameStats"][5]["awayValue"]),
+            "blocks" : int(game["box_score"]["summary"][
+                "teamGameStats"][6]["homeValue"]),
+            "blocked_shots" : int(game["box_score"]["summary"][
+                "teamGameStats"][6]["awayValue"]),
+            "giveaways" : int(game["box_score"]["summary"][
+                "teamGameStats"][7]["awayValue"]),
+            "takeaways" : int(game["box_score"]["summary"][
+                "teamGameStats"][8]["awayValue"]),
         },
 
 Goalie Stats:

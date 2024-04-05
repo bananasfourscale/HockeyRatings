@@ -34,13 +34,13 @@ def turnovers_reset() -> None:
         turnovers_rating[key].clear()
 
 
-def turnovers_get_data_set(match_data : dict={}) -> dict:
+def turnovers_get_data_set(players : dict={}) -> dict:
     turnovers = {}
-    for player in match_data.keys():
+    for player in players.keys():
         turnovers[player] = {
             'turnovers' : (
-                match_data[player]['stats']['takeaways'] -
-                match_data[player]['stats']['giveaways']
+                players[player]['stats']['takeaways'] -
+                players[player]['stats']['giveaways']
             )
         }
     return turnovers

@@ -32,12 +32,12 @@ def contributing_games_reset() -> None:
         contribution_rating[key].clear()
     
 
-def contributing_games_get_data_set(match_data : dict={}) -> dict:
+def contributing_games_get_data_set(players : dict={}) -> dict:
     contributing_games = {}
-    for player in match_data.keys():
+    for player in players.keys():
         total_points = (
-            match_data[player]['stats']['goals'] +
-            match_data[player]['stats']['assists']
+            players[player]['stats']['goals'] +
+            players[player]['stats']['assists']
         )
 
         # if they score this game then 1 otherwise 0

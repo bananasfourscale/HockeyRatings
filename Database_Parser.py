@@ -15,13 +15,19 @@ def parse_play_by_play_penalties(home_team : str="", away_team : str="",
 
     # commited penalties
     if "committedByPlayerId" in play["details"].keys():
-        if play["details"]["committedByPlayerId"] in \
-            game_stats[home_team]["player_stats"]:
+
+        # home team penalty
+        if (play["details"]["committedByPlayerId"] in
+            game_stats[home_team]["player_stats"]):
+
             game_stats[home_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
-        elif play["details"]["committedByPlayerId"] in \
-            game_stats[away_team]["player_stats"]:
+
+        # away team penalty
+        elif (play["details"]["committedByPlayerId"] in
+            game_stats[away_team]["player_stats"]):
+
             game_stats[away_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
@@ -819,6 +825,10 @@ def collect_game_stats(game : dict={}) -> dict:
                         "teamGameStats"][6]["homeValue"]),
                     "blocked_shots" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["awayValue"]),
+                    "giveaways" : int(game["box_score"]["summary"][
+                        "teamGameStats"][7]["awayValue"]),
+                    "takeaways" : int(game["box_score"]["summary"][
+                        "teamGameStats"][8]["awayValue"]),
                 },
                 "player_stats" : {}
             },
@@ -862,6 +872,10 @@ def collect_game_stats(game : dict={}) -> dict:
                         "teamGameStats"][6]["awayValue"]),
                     "blocked_shots" : int(game["box_score"]["summary"][
                         "teamGameStats"][6]["homeValue"]),
+                    "giveaways" : int(game["box_score"]["summary"][
+                        "teamGameStats"][7]["awayValue"]),
+                    "takeaways" : int(game["box_score"]["summary"][
+                        "teamGameStats"][8]["awayValue"]),
                 },
                 "player_stats" : {}
             },
@@ -1193,7 +1207,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:10]
+    dates = dates[0:10]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")

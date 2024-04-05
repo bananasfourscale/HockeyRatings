@@ -32,12 +32,12 @@ def hitting_reset() -> None:
         hitting_rating[key].clear()
 
 
-def hitting_get_data_set(match_data : dict={}) -> dict:
+def hitting_get_data_set(players : dict={}) -> dict:
     hitting = {}
-    for player in match_data.keys():
+    for player in players.keys():
         hitting[player] = {
-            'hitting' : match_data[player]['stats']['hits'] -
-                (match_data[player]['stats']['hits_taken'] * 0.25)
+            'hitting' : players[player]['stats']['hits'] -
+                (players[player]['stats']['hits_taken'] * 0.25)
         }
     return hitting
 

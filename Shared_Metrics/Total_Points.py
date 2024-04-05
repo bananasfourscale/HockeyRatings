@@ -32,13 +32,13 @@ def total_points_reset() -> None:
         total_points_rating[key].clear()
 
 
-def total_points_get_data_set(match_data : dict={}) -> dict:
+def total_points_get_data_set(players : dict={}) -> dict:
     total_points = {}
-    for player in match_data.keys():
+    for player in players.keys():
         total_points[player] = {
             'total_points' : (
-                match_data[player]['stats']['goals'] +
-                (match_data[player]['stats']['assists'] * 0.90)
+                players[player]['stats']['goals'] +
+                (players[player]['stats']['assists'] * 0.90)
             )
         }
     return total_points

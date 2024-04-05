@@ -33,16 +33,16 @@ def utilization_reset() -> None:
         utilization_rating[key].clear()
 
 
-def utilization_get_data_set(match_data : dict={}) -> dict:
+def utilization_get_data_set(players : dict={}) -> dict:
     utilization = {}
-    for player in match_data.keys():
+    for player in players.keys():
 
         # convert time on ice to minutes
         time_on_ice = \
-            float(match_data[player]['stats']['time_on_ice'].split(":")[0]) + \
-            float(match_data[player]['stats']['time_on_ice'].split(":")[1]) / 60
+            float(players[player]['stats']['time_on_ice'].split(":")[0]) + \
+            float(players[player]['stats']['time_on_ice'].split(":")[1]) / 60
         utilization[player] = {
-            'team' : match_data[player]['team'],
+            'team' : players[player]['team'],
             "time_on_ice" : time_on_ice
         }
     return utilization

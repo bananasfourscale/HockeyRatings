@@ -53,7 +53,8 @@ from Shared_Metrics.Contributing_Games import contributing_games_base_get_dict,\
     contributing_games_scale_by_games
 from Shared_Metrics.Discipline import discipline_base_get_dict, \
     discipline_rating_get_dict, discipline_reset, discipline_get_data_set, \
-    discipline_add_match_data, discipline_scale_by_utilization
+    discipline_get_team_data_set, discipline_add_match_data, \
+    discipline_scale_by_utilization
 from Shared_Metrics.Hitting import hitting_base_get_dict, \
     hitting_rating_get_dict, hitting_reset, hitting_get_data_set, \
     hitting_add_match_data, hitting_scale_by_game
@@ -360,6 +361,32 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     )
     metric_data['team_data']['sos_data'] = sos_data
 
+    ### discipline
+    discipline_data = discipline_get_team_data_set(match_data)
+    discipline_data[home_team]['penalties_taken'] *= (
+        1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+            Team_Selection.AWAY.value]
+    )
+    discipline_data[home_team]['penalties_drawn'] *= (
+        1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.AWAY.value]
+    )
+    discipline_data[home_team]['penalty_net_minutes'] = (
+        discipline_data[home_team]['penalties_taken'] -
+        discipline_data[home_team]['penalties_drawn']
+    )
+    discipline_data[away_team]['penalties_taken'] *= (
+        1 + relative_metrics[Metric_Order.OFFENSIVE.value][
+            Team_Selection.HOME.value]
+    )
+    discipline_data[away_team]['penalties_drawn'] *= (
+        1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+            Team_Selection.HOME.value]
+    )
+    discipline_data[away_team]['penalty_net_minutes'] = (
+        discipline_data[away_team]['penalties_taken'] -
+        discipline_data[away_team]['penalties_drawn']
+    )
     # return the list of all metric data for this match
     return metric_data
 
@@ -397,9 +424,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
 
             # Discipline
-            goalie_discipline_data[goalie]['penalty_net_minutes'] *= (
+            goalie_discipline_data[goalie]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value]
+            )
+            goalie_discipline_data[goalie]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
+            goalie_discipline_data[goalie]['penalty_net_minutes'] = (
+                goalie_discipline_data[goalie]['penalties_taken'] -
+                goalie_discipline_data[goalie]['penalties_drawn']
             )
 
             # Goals Against
@@ -436,9 +471,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
 
             # Discipline
-            goalie_discipline_data[goalie]['penalty_net_minutes'] *= (
+            goalie_discipline_data[goalie]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value]
+            )
+            goalie_discipline_data[goalie]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
+            goalie_discipline_data[goalie]['penalty_net_minutes'] = (
+                goalie_discipline_data[goalie]['penalties_taken'] -
+                goalie_discipline_data[goalie]['penalties_drawn']
             )
             
             # Goals Against
@@ -504,9 +547,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
             
             # Discipline
-            forward_discipline_data[forward]['penalty_net_minutes'] *= (
+            forward_discipline_data[forward]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value]
+            )
+            forward_discipline_data[forward]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
+            forward_discipline_data[forward]['penalty_net_minutes'] = (
+                forward_discipline_data[forward]['penalties_taken'] -
+                forward_discipline_data[forward]['penalties_drawn']
             )
             
             # Hits
@@ -561,9 +612,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
             
             # Discipline
-            forward_discipline_data[forward]['penalty_net_minutes'] *= (
+            forward_discipline_data[forward]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value]
+            )
+            forward_discipline_data[forward]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
+            forward_discipline_data[forward]['penalty_net_minutes'] = (
+                forward_discipline_data[forward]['penalties_taken'] -
+                forward_discipline_data[forward]['penalties_drawn']
             )
             
             # Hits
@@ -644,9 +703,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
             
             # Discipline
-            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= (
+            defensemen_discipline_data[defenseman]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.AWAY.value]
+            )
+            defensemen_discipline_data[defenseman]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.AWAY.value]
+            )
+            defensemen_discipline_data[defenseman]['penalty_net_minutes'] = (
+                defensemen_discipline_data[defenseman]['penalties_taken'] -
+                defensemen_discipline_data[defenseman]['penalties_drawn']
             )
             
             # Hits
@@ -700,9 +767,17 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
             )
             
             # Discipline
-            defensemen_discipline_data[defenseman]['penalty_net_minutes'] *= (
+            defensemen_discipline_data[defenseman]['penalties_taken'] *= (
                 1 + relative_metrics[Metric_Order.OFFENSIVE.value][
                     Team_Selection.HOME.value]
+            )
+            defensemen_discipline_data[defenseman]['penalties_drawn'] *= (
+                1 + relative_metrics[Metric_Order.DEFENSIVE.value][
+                    Team_Selection.HOME.value]
+            )
+            defensemen_discipline_data[defenseman]['penalty_net_minutes'] = (
+                defensemen_discipline_data[defenseman]['penalties_taken'] -
+                defensemen_discipline_data[defenseman]['penalties_drawn']
             )
             
             # Hits
@@ -791,10 +866,11 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
 
                 # determine if the player had any stats for this game based
                 # on if they played at least 1 second of game time.
-                time_on_ice = \
-                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +\
+                time_on_ice = (
+                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +
                     (float(players[player_by_ID]["time_on_ice"].split(":")[1]) 
                         / 60)
+                )
                 if time_on_ice > 0:
                     stats = players[player_by_ID]
                 else:
@@ -821,10 +897,11 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
 
                 # determine if the player had any stats for this game based
                 # on if they played at least 1 second of game time.
-                time_on_ice = \
-                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +\
+                time_on_ice = (
+                    float(players[player_by_ID]["time_on_ice"].split(":")[0]) +
                     (float(players[player_by_ID]["time_on_ice"].split(":")[1]) 
                         / 60)
+                )
                 if time_on_ice > 0:
                     stats = players[player_by_ID]
                 else:

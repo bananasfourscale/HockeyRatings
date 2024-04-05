@@ -39,10 +39,10 @@ def blocks_reset() -> None:
         blocks_rating[key].clear()
 
 
-def blocks_get_data_set(match_data : dict={}) -> dict:
+def blocks_get_data_set(players : dict={}) -> dict:
     blocks = {}
-    for player in match_data.keys():
-        blocks[player] = {'blocks' : match_data[player]['stats']['blocks']}
+    for player in players.keys():
+        blocks[player] = {'blocks' : players[player]['stats']['blocks']}
     return blocks
 
 

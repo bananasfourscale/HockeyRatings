@@ -31,13 +31,13 @@ def plus_minus_reset() -> None:
         plus_minus_rating[key].clear()
 
 
-def plus_minus_get_data_set(match_data : dict={}) -> dict:
+def plus_minus_get_data_set(players : dict={}) -> dict:
     plus_minus = {}
-    for player in match_data.keys():
+    for player in players.keys():
 
         # convert time on ice to minutes
         plus_minus[player] = {
-            "plus_minus" : match_data[player]['stats']['plus_minus']
+            "plus_minus" : players[player]['stats']['plus_minus']
         }
     return plus_minus
 
