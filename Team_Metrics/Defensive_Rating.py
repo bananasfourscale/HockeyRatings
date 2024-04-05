@@ -81,35 +81,29 @@ def defensive_rating_get_data_set(match_data : dict={}) -> list:
 
     # home data
     shots_against_data[home_team] = away_team_stats["shots"]
-    goals_against_data[home_team] = away_team_stats["first_period_goals"] + \
-        away_team_stats["second_period_goals"] + \
-        away_team_stats["third_period_goals"]
-    try:
-        penalty_kill_data[home_team] = [
-            away_team_stats["power_play_goals"],
-            away_team_stats["power_play_chances"]
-        ]
-    except KeyError:
-        penalty_kill_data[home_team] = [
-            away_team_stats["power_play_goals"],
-            away_team_stats["penalty_minutes"] / 2
-        ]
+    goals_against_data[home_team] = (
+        away_team_stats["goals"] - (away_team_stats["empty_net_goals"] * 0.3)
+    )
+    penalty_kill_data[home_team] = {
+        'pk_goals_against' : (
+            away_team_stats["power_play_goals"] -
+            home_team_stats["short_handed_goals"]
+        ),
+        'pk_chances_against' : away_team_stats["power_play_chances"]
+    }
 
     # away data
     shots_against_data[away_team] = home_team_stats["shots"]
-    goals_against_data[away_team] = home_team_stats["first_period_goals"] + \
-        home_team_stats["second_period_goals"] + \
-        home_team_stats["third_period_goals"]
-    try:
-        penalty_kill_data[away_team] = [
-            home_team_stats["power_play_goals"],
-            home_team_stats["power_play_chances"]
-        ]
-    except KeyError:
-        penalty_kill_data[away_team] = [
-            home_team_stats["power_play_goals"],
-            home_team_stats["penalty_minutes"] / 2
-        ]
+    goals_against_data[away_team] = (
+        home_team_stats["goals"] - (home_team_stats["empty_net_goals"] * 0.3)
+    )
+    penalty_kill_data[away_team] = {
+        'pk_goals_against' : (
+            home_team_stats["power_play_goals"] - 
+            away_team_stats["short_handed_goals"]
+        ),
+        'pk_chances_against' : home_team_stats["power_play_chances"]
+    }
     return {
         'shots_against' : shots_against_data,
         'goals_against' : goals_against_data,
@@ -131,9 +125,9 @@ def defensive_rating_add_match_data(defensive_data : list=[]) -> None:
             
             # penalty kill
             pk_goals_against[team] += \
-                defensive_data['penalty_kill_data'][team][0]
+                defensive_data['penalty_kill_data'][team]['pk_goals_against']
             pk_oppertunities[team] += \
-                defensive_data['penalty_kill_data'][team][1]
+                defensive_data['penalty_kill_data'][team]['pk_chances_against']
             
             # games played
             games_played[team] += 1
@@ -149,9 +143,9 @@ def defensive_rating_add_match_data(defensive_data : list=[]) -> None:
             
             # penalty kill
             pk_goals_against[team] = \
-                defensive_data['penalty_kill_data'][team][0]
+                defensive_data['penalty_kill_data'][team]['pk_goals_against']
             pk_oppertunities[team] = \
-                defensive_data['penalty_kill_data'][team][1]
+                defensive_data['penalty_kill_data'][team]['pk_chances_against']
             
             # games played
             games_played[team] = 1

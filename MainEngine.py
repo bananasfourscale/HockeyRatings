@@ -295,11 +295,11 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     )
 
     # penalty kill goals against
-    defensive_data['penalty_kill_data'][home_team][0] /= (
+    defensive_data['penalty_kill_data'][home_team]['pk_goals_against'] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    defensive_data['penalty_kill_data'][away_team][0] /= (
+    defensive_data['penalty_kill_data'][away_team]['pk_goals_against'] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.HOME.value]
     )
@@ -328,11 +328,11 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     )
 
     # power play goals for
-    offensive_data['power_play_data'][home_team][0] *= (
+    offensive_data['power_play_data'][home_team]['pp_goals_for'] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.AWAY.value]
     )
-    offensive_data['power_play_data'][away_team][0] *= (
+    offensive_data['power_play_data'][away_team]['pp_goals_for'] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.HOME.value]
     )

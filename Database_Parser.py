@@ -281,9 +281,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["short_handed_goals"] += 1
+            game_stats[home_team]["team_stats"]['short_handed_goals'] += 1
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
             
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -311,9 +313,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["power_play_goals"] += 1
+            game_stats[home_team]["team_stats"]['power_play_goals'] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -350,9 +354,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["short_handed_goals"] += 1
+            game_stats[away_team]["team_stats"]['short_handed_goals'] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -380,9 +386,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["power_play_goals"] += 1
+            game_stats[home_team]["team_stats"]['power_play_goals'] += 1
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -418,9 +426,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["empty_net_goals"] += 1
+            game_stats[away_team]["team_stats"]["empty_net_goals"] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -451,9 +461,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["empty_net_goals"] += 1
+            game_stats[home_team]["team_stats"]["empty_net_goals"] += 1
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -486,9 +498,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["4-on-4_goals"] += 1
+            game_stats[home_team]["team_stats"]["4-on-4_goals"] += 1
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -516,9 +530,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["4-on-4_goals"] += 1
+            game_stats[away_team]["team_stats"]["4-on-4_goals"] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -554,9 +570,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["3-on-3_goals"] += 1
+            game_stats[home_team]["team_stats"]["3-on-3_goals"] += 1
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -584,9 +602,11 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["3-on-3_goals"] += 1
+            game_stats[away_team]["team_stats"]["3-on-3_goals"] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -625,6 +645,7 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[home_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -655,6 +676,7 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]\
                 ["goals"] += 1
+            game_stats[away_team]["team_stats"]['goals'] += 1
 
             # assist1
             if "assist1PlayerId" in play["details"].keys():
@@ -759,6 +781,10 @@ def collect_game_stats(game : dict={}) -> dict:
             "game_state" : game["box_score"]["gameState"],
             home_team : {
                 "team_stats" : {
+                    "goals" : 0,
+                    "empty_net_goals" : 0,
+                    "4-on-4_goals" : 0,
+                    "3-on-3_goals" : 0,
                     "first_period_goals" :
                         int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][0]["home"]),
@@ -778,7 +804,9 @@ def collect_game_stats(game : dict={}) -> dict:
                         int(game["box_score"]["summary"]["teamGameStats"][2][
                             "homeValue"].split("/")[1]),
                     "short_handed_goals" : 0,
-                    "short_handed_chances" : 0,
+                    "short_handed_chances" : 
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
+                            "awayValue"].split("/")[1]),
                     "penalty_minutes" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["homeValue"]),
                     "penalties_drawn" : int(game["box_score"]["summary"][
@@ -796,6 +824,10 @@ def collect_game_stats(game : dict={}) -> dict:
             },
             away_team : {
                 "team_stats" : {
+                    "goals" : 0,
+                    "empty_net_goals" : 0,
+                    "4-on-4_goals" : 0,
+                    "3-on-3_goals" : 0,
                     "first_period_goals" :
                         int(game["box_score"]["summary"]["linescore"]
                             ["byPeriod"][0]["away"]),
@@ -815,7 +847,9 @@ def collect_game_stats(game : dict={}) -> dict:
                         int(game["box_score"]["summary"]["teamGameStats"][2][
                             "awayValue"].split("/")[1]),
                     "short_handed_goals" : 0,
-                    "short_handed_chances" : 0,
+                    "short_handed_chances" : 
+                        int(game["box_score"]["summary"]["teamGameStats"][2][
+                            "homeValue"].split("/")[1]),
                     "penalty_minutes" : int(game["box_score"]["summary"][
                         "teamGameStats"][4]["awayValue"]),
                     "penalties_drawn" : int(game["box_score"]["summary"][
@@ -1159,7 +1193,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:60]
+    # dates = dates[0:10]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")

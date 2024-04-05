@@ -5,6 +5,10 @@ Team Stats:
     "game_type" : game["box_score"]["gameType"],
     home_team : {
         "team_stats" : {
+            "goals"
+            "empty_net_goals" : 0,
+            "4-on-4_goals" : 0,
+            "3-on-3_goals" : 0,
             "first_period_goals" :
                 game["box_score"]["boxscore"]["linescore"]["byPeriod"]
                     [0]["home"],
@@ -14,6 +18,8 @@ Team Stats:
             "third_period_goals" :
                 game["box_score"]["boxscore"]["linescore"]["byPeriod"]
                     [2]["home"],
+            "OT_goals" : 0,
+            "SO_goals" : 0,
             "shots" : game["box_score"]["homeTeam"]["sog"],
             "power_play_goals" :
                 game["box_score"]["homeTeam"]
