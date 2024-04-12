@@ -37,8 +37,9 @@ def total_points_get_data_set(players : dict={}) -> dict:
     for player in players.keys():
         total_points[player] = {
             'total_points' : (
-                players[player]['stats']['goals'] +
-                (players[player]['stats']['assists'] * 0.90)
+                (players[player]['stats']['goals']) +
+                (players[player]['stats']['primary_assist'] * 0.90) +
+                (players[player]['stats']['secondary_assist'] * 0.85)
             )
         }
     return total_points

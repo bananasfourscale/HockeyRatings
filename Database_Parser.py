@@ -299,7 +299,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["short_handed_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
                 
             # assist2
@@ -308,7 +311,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["short_handed_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
                 
         # away team player
@@ -331,7 +337,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["power_play_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -340,7 +349,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["power_play_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             print("Shorthanded Goal By Player\n" + 
@@ -372,7 +384,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["short_handed_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -381,7 +396,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["short_handed_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
 
         # home team player
@@ -404,7 +422,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["power_play_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -413,7 +434,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["power_play_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             print("Shorthanded Goal By Player\n" + 
@@ -444,7 +468,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["empty_net_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -453,7 +480,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["empty_net_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             pass
@@ -479,7 +509,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["empty_net_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -488,7 +521,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["empty_net_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             pass
@@ -516,7 +552,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["4-on-4_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -525,7 +564,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["4-on-4_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
 
         # away team player
@@ -548,7 +590,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["4-on-4_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -557,7 +602,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["4-on-4_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             print("4-on-4 Goal By Player\n" + 
@@ -588,7 +636,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["3-on-3_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -597,7 +648,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["3-on-3_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
 
         # away team player
@@ -620,7 +674,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["3-on-3_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -629,7 +686,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["3-on-3_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             print("3-on-3 Goal By Player\n" + 
@@ -659,7 +719,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["even_assists_primary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -668,7 +731,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["even_assists_secondary"] += 1
                 game_stats[home_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[home_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
 
         # away team player
@@ -690,7 +756,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist1PlayerId"]]\
                     ["even_assists_primary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist1PlayerId"]]\
+                    ["primary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist1PlayerId"]]\
                     ["assists"] += 1
 
             # assist2
@@ -699,7 +768,10 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
                     [play["details"]["assist2PlayerId"]]\
                     ["even_assists_secondary"] += 1
                 game_stats[away_team]["player_stats"]\
-                    [play["details"]["scoringPlayerId"]]\
+                    [play["details"]["assist2PlayerId"]]\
+                    ["secondary_assist"] += 1
+                game_stats[away_team]["player_stats"]\
+                    [play["details"]["assist2PlayerId"]]\
                     ["assists"] += 1
         else:
             print("Goal By Player\n" + 
@@ -961,6 +1033,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "4-on-4_goals" : 0,
                     "3-on-3_goals" : 0,
                     "assists" : 0,
+                    "primary_assist" : 0,
+                    "secondary_assist" : 0,
                     "even_assists_primary" : 0,
                     "power_play_assists_primary" : 0,
                     "short_handed_assists_primary" : 0,
@@ -1000,6 +1074,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "4-on-4_goals" : 0,
                     "3-on-3_goals" : 0,
                     "assists" : 0,
+                    "primary_assist" : 0,
+                    "secondary_assist" : 0,
                     "even_assists_primary" : 0,
                     "power_play_assists_primary" : 0,
                     "short_handed_assists_primary" : 0,
@@ -1059,6 +1135,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "4-on-4_goals" : 0,
                     "3-on-3_goals" : 0,
                     "assists" : 0,
+                    "primary_assist" : 0,
+                    "secondary_assist" : 0,
                     "even_assists_primary" : 0,
                     "power_play_assists_primary" : 0,
                     "short_handed_assists_primary" : 0,
@@ -1098,6 +1176,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "4-on-4_goals" : 0,
                     "3-on-3_goals" : 0,
                     "assists" : 0,
+                    "primary_assist" : 0,
+                    "secondary_assist" : 0,
                     "even_assists_primary" : 0,
                     "power_play_assists_primary" : 0,
                     "short_handed_assists_primary" : 0,
@@ -1207,7 +1287,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    dates = dates[0:10]
+    # dates = dates[0:30]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")

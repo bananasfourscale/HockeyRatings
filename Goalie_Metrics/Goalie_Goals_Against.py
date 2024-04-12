@@ -44,5 +44,6 @@ def goalie_goals_against_scale_by_utilization(goalie_utilization : dict={}) \
                                                                         -> None:
     for goalie in goalie_goals_against_base.keys():
         goalie_goals_against_rating[goalie] = (
-            (goalie_goals_against_base[goalie] + 1) / goalie_utilization[goalie]
+            (goalie_goals_against_base[goalie] + 1) *
+            (1 - goalie_utilization[goalie])
         )

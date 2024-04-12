@@ -93,6 +93,8 @@ Skater Stats:
     "4-on-4_goals" : 0,
     "3-on-3_goals" : 0,
     "assists" : 0,
+    "primary_assist" : 0,
+    "seconday_assist" : 0,
     "even_assists_primary" : 0,
     "power_play_assists_primary" : 0,
     "short_handed_assists_primary" : 0,

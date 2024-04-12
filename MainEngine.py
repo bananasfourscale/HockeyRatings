@@ -2384,29 +2384,29 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_team_metrics(game_types)
 
         # Clutch Rating
-        apply_sigmoid_correction(clutch_rating_get_dict())
+        apply_sigmoid_correction(clutch_rating_get_dict(),debug=final_date)
 
         # Defensive Rating
         apply_sigmoid_correction(defensive_rating_get_shots_against_dict(),
-            True)
+            True, debug=final_date)
         apply_sigmoid_correction(defensive_rating_get_goals_against_dict(),
-            True)
-        apply_sigmoid_correction(defensive_rating_get_pk_dict())
+            True, debug=final_date)
+        apply_sigmoid_correction(defensive_rating_get_pk_dict(),debug=final_date)
 
         # Offensive Rating
-        apply_sigmoid_correction(offensive_rating_get_shots_for_dict())
-        apply_sigmoid_correction(offensive_rating_get_goals_for_dict())
-        apply_sigmoid_correction(offensive_rating_get_pp_dict())
+        apply_sigmoid_correction(offensive_rating_get_shots_for_dict(),debug=final_date)
+        apply_sigmoid_correction(offensive_rating_get_goals_for_dict(),debug=final_date)
+        apply_sigmoid_correction(offensive_rating_get_pp_dict(),debug=final_date)
 
         # Recent Form
-        apply_sigmoid_correction(recent_form_get_streak_dict())
-        apply_sigmoid_correction(recent_form_get_longest_streak_dict())
-        apply_sigmoid_correction(recent_form_get_last_10_dict())
-        apply_sigmoid_correction(recent_form_get_last_20_dict())
-        apply_sigmoid_correction(recent_form_get_last_40_dict())
+        apply_sigmoid_correction(recent_form_get_streak_dict(),debug=final_date)
+        apply_sigmoid_correction(recent_form_get_longest_streak_dict(),debug=final_date)
+        apply_sigmoid_correction(recent_form_get_last_10_dict(),debug=final_date)
+        apply_sigmoid_correction(recent_form_get_last_20_dict(),debug=final_date)
+        apply_sigmoid_correction(recent_form_get_last_40_dict(),debug=final_date)
 
         # Strenght of Schedule
-        apply_sigmoid_correction(strength_of_schedule_get_dict())
+        apply_sigmoid_correction(strength_of_schedule_get_dict(),debug=final_date)
 
         # write out any plots after sigmoid correction
         if final_date:
@@ -2481,7 +2481,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Goalies ###
         utilization_scale_by_game(strength_of_schedule_get_games_played_dict(),
             goalie_teams, "G")
-        apply_sigmoid_correction(utilization_rating_get_dict("G"))
+        apply_sigmoid_correction(utilization_rating_get_dict("G"),debug=final_date)
 
         discipline_scale_by_utilization(utilization_rating_get_dict("G"), "G")
 
@@ -2501,7 +2501,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Forwards ###
         utilization_scale_by_game(
             strength_of_schedule_get_games_played_dict(), forward_teams, "C")
-        apply_sigmoid_correction(utilization_rating_get_dict("C"))
+        apply_sigmoid_correction(utilization_rating_get_dict("C"),debug=final_date)
 
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(), forward_teams,
@@ -2528,7 +2528,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Defensemen ###
         utilization_scale_by_game(
             strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
-        apply_sigmoid_correction(utilization_rating_get_dict("D"))
+        apply_sigmoid_correction(utilization_rating_get_dict("D"),debug=final_date)
 
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(),
@@ -2556,30 +2556,30 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_player_metrics(game_types)
 
         # Goalies
-        apply_sigmoid_correction(discipline_rating_get_dict("G"))
-        apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
-        apply_sigmoid_correction(goalie_save_percentage_get_dict())
-        apply_sigmoid_correction(goalie_save_consistency_get_dict())
+        apply_sigmoid_correction(discipline_rating_get_dict("G"),debug=final_date)
+        apply_sigmoid_correction(goalie_goals_against_get_dict(), True,debug=final_date)
+        apply_sigmoid_correction(goalie_save_percentage_get_dict(),debug=final_date)
+        apply_sigmoid_correction(goalie_save_consistency_get_dict(),debug=final_date)
 
         # Forwards
-        apply_sigmoid_correction(blocks_rating_get_dict("C"))
-        apply_sigmoid_correction(contributing_games_rating_get_dict("C"))
-        apply_sigmoid_correction(discipline_rating_get_dict("C"), True)
-        apply_sigmoid_correction(hitting_rating_get_dict("C"))
-        apply_sigmoid_correction(multipoint_rating_get_dict("C"))
-        apply_sigmoid_correction(plus_minus_rating_get_dict("C"))
-        apply_sigmoid_correction(total_points_rating_get_dict("C"))
-        apply_sigmoid_correction(turnovers_rating_get_dict("C"))
+        apply_sigmoid_correction(blocks_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(contributing_games_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(discipline_rating_get_dict("C"), True,debug=final_date)
+        apply_sigmoid_correction(hitting_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(multipoint_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(plus_minus_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(total_points_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(turnovers_rating_get_dict("C"),debug=final_date)
 
         # Defensemen
-        apply_sigmoid_correction(blocks_rating_get_dict("D"))
-        apply_sigmoid_correction(contributing_games_rating_get_dict("D"))
-        apply_sigmoid_correction(discipline_rating_get_dict("D"), True)
-        apply_sigmoid_correction(hitting_rating_get_dict("D"))
-        apply_sigmoid_correction(multipoint_rating_get_dict("D"))
-        apply_sigmoid_correction(plus_minus_rating_get_dict("D"))
-        apply_sigmoid_correction(total_points_rating_get_dict("D"))
-        apply_sigmoid_correction(turnovers_rating_get_dict("D"))
+        apply_sigmoid_correction(blocks_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(contributing_games_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(discipline_rating_get_dict("D"), True,debug=final_date)
+        apply_sigmoid_correction(hitting_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(multipoint_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(plus_minus_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(total_points_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(turnovers_rating_get_dict("D"),debug=final_date)
 
         if final_date:
             print("Plot Player data after correction")
@@ -3019,11 +3019,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-    for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
-        for file in dir[2]:
-            os.remove(os.getcwd() +
-                "\Output_Files\Forward_Files\Instance_Files\\" + file)
+    # for dir in \
+    #     os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
+    #     for file in dir[2]:
+    #         os.remove(os.getcwd() +
+    #             "\Output_Files\Forward_Files\Instance_Files\\" + file)
     for dir in \
         os.walk(os.getcwd() +
             "\Output_Files\Defensemen_Files\Instance_Files"):
@@ -3126,7 +3126,6 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 away_stat = 0
             else:
                 away_stat = clutch_rating_get_dict()[away_team]
-            print("Clutch")
             clutch_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Defensive Ratings
@@ -3138,7 +3137,6 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 away_stat = 0
             else:
                 away_stat = defensive_rating_get_dict()[away_team]
-            print("Defense")
             defensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Offensive Ratings
@@ -3150,7 +3148,6 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 away_stat = 0
             else:
                 away_stat = offensive_rating_get_dict()[away_team]
-            print("Offense")
             offensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Recent Form
@@ -3162,7 +3159,6 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 away_stat = 0
             else:
                 away_stat = recent_form_get_dict()[away_team]
-            print("Recent Form")
             recent_form_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Strength of Schedule
@@ -3174,7 +3170,6 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 away_stat = 0
             else:
                 away_stat = strength_of_schedule_get_dict()[away_team]
-            print("Strength of Schedule")
             strength_of_schedule_ratings = calculate_metric_share(home_stat,
                 away_stat)
             
@@ -3183,15 +3178,12 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
             # Because these are averages and not the scaled metrics, we actually
             # want to swap home and away such that the better (lower) team gets
             # the larger portion of the share
-            print("Goalies")
             goalie_average_ratings = calculate_metric_share(
                 average_goalie_rating[away_team],
                 average_goalie_rating[home_team])
-            print("Forwards")
             forward_average_ratings = calculate_metric_share(
                 average_forward_rating[away_team],
                 average_forward_rating[home_team])
-            print("Defensemen")
             defenseman_average_ratings = calculate_metric_share(
                 average_defenseman_rating[away_team],
                 average_defenseman_rating[home_team])
