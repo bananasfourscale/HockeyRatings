@@ -1,10 +1,12 @@
-from multiprocessing import Process, Queue, freeze_support
+from multiprocessing import Process, Queue
 import requests
 import json
 import pandas
 import datetime
 import pytz
+import tkinter as tk
 
+from User_Interface_Main import get_main_window
 
 database_parser_input_queue = Queue()
 database_parser_output_queue = Queue()
@@ -1276,23 +1278,27 @@ def get_game_records(season_year_id : str="") -> None:
         if season["id"] == season_year_id:
             start_date = datetime.datetime.fromisoformat(
                     (season["startDate"] + ".00")[:-1]
-                ).astimezone(datetime.timezone.utc).date()
+                ).astimezone(pytz.timezone('US/Pacific')).date()
             end_date = datetime.datetime.fromisoformat(
                     (season["regularSeasonEndDate"] + ".00")[:-1]
-                ).astimezone(datetime.timezone.utc).date()
+                ).astimezone(pytz.timezone('US/Pacific')).date()
             break
-    # TODO: we will have to find a way to update the end date to get the dates
-    # for the post season too. If the season is over it has endDate, but if we
-    # are parsing the currents season then it doesn't have that info
+
+    current_date = datetime.datetime.now(pytz.timezone('US/Pacific')).date()
+
+    # indicates we are past the regular season so move the end date to June
+    # just as a catch all to make sure we get all postseason games
+    if end_date < current_date:
+        end_date = datetime.datetime(current_date.year, 6, 1, 12, 0, 0, 0,
+            pytz.timezone('US/Pacific')).date()
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:30]
+    # dates = dates[0:10]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")
         i += 1
-    current_date = datetime.datetime.now(pytz.timezone('US/Pacific')).date()
     match_parser_process_list = []
     subprocess_count = 16
     for i in range(subprocess_count):
@@ -1303,6 +1309,10 @@ def get_game_records(season_year_id : str="") -> None:
         process.start()
 
     # matches are orginized by date they take place
+    total_dates = len(dates)
+    parsed_dates = 0
+    progress_bar = get_main_window().nametowidget(
+        ".main-frame2.game-data-progress")
     for date in dates:
 
         # for each game on a specific date loop through
@@ -1339,6 +1349,16 @@ def get_game_records(season_year_id : str="") -> None:
                     else:
                         upcoming_playoff_matches[output_list[0]['date']] = \
                             output_list
+                parsed_dates += 1
+                if progress_bar != None:
+                    progress_bar['value'] = (parsed_dates / total_dates)*100
+                    progress_bar.update()
+                    print((parsed_dates / total_dates)*100)
+                else:
+                    print("NO PROGRESS BAR OBJECT")
+
+    progress_bar['value'] = 100
+    progress_bar.update()
 
     # close all parser processes
     for process in match_parser_process_list:

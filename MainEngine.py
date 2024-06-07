@@ -4,8 +4,12 @@ import os
 import csv
 import datetime
 from enum import Enum
+import tkinter as tk
+from tkinter.ttk import *
 
 from Database_Parser import get_game_records
+
+from User_Interface_Main import get_main_window
 
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
@@ -119,14 +123,6 @@ average_forward_rating = {}
 average_defenseman_rating = {}
 
 average_player_rating = {}
-
-# regular_season_matches = {}
-
-# playoff_matches = {}
-
-# upcoming_matches = {}
-
-# upcoming_playoff_matches = {}
 
 goalie_teams = {}
 
@@ -3105,12 +3101,13 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
 
     # loop through all gathered match dates until we have parsed all data
     final_team_ratings = {}
-    sorted_date_list = sorted(upcoming_matches)
 
     # For now only parse the next 7 days of games because its too much damn data
-    sorted_date_list = sorted_date_list[:7]
-    for date in sorted_date_list:
-        for match in upcoming_matches[date]:
+    count = 7
+    for date in game_list.keys():
+        if count < 1:
+            break
+        for match in game_list[date]:
             away_team = match["game_stats"]["away_team"]
             home_team = match["game_stats"]["home_team"]
             match_key = "{}: {} vs. {}".format(date, home_team, away_team)
@@ -3237,6 +3234,7 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 forward_average_ratings[0], forward_average_ratings[1],
                 defenseman_average_ratings[0], defenseman_average_ratings[1],
             ]
+        count -= 1
 
     # run though matches and parse out team names to graph properly
     calculated_matches = []
@@ -3287,14 +3285,21 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 "Graphs/Teams/Matches/{}.png".format(file_name), odds_list)
 
 
-if __name__ == "__main__":
-
-    REG_SEASON_COMPLETE = False
-    SEASON = 20232024
-    TREND_FREQUENCY = 0
-    TREND_DAY = 5
+def run_main_engine(main_window : tk.Tk=None):   
     start = time.time()
     freeze_support()
+
+    # Add a progress bar for getting the game data down
+    progress_frame = tk.Frame(master=main_window, name="main-frame2",
+        background="black", width=main_window.winfo_screenwidth(),
+        height=main_window.winfo_screenheight()/2
+    )
+    game_data_progress_bar = Progressbar(master=progress_frame,
+        name="game-data-progress", orient='horizontal', value=0,
+        mode='determinate')
+    game_data_progress_bar.pack()
+    progress_frame.pack(fill=tk.BOTH, expand=True)
+    progress_frame.update()
 
     parse_eye_test_file("player_eye_test.csv")
     
@@ -3315,10 +3320,17 @@ if __name__ == "__main__":
     if len(regular_season_matches) > 0:
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R", regular_season_matches)
+    print_time_diff(start, time.time())
 
     if len(upcoming_matches) > 0:
         print("Running Regular Season Match Predicter")
         run_upcoming_game_parser_engine("R", upcoming_matches)
+    print_time_diff(start, time.time())
+
+    if len(upcoming_playoff_matches) > 0:
+        print("Running Post Season Match Predicter")
+        run_upcoming_game_parser_engine("P", upcoming_playoff_matches)
+    print_time_diff(start, time.time())
 
     # reset all stats to just isolate post season.
     clutch_rating_reset()
@@ -3361,8 +3373,33 @@ if __name__ == "__main__":
     print_time_diff(start, time.time())
     start = time.time()
 
-    if len(upcoming_playoff_matches) > 0:
-        print("Running Post Season Match Predicter")
-        run_upcoming_game_parser_engine("P", upcoming_playoff_matches)
-    print_time_diff(start, time.time())
-    exit(0)
+if __name__ == "__main__":
+    REG_SEASON_COMPLETE = False
+    TREND_FREQUENCY = 0
+    TREND_DAY = 5
+    SEASON = 20232024
+
+    # construct the main GUI window
+    main_window = get_main_window()
+    height=main_window.winfo_screenheight()/2
+    width=main_window.winfo_screenwidth()/2
+    main_window.geometry('{}x{}'.format(int(width), int(height)))
+
+    # add the main frame with staring info
+    main_menu_frame = tk.Frame(master=main_window, name="main-frame1",
+        background="black", width=main_window.winfo_screenwidth(),
+        height=main_window.winfo_screenheight()/2
+    )
+    welcome_text = Label(master=main_menu_frame, name="welcome-textbox",
+        text="Welcome To Hockey Ratings"
+    )
+    welcome_text.pack()
+    run_button = Button(master=main_menu_frame, name="run-button",
+        text="Run Main Stats Engine",
+        command=lambda : run_main_engine(main_window)
+    )
+    run_button.pack()
+    main_menu_frame.pack(fill=tk.BOTH, expand=True)
+    # run_button = main_window.nametowidget(".main-frame1.run-button")
+    # run_button.configure(command=run_main_engine(main_window))
+    tk.mainloop()

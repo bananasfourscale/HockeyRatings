@@ -6,7 +6,7 @@ from numpy import std, mean
 sigmoid_peak = .990048
 
 # The standard deviation scalar to get the 1st percentile
-ninety_nineth_per = 1.5
+ninety_nineth_per = 2.58
 
 
 def normalize_set(data_set : dict={}) -> list:
@@ -52,9 +52,8 @@ def solve_for_scalar_value(data_set : dict={}, debug : bool=False) -> float:
     #     ((mean_val + (std_dev * ninety_nineth_per)) - mean_val)
     # )
 
-
-def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,
                              
+def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,                
     debug : bool=False) -> dict:
 
     scalar = solve_for_scalar_value(data_set, debug)
@@ -84,16 +83,6 @@ def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,
                 )
                 / 2
             )
-    # mean_val = mean(list(data_set.values()))
-    # for item in data_set.keys():
-    #     if low_desired is True:
-    #         data_set[item] = 1 - (
-    #             1 / (1 + exp(-1 * (scalar * (data_set[item] - mean_val))))
-    #         )
-    #     else:
-    #         data_set[item] = (
-    #             1 / (1 + exp(-1 * (scalar * (data_set[item] - mean_val))))
-    #         )
     return data_set
 
 '''
