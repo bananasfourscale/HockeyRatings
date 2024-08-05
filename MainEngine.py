@@ -9,7 +9,9 @@ from tkinter.ttk import *
 
 from Database_Parser import get_game_records
 
-from User_Interface_Main import get_main_window
+from User_Interface_Main import get_main_window, get_widget, \
+    construct_main_menu, add_progress_frame, close_progress_frame, \
+    display_error_window
 
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
@@ -156,12 +158,18 @@ def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
     print("Completed in {} seconds".format(end_time - start_time))
 
 
-def parse_eye_test_file(file_name : str="") -> None:
-    with open(file_name, "r", newline='', encoding='utf-16') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='|',
-            quoting=csv.QUOTE_MINIMAL)
-        for row in csv_reader:
-            player_eye_test_rating[row[0]] = row[1]
+def parse_eye_test_file(file_name : str="") -> int:
+    try:
+        with open(file_name, "r", newline='', encoding='utf-16') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',', quotechar='|',
+                quoting=csv.QUOTE_MINIMAL)
+            for row in csv_reader:
+                player_eye_test_rating[row[0]] = row[1]
+        csv_file.close()
+        return 0
+    except FileNotFoundError:
+        ("The file you have entered does not exist")
+        return -1
 
 
 def worker_node(input_queue : Queue=None, output_queue : Queue=None) -> None:
@@ -3285,23 +3293,17 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 "Graphs/Teams/Matches/{}.png".format(file_name), odds_list)
 
 
-def run_main_engine(main_window : tk.Tk=None):   
+def run_main_engine():   
     start = time.time()
     freeze_support()
 
-    # Add a progress bar for getting the game data down
-    progress_frame = tk.Frame(master=main_window, name="main-frame2",
-        background="black", width=main_window.winfo_screenwidth(),
-        height=main_window.winfo_screenheight()/2
-    )
-    game_data_progress_bar = Progressbar(master=progress_frame,
-        name="game-data-progress", orient='horizontal', value=0,
-        mode='determinate')
-    game_data_progress_bar.pack()
-    progress_frame.pack(fill=tk.BOTH, expand=True)
-    progress_frame.update()
+    eye_test_file_name = get_widget('eye-test-entry').get()
+    if (parse_eye_test_file(eye_test_file_name)):
+        display_error_window("Invalid Eye Test File Path", -1)
+        return
 
-    parse_eye_test_file("player_eye_test.csv")
+    # Add a progress bar for getting the game data down
+    add_progress_frame()
     
     # get all the match data
     match_data_start = time.time()
@@ -3309,6 +3311,8 @@ def run_main_engine(main_window : tk.Tk=None):
     (regular_season_matches, playoff_matches, upcoming_matches,
         upcoming_playoff_matches) = get_game_records(SEASON)
     print_time_diff(match_data_start, time.time())
+    close_progress_frame()
+    return
 
     # automatically determine if the season is over based on the number of
     # unplayed matched found
@@ -3385,21 +3389,6 @@ if __name__ == "__main__":
     width=main_window.winfo_screenwidth()/2
     main_window.geometry('{}x{}'.format(int(width), int(height)))
 
-    # add the main frame with staring info
-    main_menu_frame = tk.Frame(master=main_window, name="main-frame1",
-        background="black", width=main_window.winfo_screenwidth(),
-        height=main_window.winfo_screenheight()/2
-    )
-    welcome_text = Label(master=main_menu_frame, name="welcome-textbox",
-        text="Welcome To Hockey Ratings"
-    )
-    welcome_text.pack()
-    run_button = Button(master=main_menu_frame, name="run-button",
-        text="Run Main Stats Engine",
-        command=lambda : run_main_engine(main_window)
-    )
-    run_button.pack()
-    main_menu_frame.pack(fill=tk.BOTH, expand=True)
-    # run_button = main_window.nametowidget(".main-frame1.run-button")
-    # run_button.configure(command=run_main_engine(main_window))
+    # create the main welcome frame
+    construct_main_menu(run_main_engine)
     tk.mainloop()

@@ -123,3 +123,94 @@ class defensemen_rating_weights(Enum):
     TAKEAWAYS_WEIGHT = 0.05
     CONTRIBUTION_WEIGHT = 0.10
     MULTIPOINT_WEIGHT = 0.07
+
+team_weights = {
+    'clutch_weight' : total_rating_weights.CLUTCH_RATING_WEIGHT.value,
+    'defensive_weight' : total_rating_weights.DEFENSIVE_RATING_WEIGHT.value,
+    'offensive_weight' : total_rating_weights.OFFENSIVE_RATING_WEIGHT.value,
+    'recent_form_weight' : total_rating_weights.RECENT_FORM_RATING_WEIGHT.value,
+    'strength_of_schedule_weight' :total_rating_weights.SOS_RATING_WEIGHT.value,
+}
+
+goalie_weights = {
+    'utilization_weight' : goalie_rating_weights.UTILIZATION_WEIGHT.value,
+    'discipline_weight' : goalie_rating_weights.DISCIPLINE_WEIGHT.value,
+    'save_percentage_weight' :
+        goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value,
+    'goals_against_weight' : goalie_rating_weights.GOALS_AGAINST_WEIGHT.value,
+    'save_consitency_weight' :
+        goalie_rating_weights.SAVE_CONSISTENCY_WEIGHT.value,
+}
+
+forward_weights = {
+    'utilization_weight' : forward_rating_weights.UTILIZATION_WEIGHT.value,
+    'hits_weight' : forward_rating_weights.HITS_WEIGHT.value,
+    'discipline_weight' : forward_rating_weights.DISIPLINE_WEIGHT.value,
+    'shot_blocking_weight' : forward_rating_weights.SHOT_BLOCKING_WEIGHT.value,
+    'plus_minus_weight' : forward_rating_weights.PLUS_MINUS_WEIGHT.value,
+    'points_weight' : forward_rating_weights.POINTS_WEIGHT.value,
+    'takeaways_weight' : forward_rating_weights.TAKEAWAYS_WEIGHT.value,
+    'contribution_weight' : forward_rating_weights.CONTRIBUTION_WEIGHT.value,
+    'multipoint_wight' : forward_rating_weights.MULTIPOINT_WEIGHT.value,
+}
+
+defenseman_weights = {
+    'utilization_weight' : defensemen_rating_weights.UTILIZATION_WEIGHT.value,
+    'hits_weight' : defensemen_rating_weights.HITS_WEIGHT.value,
+    'discipline_weight' : defensemen_rating_weights.DISIPLINE_WEIGHT.value,
+    'shot_blocking_weight' :
+        defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value,
+    'plus_minus_weight' : defensemen_rating_weights.PLUS_MINUS_WEIGHT.value,
+    'points_weight' : defensemen_rating_weights.POINTS_WEIGHT.value,
+    'takeaways_weight' : defensemen_rating_weights.TAKEAWAYS_WEIGHT.value,
+    'contribution_weight' : defensemen_rating_weights.CONTRIBUTION_WEIGHT.value,
+    'multipoint_wight' : defensemen_rating_weights.MULTIPOINT_WEIGHT.value,
+}
+
+
+def update_team_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0 or len(weight_list < 5):
+        return
+    team_weights['clutch_weight'] = weight_list[0]
+    team_weights['defensive_weight'] = weight_list[1]
+    team_weights['offensive_weight'] = weight_list[2]
+    team_weights['recent_form_weight'] = weight_list[3]
+    team_weights['strength_of_schedule_weight'] = weight_list[4]
+
+
+def update_goalie_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0 or len(weight_list < 5):
+        return
+    goalie_weights['utilization_weight'] = weight_list[0]
+    goalie_weights['discipline_weight'] = weight_list[1]
+    goalie_weights['save_percentage_weight'] = weight_list[2]
+    goalie_weights['goals_against_weight'] = weight_list[3]
+    goalie_weights['save_consitency_weight'] = weight_list[4]
+
+
+def update_forward_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0 or len(weight_list < 9):
+        return
+    forward_weights['utilization_weight'] = weight_list[0]
+    forward_weights['hits_weight'] = weight_list[1]
+    forward_weights['discipline_weight'] = weight_list[2]
+    forward_weights['shot_blocking_weight'] = weight_list[3]
+    forward_weights['plus_minus_weight'] = weight_list[4]
+    forward_weights['points_weight'] = weight_list[5]
+    forward_weights['takeaways_weight'] = weight_list[6]
+    forward_weights['contribution_weight'] = weight_list[7]
+    forward_weights['multipoint_wight'] = weight_list[8]
+
+
+def update_defenseman_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0 or len(weight_list < 9):
+        return
+    defenseman_weights['utilization_weight'] = weight_list[0]
+    defenseman_weights['hits_weight'] = weight_list[1]
+    defenseman_weights['discipline_weight'] = weight_list[2]
+    defenseman_weights['shot_blocking_weight'] = weight_list[3]
+    defenseman_weights['plus_minus_weight'] = weight_list[4]
+    defenseman_weights['points_weight'] = weight_list[5]
+    defenseman_weights['takeaways_weight'] = weight_list[6]
+    defenseman_weights['contribution_weight'] = weight_list[7]
+    defenseman_weights['multipoint_wight'] = weight_list[8]

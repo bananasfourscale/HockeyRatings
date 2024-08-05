@@ -6,7 +6,7 @@ import datetime
 import pytz
 import tkinter as tk
 
-from User_Interface_Main import get_main_window
+from User_Interface_Main import get_main_window, update_progress_bar
 
 database_parser_input_queue = Queue()
 database_parser_output_queue = Queue()
@@ -1311,8 +1311,6 @@ def get_game_records(season_year_id : str="") -> None:
     # matches are orginized by date they take place
     total_dates = len(dates)
     parsed_dates = 0
-    progress_bar = get_main_window().nametowidget(
-        ".main-frame2.game-data-progress")
     for date in dates:
 
         # for each game on a specific date loop through
@@ -1350,15 +1348,11 @@ def get_game_records(season_year_id : str="") -> None:
                         upcoming_playoff_matches[output_list[0]['date']] = \
                             output_list
                 parsed_dates += 1
-                if progress_bar != None:
-                    progress_bar['value'] = (parsed_dates / total_dates)*100
-                    progress_bar.update()
-                    print((parsed_dates / total_dates)*100)
-                else:
-                    print("NO PROGRESS BAR OBJECT")
+                update_progress_bar((parsed_dates / total_dates)*100)
 
-    progress_bar['value'] = 100
-    progress_bar.update()
+    # we are done with all the data so just set the progress to 100 in case of
+    # small rounding mismatch
+    update_progress_bar(100)
 
     # close all parser processes
     for process in match_parser_process_list:
