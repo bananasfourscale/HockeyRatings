@@ -49,13 +49,26 @@ def display_error_window(error_text : str='', error_code : int=0):
 
 def check_team_weights(weight_list : list=[]):
     if sum(weight_list) != 1.0:
-        display_error_window("Weights do not sum to 1.0", -2)
+        display_error_window("Weights do not sum to 1.0", sum(weight_list))
     update_team_weights(weight_list)
 
 
 def check_goalie_weights(weight_list : list=[]):
     if sum(weight_list) != 1.0:
-        display_error_window("Weights do not sum to 1.0", -2)
+        display_error_window("Weights do not sum to 1.0", sum(weight_list))
+    update_goalie_weights(weight_list)
+
+
+def check_forward_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0:
+        display_error_window("Weights do not sum to 1.0", sum(weight_list))
+    update_forward_weights(weight_list)
+
+
+def check_defenseman_weights(weight_list : list=[]):
+    if sum(weight_list) != 1.0:
+        display_error_window("Weights do not sum to 1.0", sum(weight_list))
+    update_defenseman_weights(weight_list)
 
 
 def edit_team_weights_window():
@@ -187,7 +200,7 @@ def edit_goalie_weights_window():
 
     # save_percentage weight pack
     save_percentage_weight_text = tk.Label(master=goalie_weights_frame,
-        name="save_percentage-textbox", text="Save% Rating", background="black",
+        name="save-percentage-textbox", text="Save% Rating", background="black",
         foreground="white", 
     )
     save_percentage_weight_text.pack()
@@ -212,12 +225,12 @@ def edit_goalie_weights_window():
 
     # save_consitency weight pack
     save_consitency_weight_text = tk.Label(master=goalie_weights_frame,
-        name="save_consitency-textbox", text="Save Consitency Rating",
+        name="save-consitency-textbox", text="Save Consitency Rating",
         background="black", foreground="white"
     )
     save_consitency_weight_text.pack()
     save_consitency_weight_entry = tk.Entry(master=goalie_weights_frame,
-        name="save_consitency-entry"
+        name="save-consitency-entry"
     )
     save_consitency_weight_entry.insert(0,
         goalie_weights['save_consitency_weight'])
@@ -244,11 +257,301 @@ def edit_goalie_weights_window():
 
 
 def edit_forward_weights_window():
-    pass
+    forward_weight_window = tk.Tk()
+    height=forward_weight_window.winfo_screenheight()/2
+    width=forward_weight_window.winfo_screenwidth()/4
+    forward_weight_window.geometry('{}x{}'.format(int(width), int(height)))
+
+    forward_weights_frame = tk.Frame(master=forward_weight_window,
+        name="main-frame1", background="black",
+        width=forward_weight_window.winfo_screenwidth(),
+        height=forward_weight_window.winfo_screenheight()/2
+    )
+
+    # utilization weight pack
+    utilization_weight_text = tk.Label(master=forward_weights_frame,
+        name="utilization-textbox", text="Utilization Rating",
+        background="black", foreground="white", 
+    )
+    utilization_weight_text.pack()
+    utilization_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="utilization-entry"
+    )
+    utilization_weight_entry.insert(0, forward_weights['utilization_weight'])
+    utilization_weight_entry.pack()
+
+    # hits weight pack
+    hits_weight_text = tk.Label(master=forward_weights_frame,
+        name="hits-textbox", text="Hits Rating",
+        background="black", foreground="white", 
+    )
+    hits_weight_text.pack()
+    hits_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="hits-entry"
+    )
+    hits_weight_entry.insert(0, forward_weights['hits_weight'])
+    hits_weight_entry.pack()
+
+    # discipline weight pack
+    discipline_weight_text = tk.Label(master=forward_weights_frame,
+        name="discipline-textbox", text="Discipline Rating", background="black",
+        foreground="white", 
+    )
+    discipline_weight_text.pack()
+    discipline_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="discipline-entry"
+    )
+    discipline_weight_entry.insert(0, forward_weights['discipline_weight'])
+    discipline_weight_entry.pack()
+
+    # shot_blocking weight pack
+    shot_blocking_weight_text = tk.Label(master=forward_weights_frame,
+        name="shot-blocking-textbox", text="Shot Blocking Rating",
+        background="black", foreground="white", 
+    )
+    shot_blocking_weight_text.pack()
+    shot_blocking_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="shot-blocking-entry"
+    )
+    shot_blocking_weight_entry.insert(0,
+        forward_weights['shot_blocking_weight'])
+    shot_blocking_weight_entry.pack()
+
+    # plus minus pack
+    plus_minus_weight_text = tk.Label(master=forward_weights_frame,
+        name="plus-minus-textbox", text="Plus Minus Rating",
+        background="black", foreground="white", 
+    )
+    plus_minus_weight_text.pack()
+    plus_minus_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="plus-minus-entry"
+    )
+    plus_minus_weight_entry.insert(0, forward_weights['plus_minus_weight'])
+    plus_minus_weight_entry.pack()
+
+    # points weight pack
+    points_weight_text = tk.Label(master=forward_weights_frame,
+        name="points-textbox", text="Points Rating",
+        background="black", foreground="white"
+    )
+    points_weight_text.pack()
+    points_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="points-entry"
+    )
+    points_weight_entry.insert(0,
+        forward_weights['points_weight'])
+    points_weight_entry.pack()
+
+    # takeaways weight pack
+    takeaways_weight_text = tk.Label(master=forward_weights_frame,
+        name="takeaways-textbox", text="Takeaways",
+        background="black", foreground="white"
+    )
+    takeaways_weight_text.pack()
+    takeaways_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="takeaways-entry"
+    )
+    takeaways_weight_entry.insert(0,
+        forward_weights['takeaways_weight'])
+    takeaways_weight_entry.pack()
+
+    # contribution weight pack
+    contribution_weight_text = tk.Label(master=forward_weights_frame,
+        name="contribution-textbox", text="Contribution",
+        background="black", foreground="white"
+    )
+    contribution_weight_text.pack()
+    contribution_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="contribution-entry"
+    )
+    contribution_weight_entry.insert(0,
+        forward_weights['contribution_weight'])
+    contribution_weight_entry.pack()
+
+    # multipoint weight pack
+    multipoint_weight_text = tk.Label(master=forward_weights_frame,
+        name="multipoint-textbox", text="Multipoint",
+        background="black", foreground="white"
+    )
+    multipoint_weight_text.pack()
+    multipoint_weight_entry = tk.Entry(master=forward_weights_frame,
+        name="multipoint-entry"
+    )
+    multipoint_weight_entry.insert(0,
+        forward_weights['multipoint_weight'])
+    multipoint_weight_entry.pack()
+
+    # submit button
+    submit_button = tk.Button(master=forward_weights_frame,
+        name="submit-button", text="Submit",
+        command=lambda : check_forward_weights(
+            [
+                float(utilization_weight_entry.get()),
+                float(hits_weight_entry.get()),
+                float(discipline_weight_entry.get()),
+                float(shot_blocking_weight_entry.get()),
+                float(plus_minus_weight_entry.get()),
+                float(points_weight_entry.get()),
+                float(takeaways_weight_entry.get()),
+                float(contribution_weight_entry.get()),
+                float(multipoint_weight_entry.get())
+            ]
+        ),
+        background='orange', foreground='black'
+    )
+    submit_button.pack()
+
+    forward_weights_frame.pack(expand=True, fill=tk.BOTH)
+    forward_weight_window.update()
 
 
-def edit_defensemen_weights_window():
-    pass
+def edit_defenseman_weights_window():
+    defenseman_weight_window = tk.Tk()
+    height=defenseman_weight_window.winfo_screenheight()/2
+    width=defenseman_weight_window.winfo_screenwidth()/4
+    defenseman_weight_window.geometry('{}x{}'.format(int(width), int(height)))
+
+    defenseman_weights_frame = tk.Frame(master=defenseman_weight_window,
+        name="main-frame1", background="black",
+        width=defenseman_weight_window.winfo_screenwidth(),
+        height=defenseman_weight_window.winfo_screenheight()/2
+    )
+
+    # utilization weight pack
+    utilization_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="utilization-textbox", text="Utilization Rating",
+        background="black", foreground="white", 
+    )
+    utilization_weight_text.pack()
+    utilization_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="utilization-entry"
+    )
+    utilization_weight_entry.insert(0, defenseman_weights['utilization_weight'])
+    utilization_weight_entry.pack()
+
+    # hits weight pack
+    hits_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="hits-textbox", text="Hits Rating",
+        background="black", foreground="white", 
+    )
+    hits_weight_text.pack()
+    hits_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="hits-entry"
+    )
+    hits_weight_entry.insert(0, defenseman_weights['hits_weight'])
+    hits_weight_entry.pack()
+
+    # discipline weight pack
+    discipline_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="discipline-textbox", text="Discipline Rating", background="black",
+        foreground="white", 
+    )
+    discipline_weight_text.pack()
+    discipline_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="discipline-entry"
+    )
+    discipline_weight_entry.insert(0, defenseman_weights['discipline_weight'])
+    discipline_weight_entry.pack()
+
+    # shot_blocking weight pack
+    shot_blocking_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="shot-blocking-textbox", text="Shot Blocking Rating",
+        background="black", foreground="white", 
+    )
+    shot_blocking_weight_text.pack()
+    shot_blocking_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="shot-blocking-entry"
+    )
+    shot_blocking_weight_entry.insert(0,
+        defenseman_weights['shot_blocking_weight'])
+    shot_blocking_weight_entry.pack()
+
+    # plus minus pack
+    plus_minus_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="plus-minus-textbox", text="Plus Minus Rating",
+        background="black", foreground="white", 
+    )
+    plus_minus_weight_text.pack()
+    plus_minus_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="plus-minus-entry"
+    )
+    plus_minus_weight_entry.insert(0, defenseman_weights['plus_minus_weight'])
+    plus_minus_weight_entry.pack()
+
+    # points weight pack
+    points_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="points-textbox", text="Points Rating",
+        background="black", foreground="white"
+    )
+    points_weight_text.pack()
+    points_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="points-entry"
+    )
+    points_weight_entry.insert(0,
+        defenseman_weights['points_weight'])
+    points_weight_entry.pack()
+
+    # takeaways weight pack
+    takeaways_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="takeaways-textbox", text="Takeaways",
+        background="black", foreground="white"
+    )
+    takeaways_weight_text.pack()
+    takeaways_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="takeaways-entry"
+    )
+    takeaways_weight_entry.insert(0,
+        defenseman_weights['takeaways_weight'])
+    takeaways_weight_entry.pack()
+
+    # contribution weight pack
+    contribution_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="contribution-textbox", text="Contribution",
+        background="black", foreground="white"
+    )
+    contribution_weight_text.pack()
+    contribution_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="contribution-entry"
+    )
+    contribution_weight_entry.insert(0,
+        defenseman_weights['contribution_weight'])
+    contribution_weight_entry.pack()
+
+    # multipoint weight pack
+    multipoint_weight_text = tk.Label(master=defenseman_weights_frame,
+        name="multipoint-textbox", text="Multipoint",
+        background="black", foreground="white"
+    )
+    multipoint_weight_text.pack()
+    multipoint_weight_entry = tk.Entry(master=defenseman_weights_frame,
+        name="multipoint-entry"
+    )
+    multipoint_weight_entry.insert(0,
+        defenseman_weights['multipoint_weight'])
+    multipoint_weight_entry.pack()
+
+    # submit button
+    submit_button = tk.Button(master=defenseman_weights_frame,
+        name="submit-button", text="Submit",
+        command=lambda : check_defenseman_weights(
+            [
+                float(utilization_weight_entry.get()),
+                float(hits_weight_entry.get()),
+                float(discipline_weight_entry.get()),
+                float(shot_blocking_weight_entry.get()),
+                float(plus_minus_weight_entry.get()),
+                float(points_weight_entry.get()),
+                float(takeaways_weight_entry.get()),
+                float(contribution_weight_entry.get()),
+                float(multipoint_weight_entry.get())
+            ]
+        ),
+        background='orange', foreground='black'
+    )
+    submit_button.pack()
+
+    defenseman_weights_frame.pack(expand=True, fill=tk.BOTH)
+    defenseman_weight_window.update()
 
 
 def construct_main_menu(run_command):
@@ -312,12 +615,12 @@ def construct_main_menu(run_command):
         foreground='white'
     )
     forward_weight_button.pack()
-    defensemen_weight_button = tk.Button(master=weight_button_frame,
-        name="defensemen-weight-button", text="Edit Defensemen Weights",
-        command=edit_defensemen_weights_window, background='blue',
+    defenseman_weight_button = tk.Button(master=weight_button_frame,
+        name="defenseman-weight-button", text="Edit Defensemen Weights",
+        command=edit_defenseman_weights_window, background='blue',
         foreground='white'
     )
-    defensemen_weight_button.pack()
+    defenseman_weight_button.pack()
     weight_button_frame.pack(fill=tk.BOTH, expand=True)
     weight_button_frame.update()
 

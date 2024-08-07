@@ -118,7 +118,7 @@ class defensemen_rating_weights(Enum):
     HITS_WEIGHT = 0.10
     DISIPLINE_WEIGHT = 0.07
     SHOT_BLOCKING_WEIGHT = 0.10
-    PLUS_MINUS_WEIGHT = 0.02
+    PLUS_MINUS_WEIGHT = 0.03
     POINTS_WEIGHT = 0.15
     TAKEAWAYS_WEIGHT = 0.05
     CONTRIBUTION_WEIGHT = 0.10
@@ -151,7 +151,7 @@ forward_weights = {
     'points_weight' : forward_rating_weights.POINTS_WEIGHT.value,
     'takeaways_weight' : forward_rating_weights.TAKEAWAYS_WEIGHT.value,
     'contribution_weight' : forward_rating_weights.CONTRIBUTION_WEIGHT.value,
-    'multipoint_wight' : forward_rating_weights.MULTIPOINT_WEIGHT.value,
+    'multipoint_weight' : forward_rating_weights.MULTIPOINT_WEIGHT.value,
 }
 
 defenseman_weights = {
@@ -164,12 +164,12 @@ defenseman_weights = {
     'points_weight' : defensemen_rating_weights.POINTS_WEIGHT.value,
     'takeaways_weight' : defensemen_rating_weights.TAKEAWAYS_WEIGHT.value,
     'contribution_weight' : defensemen_rating_weights.CONTRIBUTION_WEIGHT.value,
-    'multipoint_wight' : defensemen_rating_weights.MULTIPOINT_WEIGHT.value,
+    'multipoint_weight' : defensemen_rating_weights.MULTIPOINT_WEIGHT.value,
 }
 
 
 def update_team_weights(weight_list : list=[]):
-    if sum(weight_list) != 1.0 or len(weight_list < 5):
+    if sum(weight_list) != 1.0 or len(weight_list) < 5:
         return
     team_weights['clutch_weight'] = weight_list[0]
     team_weights['defensive_weight'] = weight_list[1]
@@ -179,7 +179,7 @@ def update_team_weights(weight_list : list=[]):
 
 
 def update_goalie_weights(weight_list : list=[]):
-    if sum(weight_list) != 1.0 or len(weight_list < 5):
+    if sum(weight_list) != 1.0 or len(weight_list) < 5:
         return
     goalie_weights['utilization_weight'] = weight_list[0]
     goalie_weights['discipline_weight'] = weight_list[1]
@@ -189,7 +189,7 @@ def update_goalie_weights(weight_list : list=[]):
 
 
 def update_forward_weights(weight_list : list=[]):
-    if sum(weight_list) != 1.0 or len(weight_list < 9):
+    if sum(weight_list) != 1.0 or len(weight_list) < 9:
         return
     forward_weights['utilization_weight'] = weight_list[0]
     forward_weights['hits_weight'] = weight_list[1]
@@ -199,11 +199,11 @@ def update_forward_weights(weight_list : list=[]):
     forward_weights['points_weight'] = weight_list[5]
     forward_weights['takeaways_weight'] = weight_list[6]
     forward_weights['contribution_weight'] = weight_list[7]
-    forward_weights['multipoint_wight'] = weight_list[8]
+    forward_weights['multipoint_weight'] = weight_list[8]
 
 
 def update_defenseman_weights(weight_list : list=[]):
-    if sum(weight_list) != 1.0 or len(weight_list < 9):
+    if sum(weight_list) != 1.0 or len(weight_list) < 9:
         return
     defenseman_weights['utilization_weight'] = weight_list[0]
     defenseman_weights['hits_weight'] = weight_list[1]
@@ -213,4 +213,4 @@ def update_defenseman_weights(weight_list : list=[]):
     defenseman_weights['points_weight'] = weight_list[5]
     defenseman_weights['takeaways_weight'] = weight_list[6]
     defenseman_weights['contribution_weight'] = weight_list[7]
-    defenseman_weights['multipoint_wight'] = weight_list[8]
+    defenseman_weights['multipoint_weight'] = weight_list[8]
