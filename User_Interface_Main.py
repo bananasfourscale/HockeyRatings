@@ -12,9 +12,10 @@ widget_links = {
     'welcome-text' : '.main-frame1.welcome-textbox',
     'eye-test-text' : '.main-frame1.eye-test-textbox',
     'eye-test-entry' : '.main-frame1.eye-test-file-entry',
-    'run-button' : '.main-frame1.run-button',
+    'game-data-button' : '.main-frame1.game-data-button',
     'progress-frame' : '.progress-frame',
-    'progress-bar' : '.progress-frame.progress-bar'
+    'progress-bar' : '.progress-frame.progress-bar',
+    'progress-textbox' : '.progress-frame.progress-textbox'
 }
 
 
@@ -554,25 +555,25 @@ def edit_defenseman_weights_window():
     defenseman_weight_window.update()
 
 
-def construct_main_menu(run_command):
+def construct_main_menu(get_match_data_command, run_ranking_engine_command):
 
     # Add the main frame with staring info
     main_menu_frame = tk.Frame(master=main_window, name="main-frame1",
-        background="black", width=main_window.winfo_screenwidth(),
+        background="navajo white", width=main_window.winfo_screenwidth(),
         height=main_window.winfo_screenheight()/2
     )
 
     # Label with the opening text
     welcome_text = tk.Label(master=main_menu_frame, name="welcome-textbox",
-        text="Welcome To Hockey Ratings", background="black",
-        foreground="white", 
+        text="Welcome To Hockey Ratings", background="navajo white",
+        foreground="dark slate gray", 
     )
     welcome_text.pack()
 
     # Add some text boxes for file inputs
     eye_test_text = tk.Label(master=main_menu_frame, name="eye-test-textbox",
-        text="Enter the full path of the Eye Test File", background="black",
-        foreground="white", 
+        text="Enter the full path of the Eye Test File", background="navajo white",
+        foreground="dark slate gray", 
     )
     eye_test_text.pack()
     eye_test_file_entry = tk.Entry(master=main_menu_frame,
@@ -580,12 +581,21 @@ def construct_main_menu(run_command):
     eye_test_file_entry.insert(0, "player_eye_test.csv")
     eye_test_file_entry.pack()
 
-    # Run button
-    run_button = tk.Button(master=main_menu_frame, name="run-button",
-        text="Run Main Stats Engine", command=run_command, background='green',
-        foreground='white'
+    # Run Game Data Parser button
+    game_data_button = tk.Button(
+        master=main_menu_frame, name="game-data-button",
+        text="Run Game Data Parser", command=get_match_data_command,
+        background='lawn green', foreground='dark slate gray'
     )
-    run_button.pack()
+    game_data_button.pack()
+
+    # Run Stats Engine Parser button
+    ranking_engine = tk.Button(
+        master=main_menu_frame, name="ranking-engine-button",
+        text="Run Ranking Engine", command=run_ranking_engine_command,
+        background='deep pink', foreground='dark slate gray'
+    )
+    ranking_engine.pack()
 
     # Finalize the frame by packing it into the window
     main_menu_frame.pack(fill=tk.BOTH, expand=True)
@@ -593,32 +603,33 @@ def construct_main_menu(run_command):
 
     # Frame for buttons to call up Weight Edits
     weight_button_frame = tk.Frame(master=main_window,
-        name='weight-button-frame', background="black",
+        name='weight-button-frame', background="navajo white",
         width=main_window.winfo_screenwidth(),
         height=main_window.winfo_screenheight()/2
     )
     weight_button_frame.pack()
     team_weight_button = tk.Button(master=weight_button_frame,
         name="team-weight-button", text="Edit Team Weights",
-        command=edit_team_weights_window, background='blue', foreground='white'
+        command=edit_team_weights_window, background='turquoise',
+        foreground='dark slate gray'
     )
     team_weight_button.pack()
     goalie_weight_button = tk.Button(master=weight_button_frame,
         name="goalie-weight-button", text="Edit Goalie Weights",
-        command=edit_goalie_weights_window, background='blue',
-        foreground='white'
+        command=edit_goalie_weights_window, background='turquoise',
+        foreground='dark slate gray'
     )
     goalie_weight_button.pack()
     forward_weight_button = tk.Button(master=weight_button_frame,
         name="forward-weight-button", text="Edit Forward Weights",
-        command=edit_forward_weights_window, background='blue',
-        foreground='white'
+        command=edit_forward_weights_window, background='turquoise',
+        foreground='dark slate gray'
     )
     forward_weight_button.pack()
     defenseman_weight_button = tk.Button(master=weight_button_frame,
         name="defenseman-weight-button", text="Edit Defensemen Weights",
-        command=edit_defenseman_weights_window, background='blue',
-        foreground='white'
+        command=edit_defenseman_weights_window, background='turquoise',
+        foreground='dark slate gray'
     )
     defenseman_weight_button.pack()
     weight_button_frame.pack(fill=tk.BOTH, expand=True)
@@ -626,10 +637,20 @@ def construct_main_menu(run_command):
 
 
 def add_progress_frame():
+
+    # construct main frame to hold progress elements
     progress_frame = tk.Frame(master=main_window, name="progress-frame",
-        background="black", width=main_window.winfo_screenwidth(),
+        background="navajo white", width=main_window.winfo_screenwidth(),
         height=main_window.winfo_screenheight()/2
     )
+
+    # text field to diplay text progess messages
+    progress_text = tk.Label(master=progress_frame, name="progress-textbox",
+        text="", background="navajo white", foreground="dark slate gray", 
+    )
+    progress_text.pack()
+
+    # progress bar for visual updates
     game_data_progress_bar = Progressbar(master=progress_frame,
         name="progress-bar", orient='horizontal', value=0,
         mode='determinate', length=main_window.winfo_width()*.80)
@@ -641,12 +662,20 @@ def add_progress_frame():
 def close_progress_frame(): 
     main_window.nametowidget(widget_links['progress-bar']).pack_forget()
     main_window.nametowidget(widget_links['progress-bar']).destroy()
+    main_window.nametowidget(widget_links["progress-textbox"]).pack_forget()
+    main_window.nametowidget(widget_links["progress-textbox"]).destroy()
 
 
 def update_progress_bar(value):
     progress_bar = main_window.nametowidget(widget_links['progress-bar'])
     progress_bar['value'] = value
     progress_bar.update()
+
+
+def update_progress_text(display_text):
+    progress_text = main_window.nametowidget(widget_links['progress-textbox'])
+    progress_text['text'] = display_text
+    progress_text.update()
 
 
 if __name__ == "__main__":

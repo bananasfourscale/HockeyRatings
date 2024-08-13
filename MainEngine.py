@@ -11,7 +11,7 @@ from Database_Parser import get_game_records
 
 from User_Interface_Main import get_main_window, get_widget, \
     construct_main_menu, add_progress_frame, close_progress_frame, \
-    display_error_window
+    display_error_window, update_progress_text, update_progress_bar
 
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
@@ -94,8 +94,8 @@ from Goalie_Metrics.Goalie_Save_Percentage import \
 
 # shared engine tools
 from Sigmoid_Correction import apply_sigmoid_correction
-from Weights import total_rating_weights, goalie_rating_weights, \
-    forward_rating_weights, defensemen_rating_weights, divisions, \
+from Weights import team_weights, goalie_weights, \
+    forward_weights, defenseman_weights, divisions, \
     EYE_TEST_WEIGHT
 from Plotter import plot_data_set, plot_team_trend_set, plot_player_trend_set, \
     plot_player_ranking, plot_matches_ranking
@@ -133,6 +133,14 @@ forward_teams = {}
 defensemen_teams = {}
 
 player_eye_test_rating = {}
+
+regular_season_matches = {}
+
+playoff_matches = {}
+
+upcoming_matches = {}
+
+upcoming_playoff_matches = {}
 
 match_input_queue = Queue()
 match_output_queue = Queue()
@@ -2196,15 +2204,15 @@ def combine_all_team_factors() -> None:
     for team in clutch_rating_get_dict().keys():
         team_total_rating[team] = \
             (clutch_rating_get_dict()[team] *
-                total_rating_weights.CLUTCH_RATING_WEIGHT.value) + \
+                team_weights['clutch_weight']) + \
             (defensive_rating_get_dict()[team] *
-                total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) + \
+                team_weights['defensive_weight']) + \
             (offensive_rating_get_dict()[team] *
-                total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) + \
+                team_weights['offensive_weight']) + \
             (recent_form_get_dict()[team] *
-                total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) + \
+                team_weights['recent_form_weight']) + \
             (strength_of_schedule_get_dict()[team] *
-                total_rating_weights.SOS_RATING_WEIGHT.value)
+                team_weights['strength_of_schedule_weight'])
     
 
 def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
@@ -2214,6 +2222,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
     # determine at which dates we should collate and mark trend data
     i = 1
+    parsed_dates = 0
     ranking_dates = []
     all_ranking_periods = []
     ranking_period = []
@@ -2248,6 +2257,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
     # time, so now loop through those groups of ranking periods
     for ranking_period in all_ranking_periods:
         print("{} -> {}".format(ranking_period[0], ranking_period[-1]))
+        update_progress_text(
+            "Parsing Dates: {} to {}".format(ranking_period[0], ranking_period[-1])
+        )
 
         # determine if this is the last date in the date list
         if ranking_period == all_ranking_periods[-1]:
@@ -2388,29 +2400,29 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_team_metrics(game_types)
 
         # Clutch Rating
-        apply_sigmoid_correction(clutch_rating_get_dict(),debug=final_date)
+        apply_sigmoid_correction(clutch_rating_get_dict())
 
         # Defensive Rating
         apply_sigmoid_correction(defensive_rating_get_shots_against_dict(),
-            True, debug=final_date)
+            True)
         apply_sigmoid_correction(defensive_rating_get_goals_against_dict(),
-            True, debug=final_date)
-        apply_sigmoid_correction(defensive_rating_get_pk_dict(),debug=final_date)
+            True)
+        apply_sigmoid_correction(defensive_rating_get_pk_dict())
 
         # Offensive Rating
-        apply_sigmoid_correction(offensive_rating_get_shots_for_dict(),debug=final_date)
-        apply_sigmoid_correction(offensive_rating_get_goals_for_dict(),debug=final_date)
-        apply_sigmoid_correction(offensive_rating_get_pp_dict(),debug=final_date)
+        apply_sigmoid_correction(offensive_rating_get_shots_for_dict())
+        apply_sigmoid_correction(offensive_rating_get_goals_for_dict())
+        apply_sigmoid_correction(offensive_rating_get_pp_dict(),)
 
         # Recent Form
-        apply_sigmoid_correction(recent_form_get_streak_dict(),debug=final_date)
-        apply_sigmoid_correction(recent_form_get_longest_streak_dict(),debug=final_date)
-        apply_sigmoid_correction(recent_form_get_last_10_dict(),debug=final_date)
-        apply_sigmoid_correction(recent_form_get_last_20_dict(),debug=final_date)
-        apply_sigmoid_correction(recent_form_get_last_40_dict(),debug=final_date)
+        apply_sigmoid_correction(recent_form_get_streak_dict(),)
+        apply_sigmoid_correction(recent_form_get_longest_streak_dict(),)
+        apply_sigmoid_correction(recent_form_get_last_10_dict(),)
+        apply_sigmoid_correction(recent_form_get_last_20_dict(),)
+        apply_sigmoid_correction(recent_form_get_last_40_dict(),)
 
         # Strenght of Schedule
-        apply_sigmoid_correction(strength_of_schedule_get_dict(),debug=final_date)
+        apply_sigmoid_correction(strength_of_schedule_get_dict(),)
 
         # write out any plots after sigmoid correction
         if final_date:
@@ -2485,7 +2497,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Goalies ###
         utilization_scale_by_game(strength_of_schedule_get_games_played_dict(),
             goalie_teams, "G")
-        apply_sigmoid_correction(utilization_rating_get_dict("G"),debug=final_date)
+        apply_sigmoid_correction(utilization_rating_get_dict("G"))
 
         discipline_scale_by_utilization(utilization_rating_get_dict("G"), "G")
 
@@ -2505,7 +2517,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Forwards ###
         utilization_scale_by_game(
             strength_of_schedule_get_games_played_dict(), forward_teams, "C")
-        apply_sigmoid_correction(utilization_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(utilization_rating_get_dict("C"))
 
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(), forward_teams,
@@ -2532,7 +2544,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         ### Defensemen ###
         utilization_scale_by_game(
             strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
-        apply_sigmoid_correction(utilization_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(utilization_rating_get_dict("D"))
 
         blocks_scale_by_shots_against(
             defensive_rating_get_unscaled_shots_against_dict(),
@@ -2560,30 +2572,30 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_player_metrics(game_types)
 
         # Goalies
-        apply_sigmoid_correction(discipline_rating_get_dict("G"),debug=final_date)
-        apply_sigmoid_correction(goalie_goals_against_get_dict(), True,debug=final_date)
-        apply_sigmoid_correction(goalie_save_percentage_get_dict(),debug=final_date)
-        apply_sigmoid_correction(goalie_save_consistency_get_dict(),debug=final_date)
+        apply_sigmoid_correction(discipline_rating_get_dict("G"))
+        apply_sigmoid_correction(goalie_goals_against_get_dict(), True)
+        apply_sigmoid_correction(goalie_save_percentage_get_dict())
+        apply_sigmoid_correction(goalie_save_consistency_get_dict())
 
         # Forwards
-        apply_sigmoid_correction(blocks_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(contributing_games_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(discipline_rating_get_dict("C"), True,debug=final_date)
-        apply_sigmoid_correction(hitting_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(multipoint_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(plus_minus_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(total_points_rating_get_dict("C"),debug=final_date)
-        apply_sigmoid_correction(turnovers_rating_get_dict("C"),debug=final_date)
+        apply_sigmoid_correction(blocks_rating_get_dict("C"))
+        apply_sigmoid_correction(contributing_games_rating_get_dict("C"))
+        apply_sigmoid_correction(discipline_rating_get_dict("C"), True)
+        apply_sigmoid_correction(hitting_rating_get_dict("C"))
+        apply_sigmoid_correction(multipoint_rating_get_dict("C"))
+        apply_sigmoid_correction(plus_minus_rating_get_dict("C"))
+        apply_sigmoid_correction(total_points_rating_get_dict("C"))
+        apply_sigmoid_correction(turnovers_rating_get_dict("C"))
 
         # Defensemen
-        apply_sigmoid_correction(blocks_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(contributing_games_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(discipline_rating_get_dict("D"), True,debug=final_date)
-        apply_sigmoid_correction(hitting_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(multipoint_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(plus_minus_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(total_points_rating_get_dict("D"),debug=final_date)
-        apply_sigmoid_correction(turnovers_rating_get_dict("D"),debug=final_date)
+        apply_sigmoid_correction(blocks_rating_get_dict("D"))
+        apply_sigmoid_correction(contributing_games_rating_get_dict("D"))
+        apply_sigmoid_correction(discipline_rating_get_dict("D"), True)
+        apply_sigmoid_correction(hitting_rating_get_dict("D"))
+        apply_sigmoid_correction(multipoint_rating_get_dict("D"))
+        apply_sigmoid_correction(plus_minus_rating_get_dict("D"))
+        apply_sigmoid_correction(total_points_rating_get_dict("D"))
+        apply_sigmoid_correction(turnovers_rating_get_dict("D"))
 
         if final_date:
             print("Plot Player data after correction")
@@ -2594,15 +2606,15 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         for goalie in utilization_rating_get_dict("G").keys():
             goalie_total_rating[goalie] = (
                 (utilization_rating_get_dict("G")[goalie] *
-                    goalie_rating_weights.UTILIZATION_WEIGHT.value) +
+                    goalie_weights['utilization_weight']) +
                 (discipline_rating_get_dict("G")[goalie] *
-                    goalie_rating_weights.DISCIPLINE_WEIGHT.value) +
+                    goalie_weights['discipline_weight']) +
                 (goalie_save_percentage_get_dict()[goalie] *
-                    goalie_rating_weights.SAVE_PERCENTAGE_WEIGHT.value) +
+                    goalie_weights['save_percentage_weight']) +
                 (goalie_goals_against_get_dict()[goalie] *
-                    goalie_rating_weights.GOALS_AGAINST_WEIGHT.value) +
+                    goalie_weights['goals_against_weight']) +
                 (goalie_save_consistency_get_dict()[goalie] *
-                    goalie_rating_weights.SAVE_CONSISTENCY_WEIGHT.value)
+                    goalie_weights['save_consitency_weight'])
             )
             goalie_total_rating[goalie] *= (1 - EYE_TEST_WEIGHT)
             if goalie in player_eye_test_rating.keys():
@@ -2618,23 +2630,23 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         for forward in utilization_rating_get_dict("C").keys():
             forward_total_rating[forward] = (
                 (hitting_rating_get_dict("C")[forward] *
-                    forward_rating_weights.HITS_WEIGHT.value) +
+                    forward_weights['hits_weight']) +
                 (blocks_rating_get_dict("C")[forward] *
-                    forward_rating_weights.SHOT_BLOCKING_WEIGHT.value) +
+                    forward_weights['shot_blocking_weight']) +
                 (utilization_rating_get_dict("C")[forward] *
-                    forward_rating_weights.UTILIZATION_WEIGHT.value) +
+                    forward_weights['utilization_weight']) +
                 (discipline_rating_get_dict("C")[forward] *
-                    forward_rating_weights.DISIPLINE_WEIGHT.value) +
+                    forward_weights['discipline_weight']) +
                 (plus_minus_rating_get_dict("C")[forward] *
-                    forward_rating_weights.PLUS_MINUS_WEIGHT.value) +
+                    forward_weights['plus_minus_weight']) +
                 (total_points_rating_get_dict("C")[forward] *
-                    forward_rating_weights.POINTS_WEIGHT.value) +
+                    forward_weights['points_weight']) +
                 (turnovers_rating_get_dict("C")[forward] *
-                    forward_rating_weights.TAKEAWAYS_WEIGHT.value) +
+                    forward_weights['takeaways_weight']) +
                 (contributing_games_rating_get_dict("C")[forward] *
-                    forward_rating_weights.CONTRIBUTION_WEIGHT.value) +
+                    forward_weights['contribution_weight']) +
                 (multipoint_rating_get_dict("C")[forward] *
-                    forward_rating_weights.MULTIPOINT_WEIGHT.value)
+                    forward_weights['multipoint_weight'])
             )
             forward_total_rating[forward] *= (1 - EYE_TEST_WEIGHT)
             if forward in player_eye_test_rating.keys():
@@ -2649,24 +2661,24 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # Defense
         for defensemen in utilization_rating_get_dict("D").keys():
             defensemen_total_rating[defensemen] = (
-                (hitting_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.HITS_WEIGHT.value) +
-                (blocks_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.SHOT_BLOCKING_WEIGHT.value) +
-                (utilization_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.UTILIZATION_WEIGHT.value) +
-                (discipline_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.DISIPLINE_WEIGHT.value) +
-                (plus_minus_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.PLUS_MINUS_WEIGHT.value) +
-                (total_points_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.POINTS_WEIGHT.value) +
-                (turnovers_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.TAKEAWAYS_WEIGHT.value) +
-                (contributing_games_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.CONTRIBUTION_WEIGHT.value) +
-                (multipoint_rating_get_dict("D")[defensemen] *
-                    defensemen_rating_weights.MULTIPOINT_WEIGHT.value)
+                (hitting_rating_get_dict("C")[forward] *
+                    defenseman_weights['hits_weight']) +
+                (blocks_rating_get_dict("C")[forward] *
+                    defenseman_weights['shot_blocking_weight']) +
+                (utilization_rating_get_dict("C")[forward] *
+                    defenseman_weights['utilization_weight']) +
+                (discipline_rating_get_dict("C")[forward] *
+                    defenseman_weights['discipline_weight']) +
+                (plus_minus_rating_get_dict("C")[forward] *
+                    defenseman_weights['plus_minus_weight']) +
+                (total_points_rating_get_dict("C")[forward] *
+                    defenseman_weights['points_weight']) +
+                (turnovers_rating_get_dict("C")[forward] *
+                    defenseman_weights['takeaways_weight']) +
+                (contributing_games_rating_get_dict("C")[forward] *
+                    defenseman_weights['contribution_weight']) +
+                (multipoint_rating_get_dict("C")[forward] *
+                    defenseman_weights['multipoint_weight'])
             )
             defensemen_total_rating[defensemen] *= (1 - EYE_TEST_WEIGHT)
             if defensemen in player_eye_test_rating.keys():
@@ -2827,6 +2839,8 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             
             # now plot all averge player metrics
             plot_average_player_team_metrics(game_types)
+        parsed_dates += 1
+        update_progress_bar((parsed_dates / len(all_ranking_periods))*100)
 
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
@@ -3023,11 +3037,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Forward_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Forward_Files\Instance_Files\\" + file)
     for dir in \
         os.walk(os.getcwd() +
             "\Output_Files\Defensemen_Files\Instance_Files"):
@@ -3197,15 +3211,15 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
             final_team_ratings[match_key] = [(
                 ((
                     (clutch_ratings[0] *
-                        total_rating_weights.CLUTCH_RATING_WEIGHT.value) +
+                        team_weights['clutch_weight']) +
                     (defensive_ratings[0] *
-                        total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) +
+                        team_weights['defensive_weight']) +
                     (offensive_ratings[0] *
-                        total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) +
+                        team_weights['offensive_weight']) +
                     (recent_form_ratings[0] *
-                        total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) +
+                        team_weights['recent_form_weight']) +
                     (strength_of_schedule_ratings[0] *
-                        total_rating_weights.SOS_RATING_WEIGHT.value)
+                        team_weights['strength_of_schedule_weight'])
                 ) * 0.70) +
                 ((
                     (goalie_average_ratings[0] * 0.30) +
@@ -3216,15 +3230,15 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
             (
                 ((
                     (clutch_ratings[1] *
-                        total_rating_weights.CLUTCH_RATING_WEIGHT.value) +
+                        team_weights['clutch_weight']) +
                     (defensive_ratings[1] *
-                        total_rating_weights.DEFENSIVE_RATING_WEIGHT.value) +
+                        team_weights['defensive_weight']) +
                     (offensive_ratings[1] *
-                        total_rating_weights.OFFENSIVE_RATING_WEIGHT.value) +
+                        team_weights['offensive_weight']) +
                     (recent_form_ratings[1] *
-                        total_rating_weights.RECENT_FORM_RATING_WEIGHT.value) +
+                        team_weights['recent_form_weight']) +
                     (strength_of_schedule_ratings[1] *
-                        total_rating_weights.SOS_RATING_WEIGHT.value)
+                        team_weights['strength_of_schedule_weight'])
                 ) * 0.70) +
                 ((
                     (goalie_average_ratings[1] * 0.30) +
@@ -3291,6 +3305,26 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
                 "Output_Files/Team_Files/Trend_Files/{}.csv".format(file_name),
                 [team_names[0], team_names[1]], sigmoid_ticks,
                 "Graphs/Teams/Matches/{}.png".format(file_name), odds_list)
+            
+
+def gather_match_records():
+    
+    # get all the match data
+    add_progress_frame()
+    update_progress_text("Gathering All Match Data: ")
+    match_data_start = time.time()
+    print("Gathering All Match Data")
+    match_tuple = get_game_records(SEASON)
+    for key in match_tuple[0].keys():
+        regular_season_matches[key] = match_tuple[0][key]
+    for key in match_tuple[0].keys():
+        upcoming_matches[key] = match_tuple[0][key]
+    for key in match_tuple[0].keys():
+        upcoming_playoff_matches[key] = match_tuple[0][key]
+    for key in match_tuple[0].keys():
+        playoff_matches[key] = match_tuple[0][key]
+    print_time_diff(match_data_start, time.time())
+    close_progress_frame()
 
 
 def run_main_engine():   
@@ -3302,18 +3336,6 @@ def run_main_engine():
         display_error_window("Invalid Eye Test File Path", -1)
         return
 
-    # Add a progress bar for getting the game data down
-    add_progress_frame()
-    
-    # get all the match data
-    match_data_start = time.time()
-    print("Gathering All Match Data")
-    (regular_season_matches, playoff_matches, upcoming_matches,
-        upcoming_playoff_matches) = get_game_records(SEASON)
-    print_time_diff(match_data_start, time.time())
-    close_progress_frame()
-    return
-
     # automatically determine if the season is over based on the number of
     # unplayed matched found
     if len(upcoming_matches) == 0:
@@ -3322,10 +3344,13 @@ def run_main_engine():
 
     # if regular season games have been played then run post processing on those
     if len(regular_season_matches) > 0:
+        add_progress_frame()
+        update_progress_text("Running Regular Season Match Engine: ")
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R", regular_season_matches)
+        close_progress_frame()
     print_time_diff(start, time.time())
-
+    return
     if len(upcoming_matches) > 0:
         print("Running Regular Season Match Predicter")
         run_upcoming_game_parser_engine("R", upcoming_matches)
@@ -3390,5 +3415,5 @@ if __name__ == "__main__":
     main_window.geometry('{}x{}'.format(int(width), int(height)))
 
     # create the main welcome frame
-    construct_main_menu(run_main_engine)
+    construct_main_menu(gather_match_records, run_main_engine)
     tk.mainloop()

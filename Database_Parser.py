@@ -6,7 +6,8 @@ import datetime
 import pytz
 import tkinter as tk
 
-from User_Interface_Main import get_main_window, update_progress_bar
+from User_Interface_Main import get_main_window, update_progress_bar, \
+    update_progress_text
 
 database_parser_input_queue = Queue()
 database_parser_output_queue = Queue()
@@ -1348,6 +1349,10 @@ def get_game_records(season_year_id : str="") -> None:
                         upcoming_playoff_matches[output_list[0]['date']] = \
                             output_list
                 parsed_dates += 1
+                update_progress_text(
+                    "Gathering All Match Data: {}/{}".format(
+                        parsed_dates, total_dates)
+                )
                 update_progress_bar((parsed_dates / total_dates)*100)
 
     # we are done with all the data so just set the progress to 100 in case of

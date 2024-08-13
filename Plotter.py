@@ -3,7 +3,9 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import seaborn as sns
 import pandas as pd
-import matplotlib.pyplot as plotter
+import matplotlib
+matplotlib.use('QtAgg')
+from matplotlib import pyplot as plotter
 
 team_color_hex_codes = {
     'Anaheim Ducks' : "#F47A38",
