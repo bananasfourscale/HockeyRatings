@@ -146,6 +146,7 @@ match_input_queue = Queue()
 match_output_queue = Queue()
 plotting_queue = Queue()
 dummy_queue = Queue()
+plots_count = 0
 
 
 class Metric_Order(Enum):
@@ -2412,14 +2413,14 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # Offensive Rating
         apply_sigmoid_correction(offensive_rating_get_shots_for_dict())
         apply_sigmoid_correction(offensive_rating_get_goals_for_dict())
-        apply_sigmoid_correction(offensive_rating_get_pp_dict(),)
+        apply_sigmoid_correction(offensive_rating_get_pp_dict())
 
         # Recent Form
-        apply_sigmoid_correction(recent_form_get_streak_dict(),)
-        apply_sigmoid_correction(recent_form_get_longest_streak_dict(),)
-        apply_sigmoid_correction(recent_form_get_last_10_dict(),)
-        apply_sigmoid_correction(recent_form_get_last_20_dict(),)
-        apply_sigmoid_correction(recent_form_get_last_40_dict(),)
+        apply_sigmoid_correction(recent_form_get_streak_dict())
+        apply_sigmoid_correction(recent_form_get_longest_streak_dict())
+        apply_sigmoid_correction(recent_form_get_last_10_dict())
+        apply_sigmoid_correction(recent_form_get_last_20_dict())
+        apply_sigmoid_correction(recent_form_get_last_40_dict())
 
         # Strenght of Schedule
         apply_sigmoid_correction(strength_of_schedule_get_dict(),)

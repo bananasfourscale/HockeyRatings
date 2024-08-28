@@ -9,22 +9,23 @@ sigmoid_peak = .990048
 ninety_nineth_per = 2.58
 
 
-def normalize_set(data_set : dict={}) -> list:
+def normalize_set(data_set : dict={}) -> dict:
     data_list = list(data_set.values())
+    normal_set = {}
     max_data = max(data_list)
     min_data = min(data_list)
     try:
         if (max_data != min_data) or ((max_data - min_data) == 0):
             for item in data_set.keys():
-                data_set[item] = (data_set[item] - min_data) / (max_data - min_data)
+                normal_set[item] = (data_set[item] - min_data) / (max_data - min_data)
         else:
             for item in data_set.keys():
-                data_set[item] = (data_set[item] / len(data_list))
+                normal_set[item] = (data_set[item] / len(data_list))
     except RuntimeWarning as w:
         print(w)
         print("min = ", min_data, "max = ", max_data, "key = ", item,
             "value = ", data_set[item])
-    return data_set
+    return normal_set
 
 
 def solve_for_scalar_value(data_set : dict={}, debug : bool=False) -> float:
@@ -56,17 +57,24 @@ def solve_for_scalar_value(data_set : dict={}, debug : bool=False) -> float:
 def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,                
     debug : bool=False) -> dict:
 
-    scalar = solve_for_scalar_value(data_set, debug)
-    data_set = normalize_set(data_set)
+    scalar = solve_for_scalar_value(data_set, debug)\
+
+    mean_val = mean(list(data_set.values()))
+    sig = std(list(data_set.values()))
+    # data_set['99sig'] = mean_val + (sig * ninety_nineth_per)
+    # data_set['-99sig'] = mean_val - (sig * ninety_nineth_per)
+    normal_set = normalize_set(data_set)
+    if debug:
+        sorted_set = {k: v for k, v in sorted(data_set.items(), key=lambda item: item[1])}
     for item in data_set.keys():
         if low_desired is True:
             data_set[item] = 1 - (
                 (
                 (
-                    ((2*data_set[item] - 1) - 
-                        (scalar * (2*data_set[item] - 1)))
+                    ((2*normal_set[item] - 1) - 
+                        (scalar * (2*normal_set[item] - 1)))
                     /
-                    (scalar - (2 * scalar * abs((2*data_set[item] - 1))) + 1)
+                    (scalar - (2 * scalar * abs((2*normal_set[item] - 1))) + 1)
                 ) + 1
                 )
                 / 2
@@ -75,14 +83,22 @@ def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,
             data_set[item] = (
                 (
                 (
-                    ((2*data_set[item] - 1) - 
-                        (scalar * (2*data_set[item] - 1)))
+                    ((2*normal_set[item] - 1) - 
+                        (scalar * (2*normal_set[item] - 1)))
                     /
-                    (scalar - (2 * scalar * abs((2*data_set[item] - 1))) + 1)
+                    (scalar - (2 * scalar * abs((2*normal_set[item] - 1))) + 1)
                 ) + 1
                 )
                 / 2
             )
+    if debug:
+        for key in sorted_set.keys():
+            print("base {} : {}".format(key, sorted_set[key]))
+            print("normalized {} : {}".format(key, normal_set[key]))
+            print("scaled {} : {}".format(key, data_set[key]))
+            print()
+    # data_set.pop('99sig')
+    # data_set.pop('-99sig')
     return data_set
 
 '''

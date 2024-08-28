@@ -1,6 +1,6 @@
 from shapely import Point
 from shapely import Polygon
-from shapely import LineString
+# from shapely import LineString
 
 from enum import Enum
 
@@ -36,7 +36,10 @@ class zone_id(Enum):
     RIGHT_CORNERS = 11
     RIGHT_OUTSIDE = 12
 
-def event_point_get_zone(point : Point=None) -> zone_id:
+def event_point_get_zone(x_coor : float=0.0, y_coor : float=0.0) -> zone_id:
+
+    # Create a point form the given coordinates
+    point = Point(x_coor, y_coor)
 
     # first determine left or right side of the ice, left being away start side.
     if point.x < -25.5:

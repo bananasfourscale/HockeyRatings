@@ -4,10 +4,10 @@ import json
 import pandas
 import datetime
 import pytz
-import tkinter as tk
 
-from User_Interface_Main import get_main_window, update_progress_bar, \
+from User_Interface_Main import update_progress_bar, \
     update_progress_text
+from Ice_Mapping import zone_id, event_point_get_zone
 
 database_parser_input_queue = Queue()
 database_parser_output_queue = Queue()
@@ -16,24 +16,34 @@ database_parser_output_queue = Queue()
 def parse_play_by_play_penalties(home_team : str="", away_team : str="",
     play : dict={}, game_stats : dict={}) -> dict:
 
+    period = play["periodDescriptor"]["number"]
+    time = play["timeInPeriod"]
+
     # commited penalties
     if "committedByPlayerId" in play["details"].keys():
+        committed_by = None
 
         # home team penalty
         if (play["details"]["committedByPlayerId"] in
             game_stats[home_team]["player_stats"]):
 
+            game_stats[home_team]["team_stats"]["penalty_minutes"] += \
+                play["details"]["duration"]
             game_stats[home_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
+            committed_by = home_team
 
         # away team penalty
         elif (play["details"]["committedByPlayerId"] in
             game_stats[away_team]["player_stats"]):
 
+            game_stats[away_team]["team_stats"]["penalty_minutes"] += \
+                play["details"]["duration"]
             game_stats[away_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
+            committed_by = away_team
         else:
             print("Penalties Commited Player\n" + 
                 "Player Id Not in Either Teams Roster:",
@@ -44,12 +54,18 @@ def parse_play_by_play_penalties(home_team : str="", away_team : str="",
     if "drawnByPlayerId" in play["details"].keys():
         if play["details"]["drawnByPlayerId"] in \
             game_stats[home_team]["player_stats"]:
+
+            game_stats[home_team]["team_stats"]["penalties_drawn"] += \
+                play["details"]["duration"]
             game_stats[home_team]["player_stats"]\
                 [play["details"]["drawnByPlayerId"]]\
                 ["penalty_minutes_drawn"] += play["details"]["duration"]
 
         elif play["details"]["drawnByPlayerId"] in \
             game_stats[away_team]["player_stats"]:
+
+            game_stats[away_team]["team_stats"]["penalties_drawn"] += \
+                play["details"]["duration"]
             game_stats[away_team]["player_stats"]\
                 [play["details"]["drawnByPlayerId"]]\
                 ["penalty_minutes_drawn"] += play["details"]["duration"]
@@ -59,6 +75,20 @@ def parse_play_by_play_penalties(home_team : str="", away_team : str="",
                 "Player Id Not in Either Teams Roster:",
                 play["details"]["drawnByPlayerId"])
             print(game_stats[home_team]["player_stats"].keys())
+
+    # now determine if offensive or defensive penalty for the offender
+    penalty_commited_zone = event_point_get_zone(play["details"]["xCoord"],
+        play["details"]["yCoord"])
+    if (committed_by == away_team and (period == 1 or period == 3) and
+        penalty_commited_zone.value < 7):
+
+        game_stats[away_team]["player_stats"]\
+            [play["details"]["drawnByPlayerId"]]\
+            ["penalty_minutes_drawn"] += (play["details"]["duration"] * 0.2)
+        
+    elif (committed_by == home_team and period == 2 and
+        penalty_commited_zone.value > 6)
+
     return game_stats
 
 
@@ -888,10 +918,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "short_handed_chances" : 
                         int(game["box_score"]["summary"]["teamGameStats"][2][
                             "awayValue"].split("/")[1]),
-                    "penalty_minutes" : int(game["box_score"]["summary"][
-                        "teamGameStats"][4]["homeValue"]),
-                    "penalties_drawn" : int(game["box_score"]["summary"][
-                        "teamGameStats"][4]["awayValue"]),
+                    "penalty_minutes" : 0,
+                    "penalties_drawn" : 0,
                     "hits" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["homeValue"]),
                     "getting_hit" : int(game["box_score"]["summary"][
@@ -935,10 +963,8 @@ def collect_game_stats(game : dict={}) -> dict:
                     "short_handed_chances" : 
                         int(game["box_score"]["summary"]["teamGameStats"][2][
                             "homeValue"].split("/")[1]),
-                    "penalty_minutes" : int(game["box_score"]["summary"][
-                        "teamGameStats"][4]["awayValue"]),
-                    "penalties_drawn" : int(game["box_score"]["summary"][
-                        "teamGameStats"][4]["homeValue"]),
+                    "penalty_minutes" : 0,
+                    "penalties_drawn" : 0,
                     "hits" : int(game["box_score"]["summary"][
                         "teamGameStats"][5]["awayValue"]),
                     "getting_hit" : int(game["box_score"]["summary"][
@@ -1301,7 +1327,7 @@ def get_game_records(season_year_id : str="") -> None:
         dates[i] = date.strftime("%Y-%m-%d")
         i += 1
     match_parser_process_list = []
-    subprocess_count = 16
+    subprocess_count = 32
     for i in range(subprocess_count):
         match_parser_process_list.append(Process(target=worker_node,
             args=(database_parser_input_queue, database_parser_output_queue))
