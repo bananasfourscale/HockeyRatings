@@ -13,6 +13,12 @@ from User_Interface_Main import get_main_window, get_widget, \
     construct_main_menu, add_progress_frame, close_progress_frame, \
     display_error_window, update_progress_text, update_progress_bar
 
+from League_Stats.Shooting_Percentage import \
+    shooting_percentage_get_shpct_by_zone_get_dict, \
+    shooting_percentage_get_shots_dict, shooting_percentage_get_goals_dict, \
+    shooting_percentage_add_match_data, \
+    shooting_percentage_calculate_league_values
+
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import clutch_rating_get_dict, \
     clutch_rating_get_trend_dict, clutch_rating_reset, \
@@ -141,6 +147,16 @@ playoff_matches = {}
 upcoming_matches = {}
 
 upcoming_playoff_matches = {}
+
+expected_goals_by_zone = {
+    "neutral_zone" : 0.0,
+    "distance" : 0.0,
+    "high_danger" : 0.0,
+    "netfront" : 0.0,
+    "behind_net": 0.0,
+    "corners" : 0.0,
+    "outside" : 0.0,
+}
 
 match_input_queue = Queue()
 match_output_queue = Queue()
@@ -406,6 +422,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
 
 def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     player_list : list=[]) -> list:
+
     metric_data = {"player_data" : {}}
     goalie_metrics = {}
     forward_metrics = {}
@@ -848,6 +865,30 @@ def parse_player_match_data(match_data : dict={}, relative_metrics : list=[],
     return(metric_data)
 
 
+def parse_play_by_play_data(match_data : dict={}, relative_metrics : list=[]):
+    metric_data = {"play_by_play_data" : {
+        "penalties" : [],
+        "hits" : [],
+        "takeaways" : [],
+        "giveaways" : [],
+        "shots" : [],
+        "faceoffs" : [],
+        "goals" : [],
+    }}
+
+    zone_stats = match_data["game_stats"]["zone_stats"]
+
+    # for now we don't do anything so just move the data links over and return
+    metric_data["play_by_play_data"]["penalties"] = zone_stats["penalties"]
+    metric_data["play_by_play_data"]["hits"] = zone_stats["hits"]
+    metric_data["play_by_play_data"]["takeaways"] = zone_stats["takeaways"]
+    metric_data["play_by_play_data"]["giveaways"] = zone_stats["giveaways"]
+    metric_data["play_by_play_data"]["shots"] = zone_stats["shots"]
+    metric_data["play_by_play_data"]["faceoffs"] = zone_stats["faceoffs"]
+    metric_data["play_by_play_data"]["goals"] = zone_stats["goals"]
+    return(metric_data)
+    
+
 def run_match_parser(match_dates : list=[], ranking_date : str="",
     matches_list : list=[]) -> None:
 
@@ -859,7 +900,6 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
             # get the home and away team
             away_team = match["game_stats"]["away_team"]
             home_team = match["game_stats"]["home_team"]
-
             trends_by_date = get_team_trend_by_date(home_team, away_team,
                 ranking_date)
 
@@ -935,6 +975,8 @@ def run_match_parser(match_dates : list=[], ranking_date : str="",
                 (match, trends_by_date)))
             match_input_queue.put((parse_player_match_data,
                 (match, trends_by_date, [goalies, forwards, defensemen])))
+            # match_input_queue.put((parse_play_by_play_data,
+            #     (match, trends_by_date)))
             
 
 def plot_uncorrected_team_metrics(game_types : str="R") -> None:
@@ -2353,6 +2395,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                             defensemen_metrics['utilization'][defenseman][
                                 'team']
                         
+                elif "play_by_play_data" in output_list.keys():
+                    shooting_percentage_add_match_data(
+                        output_list["play_by_play_data"]["shots"],
+                        output_list["play_by_play_data"]["goals"])
+                        
                 # teams
                 else:
                     metric_data = output_list["team_data"]
@@ -3318,12 +3365,12 @@ def gather_match_records():
     match_tuple = get_game_records(SEASON)
     for key in match_tuple[0].keys():
         regular_season_matches[key] = match_tuple[0][key]
-    for key in match_tuple[0].keys():
-        upcoming_matches[key] = match_tuple[0][key]
-    for key in match_tuple[0].keys():
-        upcoming_playoff_matches[key] = match_tuple[0][key]
-    for key in match_tuple[0].keys():
-        playoff_matches[key] = match_tuple[0][key]
+    for key in match_tuple[1].keys():
+        upcoming_matches[key] = match_tuple[1][key]
+    for key in match_tuple[2].keys():
+        playoff_matches[key] = match_tuple[2][key]
+    for key in match_tuple[3].keys():
+        upcoming_playoff_matches[key] = match_tuple[3][key]
     print_time_diff(match_data_start, time.time())
     close_progress_frame()
 
@@ -3351,12 +3398,14 @@ def run_main_engine():
         run_played_game_parser_engine("R", regular_season_matches)
         close_progress_frame()
     print_time_diff(start, time.time())
-    return
+
+    # upcoming match parser
     if len(upcoming_matches) > 0:
         print("Running Regular Season Match Predicter")
         run_upcoming_game_parser_engine("R", upcoming_matches)
     print_time_diff(start, time.time())
 
+    # upcoming playoff games based on regular season for sample size reasons
     if len(upcoming_playoff_matches) > 0:
         print("Running Post Season Match Predicter")
         run_upcoming_game_parser_engine("P", upcoming_playoff_matches)
@@ -3396,6 +3445,7 @@ def run_main_engine():
 
     # if playoffs have started then run post processing on those games
     if len(playoff_matches) > 0 :
+        print(len(playoff_matches))
         print("Running Post Season Post Process\n")
         run_played_game_parser_engine("P", playoff_matches)
 
@@ -3407,7 +3457,7 @@ if __name__ == "__main__":
     REG_SEASON_COMPLETE = False
     TREND_FREQUENCY = 0
     TREND_DAY = 5
-    SEASON = 20232024
+    SEASON = 20242025
 
     # construct the main GUI window
     main_window = get_main_window()

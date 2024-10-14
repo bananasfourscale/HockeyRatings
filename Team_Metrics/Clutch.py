@@ -38,6 +38,7 @@ def clutch_get_lead_data(match_data : dict={}) -> dict:
     home_points = 0.0
     home_team = match_data['game_stats']['home_team']
     home_team_stats = match_data['game_stats'][home_team]["team_stats"]
+    # print(home_team_stats)
     home_score_first = home_team_stats["first_period_goals"]
     home_score_second = (
         home_team_stats["first_period_goals"] +

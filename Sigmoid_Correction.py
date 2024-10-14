@@ -15,9 +15,11 @@ def normalize_set(data_set : dict={}) -> dict:
     max_data = max(data_list)
     min_data = min(data_list)
     try:
-        if (max_data != min_data) or ((max_data - min_data) == 0):
+        if (max_data != min_data):
             for item in data_set.keys():
-                normal_set[item] = (data_set[item] - min_data) / (max_data - min_data)
+                normal_set[item] = (
+                    (data_set[item] - min_data) / (max_data - min_data)
+                )
         else:
             for item in data_set.keys():
                 normal_set[item] = (data_set[item] / len(data_list))
@@ -39,6 +41,8 @@ def solve_for_scalar_value(data_set : dict={}, debug : bool=False) -> float:
         print()
 
     # Index of dispersion (σ^2 / μ)
+    if mean(list(normalized_set.values())) == 0:
+        return 0
     return (pow(std(list(normalized_set.values())), 2) /
             mean(list(normalized_set.values())))
     # mean_val = mean(list(data_set.values()))

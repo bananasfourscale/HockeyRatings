@@ -77,6 +77,7 @@ divisions = {
     'Golden Knights' : "PAC",
     'Capitals' : "MET",
     'Jets' : "CEN",
+    'Utah Hockey Club' : "CEN",
 }
 
 

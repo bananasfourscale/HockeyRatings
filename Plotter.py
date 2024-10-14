@@ -86,6 +86,7 @@ team_color_hex_codes = {
     'Golden Knights' : "#B4975A",
     'Capitals' : "#880000",
     'Jets' : "#8E9090",
+    'Utah Hockey Club' : "#69B3E7"
 }
 
 
