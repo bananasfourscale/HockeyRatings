@@ -1409,7 +1409,7 @@ def get_game_records(season_year_id : str="") -> None:
                 # if the game is regular seaason upcoming
                 elif ((parsed_date >= current_date) and
                     (game['game_stats']['game_type'] == 2) and
-                    (game['game_stats']['game_state'] == 'OFF')):
+                    (game['game_stats']['game_state'] == 'FUT')):
                     upcoming_matches[output_list[0]['date']] = output_list
                     counted_games += 1
                     game_index += 1
@@ -1417,7 +1417,7 @@ def get_game_records(season_year_id : str="") -> None:
                 # if the game is postseason already played
                 elif ((parsed_date < current_date) and
                     (game['game_stats']['game_type'] == 3) and
-                    (game['game_stats']['game_state'] == 'FUT')):
+                    (game['game_stats']['game_state'] == 'OFF')):
                     playoff_matches[output_list[0]['date']] = output_list
                     counted_games += 1
                     game_index += 1
@@ -1430,6 +1430,12 @@ def get_game_records(season_year_id : str="") -> None:
                         output_list
                     counted_games += 1
                     game_index += 1
+
+                else:
+                    print(game['game_stats']['game_type'])
+                    print(game['game_stats']['game_state'])
+                    output_list.remove(game)
+                    removed_games += 1
             parsed_dates += 1
             update_progress_text(
                 "Gathering All Match Data: {}/{}".format(
