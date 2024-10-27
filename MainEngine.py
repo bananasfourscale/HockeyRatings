@@ -2494,7 +2494,6 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         combine_all_team_factors()
         
         if final_date:
-            pass
             plot_combined_team_metrics(game_types)
             
 
@@ -2709,23 +2708,23 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # Defense
         for defensemen in utilization_rating_get_dict("D").keys():
             defensemen_total_rating[defensemen] = (
-                (hitting_rating_get_dict("C")[forward] *
+                (hitting_rating_get_dict("D")[defensemen] *
                     defenseman_weights['hits_weight']) +
-                (blocks_rating_get_dict("C")[forward] *
+                (blocks_rating_get_dict("D")[defensemen] *
                     defenseman_weights['shot_blocking_weight']) +
-                (utilization_rating_get_dict("C")[forward] *
+                (utilization_rating_get_dict("D")[defensemen] *
                     defenseman_weights['utilization_weight']) +
-                (discipline_rating_get_dict("C")[forward] *
+                (discipline_rating_get_dict("D")[defensemen] *
                     defenseman_weights['discipline_weight']) +
-                (plus_minus_rating_get_dict("C")[forward] *
+                (plus_minus_rating_get_dict("D")[defensemen] *
                     defenseman_weights['plus_minus_weight']) +
-                (total_points_rating_get_dict("C")[forward] *
+                (total_points_rating_get_dict("D")[defensemen] *
                     defenseman_weights['points_weight']) +
-                (turnovers_rating_get_dict("C")[forward] *
+                (turnovers_rating_get_dict("D")[defensemen] *
                     defenseman_weights['takeaways_weight']) +
-                (contributing_games_rating_get_dict("C")[forward] *
+                (contributing_games_rating_get_dict("D")[defensemen] *
                     defenseman_weights['contribution_weight']) +
-                (multipoint_rating_get_dict("C")[forward] *
+                (multipoint_rating_get_dict("D")[defensemen] *
                     defenseman_weights['multipoint_weight'])
             )
             defensemen_total_rating[defensemen] *= (1 - EYE_TEST_WEIGHT)
