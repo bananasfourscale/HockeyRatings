@@ -217,67 +217,87 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
         recent_form_stats = [0.5, 0.5]
         sos_stats = [0.5, 0.5]
         total_rating_stats = [0.5, 0.5]
+        return [clutch_stats, defensive_stats, offensive_stats,
+            recent_form_stats, sos_stats, total_rating_stats]
 
-    # find the correct scale factors for each team
-    else :
+    # if the home team does not have a ranking because they have not
+    # played yet then default them to 0.5, same for away
+    if not (home_team in total_rating_trend[ranking_date]):
+        clutch_rating_get_trend_dict()[
+            ranking_date][home_team] = 0.5
+        defensive_rating_get_trend_dict()[
+            ranking_date][home_team] = 0.5
+        offensive_rating_get_trend_dict()[
+            ranking_date][home_team] = 0.5
+        recent_form_get_trend_dict()[
+            ranking_date][home_team] = 0.5
+        strength_of_schedule_get_trend_dict()[
+            ranking_date][home_team] = 0.5
+        ranking_absolutes[ranking_date][home_team] = 0.5
+        ranking_averages[ranking_date][home_team] = 0.5
+        total_rating_trend[ranking_date][home_team] = 0.5
+    if not (away_team in total_rating_trend[ranking_date]):
+        clutch_rating_get_trend_dict()[
+            ranking_date][away_team] = 0.5
+        defensive_rating_get_trend_dict()[
+            ranking_date][away_team] = 0.5
+        offensive_rating_get_trend_dict()[
+            ranking_date][away_team] = 0.5
+        recent_form_get_trend_dict()[
+            ranking_date][away_team] = 0.5
+        strength_of_schedule_get_trend_dict()[
+            ranking_date][away_team] = 0.5
+        ranking_absolutes[ranking_date][away_team] = 0.5
+        ranking_averages[ranking_date][away_team] = 0.5
+        total_rating_trend[ranking_date][away_team] = 0.5
 
-        # if the home team does not have a ranking because they have not
-        # played yet then default them to 0.5, same for away
-        if not (home_team in total_rating_trend[ranking_date]):
-            clutch_rating_get_trend_dict()[
-                ranking_date][home_team] = 0.5
-            defensive_rating_get_trend_dict()[
-                ranking_date][home_team] = 0.5
-            offensive_rating_get_trend_dict()[
-                ranking_date][home_team] = 0.5
-            recent_form_get_trend_dict()[
-                ranking_date][home_team] = 0.5
-            strength_of_schedule_get_trend_dict()[
-                ranking_date][home_team] = 0.5
-            ranking_absolutes[ranking_date][home_team] = 0.5
-            ranking_averages[ranking_date][home_team] = 0.5
-            total_rating_trend[ranking_date][home_team] = 0.5
-        if not (away_team in total_rating_trend[ranking_date]):
-            clutch_rating_get_trend_dict()[
-                ranking_date][away_team] = 0.5
-            defensive_rating_get_trend_dict()[
-                ranking_date][away_team] = 0.5
-            offensive_rating_get_trend_dict()[
-                ranking_date][away_team] = 0.5
-            recent_form_get_trend_dict()[
-                ranking_date][away_team] = 0.5
-            strength_of_schedule_get_trend_dict()[
-                ranking_date][away_team] = 0.5
-            ranking_absolutes[ranking_date][away_team] = 0.5
-            ranking_averages[ranking_date][away_team] = 0.5
-            total_rating_trend[ranking_date][away_team] = 0.5
+    # clutch trends don't really counter eachother so pass total
+    # rating score to scale instead
+    clutch_stats = [
+        total_rating_trend[ranking_date][home_team],
+        total_rating_trend[ranking_date][away_team]
+    ]
+    defensive_stats = [
+        defensive_rating_get_trend_dict()[ranking_date][home_team],
+        defensive_rating_get_trend_dict()[ranking_date][away_team]
+    ]
+    offensive_stats = [
+        offensive_rating_get_trend_dict()[ranking_date][home_team],
+        offensive_rating_get_trend_dict()[ranking_date][away_team]
+    ]
+    recent_form_stats = [
+        recent_form_get_trend_dict()[ranking_date][home_team],
+        recent_form_get_trend_dict()[ranking_date][away_team]
+    ]
+    sos_stats = [
+        strength_of_schedule_get_trend_dict()[ranking_date][home_team],
+        strength_of_schedule_get_trend_dict()[ranking_date][away_team]
+    ]
+    total_rating_stats = [
+        total_rating_trend[ranking_date][home_team],
+        total_rating_trend[ranking_date][away_team]
+    ]
 
-        # clutch trends don't really counter eachother so pass total
-        # rating score to scale instead
-        clutch_stats = [
-            total_rating_trend[ranking_date][home_team],
-            total_rating_trend[ranking_date][away_team]
-        ]
-        defensive_stats = [
-            defensive_rating_get_trend_dict()[ranking_date][home_team],
-            defensive_rating_get_trend_dict()[ranking_date][away_team]
-        ]
-        offensive_stats = [
-            offensive_rating_get_trend_dict()[ranking_date][home_team],
-            offensive_rating_get_trend_dict()[ranking_date][away_team]
-        ]
-        recent_form_stats = [
-            recent_form_get_trend_dict()[ranking_date][home_team],
-            recent_form_get_trend_dict()[ranking_date][away_team]
-        ]
-        sos_stats = [
-            strength_of_schedule_get_trend_dict()[ranking_date][home_team],
-            strength_of_schedule_get_trend_dict()[ranking_date][away_team]
-        ]
-        total_rating_stats = [
-            total_rating_trend[ranking_date][home_team],
-            total_rating_trend[ranking_date][away_team]
-        ]
+    # if either team has played less than 5 games, we cant get a real score from
+    # them so just set to .5
+    if (home_team in strength_of_schedule_get_games_played_dict().keys()):
+        if strength_of_schedule_get_games_played_dict()[home_team] < 5:
+            clutch_stats[Team_Selection.HOME.value] = 0.5
+            defensive_stats[Team_Selection.HOME.value] = 0.5
+            offensive_stats[Team_Selection.HOME.value] = 0.5
+            recent_form_stats[Team_Selection.HOME.value] = 0.5
+            sos_stats[Team_Selection.HOME.value] = 0.5
+            total_rating_stats[Team_Selection.HOME.value] = 0.5
+
+    if (away_team in strength_of_schedule_get_games_played_dict().keys()):
+        if strength_of_schedule_get_games_played_dict()[away_team] < 5:
+            clutch_stats[Team_Selection.AWAY.value] = 0.5
+            defensive_stats[Team_Selection.AWAY.value] = 0.5
+            offensive_stats[Team_Selection.AWAY.value] = 0.5
+            recent_form_stats[Team_Selection.AWAY.value] = 0.5
+            sos_stats[Team_Selection.AWAY.value] = 0.5
+            total_rating_stats[Team_Selection.AWAY.value] = 0.5
+
     return [clutch_stats, defensive_stats, offensive_stats, recent_form_stats,
         sos_stats, total_rating_stats]
 
