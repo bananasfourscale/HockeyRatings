@@ -20,10 +20,7 @@ from League_Stats.Shooting_Percentage import \
     shooting_percentage_calculate_league_values
 
 # import all custom team modules for statistical analysis
-from Team_Metrics.Clutch import clutch_rating_get_dict, \
-    clutch_rating_get_trend_dict, clutch_rating_reset, \
-    clutch_get_lead_data, clutch_add_match_data, \
-    clutch_rating_scale_by_game, clutch_update_trend
+from Team_Metrics.Clutch import Clutch
 from Team_Metrics.Defensive_Rating import defensive_rating_get_dict, \
     defensive_rating_get_shots_against_dict, \
     defensive_rating_get_unscaled_shots_against_dict, \
@@ -164,7 +161,6 @@ plotting_queue = Queue()
 dummy_queue = Queue()
 plots_count = 0
 
-
 class Metric_Order(Enum):
     CLUTCH = 0
     DEFENSIVE = 1
@@ -173,10 +169,12 @@ class Metric_Order(Enum):
     SOS = 4
     TOTAL = 5
 
-
 class Team_Selection(Enum):
     HOME = 0
     AWAY = 1
+
+# metric class instances
+clutch_metric = Clutch()
 
 
 def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
@@ -223,7 +221,7 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
     # if the home team does not have a ranking because they have not
     # played yet then default them to 0.5, same for away
     if not (home_team in total_rating_trend[ranking_date]):
-        clutch_rating_get_trend_dict()[
+        clutch_metric.get_trend_dict()[
             ranking_date][home_team] = 0.5
         defensive_rating_get_trend_dict()[
             ranking_date][home_team] = 0.5
@@ -237,7 +235,7 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
         ranking_averages[ranking_date][home_team] = 0.5
         total_rating_trend[ranking_date][home_team] = 0.5
     if not (away_team in total_rating_trend[ranking_date]):
-        clutch_rating_get_trend_dict()[
+        clutch_metric.get_trend_dict()[
             ranking_date][away_team] = 0.5
         defensive_rating_get_trend_dict()[
             ranking_date][away_team] = 0.5
@@ -311,7 +309,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     home_team = match_data["game_stats"]["home_team"]
 
     ### clutch rating ###
-    clutch_data = clutch_get_lead_data(match_data)
+    clutch_data = clutch_metric.get_data_set(match_data)
     clutch_data[home_team] *= (
         1 + relative_metrics[Metric_Order.CLUTCH.value][
             Team_Selection.AWAY.value]
@@ -1010,7 +1008,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}ClutchRatingBase.csv".format(
             prefix
         ),
-        ["Team", "Clutch Rating Base"], clutch_rating_get_dict())
+        ["Team", "Clutch Rating Base"], clutch_metric.get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}ClutchRatingBase.csv".format(
             prefix
@@ -1178,7 +1176,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ClutchRatingFinal.csv",
-        ["Team", "Clutch Rating Corrected"], clutch_rating_get_dict())
+        ["Team", "Clutch Rating Corrected"], clutch_metric.get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ClutchRatingFinal.csv",
@@ -1411,7 +1409,7 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Trend_Files/{}ClutchRating.csv".format(
             prefix
         ),
-        clutch_rating_get_trend_dict(), "Clutch Rating")
+        clutch_metric.get_trend_dict(), "Clutch Rating")
     plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/{}ClutchRating.csv".format(
             prefix
@@ -2264,9 +2262,9 @@ def plot_combined_player_metrics(game_types : str="R") -> None:
 def combine_all_team_factors() -> None:
     
     # calculate the final rating for all teams using the forms above
-    for team in clutch_rating_get_dict().keys():
+    for team in clutch_metric.get_dict().keys():
         team_total_rating[team] = \
-            (clutch_rating_get_dict()[team] *
+            (clutch_metric.get_dict()[team] *
                 team_weights['clutch_weight']) + \
             (defensive_rating_get_dict()[team] *
                 team_weights['defensive_weight']) + \
@@ -2425,7 +2423,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     metric_data = output_list["team_data"]
 
                     ### clutch data ###
-                    clutch_add_match_data(metric_data['clutch_data'])
+                    clutch_metric.add_match_data(metric_data['clutch_data'])
 
                     ### defensive data ###
                     defensive_rating_add_match_data(
@@ -2445,7 +2443,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
 ##################### TEAM RANKING PERIOD PROCESSING ###########################
         # call any cleanup calculations required
-        clutch_rating_scale_by_game()
+        clutch_metric.rating_scale_by_game()
         defensive_rating_calculate_all()
         offensive_rating_calculate_power_play()
         recent_form_calculate_all()
@@ -2468,7 +2466,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             plot_uncorrected_team_metrics(game_types)
 
         # Clutch Rating
-        apply_sigmoid_correction(clutch_rating_get_dict())
+        apply_sigmoid_correction(clutch_metric.get_dict())
 
         # Defensive Rating
         apply_sigmoid_correction(defensive_rating_get_shots_against_dict(),
@@ -2519,7 +2517,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         ### Update any trend sets if on ranking date ###
         # clutch
-        clutch_update_trend(ranking_period[-1])
+        clutch_metric.update_trend(ranking_period[-1])
         
         # defensive rating
         defensive_rating_update_trends(ranking_period[-1])
@@ -3204,14 +3202,14 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
 
             # some error catching for missing stats
             # Clutch Rating
-            if home_team not in clutch_rating_get_dict().keys():
+            if home_team not in clutch_metric.get_dict().keys():
                 home_stat = 0
             else:
-                home_stat = clutch_rating_get_dict()[home_team]
-            if away_team not in clutch_rating_get_dict().keys():
+                home_stat = clutch_metric.get_dict()[home_team]
+            if away_team not in clutch_metric.get_dict().keys():
                 away_stat = 0
             else:
-                away_stat = clutch_rating_get_dict()[away_team]
+                away_stat = clutch_metric.get_dict()[away_team]
             clutch_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Defensive Ratings
@@ -3431,7 +3429,7 @@ def run_main_engine():
     print_time_diff(start, time.time())
 
     # reset all stats to just isolate post season.
-    clutch_rating_reset()
+    clutch_metric.rating_reset()
     defensive_rating_reset()
     offensive_rating_reset()
     recent_form_reset()
