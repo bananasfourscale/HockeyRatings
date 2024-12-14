@@ -55,7 +55,8 @@ class Clutch():
         home_score_final = (
             home_team_stats["first_period_goals"] +
             home_team_stats["second_period_goals"] +
-            home_team_stats["third_period_goals"] + home_team_stats["OT_goals"] +
+            home_team_stats["third_period_goals"] +
+            home_team_stats["OT_goals"] +
             home_team_stats["SO_goals"]
         )
 
@@ -81,7 +82,8 @@ class Clutch():
         away_score_final = (
             away_team_stats["first_period_goals"] +
             away_team_stats["second_period_goals"] +
-            away_team_stats["third_period_goals"] + away_team_stats["OT_goals"] +
+            away_team_stats["third_period_goals"] +
+            away_team_stats["OT_goals"] +
             away_team_stats["SO_goals"]
         )
 
@@ -89,6 +91,7 @@ class Clutch():
         first_diff = abs(away_score_first - home_score_first)
         second_diff = abs(away_score_second - home_score_second)
         third_diff = abs(away_score_third - home_score_third)
+        final_diff = abs(away_score_final - home_score_final)
 
         # print(home_team, ":", away_team)
         # print("\t", home_score_first, ":", away_score_first)
@@ -126,6 +129,7 @@ class Clutch():
             # print("\t", home_score_third, ":", away_score_third)
 
             # third period points. If not equal at this point away team has won
+            # in regulation
             if away_score_third != home_score_third:
                 away_points += log(third_diff * self.THIRD_FACTOR,
                     self.LOG_FACTOR)

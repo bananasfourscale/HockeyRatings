@@ -21,33 +21,10 @@ from League_Stats.Shooting_Percentage import \
 
 # import all custom team modules for statistical analysis
 from Team_Metrics.Clutch import Clutch
-from Team_Metrics.Defensive_Rating import defensive_rating_get_dict, \
-    defensive_rating_get_shots_against_dict, \
-    defensive_rating_get_unscaled_shots_against_dict, \
-    defensive_rating_get_goals_against_dict, defensive_rating_get_pk_dict, \
-    defensive_rating_get_trend_dict, defensive_rating_get_pk_oppertunities_dict, \
-    defensive_rating_reset, defensive_rating_get_data_set, \
-    defensive_rating_add_match_data, defensive_rating_calculate_all, \
-    defensive_rating_combine_metrics, defensive_rating_update_trends
-from Team_Metrics.Offensive_Rating import offensive_rating_get_dict, \
-    offensive_rating_get_shots_for_dict, offensive_rating_get_goals_for_dict, \
-    offensive_rating_get_pp_dict, offensive_rating_get_trend_dict, \
-    offensive_rating_get_pp_oppertunities_dict, offensive_rating_reset, \
-    offensive_rating_get_data_set, offensive_rating_add_match_data, \
-    offensive_rating_calculate_power_play, offensive_rating_combine_metrics, \
-    offensive_rating_update_trends
-from Team_Metrics.Recent_Form import recent_form_get_dict, \
-    recent_form_get_streak_dict, recent_form_get_longest_streak_dict, \
-    recent_form_get_last_10_dict, recent_form_get_last_20_dict, \
-    recent_form_get_last_40_dict, recent_form_get_trend_dict, recent_form_reset, \
-    recent_form_get_data_set, recent_form_add_match_data, \
-    recent_form_calculate_all, recent_form_combine_metrics, \
-    recent_form_update_trends
-from Team_Metrics.Strength_of_Schedule import strength_of_schedule_get_dict, \
-    strength_of_schedule_get_games_played_dict, \
-    strength_of_schedule_get_trend_dict, strength_of_schedule_reset, \
-    strength_of_schedule_get_data_set, strength_of_schedule_add_match_data, \
-    strength_of_schedule_scale_by_game, strength_of_schedule_update_trends
+from Team_Metrics.Defensive_Rating import Defensive_Rating
+from Team_Metrics.Offensive_Rating import Offensive_Rating
+from Team_Metrics.Recent_Form import Recent_Form
+from Team_Metrics.Strength_of_Schedule import Strength_of_Schedule
 
 # import all custom player modules for statistical analysis
 from Shared_Metrics.Utilization import utilization_base_get_dict, \
@@ -175,6 +152,10 @@ class Team_Selection(Enum):
 
 # metric class instances
 clutch_metric = Clutch()
+defensive_rating_metric = Defensive_Rating()
+offensive_rating_metric = Offensive_Rating()
+recent_form_metric = Recent_Form()
+strength_of_schedule_metric = Strength_of_Schedule()
 
 
 def print_time_diff(start_time : float=0.0, end_time : float=0.0) -> None:
@@ -223,13 +204,13 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
     if not (home_team in total_rating_trend[ranking_date]):
         clutch_metric.get_trend_dict()[
             ranking_date][home_team] = 0.5
-        defensive_rating_get_trend_dict()[
+        defensive_rating_metric.defensive_rating_get_trend_dict()[
             ranking_date][home_team] = 0.5
-        offensive_rating_get_trend_dict()[
+        offensive_rating_metric.offensive_rating_get_trend_dict()[
             ranking_date][home_team] = 0.5
-        recent_form_get_trend_dict()[
+        recent_form_metric.recent_form_get_trend_dict()[
             ranking_date][home_team] = 0.5
-        strength_of_schedule_get_trend_dict()[
+        strength_of_schedule_metric.strength_of_schedule_get_trend_dict()[
             ranking_date][home_team] = 0.5
         ranking_absolutes[ranking_date][home_team] = 0.5
         ranking_averages[ranking_date][home_team] = 0.5
@@ -237,13 +218,13 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
     if not (away_team in total_rating_trend[ranking_date]):
         clutch_metric.get_trend_dict()[
             ranking_date][away_team] = 0.5
-        defensive_rating_get_trend_dict()[
+        defensive_rating_metric.defensive_rating_get_trend_dict()[
             ranking_date][away_team] = 0.5
-        offensive_rating_get_trend_dict()[
+        offensive_rating_metric.offensive_rating_get_trend_dict()[
             ranking_date][away_team] = 0.5
-        recent_form_get_trend_dict()[
+        recent_form_metric.recent_form_get_trend_dict()[
             ranking_date][away_team] = 0.5
-        strength_of_schedule_get_trend_dict()[
+        strength_of_schedule_metric.strength_of_schedule_get_trend_dict()[
             ranking_date][away_team] = 0.5
         ranking_absolutes[ranking_date][away_team] = 0.5
         ranking_averages[ranking_date][away_team] = 0.5
@@ -256,20 +237,28 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
         total_rating_trend[ranking_date][away_team]
     ]
     defensive_stats = [
-        defensive_rating_get_trend_dict()[ranking_date][home_team],
-        defensive_rating_get_trend_dict()[ranking_date][away_team]
+        defensive_rating_metric.defensive_rating_get_trend_dict()[
+            ranking_date][home_team],
+        defensive_rating_metric.defensive_rating_get_trend_dict()[
+            ranking_date][away_team]
     ]
     offensive_stats = [
-        offensive_rating_get_trend_dict()[ranking_date][home_team],
-        offensive_rating_get_trend_dict()[ranking_date][away_team]
+        offensive_rating_metric.offensive_rating_get_trend_dict()[
+            ranking_date][home_team],
+        offensive_rating_metric.offensive_rating_get_trend_dict()[
+            ranking_date][away_team]
     ]
     recent_form_stats = [
-        recent_form_get_trend_dict()[ranking_date][home_team],
-        recent_form_get_trend_dict()[ranking_date][away_team]
+        recent_form_metric.recent_form_get_trend_dict()[
+            ranking_date][home_team],
+        recent_form_metric.recent_form_get_trend_dict()[ranking_date
+                                                        ][away_team]
     ]
     sos_stats = [
-        strength_of_schedule_get_trend_dict()[ranking_date][home_team],
-        strength_of_schedule_get_trend_dict()[ranking_date][away_team]
+        strength_of_schedule_metric.strength_of_schedule_get_trend_dict()[
+            ranking_date][home_team],
+        strength_of_schedule_metric.strength_of_schedule_get_trend_dict()[
+            ranking_date][away_team]
     ]
     total_rating_stats = [
         total_rating_trend[ranking_date][home_team],
@@ -278,8 +267,10 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
 
     # if either team has played less than 5 games, we cant get a real score from
     # them so just set to .5
-    if (home_team in strength_of_schedule_get_games_played_dict().keys()):
-        if strength_of_schedule_get_games_played_dict()[home_team] < 5:
+    if (home_team in strength_of_schedule_metric.
+        strength_of_schedule_get_games_played_dict().keys()):
+        if (strength_of_schedule_metric.
+            strength_of_schedule_get_games_played_dict()[home_team] < 5):
             clutch_stats[Team_Selection.HOME.value] = 0.5
             defensive_stats[Team_Selection.HOME.value] = 0.5
             offensive_stats[Team_Selection.HOME.value] = 0.5
@@ -287,8 +278,10 @@ def get_team_trend_by_date(home_team : str="", away_team : str="",
             sos_stats[Team_Selection.HOME.value] = 0.5
             total_rating_stats[Team_Selection.HOME.value] = 0.5
 
-    if (away_team in strength_of_schedule_get_games_played_dict().keys()):
-        if strength_of_schedule_get_games_played_dict()[away_team] < 5:
+    if (away_team in strength_of_schedule_metric.
+        strength_of_schedule_get_games_played_dict().keys()):
+        if (strength_of_schedule_metric.
+            strength_of_schedule_get_games_played_dict()[away_team] < 5):
             clutch_stats[Team_Selection.AWAY.value] = 0.5
             defensive_stats[Team_Selection.AWAY.value] = 0.5
             offensive_stats[Team_Selection.AWAY.value] = 0.5
@@ -322,7 +315,8 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
 
     ### defensive rating ###
     # shots against
-    defensive_data = defensive_rating_get_data_set(match_data)
+    defensive_data = defensive_rating_metric.defensive_rating_get_data_set(
+        match_data)
     defensive_data['shots_against'][home_team] /= (
         1 + relative_metrics[Metric_Order.OFFENSIVE.value][
             Team_Selection.AWAY.value]
@@ -355,7 +349,9 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
 
     ### offensive rating ###
     # shots for
-    offensive_data = offensive_rating_get_data_set(match_data)
+    offensive_data = (
+        offensive_rating_metric.offensive_rating_get_data_set(match_data)
+    )
     offensive_data['shots_for'][home_team] *= (
         1 + relative_metrics[Metric_Order.DEFENSIVE.value][
             Team_Selection.AWAY.value]
@@ -387,7 +383,7 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     metric_data['team_data']['offensive_data'] = offensive_data
 
     ### recent form ###
-    recent_form_data = recent_form_get_data_set(match_data)
+    recent_form_data = recent_form_metric.recent_form_get_data_set(match_data)
     recent_form_data['game value'][home_team] *= (
         1 + relative_metrics[Metric_Order.RECENT.value][
             Team_Selection.AWAY.value]
@@ -399,7 +395,10 @@ def parse_team_match_data(match_data : dict={}, relative_metrics : list=[]) \
     metric_data['team_data']['recent_form_data'] = recent_form_data
 
     ### strength of schedule
-    sos_data = strength_of_schedule_get_data_set(match_data)
+    sos_data = (
+        strength_of_schedule_metric.strength_of_schedule_get_data_set(
+            match_data)
+    )
     sos_data[home_team] *= (
         1 + relative_metrics[Metric_Order.SOS.value][Team_Selection.AWAY.value]
     )
@@ -1021,7 +1020,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsAgaRatingBase.csv",
         ["Team", "Shots Against Base"],
-        defensive_rating_get_shots_against_dict())
+        defensive_rating_metric.defensive_rating_get_shots_against_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsAgaRatingBase.csv",
@@ -1032,7 +1031,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsAgaRatingBase.csv",
         ["Team", "Goals Against Base"],
-        defensive_rating_get_goals_against_dict())
+        defensive_rating_metric.defensive_rating_get_goals_against_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsAgaRatingBase.csv",
@@ -1043,7 +1042,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}PKRatingBase.csv".format(
             prefix),
-        ["Team", "Penalty Kill Base"], defensive_rating_get_pk_dict())
+        ["Team", "Penalty Kill Base"],
+        defensive_rating_metric.defensive_rating_get_pk_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}PKRatingBase.csv".format(
             prefix
@@ -1056,7 +1056,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsForRatingBase.csv",
-        ["Team", "Shots For Base"], offensive_rating_get_shots_for_dict())
+        ["Team", "Shots For Base"],
+        offensive_rating_metric.offensive_rating_get_shots_for_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsForRatingBase.csv",
@@ -1067,7 +1068,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsForRatingBase.csv",
-        ["Team", "Goals For Base"], offensive_rating_get_goals_for_dict())
+        ["Team", "Goals For Base"],
+        offensive_rating_metric.offensive_rating_get_goals_for_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsForRatingBase.csv",
@@ -1078,7 +1080,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PPRatingBase.csv",
-        ["Team", "Power Play Base"], offensive_rating_get_pp_dict())
+        ["Team", "Power Play Base"],
+        offensive_rating_metric.offensive_rating_get_pp_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PPRatingBase.csv",
@@ -1091,7 +1094,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakBase.csv",
-        ["Team", "Average Streak Score Base"], recent_form_get_streak_dict())
+        ["Team", "Average Streak Score Base"],
+        recent_form_metric.recent_form_get_streak_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakBase.csv",
@@ -1105,7 +1109,7 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLongestStreakBase.csv",
         ["Team", "Longest Streak Score Base"],
-        recent_form_get_longest_streak_dict())
+        recent_form_metric.recent_form_get_longest_streak_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLongestStreakBase.csv",
@@ -1118,7 +1122,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Base.csv",
-        ["Team", "Last Ten Games"], recent_form_get_last_10_dict())
+        ["Team", "Last Ten Games"],
+        recent_form_metric.recent_form_get_last_10_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Base.csv",
@@ -1131,7 +1136,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Base.csv",
-        ["Team", "Last Twenty Games"], recent_form_get_last_20_dict())
+        ["Team", "Last Twenty Games"],
+        recent_form_metric.recent_form_get_last_20_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Base.csv",
@@ -1144,7 +1150,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Base.csv",
-        ["Team", "Last Fourty Games"], recent_form_get_last_40_dict())
+        ["Team", "Last Fourty Games"],
+        recent_form_metric.recent_form_get_last_40_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Base.csv",
@@ -1157,7 +1164,8 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"], strength_of_schedule_get_dict())
+        ["Team", "Strength of Schedule Base"],
+        strength_of_schedule_metric.strength_of_schedule_get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "StengthOfScheduleBase.csv",
@@ -1189,7 +1197,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsAgaRatingCorr.csv",
         ["Team", "Shots Against Corrected"],
-        defensive_rating_get_shots_against_dict())
+        defensive_rating_metric.defensive_rating_get_shots_against_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsAgaRatingCorr.csv",
@@ -1201,7 +1209,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsAgaRatingCorr.csv",
         ["Team", "Goals Against Corrected"],
-        defensive_rating_get_goals_against_dict())
+        defensive_rating_metric.defensive_rating_get_goals_against_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) + 
             "GoalsAgaRatingCorr.csv",
@@ -1212,7 +1220,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PKRatingCorr.csv",
-        ["Team", "Penalty Kill Corrected"], defensive_rating_get_pk_dict())
+        ["Team", "Penalty Kill Corrected"],
+        defensive_rating_metric.defensive_rating_get_pk_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PKRatingCorr.csv",
@@ -1225,7 +1234,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsForRatingCorr.csv",
-        ["Team", "Shots For Corrected"], offensive_rating_get_shots_for_dict())
+        ["Team", "Shots For Corrected"],
+        offensive_rating_metric.offensive_rating_get_shots_for_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "ShotsForRatingCorr.csv",
@@ -1236,7 +1246,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsForRatingCorr.csv",
-        ["Team", "Goals For Corrected"], offensive_rating_get_goals_for_dict())
+        ["Team", "Goals For Corrected"],
+        offensive_rating_metric.offensive_rating_get_goals_for_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "GoalsForRatingCorr.csv",
@@ -1247,7 +1258,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PPRatingCorr.csv",
-        ["Team", "Power Play Corrected"], offensive_rating_get_pp_dict())
+        ["Team", "Power Play Corrected"],
+        offensive_rating_metric.offensive_rating_get_pp_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "PPRatingCorr.csv",
@@ -1261,7 +1273,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakCorr.csv",
         ["Team", "Average Streak Score Corrected"],
-        recent_form_get_streak_dict())
+        recent_form_metric.recent_form_get_streak_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormStreakCorr.csv",
@@ -1275,7 +1287,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLongestStreakCorr.csv",
         ["Team", "Longest Streak Score Corrected"],
-        recent_form_get_longest_streak_dict())
+        recent_form_metric.recent_form_get_longest_streak_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLongestStreakCorr.csv",
@@ -1288,7 +1300,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Corr.csv",
-        ["Team", "Last Ten Games"], recent_form_get_last_10_dict())
+        ["Team", "Last Ten Games"],
+        recent_form_metric.recent_form_get_last_10_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast10Corr.csv",
@@ -1301,7 +1314,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Corr.csv",
-        ["Team", "Last Twenty Games"], recent_form_get_last_20_dict())
+        ["Team", "Last Twenty Games"],
+        recent_form_metric.recent_form_get_last_20_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast20Corr.csv",
@@ -1314,7 +1328,8 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Corr.csv",
-        ["Team", "Last Fourty Games"], recent_form_get_last_40_dict())
+        ["Team", "Last Fourty Games"],
+        recent_form_metric.recent_form_get_last_40_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "RecentFormLast40Corr.csv",
@@ -1328,7 +1343,7 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "StengthOfScheduleCorrected.csv",
         ["Team", "Strength of Schedule Corrected"],
-        strength_of_schedule_get_dict())
+        strength_of_schedule_metric.strength_of_schedule_get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
             "StengthOfScheduleCorrected.csv",
@@ -1348,7 +1363,8 @@ def plot_combined_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}DefensiveRating.csv".format(
             prefix
         ),
-        ["Team", "Defensive Rating Final"], defensive_rating_get_dict())
+        ["Team", "Defensive Rating Final"],
+        defensive_rating_metric.defensive_rating_get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}DefensiveRating.csv".format(
             prefix
@@ -1361,7 +1377,8 @@ def plot_combined_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}OffensiveRating.csv".format(
             prefix
         ),
-        ["Team", "Offensive Rating Final"], offensive_rating_get_dict())
+        ["Team", "Offensive Rating Final"],
+        offensive_rating_metric.offensive_rating_get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}OffensiveRating.csv".format(
             prefix
@@ -1374,7 +1391,8 @@ def plot_combined_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Instance_Files/{}RecentFormFinal.csv".format(
             prefix
         ),
-        ["Team", "Recent Form Rating"], recent_form_get_dict())
+        ["Team", "Recent Form Rating"],
+        recent_form_metric.recent_form_get_dict())
     plotting_queue.put((plot_data_set,
         ("Output_Files/Team_Files/Instance_Files/{}RecentFormFinal.csv".format(
             prefix
@@ -1424,7 +1442,8 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Trend_Files/{}DefensiveRating.csv".format(
             prefix
         ),
-        defensive_rating_get_trend_dict(), "Defensive Rating")
+        defensive_rating_metric.defensive_rating_get_trend_dict(),
+        "Defensive Rating")
     plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/{}DefensiveRating.csv".format(
             prefix
@@ -1439,7 +1458,8 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Trend_Files/{}OffensiveRating.csv".format(
             prefix
         ),
-        offensive_rating_get_trend_dict(), "Offensive Rating")
+        offensive_rating_metric.offensive_rating_get_trend_dict(),
+        "Offensive Rating")
     plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/{}OffensiveRating.csv".format(
             prefix
@@ -1454,7 +1474,7 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Trend_Files/{}RecentForm.csv".format(
             prefix
         ),
-        recent_form_get_trend_dict(), "Recent Form")
+        recent_form_metric.recent_form_get_trend_dict(), "Recent Form")
     plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/{}RecentForm.csv".format(
             prefix
@@ -1469,7 +1489,7 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         "Output_Files/Team_Files/Trend_Files/{}StrengthOfSchedule.csv".format(
             prefix
         ),
-        strength_of_schedule_get_trend_dict(),
+        strength_of_schedule_metric.strength_of_schedule_get_trend_dict(),
         "Strength of Schedule")
     plotting_queue.put((plot_team_trend_set,
         ("Output_Files/Team_Files/Trend_Files/{}StrengthOfSchedule.csv".format(
@@ -2266,13 +2286,13 @@ def combine_all_team_factors() -> None:
         team_total_rating[team] = \
             (clutch_metric.get_dict()[team] *
                 team_weights['clutch_weight']) + \
-            (defensive_rating_get_dict()[team] *
+            (defensive_rating_metric.defensive_rating_get_dict()[team] *
                 team_weights['defensive_weight']) + \
-            (offensive_rating_get_dict()[team] *
+            (offensive_rating_metric.offensive_rating_get_dict()[team] *
                 team_weights['offensive_weight']) + \
-            (recent_form_get_dict()[team] *
+            (recent_form_metric.recent_form_get_dict()[team] *
                 team_weights['recent_form_weight']) + \
-            (strength_of_schedule_get_dict()[team] *
+            (strength_of_schedule_metric.strength_of_schedule_get_dict()[team] *
                 team_weights['strength_of_schedule_weight'])
     
 
@@ -2426,28 +2446,31 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     clutch_metric.add_match_data(metric_data['clutch_data'])
 
                     ### defensive data ###
-                    defensive_rating_add_match_data(
+                    defensive_rating_metric.defensive_rating_add_match_data(
                         metric_data['defensive_data'])
 
                     ### offensive data ###
-                    offensive_rating_add_match_data(
+                    offensive_rating_metric.offensive_rating_add_match_data(
                         metric_data['offensive_data'])
 
                     ### recent form data ###
-                    recent_form_add_match_data(metric_data['recent_form_data'])
+                    recent_form_metric.recent_form_add_match_data(
+                        metric_data['recent_form_data'])
 
                     ### strength of schedule data ###
-                    strength_of_schedule_add_match_data(metric_data['sos_data'])
+                    strength_of_schedule_metric.\
+                        strength_of_schedule_add_match_data(
+                            metric_data['sos_data'])
         for process in metric_process_list:
             process.join()
 
 ##################### TEAM RANKING PERIOD PROCESSING ###########################
         # call any cleanup calculations required
         clutch_metric.rating_scale_by_game()
-        defensive_rating_calculate_all()
-        offensive_rating_calculate_power_play()
-        recent_form_calculate_all()
-        strength_of_schedule_scale_by_game()
+        defensive_rating_metric.defensive_rating_calculate_all()
+        offensive_rating_metric.offensive_rating_calculate_power_play()
+        recent_form_metric.recent_form_calculate_all()
+        strength_of_schedule_metric.strength_of_schedule_scale_by_game()
 
         # only take the time to plot if we are done with all data
         if final_date:
@@ -2469,26 +2492,38 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         apply_sigmoid_correction(clutch_metric.get_dict())
 
         # Defensive Rating
-        apply_sigmoid_correction(defensive_rating_get_shots_against_dict(),
+        apply_sigmoid_correction(
+            defensive_rating_metric.defensive_rating_get_shots_against_dict(),
             True)
-        apply_sigmoid_correction(defensive_rating_get_goals_against_dict(),
+        apply_sigmoid_correction(
+            defensive_rating_metric.defensive_rating_get_goals_against_dict(),
             True)
-        apply_sigmoid_correction(defensive_rating_get_pk_dict())
+        apply_sigmoid_correction(
+            defensive_rating_metric.defensive_rating_get_pk_dict())
 
         # Offensive Rating
-        apply_sigmoid_correction(offensive_rating_get_shots_for_dict())
-        apply_sigmoid_correction(offensive_rating_get_goals_for_dict())
-        apply_sigmoid_correction(offensive_rating_get_pp_dict())
+        apply_sigmoid_correction(
+            offensive_rating_metric.offensive_rating_get_shots_for_dict())
+        apply_sigmoid_correction(
+            offensive_rating_metric.offensive_rating_get_goals_for_dict())
+        apply_sigmoid_correction(
+            offensive_rating_metric.offensive_rating_get_pp_dict())
 
         # Recent Form
-        apply_sigmoid_correction(recent_form_get_streak_dict())
-        apply_sigmoid_correction(recent_form_get_longest_streak_dict())
-        apply_sigmoid_correction(recent_form_get_last_10_dict())
-        apply_sigmoid_correction(recent_form_get_last_20_dict())
-        apply_sigmoid_correction(recent_form_get_last_40_dict())
+        apply_sigmoid_correction(
+            recent_form_metric.recent_form_get_streak_dict())
+        apply_sigmoid_correction(
+            recent_form_metric.recent_form_get_longest_streak_dict())
+        apply_sigmoid_correction(
+            recent_form_metric.recent_form_get_last_10_dict())
+        apply_sigmoid_correction(
+            recent_form_metric.recent_form_get_last_20_dict())
+        apply_sigmoid_correction(
+            recent_form_metric.recent_form_get_last_40_dict())
 
         # Strenght of Schedule
-        apply_sigmoid_correction(strength_of_schedule_get_dict(),)
+        apply_sigmoid_correction(
+            strength_of_schedule_metric.strength_of_schedule_get_dict())
 
         # write out any plots after sigmoid correction
         if final_date:
@@ -2500,13 +2535,13 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # pass
 
         # Defensive Rating
-        defensive_rating_combine_metrics()
+        defensive_rating_metric.defensive_rating_combine_metrics()
 
         # Offensive Rating
-        offensive_rating_combine_metrics()
+        offensive_rating_metric.offensive_rating_combine_metrics()
 
         # Recent Form
-        recent_form_combine_metrics()
+        recent_form_metric.recent_form_combine_metrics()
 
         # combine all factors and plot the total rankings
         combine_all_team_factors()
@@ -2520,16 +2555,19 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         clutch_metric.update_trend(ranking_period[-1])
         
         # defensive rating
-        defensive_rating_update_trends(ranking_period[-1])
+        defensive_rating_metric.defensive_rating_update_trends(
+            ranking_period[-1])
 
         # offensive rating
-        offensive_rating_update_trends(ranking_period[-1])
+        offensive_rating_metric.offensive_rating_update_trends(
+            ranking_period[-1])
 
         # recent form
-        recent_form_update_trends(ranking_period[-1])
+        recent_form_metric.recent_form_update_trends(ranking_period[-1])
 
         # strenght of schedule
-        strength_of_schedule_update_trends(ranking_period[-1])
+        strength_of_schedule_metric.strength_of_schedule_update_trends(
+            ranking_period[-1])
 
         # sort teams for absolute and average rankings
         tuple_list = []
@@ -2560,7 +2598,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
 ####################### PLAYER RANKING PERIOD PROCESSING #######################
         ### Goalies ###
-        utilization_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        utilization_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             goalie_teams, "G")
         apply_sigmoid_correction(utilization_rating_get_dict("G"))
 
@@ -2571,64 +2611,91 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         goalie_save_percentage_calculate_all()
         goalie_save_percentage_combine_metrics(
-            strength_of_schedule_get_games_played_dict(),
-            offensive_rating_get_pp_oppertunities_dict(),
-            defensive_rating_get_pk_oppertunities_dict(),
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            offensive_rating_metric.
+                offensive_rating_get_pp_oppertunities_dict(),
+            defensive_rating_metric.
+                defensive_rating_get_pk_oppertunities_dict(),
             utilization_rating_get_dict("G"), goalie_teams)
 
         goalie_save_consistency_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), goalie_teams)
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            goalie_teams)
 
         ### Forwards ###
         utilization_scale_by_game(
-            strength_of_schedule_get_games_played_dict(), forward_teams, "C")
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            forward_teams, "C")
         apply_sigmoid_correction(utilization_rating_get_dict("C"))
 
         blocks_scale_by_shots_against(
-            defensive_rating_get_unscaled_shots_against_dict(), forward_teams,
-            "C")
+            defensive_rating_metric.
+                defensive_rating_get_unscaled_shots_against_dict(),
+            forward_teams, "C")
 
         contributing_games_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), forward_teams, "C")
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            forward_teams, "C")
 
         discipline_scale_by_utilization(utilization_rating_get_dict("C"), "C")
 
-        hitting_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        hitting_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             forward_teams, "C")
 
-        multipoint_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        multipoint_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             forward_teams, "C")
 
         plus_minus_scale_by_utilization(utilization_rating_get_dict("C"), "C")
 
-        total_points_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        total_points_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             forward_teams, "C")
 
         turnovers_scale_by_utilization(utilization_rating_get_dict("C"), "C")
 
         ### Defensemen ###
         utilization_scale_by_game(
-            strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            defensemen_teams, "D")
         apply_sigmoid_correction(utilization_rating_get_dict("D"))
 
         blocks_scale_by_shots_against(
-            defensive_rating_get_unscaled_shots_against_dict(),
+            defensive_rating_metric.
+                defensive_rating_get_unscaled_shots_against_dict(),
             defensemen_teams, "D")
         
         contributing_games_scale_by_games(
-            strength_of_schedule_get_games_played_dict(), defensemen_teams, "D")
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
+            defensemen_teams, "D")
 
         discipline_scale_by_utilization(utilization_rating_get_dict("D"), "D")
 
-        hitting_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        hitting_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             defensemen_teams, "D")
         
-        multipoint_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        multipoint_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             defensemen_teams, "D")
 
         plus_minus_scale_by_utilization(utilization_rating_get_dict("D"), "D")
 
-        total_points_scale_by_game(strength_of_schedule_get_games_played_dict(),
+        total_points_scale_by_game(
+            strength_of_schedule_metric.
+                strength_of_schedule_get_games_played_dict(),
             defensemen_teams, "D")
 
         turnovers_scale_by_utilization(utilization_rating_get_dict("D"), "D")
@@ -3213,47 +3280,69 @@ def run_upcoming_game_parser_engine(game_types : str="R", game_list : dict={})\
             clutch_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Defensive Ratings
-            if home_team not in defensive_rating_get_dict().keys():
+            if (home_team not in defensive_rating_metric.
+                defensive_rating_get_dict().keys()):
                 home_stat = 0
             else:
-                home_stat = defensive_rating_get_dict()[home_team]
-            if away_team not in defensive_rating_get_dict().keys():
+                home_stat = (defensive_rating_metric.
+                    defensive_rating_get_dict()[home_team])
+            if (away_team not in defensive_rating_metric.
+                defensive_rating_get_dict().keys()):
                 away_stat = 0
             else:
-                away_stat = defensive_rating_get_dict()[away_team]
+                away_stat = (defensive_rating_metric.
+                    defensive_rating_get_dict()[away_team])
             defensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Offensive Ratings
-            if home_team not in offensive_rating_get_dict().keys():
+            if (home_team not in
+                offensive_rating_metric.offensive_rating_get_dict().keys()):
                 home_stat = 0
             else:
-                home_stat = offensive_rating_get_dict()[home_team]
-            if away_team not in offensive_rating_get_dict().keys():
+                home_stat = (
+                    offensive_rating_metric.offensive_rating_get_dict()[
+                        home_team]
+                )
+            if (away_team not in
+                offensive_rating_metric.offensive_rating_get_dict().keys()):
                 away_stat = 0
             else:
-                away_stat = offensive_rating_get_dict()[away_team]
+                away_stat = (
+                    offensive_rating_metric.offensive_rating_get_dict()[
+                        away_team]
+                )
             offensive_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Recent Form
-            if home_team not in recent_form_get_dict().keys():
+            if (home_team not in recent_form_metric.
+                recent_form_get_dict().keys()):
                 home_stat = 0
             else:
-                home_stat = recent_form_get_dict()[home_team]
-            if away_team not in recent_form_get_dict().keys():
+                home_stat = recent_form_metric.recent_form_get_dict()[home_team]
+            if (away_team not in recent_form_metric.
+                recent_form_get_dict().keys()):
                 away_stat = 0
             else:
-                away_stat = recent_form_get_dict()[away_team]
+                away_stat = recent_form_metric.recent_form_get_dict()[away_team]
             recent_form_ratings = calculate_metric_share(home_stat, away_stat)
 
             # Strength of Schedule
-            if home_team not in strength_of_schedule_get_dict().keys():
+            if (home_team not in strength_of_schedule_metric.
+                strength_of_schedule_get_dict().keys()):
                 home_stat = 0
             else:
-                home_stat = strength_of_schedule_get_dict()[home_team]
-            if away_team not in strength_of_schedule_get_dict().keys():
+                home_stat = (
+                    strength_of_schedule_metric.trength_of_schedule_get_dict()[
+                        home_team]
+                )
+            if (away_team not in strength_of_schedule_metric.
+                strength_of_schedule_get_dict().keys()):
                 away_stat = 0
             else:
-                away_stat = strength_of_schedule_get_dict()[away_team]
+                away_stat = (
+                    strength_of_schedule_metric.strength_of_schedule_get_dict()[
+                        away_team]
+                )
             strength_of_schedule_ratings = calculate_metric_share(home_stat,
                 away_stat)
             
@@ -3430,10 +3519,10 @@ def run_main_engine():
 
     # reset all stats to just isolate post season.
     clutch_metric.rating_reset()
-    defensive_rating_reset()
-    offensive_rating_reset()
-    recent_form_reset()
-    strength_of_schedule_reset()
+    defensive_rating_metric.defensive_rating_reset()
+    offensive_rating_metric.offensive_rating_reset()
+    recent_form_metric.recent_form_reset()
+    strength_of_schedule_metric.strength_of_schedule_reset()
 
     blocks_reset()
     contributing_games_reset()
