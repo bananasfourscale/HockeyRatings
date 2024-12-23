@@ -17,31 +17,31 @@ class Offensive_Rating():
         self.offensive_rating_trends = {}
 
 
-    def offensive_rating_get_dict(self) -> dict:
+    def get_dict(self) -> dict:
         return self.offensive_rating
 
 
-    def offensive_rating_get_shots_for_dict(self) -> dict:
+    def get_shots_for_dict(self) -> dict:
         return self.shots_for
 
 
-    def offensive_rating_get_goals_for_dict(self) -> dict:
+    def get_goals_for_dict(self) -> dict:
         return self.goals_for
 
 
-    def offensive_rating_get_pp_dict(self) -> dict:
+    def get_pp_dict(self) -> dict:
         return self.pp_rating
 
 
-    def offensive_rating_get_trend_dict(self) -> dict:
+    def get_trend_dict(self) -> dict:
         return self.offensive_rating_trends
 
 
-    def offensive_rating_get_pp_oppertunities_dict(self) -> dict:
+    def get_pp_oppertunities_dict(self) -> dict:
         return self.pp_oppertunities
 
 
-    def offensive_rating_reset(self) -> None:
+    def rating_reset(self) -> None:
         self.shots_for.clear()
         self.shots_for_unscaled.clear()
         self.goals_for.clear()
@@ -54,7 +54,7 @@ class Offensive_Rating():
         self.offensive_rating_trends.clear()
 
 
-    def offensive_rating_get_data_set(self, match_data : dict={}) -> list:
+    def get_data_set(self, match_data : dict={}) -> list:
 
         # place the requried data into a dictionary for later use
         shots_for_data = {}
@@ -101,7 +101,7 @@ class Offensive_Rating():
         }
 
 
-    def offensive_rating_add_match_data(self, offensive_data : dict={}) -> None:
+    def add_match_data(self, offensive_data : dict={}) -> None:
 
         for team in list(offensive_data['shots_for'].keys()):
             if team in self.shots_for.keys():
@@ -150,7 +150,7 @@ class Offensive_Rating():
                 self.games_played[team] = 1
 
 
-    def offensive_rating_calculate_power_play(self) -> None:
+    def calculate_all(self) -> None:
         for team in self.shots_for_unscaled.keys():
 
             # shots for divided by game
@@ -172,7 +172,7 @@ class Offensive_Rating():
                 self.pp_rating[team] = 0.0
 
 
-    def offensive_rating_combine_metrics(self) -> None:
+    def combine_metrics(self) -> None:
         for team in self.shots_for.keys():
             self.offensive_rating[team] = (
                 (self.shots_for[team] *
@@ -184,7 +184,7 @@ class Offensive_Rating():
             )
 
 
-    def offensive_rating_update_trends(self, date : str="") -> None:
+    def update_trends(self, date : str="") -> None:
         self.offensive_rating_trends[date] = {}
         for team in self.offensive_rating.keys():
             self.offensive_rating_trends[date][team] = (

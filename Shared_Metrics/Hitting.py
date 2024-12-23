@@ -1,65 +1,72 @@
-hitting_base = {
-    'D' : {},
-    'C' : {},
-    'L' : {},
-    'R' : {},
-}
+class Hitting():
 
-hitting_rating = {
-    'D' : {},
-    'C' : {},
-    'L' : {},
-    'R' : {},
-}
-
-
-def hitting_base_get_dict(position : str="") -> dict:
-    if position in hitting_base.keys():
-        return hitting_base[position]
-    return {}
-
-
-def hitting_rating_get_dict(position : str="") -> dict:
-    if position in hitting_rating.keys():
-        return hitting_rating[position]
-    return {}
-
-
-def hitting_reset() -> None:
-    for key in hitting_base.keys():
-        hitting_base[key].clear()
-    for key in hitting_rating.keys():
-        hitting_rating[key].clear()
-
-
-def hitting_get_data_set(players : dict={}) -> dict:
-    hitting = {}
-    for player in players.keys():
-        hitting[player] = {
-            'hitting' : players[player]['stats']['hits'] -
-                (players[player]['stats']['hits_taken'] * 0.25)
+    def __init__(self):
+        self.hitting_base = {
+            'D' : {},
+            'C' : {},
+            'L' : {},
+            'R' : {},
         }
-    return hitting
+        self.hitting_rating = {
+            'D' : {},
+            'C' : {},
+            'L' : {},
+            'R' : {},
+        }
 
 
-def hitting_add_match_data(hitting_data : dict={}, position : str="") -> None:
-    if position not in hitting_base.keys():
+    def get_base_dict(self, position : str="") -> dict:
+        if position in self.hitting_base.keys():
+            return self.hitting_base[position]
         return {}
-    for player in hitting_data.keys():
-        if player in hitting_base[position].keys():
-            hitting_base[position][player] += \
-                hitting_data[player]["hitting"]
-        else:
-            hitting_base[position][player] = \
-                hitting_data[player]["hitting"]
-                
 
-def hitting_scale_by_game(team_games_played : dict={}, teams_dict : dict={},
-    position : str="") -> None:
-    if position not in hitting_base.keys():
-        return
-    for player in hitting_base[position].keys():
-        hitting_rating[position][player] = (
-            hitting_base[position][player] /
-            team_games_played[teams_dict[player]]
-        )
+
+    def get_dict(self, position : str="") -> dict:
+        if position in self.hitting_rating.keys():
+            return self.hitting_rating[position]
+        return {}
+
+
+    def rating_reset(self) -> None:
+        for key in self.hitting_base.keys():
+            self.hitting_base[key].clear()
+        for key in self.hitting_rating.keys():
+            self.hitting_rating[key].clear()
+
+
+    def get_data_set(self, players : dict={}) -> dict:
+        hitting = {}
+        for player in players.keys():
+            hitting[player] = {
+                'hitting' : players[player]['stats']['hits'] -
+                    (players[player]['stats']['hits_taken'] * 0.25)
+            }
+        return hitting
+
+
+    def add_match_data(self, hitting_data : dict={},
+        position : str="") -> None:
+
+        if position not in self.hitting_base.keys():
+            return {}
+        for player in hitting_data.keys():
+            if player in self.hitting_base[position].keys():
+                self.hitting_base[position][player] += (
+                    hitting_data[player]["hitting"]
+                )
+            else:
+                self.hitting_base[position][player] = (
+                    hitting_data[player]["hitting"]
+                )
+                    
+
+    def scale_by_games(self, team_games_played : dict={},
+        teams_dict : dict={}, position : str="") -> None:
+
+        if position not in self.hitting_base.keys():
+            return
+        for player in self.hitting_base[position].keys():
+            self.hitting_rating[position][player] = (
+                self.hitting_base[position][player] /
+                team_games_played[teams_dict[player]]
+            )

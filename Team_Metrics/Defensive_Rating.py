@@ -17,35 +17,35 @@ class Defensive_Rating():
         self.defensive_rating_trends = {}
 
 
-    def defensive_rating_get_dict(self) -> dict:
+    def get_dict(self) -> dict:
         return self.defensive_rating
 
 
-    def defensive_rating_get_shots_against_dict(self) -> dict:
+    def get_shots_against_dict(self) -> dict:
         return self.shots_against
 
 
-    def defensive_rating_get_unscaled_shots_against_dict(self) -> dict:
+    def get_unscaled_shots_against_dict(self) -> dict:
         return self.shots_against_unscaled
 
 
-    def defensive_rating_get_goals_against_dict(self) -> dict:
+    def get_goals_against_dict(self) -> dict:
         return self.goals_against
 
 
-    def defensive_rating_get_pk_dict(self) -> dict:
+    def get_pk_dict(self) -> dict:
         return self.pk_rating
 
 
-    def defensive_rating_get_trend_dict(self) -> dict:
+    def get_trend_dict(self) -> dict:
         return self.defensive_rating_trends
 
 
-    def defensive_rating_get_pk_oppertunities_dict(self) -> dict:
+    def get_pk_oppertunities_dict(self) -> dict:
         return self.pk_oppertunities
 
 
-    def defensive_rating_reset(self) -> None:
+    def rating_reset(self) -> None:
         self.shots_against.clear()
         self.shots_against_unscaled.clear()
         self.goals_against.clear()
@@ -57,7 +57,7 @@ class Defensive_Rating():
         self.defensive_rating.clear()
         self.defensive_rating_trends.clear()
 
-    def defensive_rating_get_data_set(self, match_data : dict={}) -> list:
+    def get_data_set(self, match_data : dict={}) -> list:
 
         # place the requried data into a dictionary for later use
         shots_against_data = {}
@@ -104,7 +104,7 @@ class Defensive_Rating():
         }
 
 
-    def defensive_rating_add_match_data(self, defensive_data : list=[]) -> None:
+    def add_match_data(self, defensive_data : list=[]) -> None:
         for team in list(defensive_data['shots_against'].keys()):
             if team in self.shots_against_unscaled.keys():
 
@@ -156,7 +156,7 @@ class Defensive_Rating():
                 self.games_played[team] = 1
 
 
-    def defensive_rating_calculate_all(self) -> None:
+    def calculate_all(self) -> None:
         for team in self.shots_against_unscaled.keys():
 
             # shots against divided by game
@@ -177,7 +177,7 @@ class Defensive_Rating():
                 self.pk_rating[team] = 0.0
 
 
-    def defensive_rating_combine_metrics(self) -> None:
+    def combine_metrics(self) -> None:
         for team in self.shots_against.keys():
             self.defensive_rating[team] = (
                 (self.shots_against[team] *
@@ -189,7 +189,7 @@ class Defensive_Rating():
             )
 
 
-    def defensive_rating_update_trends(self, date : str="") -> None:
+    def update_trends(self, date : str="") -> None:
         self.defensive_rating_trends[date] = {}
         for team in self.defensive_rating.keys():
             self.defensive_rating_trends[date][team] = (

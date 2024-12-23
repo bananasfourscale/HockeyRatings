@@ -22,35 +22,35 @@ class Recent_Form():
         self.recent_form_trends = {}
 
 
-    def recent_form_get_dict(self) -> dict:
+    def get_dict(self) -> dict:
         return self.recent_form_rating
 
 
-    def recent_form_get_streak_dict(self) -> dict:
+    def get_streak_dict(self) -> dict:
         return self.total_streak_rating
 
 
-    def recent_form_get_longest_streak_dict(self) -> dict:
+    def get_longest_streak_dict(self) -> dict:
         return self.longest_streak_rating
 
 
-    def recent_form_get_last_10_dict(self) -> dict:
+    def get_last_10_dict(self) -> dict:
         return self.last_10_rating
 
 
-    def recent_form_get_last_20_dict(self) -> dict:
+    def get_last_20_dict(self) -> dict:
         return self.last_20_rating
 
 
-    def recent_form_get_last_40_dict(self) -> dict:
+    def get_last_40_dict(self) -> dict:
         return self.last_40_rating
 
 
-    def recent_form_get_trend_dict(self) -> dict:
+    def get_trend_dict(self) -> dict:
         return self.recent_form_trends
 
 
-    def recent_form_reset(self) -> None:
+    def rating_reset(self) -> None:
         self.streak_info.clear()
         self.total_streak_rating.clear()
         self.last_10_info.clear()
@@ -63,7 +63,7 @@ class Recent_Form():
         self.recent_form_trends.clear()
 
 
-    def recent_form_get_data_set(self, match_data : dict={}) -> list:
+    def get_data_set(self, match_data : dict={}) -> list:
         game_result = {}
         game_value = {}
 
@@ -100,7 +100,7 @@ class Recent_Form():
         return {'game result' : game_result, 'game value' : game_value}
 
 
-    def recent_form_add_match_to_streak(self, streak : dict={}) -> None:
+    def add_match_to_streak(self, streak : dict={}) -> None:
         for team in streak.keys():
 
             # if the team already is in the list of team streaks
@@ -156,7 +156,7 @@ class Recent_Form():
                 }
 
 
-    def recent_form_add_match_to_recent_lists(self, match_score : dict={}) \
+    def add_match_to_recent_lists(self, match_score : dict={}) \
                                                                         -> None:
         for team in match_score.keys():
 
@@ -186,13 +186,12 @@ class Recent_Form():
                 self.last_40_info[team] = [match_score[team]]
 
 
-    def recent_form_add_match_data(self, recent_form_data : dict={}) -> None:
-        self.recent_form_add_match_to_streak(recent_form_data['game result'])
-        self.recent_form_add_match_to_recent_lists(
-            recent_form_data['game value'])
+    def add_match_data(self, recent_form_data : dict={}) -> None:
+        self.add_match_to_streak(recent_form_data['game result'])
+        self.add_match_to_recent_lists(recent_form_data['game value'])
 
 
-    def recent_form_calculate_all(self) -> None:
+    def calculate_all(self) -> None:
         for team in self.streak_info.keys():
             self.total_streak_rating[team] = (
                 self.streak_info[team]["total_streak_score"] /
@@ -216,7 +215,7 @@ class Recent_Form():
             self.last_40_rating[team] = sum(self.last_40_info[team])
 
 
-    def recent_form_combine_metrics(self) -> None:
+    def combine_metrics(self) -> None:
         for team in self.streak_info.keys():
             self.recent_form_rating[team] = (
                 (self.total_streak_rating[team] *
@@ -232,7 +231,7 @@ class Recent_Form():
             )
 
 
-    def recent_form_update_trends(self, date : str="") -> None:
+    def update_trends(self, date : str="") -> None:
         self.recent_form_trends[date] = {}
         for team in self.recent_form_rating.keys():
             self.recent_form_trends[date][team] = self.recent_form_rating[team]

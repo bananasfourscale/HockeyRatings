@@ -209,7 +209,7 @@ class Clutch():
                 self.clutch_games_played[team] = 1
 
 
-    def rating_scale_by_game(self) -> None:
+    def scale_by_games(self) -> None:
         for team in self.clutch_rating_base.keys():
             self.clutch_rating[team] = (
                 self.clutch_rating_base[team] / self.clutch_games_played[team]

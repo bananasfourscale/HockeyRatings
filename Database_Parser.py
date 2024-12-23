@@ -876,8 +876,8 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
 
 
 def parse_play_by_play_data(game_data : dict={}, game_stats : dict={}) -> dict:
-    home_team = game_data["box_score"]["homeTeam"]["name"]["default"]
-    away_team = game_data["box_score"]["awayTeam"]["name"]["default"]
+    home_team = game_data["box_score"]["homeTeam"]["commonName"]["default"]
+    away_team = game_data["box_score"]["awayTeam"]["commonName"]["default"]
 
     # loop through every play in the game
     # TODO eventually I might just use this for all data but for now I'm just
@@ -919,8 +919,8 @@ def collect_game_stats(game : dict={}) -> dict:
 
     # Create the default data sets
     home_id = game["box_score"]["homeTeam"]["id"]
-    home_team = game["box_score"]["homeTeam"]["name"]["default"]
-    away_team = game["box_score"]["awayTeam"]["name"]["default"]
+    home_team = game["box_score"]["homeTeam"]["commonName"]["default"]
+    away_team = game["box_score"]["awayTeam"]["commonName"]["default"]
     # print(game["box_score"]["gameDate"], game["box_score"]["id"],
     #     "\t" + home_team, "\t" + away_team)
     

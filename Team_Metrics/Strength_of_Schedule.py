@@ -22,26 +22,26 @@ class Strength_of_Schedule():
         self.strength_of_schedule_trends = {}
 
 
-    def strength_of_schedule_get_dict(self) -> dict:
+    def get_dict(self) -> dict:
         return self.sos_rating
 
 
-    def strength_of_schedule_get_games_played_dict(self) -> dict:
+    def get_games_played_dict(self) -> dict:
         return self.strength_of_schedule_games_played
 
 
-    def strength_of_schedule_get_trend_dict(self) -> dict:
+    def get_trend_dict(self) -> dict:
         return self.strength_of_schedule_trends
 
 
-    def strength_of_schedule_reset(self) -> None:
+    def rating_reset(self) -> None:
         self.strength_of_schedule.clear()
         self.strength_of_schedule_games_played.clear()
         self.sos_rating.clear()
         self.strength_of_schedule_trends.clear()
 
 
-    def strength_of_schedule_get_data_set(self, match_data : dict={}) -> dict:
+    def get_data_set(self, match_data : dict={}) -> dict:
         game_value = {}
         home_team = match_data['game_stats']['home_team']
         home_team_stats = match_data['game_stats'][home_team]["team_stats"]
@@ -95,7 +95,7 @@ class Strength_of_Schedule():
         return game_value
 
 
-    def strength_of_schedule_add_match_data(self, sos_data : dict={}) -> None:
+    def add_match_data(self, sos_data : dict={}) -> None:
         for team in sos_data.keys():
             
             # add games played and sos data for each team to be scaled later
@@ -107,7 +107,7 @@ class Strength_of_Schedule():
                 self.strength_of_schedule[team] = sos_data[team]
 
 
-    def strength_of_schedule_scale_by_game(self) -> None:
+    def scale_by_games(self) -> None:
 
         # place the requried data into a dictionary for later use
         for team in self.strength_of_schedule.keys():
@@ -117,7 +117,7 @@ class Strength_of_Schedule():
             )
 
 
-    def strength_of_schedule_update_trends(self, date : str="") -> None:
+    def update_trends(self, date : str="") -> None:
         self.strength_of_schedule_trends[date] = {}
         for team in self.sos_rating.keys():
             self.strength_of_schedule_trends[date][team] = self.sos_rating[team]
