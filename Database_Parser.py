@@ -32,8 +32,8 @@ def parse_play_by_play_penalties(home_team : str="", away_team : str="",
             game_stats[home_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
-            game_stats[away_team]["team_stats"]["power_play_chances"]
-            game_stats[home_team]["team_stats"]["short_handed_chances"]
+            game_stats[away_team]["team_stats"]["power_play_chances"] += 1
+            game_stats[home_team]["team_stats"]["short_handed_chances"] += 1
             committed_by = home_team
 
         # away team penalty
@@ -45,8 +45,8 @@ def parse_play_by_play_penalties(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]\
                 [play["details"]["committedByPlayerId"]]\
                 ["penalty_minutes"] += play["details"]["duration"]
-            game_stats[home_team]["team_stats"]["power_play_chances"]
-            game_stats[away_team]["team_stats"]["short_handed_chances"]
+            game_stats[home_team]["team_stats"]["power_play_chances"] += 1
+            game_stats[away_team]["team_stats"]["short_handed_chances"] += 1
             committed_by = away_team
         else:
             print("Penalties Commited Player\n" + 
@@ -380,10 +380,10 @@ def parse_play_by_play_faceoffs(home_team : str="", away_team : str="",
 def parse_play_by_play_goal(home_team : str="", away_team : str="",
     play : dict={}, game_stats : dict={}) -> dict:
 
-    home_goalie_in = bool(int(play["situationCode"][0]))
-    away_goalie_in = bool(int(play["situationCode"][3]))
-    home_strength = int(play["situationCode"][1])
-    away_strength = int(play["situationCode"][2])
+    home_goalie_in = bool(int(play["situationCode"][3]))
+    away_goalie_in = bool(int(play["situationCode"][0]))
+    home_strength = int(play["situationCode"][2])
+    away_strength = int(play["situationCode"][1])
     period = play["periodDescriptor"]["number"]
 
     # which period is the goal in
@@ -465,7 +465,7 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["player_stats"]):
 
             # goal
-            game_stats[home_team]["team_stats"]['power_play_goals'] += 1
+            game_stats[away_team]["team_stats"]['power_play_goals'] += 1
             game_stats[away_team]["team_stats"]['goals'] += 1
             game_stats[away_team]["player_stats"]\
                 [play["details"]["scoringPlayerId"]]["power_play_goals"] += 1
