@@ -20,12 +20,10 @@ Teams:
         - Wsc: The winning teams current score
         - Lrk: the losing teams' current average ranking
 
-    Clutch (under review): (W%lead1 * 5) + (W%lead2 * 10)
-        -Rational: Ideally this would be a simple way to show teams holding
-            leads vs makikng comebacks but the free API doesn't quite have the
-            level of insight that the manual version did. Thinking of removing.
-        - W%lead1: Win percentage when team is leading after 1st period
-        - W%lead2: Win percentage when team is leading after 2nd period
+    Clutch (under review): 
+
+    Lead_Retention:
+        1. Lead Retention: (TL)
 
     Win Rating:
         1. Win Rating: (W * 1) + (L * 0) + (OT * 1/3)

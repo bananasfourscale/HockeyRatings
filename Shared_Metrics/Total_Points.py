@@ -13,6 +13,7 @@ class Total_Points():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -32,6 +33,10 @@ class Total_Points():
             self.total_points_base[key].clear()
         for key in self.total_points_rating.keys():
             self.total_points_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

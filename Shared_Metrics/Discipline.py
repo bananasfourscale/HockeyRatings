@@ -15,6 +15,7 @@ class Discipline():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -34,6 +35,10 @@ class Discipline():
             self.discipline_base[key].clear()
         for key in self.discipline_rating.keys():
             self.discipline_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

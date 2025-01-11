@@ -36,8 +36,10 @@ def solve_for_scalar_value(data_set : dict={}, debug : bool=False) -> float:
         # print(normalized_set)
         print("\tnorm mean = ", mean(list(normalized_set.values())))
         print("\tnorm variance = ", pow(std(list(normalized_set.values())), 2))
-        print("\tnorm variance / mean = ", pow(std(list(normalized_set.values())), 2) /
-            mean(list(normalized_set.values())))
+        print("\tnorm variance / mean = ",
+            pow(std(list(normalized_set.values())), 2) /
+                mean(list(normalized_set.values()))
+        )
         print()
 
     # Index of dispersion (σ^2 / μ)
@@ -69,7 +71,8 @@ def apply_sigmoid_correction(data_set : dict={}, low_desired : bool=False,
     # data_set['-99sig'] = mean_val - (sig * ninety_nineth_per)
     normal_set = normalize_set(data_set)
     if debug:
-        sorted_set = {k: v for k, v in sorted(data_set.items(), key=lambda item: item[1])}
+        sorted_set = {k: v for k, v in sorted(data_set.items(),
+            key=lambda item: item[1])}
     for item in data_set.keys():
         if low_desired is True:
             data_set[item] = 1 - (

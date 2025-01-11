@@ -1,4 +1,6 @@
-class Strength_of_Schedule():
+from .Team_Metric import Team_Metric
+
+class Strength_of_Schedule(Team_Metric):
 
     # weights
     WIN_REGULATION_WEIGHT = 1.0
@@ -16,29 +18,7 @@ class Strength_of_Schedule():
     EXTRA_TIME = 4
 
     def __init__(self):
-        self.strength_of_schedule = {}
-        self.strength_of_schedule_games_played = {}
-        self.sos_rating = {}
-        self.strength_of_schedule_trends = {}
-
-
-    def get_dict(self) -> dict:
-        return self.sos_rating
-
-
-    def get_games_played_dict(self) -> dict:
-        return self.strength_of_schedule_games_played
-
-
-    def get_trend_dict(self) -> dict:
-        return self.strength_of_schedule_trends
-
-
-    def rating_reset(self) -> None:
-        self.strength_of_schedule.clear()
-        self.strength_of_schedule_games_played.clear()
-        self.sos_rating.clear()
-        self.strength_of_schedule_trends.clear()
+        super().__init__('strength_of_schedule', 'total')
 
 
     def get_data_set(self, match_data : dict={}) -> dict:
@@ -92,32 +72,13 @@ class Strength_of_Schedule():
             game_value[loser] = (
                 self.LOSE_SO_WEIGHT
             )
-        return game_value
+        return {
+            winner : game_value[winner],
+            loser : game_value[loser]
+        }
 
 
-    def add_match_data(self, sos_data : dict={}) -> None:
-        for team in sos_data.keys():
-            
-            # add games played and sos data for each team to be scaled later
-            if team in self.strength_of_schedule_games_played.keys():
-                self.strength_of_schedule_games_played[team] += 1
-                self.strength_of_schedule[team] += sos_data[team]
-            else:
-                self.strength_of_schedule_games_played[team] = 1
-                self.strength_of_schedule[team] = sos_data[team]
+    def apply_relative_scaling(self, relative_scalar : float=0.5,
+        metric : float=0.5) -> float:
 
-
-    def scale_by_games(self) -> None:
-
-        # place the requried data into a dictionary for later use
-        for team in self.strength_of_schedule.keys():
-            self.sos_rating[team] = (
-                self.strength_of_schedule[team] /
-                self.strength_of_schedule_games_played[team]
-            )
-
-
-    def update_trends(self, date : str="") -> None:
-        self.strength_of_schedule_trends[date] = {}
-        for team in self.sos_rating.keys():
-            self.strength_of_schedule_trends[date][team] = self.sos_rating[team]
+        return super().apply_relative_scaling(relative_scalar, metric, True)

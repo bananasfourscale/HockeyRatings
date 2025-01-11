@@ -15,6 +15,7 @@ class Utilization():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'clutch'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -34,6 +35,10 @@ class Utilization():
             self.utilization_base[key].clear()
         for key in self.utilization_rating.keys():
             self.utilization_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

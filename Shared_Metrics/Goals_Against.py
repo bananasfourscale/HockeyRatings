@@ -3,6 +3,7 @@ class Goals_Against():
     def __init__(self):
         self.goalie_goals_against_base = {}
         self.goalie_goals_against_rating = {}
+        self.comparator = 'total'
 
 
     def get_dict(self) -> dict:
@@ -12,6 +13,10 @@ class Goals_Against():
     def rating_reset(self) -> None:
         self.goalie_goals_against_base.clear()
         self.goalie_goals_against_rating.clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, match_data : dict={}) -> dict:
@@ -43,8 +48,6 @@ class Goals_Against():
                 self.goalie_goals_against_base[goalie] = (
                     goalie_goals_against_data[goalie]
                 )
-            if goalie == 'Andrei Vasilevskiy':
-                print(self.goalie_goals_against_base[goalie])
 
 
     def scale_by_utilization(self,

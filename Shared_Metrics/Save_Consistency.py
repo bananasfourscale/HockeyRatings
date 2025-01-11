@@ -3,6 +3,7 @@ class Save_Consistency():
     def __init__(self):
         self.goalie_save_consistency_base = {}
         self.goalie_save_consistency_rating = {}
+        self.comparator = 'total'
 
 
     def get_dict(self) -> dict:
@@ -12,6 +13,10 @@ class Save_Consistency():
     def rating_reset(self) -> None:
         self.goalie_save_consistency_base.clear()
         self.goalie_save_consistency_rating.clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, match_data : dict={}) -> dict:

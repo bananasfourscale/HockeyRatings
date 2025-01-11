@@ -13,6 +13,7 @@ class Multipoint_Games():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -32,6 +33,10 @@ class Multipoint_Games():
             self.multipoint_base[key].clear()
         for key in self.multipoint_rating.keys():
             self.multipoint_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

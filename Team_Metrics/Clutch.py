@@ -1,6 +1,7 @@
 from math import pow, log
+from .Team_Metric import Team_Metric
 
-class Clutch():
+class Clutch(Team_Metric):
 
     LOG_FACTOR = 2
     POW_FACTOR = 1.5
@@ -8,31 +9,12 @@ class Clutch():
     THIRD_FACTOR = 1.5
 
     def __init__(self):
-        self.clutch_rating_base = {}
-        self.clutch_games_played = {}
-        self.clutch_rating = {}
-        self.clutch_trends = {}
-
-
-    def get_dict(self) -> dict:
-        return self.clutch_rating
-
-
-    def get_trend_dict(self) -> dict:
-        return self.clutch_trends
-
-
-    def rating_reset(self) -> None:
-        self.clutch_rating_base.clear()
-        self.clutch_games_played.clear()
-        self.clutch_rating.clear()
-        self.clutch_trends.clear()
+        super().__init__('clutch', 'total')
 
 
     def get_data_set(self, match_data : dict={}) -> dict:
 
         # home team data
-    
         home_points = 0.0
         home_team = match_data['game_stats']['home_team']
         home_team_stats = match_data['game_stats'][home_team]["team_stats"]
@@ -196,27 +178,14 @@ class Clutch():
         # print("\t", home_points, ":", away_points)
 
         # collect all the different permutations into one data set and return
-        return {home_team : home_points, away_team : away_points}
+        return {
+            home_team : home_points,
+            away_team : away_points
+        }
+    
 
+    def apply_relative_scaling(self, relative_scalar : float=0.5,
+        metric_data : float=0.5) -> float:
 
-    def add_match_data(self, clutch_data : dict={}) -> None:
-        for team in clutch_data.keys():
-            if team in self.clutch_rating_base.keys():
-                self.clutch_rating_base[team] += clutch_data[team]
-                self.clutch_games_played[team] += 1
-            else:
-                self.clutch_rating_base[team] = clutch_data[team]
-                self.clutch_games_played[team] = 1
-
-
-    def scale_by_games(self) -> None:
-        for team in self.clutch_rating_base.keys():
-            self.clutch_rating[team] = (
-                self.clutch_rating_base[team] / self.clutch_games_played[team]
-            )
-
-
-    def update_trend(self, date : str="") -> None:
-        self.clutch_trends[date] = {}
-        for team in self.clutch_rating.keys():
-            self.clutch_trends[date][team] = self.clutch_rating[team]
+        return super().apply_relative_scaling(relative_scalar, metric_data,
+            True)

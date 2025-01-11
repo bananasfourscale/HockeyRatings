@@ -87,10 +87,12 @@ VERSION_MINOR = 0
 EYE_TEST_WEIGHT = 0.01
 
 class total_rating_weights(Enum):
-    CLUTCH_RATING_WEIGHT = 0.10
-    DEFENSIVE_RATING_WEIGHT = 0.25
-    OFFENSIVE_RATING_WEIGHT = 0.20
-    RECENT_FORM_RATING_WEIGHT = 0.15
+    CLUTCH_RATING_WEIGHT = 0.05
+    GOAL_DIFF_WEIGHT = 0.15
+    PENALTY_KILL_WEIGHT = 0.10
+    POWER_PLAY_WEIGHT = 0.15
+    SHOT_DIFF_WEIGHT = 0.05
+    RECENT_FORM_RATING_WEIGHT = 0.20
     SOS_RATING_WEIGHT = 0.30
 
 
@@ -127,10 +129,12 @@ class defensemen_rating_weights(Enum):
 
 team_weights = {
     'clutch_weight' : total_rating_weights.CLUTCH_RATING_WEIGHT.value,
-    'defensive_weight' : total_rating_weights.DEFENSIVE_RATING_WEIGHT.value,
-    'offensive_weight' : total_rating_weights.OFFENSIVE_RATING_WEIGHT.value,
+    'goal_diff_weight' : total_rating_weights.GOAL_DIFF_WEIGHT.value,
+    'penalty_kill_weight' : total_rating_weights.PENALTY_KILL_WEIGHT.value,
+    'power_play_weight' : total_rating_weights.POWER_PLAY_WEIGHT.value,
     'recent_form_weight' : total_rating_weights.RECENT_FORM_RATING_WEIGHT.value,
-    'strength_of_schedule_weight' :total_rating_weights.SOS_RATING_WEIGHT.value,
+    'shot_diff_weight' : total_rating_weights.SHOT_DIFF_WEIGHT.value,
+    'strength_of_schedule_weight' : total_rating_weights.SOS_RATING_WEIGHT.value,
 }
 
 goalie_weights = {

@@ -13,6 +13,7 @@ class PlusMinus():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -32,6 +33,10 @@ class PlusMinus():
             self.plus_minus_base[key].clear()
         for key in self.plus_minus_rating.keys():
             self.plus_minus_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

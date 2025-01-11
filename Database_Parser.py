@@ -424,8 +424,8 @@ def parse_play_by_play_goal(home_team : str="", away_team : str="",
             game_stats[away_team]["team_stats"]["SO_goals"] += 1
 
     # home shorthanded
-    if ((home_goalie_in and away_goalie_in) and home_strength < away_strength) \
-        or ((not home_goalie_in) and home_strength <= away_strength):
+    if (((home_goalie_in and away_goalie_in) and home_strength < away_strength)
+        or ((not home_goalie_in) and home_strength <= away_strength)):
 
         # home team player
         if (play["details"]["scoringPlayerId"] in

@@ -8,6 +8,7 @@ class Save_Percentage():
         self.goalie_sh_save = {}
         self.goalie_sh_save_percent = {}
         self.goalie_save_percentage_rating = {}
+        self.comparator = 'total'
 
 
     def get_dict(self) -> dict:
@@ -22,6 +23,10 @@ class Save_Percentage():
         self.goalie_sh_save.clear()
         self.goalie_sh_save_percent.clear()
         self.goalie_save_percentage_rating.clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, match_data : dict={}) -> list:

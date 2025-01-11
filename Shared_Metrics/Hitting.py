@@ -13,6 +13,7 @@ class Hitting():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -32,6 +33,10 @@ class Hitting():
             self.hitting_base[key].clear()
         for key in self.hitting_rating.keys():
             self.hitting_rating[key].clear()
+
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def get_data_set(self, players : dict={}) -> dict:

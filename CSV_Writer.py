@@ -4,19 +4,22 @@ from Weights import divisions, VERSION_MAJOR, VERSION_MINOR
 
 def write_out_file(file_name : str = "", header_row : list = [],
     rating_list : dict = {}) -> None:
+
     with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header_row)
         for key in rating_list.keys():
             csv_writer.writerow([key, str(rating_list[key])])
+        csv_data_file.close()
 
 
 def write_out_player_file(file_name : str = "", header_row : list = [],
     rating_list : dict = {}, player_team_list : dict = {}, ascending=True) \
                                                                         -> None:
-    with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
-        csv_writer = csv.writer(csv_date_file, delimiter='\t', quotechar='|',
+
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
+        csv_writer = csv.writer(csv_data_file, delimiter='\t', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
 
         # sort player dict
@@ -40,6 +43,7 @@ def write_out_player_file(file_name : str = "", header_row : list = [],
                 [str(count) + " " + key.replace("", "c"), rating_list[key],
                     player_team_list[key]]
             csv_writer.writerow(data_list)
+        csv_data_file.close()
 
 
 def update_trend_file(file_name : str = "", stat_dict : dict = {},
@@ -47,9 +51,8 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {},
     
     # construct the header row in case the file is new
     header_row = ["Rating Date", "Team", "Division", rating_type]
-
-    with open(file_name, 'w', newline='', encoding='utf-16') as csv_date_file:
-        csv_writer = csv.writer(csv_date_file, delimiter=',', quotechar='|',
+    with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
+        csv_writer = csv.writer(csv_data_file, delimiter=',', quotechar='|',
             quoting=csv.QUOTE_MINIMAL)
         
         # first write out the header row
@@ -72,10 +75,12 @@ def update_trend_file(file_name : str = "", stat_dict : dict = {},
             for team in stat_dict[date].keys():
                 csv_writer.writerow([date_rating, team, divisions[team],
                     stat_dict[date][team]])
+        csv_data_file.close()
 
 
 def write_out_matches_file(file_name : str = "", header_row : list = [],
     rating_order : list=[], rating_list : list=[]) -> None:
+
     with open(file_name, 'w', newline='', encoding='utf-16') as csv_data_file:
         csv_writer = csv.writer(csv_data_file, delimiter = '\t', quotechar='|', 
             quoting=csv.QUOTE_MINIMAL)
@@ -83,3 +88,4 @@ def write_out_matches_file(file_name : str = "", header_row : list = [],
         for i in range(0, len(rating_list) - 1, 2):
             row = [rating_order[int(i / 2)], rating_list[i], rating_list[i + 1]]
             csv_writer.writerow(row)
+        csv_data_file.close()

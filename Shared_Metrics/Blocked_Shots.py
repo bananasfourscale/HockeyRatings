@@ -17,6 +17,7 @@ class Blocked_Shots():
             'L' : {},
             'R' : {},
         }
+        self.comparator = 'total'
 
 
     def get_base_dict(self, position : str="") -> dict:
@@ -29,6 +30,10 @@ class Blocked_Shots():
         if position in self.blocks_rating.keys():
             return self.blocks_rating[position]
         return {}
+    
+
+    def get_comparator(self):
+        return self.comparator
 
 
     def rating_reset(self) -> None:
