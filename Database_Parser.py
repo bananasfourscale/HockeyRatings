@@ -1105,6 +1105,7 @@ def collect_game_stats(game : dict={}) -> dict:
                     "empty_net_assists_secondary" : 0,
                     "4-on-4_assists_secondary" : 0,
                     "3-on-3_assists_secondary" : 0,
+                    "plus_minus" : 0,
                     "penalty_minutes" : 0,
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -1124,6 +1125,12 @@ def collect_game_stats(game : dict={}) -> dict:
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
+                    "even_saves" : 0,
+                    "even_shots" : 0,
+                    "power_play_saves" : 0,
+                    "power_play_shots" : 0,
+                    "short_handed_saves" : 0,
+                    "short_handed_shots" : 0,
                     "goals" : 0,
                     "even_goals" : 0,
                     "power_play_goals" : 0,
@@ -1207,6 +1214,7 @@ def collect_game_stats(game : dict={}) -> dict:
                     "empty_net_assists_secondary" : 0,
                     "4-on-4_assists_secondary" : 0,
                     "3-on-3_assists_secondary" : 0,
+                    "plus_minus" : 0,
                     "penalty_minutes" : 0,
                     "penalty_minutes_drawn" : 0,
                     "hits" : 0,
@@ -1226,6 +1234,12 @@ def collect_game_stats(game : dict={}) -> dict:
                     "player_name" : player["firstName"]["default"] + " " +\
                         player["lastName"]["default"],
                     "player_position" : player["positionCode"],
+                    "even_saves" : 0,
+                    "even_shots" : 0,
+                    "power_play_saves" : 0,
+                    "power_play_shots" : 0,
+                    "short_handed_saves" : 0,
+                    "short_handed_shots" : 0,
                     "goals" : 0,
                     "even_goals" : 0,
                     "power_play_goals" : 0,
@@ -1346,7 +1360,7 @@ def get_game_records(season_year_id : str="") -> None:
 
     # create a list of all dates between now and season end
     dates = pandas.date_range(start_date, end_date).to_pydatetime().tolist()
-    # dates = dates[0:10]
+    # dates = dates[0:30]
     i = 0
     for date in dates:
         dates[i] = date.strftime("%Y-%m-%d")

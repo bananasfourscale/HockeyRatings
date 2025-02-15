@@ -115,11 +115,9 @@ class Recent_Form(Team_Metric):
         metric : dict={}) -> dict:
 
         if metric['game_value'] > 0:
-            metric['game_value'] = super().apply_relative_scaling(
-                relative_scalar, metric['game_value'], True)
+            metric['game_value'] *= 1 + relative_scalar 
         else:
-            metric['game_value'] = super().apply_relative_scaling(
-                relative_scalar, metric['game_value'], False)
+            metric['game_value'] /= 1 + relative_scalar
         return metric
 
 

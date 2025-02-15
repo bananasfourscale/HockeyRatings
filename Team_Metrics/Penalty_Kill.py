@@ -21,14 +21,14 @@ class Penalty_Kill(Team_Metric):
 
         return {
             home_team : {
-                'net_pk_goals_against' : float(
+                self.name : float(
                     away_team_stats["power_play_goals"] -
                     home_team_stats["short_handed_goals"],
                 ),
                 'pk_chances' : home_team_stats["short_handed_chances"]
             },
             away_team : {
-                'net_pk_goals_against' : float(
+                self.name : float(
                     home_team_stats["power_play_goals"] -
                     away_team_stats["short_handed_goals"],
                 ),
@@ -40,22 +40,16 @@ class Penalty_Kill(Team_Metric):
     def apply_relative_scaling(self, relative_scalar : float=0.5,
         metric : dict={}) -> dict:
 
-        if metric['net_pk_goals_against'] > 0:
-            metric['net_pk_goals_against'] = super().apply_relative_scaling(
-                relative_scalar, metric['net_pk_goals_against'], False)
-        else:
-            metric['net_pk_goals_against'] = super().apply_relative_scaling(
-                relative_scalar, metric['net_pk_goals_against'], True)
-        return metric
+        return super().apply_relative_scaling(relative_scalar, metric, False)
         
 
     def add_match_data(self, data_set : dict={}) -> None:
         for team in data_set.keys():
             if team in self.base_rating.keys():
-                self.base_rating[team] += data_set[team]['net_pk_goals_against']
+                self.base_rating[team] += data_set[team][self.name]
                 self.pk_chances[team] += data_set[team]['pk_chances']
             else:
-                self.base_rating[team] = data_set[team]['net_pk_goals_against']
+                self.base_rating[team] = data_set[team][self.name]
                 self.pk_chances[team] = data_set[team]['pk_chances']
         
 

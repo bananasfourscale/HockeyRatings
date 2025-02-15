@@ -73,10 +73,6 @@ class Clutch(Team_Metric):
         first_diff = abs(away_score_first - home_score_first)
         second_diff = abs(away_score_second - home_score_second)
         third_diff = abs(away_score_third - home_score_third)
-        final_diff = abs(away_score_final - home_score_final)
-
-        # print(home_team, ":", away_team)
-        # print("\t", home_score_first, ":", away_score_first)
 
         # if the away team won
         if away_score_final > home_score_final:
@@ -90,9 +86,6 @@ class Clutch(Team_Metric):
             else:
                 away_points += 0.5
                 home_points += 0.5
-            # print("\t", home_points, ":", away_points)
-            # print()
-            # print("\t", home_score_second, ":", away_score_second)
 
             # second period points
             if away_score_second < home_score_second:
@@ -106,9 +99,6 @@ class Clutch(Team_Metric):
             else:
                 away_points += 1
                 home_points += 1
-            # print("\t", home_points, ":", away_points)
-            # print()
-            # print("\t", home_score_third, ":", away_score_third)
 
             # third period points. If not equal at this point away team has won
             # in regulation
@@ -139,9 +129,6 @@ class Clutch(Team_Metric):
             else:
                 home_points += 0.5
                 away_points += 0.5
-            # print("\t", home_points, ":", away_points)
-            # print()
-            # print("\t", home_score_second, ":", away_score_second)
 
             # second period points
             if home_score_second < away_score_second:
@@ -155,9 +142,6 @@ class Clutch(Team_Metric):
             else:
                 home_points += 1
                 away_points += 1
-            # print("\t", home_points, ":", away_points)
-            # print()
-            # print("\t", home_score_third, ":", away_score_third)
 
             # third period points. If not equal at this point away team has won
             if home_score_third != away_score_third:
@@ -174,18 +158,9 @@ class Clutch(Team_Metric):
             else:
                 home_points += 0.3
                 away_points += 0.3
-            
-        # print("\t", home_points, ":", away_points)
 
         # collect all the different permutations into one data set and return
         return {
-            home_team : home_points,
-            away_team : away_points
+            home_team : {self.name : home_points},
+            away_team : {self.name : away_points}
         }
-    
-
-    def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric_data : float=0.5) -> float:
-
-        return super().apply_relative_scaling(relative_scalar, metric_data,
-            True)

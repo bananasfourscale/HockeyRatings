@@ -16,6 +16,9 @@ def normalize_set(data_set : dict={}) -> dict:
     min_data = min(data_list)
     try:
         if (max_data != min_data):
+
+            if (max_data - min_data) == 0:
+                print("HOW BUT WHY HOW WHY")
             for item in data_set.keys():
                 normal_set[item] = (
                     (data_set[item] - min_data) / (max_data - min_data)

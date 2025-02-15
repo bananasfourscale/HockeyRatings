@@ -8,7 +8,7 @@ class Shot_Differential(Team_Metric):
     def __init__(self):
         super().__init__('shot_differential', 'shot_differential')
 
-    
+
     def get_data_set(self, match_data : dict={}) -> dict:
         home_team = match_data['game_stats']['home_team']
         home_team_stats = match_data['game_stats'][home_team]["team_stats"]
@@ -25,13 +25,6 @@ class Shot_Differential(Team_Metric):
             (home_team_stats["shots"] * self.SHOTS_AGAINST_WEIGHT)
         )
         return {
-            home_team : home_team_shot_diff,
-            away_team : away_team_shot_diff
+            home_team : {self.name : home_team_shot_diff},
+            away_team : {self.name : away_team_shot_diff}
         }
-    
-
-    def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric : float=0.5) -> float:
-
-        return super().apply_relative_scaling(relative_scalar, metric, True)
-

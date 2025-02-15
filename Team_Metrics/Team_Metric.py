@@ -65,11 +65,18 @@ class Team_Metric():
     
 
     def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric : float=0.5, increase : bool=True) -> float:
+        metric : dict={}, increase : bool=True) -> float:
+
         if increase:
-            metric *= 1 + relative_scalar
+            if metric[self.name] > 0:
+                metric[self.name] *= 1 + relative_scalar
+            else:
+                metric[self.name] /= 1 + relative_scalar    
         else:
-            metric /= 1 + relative_scalar
+            if metric[self.name] > 0:
+                metric[self.name] /= 1 + relative_scalar
+            else:
+                metric[self.name] *= 1 + relative_scalar
         return metric
 
 
@@ -78,12 +85,12 @@ class Team_Metric():
 
             # if the team is in the base rating, update
             if team in self.base_rating.keys():
-                self.base_rating[team] += data_set[team]
+                self.base_rating[team] += data_set[team][self.name]
                 self.games_played[team] += 1
 
             # otherwise create the rating for the team
             else:
-                self.base_rating[team] = data_set[team]
+                self.base_rating[team] = data_set[team][self.name]
                 self.games_played[team] = 1
 
 

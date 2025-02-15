@@ -73,12 +73,6 @@ class Strength_of_Schedule(Team_Metric):
                 self.LOSE_SO_WEIGHT
             )
         return {
-            winner : game_value[winner],
-            loser : game_value[loser]
+            winner : {self.name : game_value[winner]},
+            loser : {self.name : game_value[loser]}
         }
-
-
-    def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric : float=0.5) -> float:
-
-        return super().apply_relative_scaling(relative_scalar, metric, True)

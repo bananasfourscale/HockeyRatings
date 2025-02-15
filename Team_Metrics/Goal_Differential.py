@@ -46,13 +46,6 @@ class Goal_Differential(Team_Metric):
             )
         )
         return {
-            home_team : home_team_goal_diff,
-            away_team : away_team_goal_diff
+            home_team : {self.name : home_team_goal_diff},
+            away_team : {self.name : away_team_goal_diff}
         }
-    
-
-    def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric : float=0.5) -> float:
-
-        return super().apply_relative_scaling(relative_scalar, metric, True)
-
