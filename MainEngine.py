@@ -540,102 +540,21 @@ def plot_uncorrected_team_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
-    ### Clutch Rating ###
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}ClutchRatingBase.csv".format(
-            prefix
-        ),
-        ["Team", "Clutch Rating Base"], clutch_metric.get_final_rating_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}ClutchRatingBase.csv".format(
-            prefix
-        ),
-        ["Team", "Clutch Rating Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Clutch_Rating/{}clutch_rating_base.png".format(prefix))))
+    # get data for each relevent metric
+    for metric in team_metrics:
+        arg_list = metric.get_uncorrected_print_args(prefix)
 
-    ### Recent Form ###
-    # total streak
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormStreakBase.csv",
-        ["Team", "Average Streak Score Base"],
-        recent_form_metric.get_streak_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormStreakBase.csv",
-        ["Team", "Average Streak Score Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}recent_form_streak_base.png".format(
-            prefix))
-    ))
-
-    # longest streak
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLongestStreakBase.csv",
-        ["Team", "Longest Streak Score Base"],
-        recent_form_metric.get_longest_streak_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLongestStreakBase.csv",
-        ["Team", "Longest Streak Score Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}recent_form_longest_streak_base.png".format(
-            prefix))
-    ))
-
-    # last 10
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast10Base.csv",
-        ["Team", "Last Ten Games"],
-        recent_form_metric.get_last_10_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast10Base.csv",
-        ["Team", "Last Ten Games"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_ten_base.png")
-    ))
-
-    # last 20
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast20Base.csv",
-        ["Team", "Last Twenty Games"],
-        recent_form_metric.get_last_20_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast20Base.csv",
-        ["Team", "Last Twenty Games"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_twenty_base.png")
-    ))
-
-    # last 40
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast40Base.csv",
-        ["Team", "Last Fourty Games"],
-        recent_form_metric.get_last_40_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast40Base.csv",
-        ["Team", "Last Fourty Games"], 0.0, 0.0, [],
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_fourty_base.png")
-    ))
-
-    ### Strength of Schedule
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"],
-        strength_of_schedule_metric.get_final_rating_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "StengthOfScheduleBase.csv",
-        ["Team", "Strength of Schedule Base"], 0.0, 0.0, [],
-        "Graphs/Teams/Strength_of_Schedule/{}sos_base.png".format(prefix))
-    ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_file(data_set["data_file_name"], data_set["title_args"],
+                data_set["data_dict"])
+            plotting_queue.put((plot_data_set, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
 
 def plot_corrected_team_metrics(game_types : str="R") -> None:
@@ -644,102 +563,21 @@ def plot_corrected_team_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
-    ### Clutch Rating ###
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "ClutchRatingFinal.csv",
-        ["Team", "Clutch Rating Corrected"], clutch_metric.get_final_rating_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "ClutchRatingFinal.csv",
-        ["Team", "Clutch Rating Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Clutch_Rating/{}clutch_rating_final.png".format(prefix))
-    ))
+    # get data for each relevent metric
+    for metric in team_metrics:
+        arg_list = metric.get_corrected_print_args(prefix)
 
-    ### Recent Form ###
-    # total streak
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormStreakCorr.csv",
-        ["Team", "Average Streak Score Corrected"],
-        recent_form_metric.get_streak_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormStreakCorr.csv",
-        ["Team", "Average Streak Score Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_streak_corrected.png")
-    ))
-
-    # longest streak
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLongestStreakCorr.csv",
-        ["Team", "Longest Streak Score Corrected"],
-        recent_form_metric.get_longest_streak_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLongestStreakCorr.csv",
-        ["Team", "Longest Streak Score Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_longest_streak_corrected.png")
-    ))
-
-    # last 10
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast10Corr.csv",
-        ["Team", "Last Ten Games"],
-        recent_form_metric.get_last_10_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast10Corr.csv",
-        ["Team", "Last Ten Games"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_ten_corrected.png")
-    ))
-
-    # last 20
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast20Corr.csv",
-        ["Team", "Last Twenty Games"],
-        recent_form_metric.get_last_20_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast20Corr.csv",
-        ["Team", "Last Twenty Games"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_twenty_corrected.png")
-    ))
-
-    # last 40
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast40Corr.csv",
-        ["Team", "Last Fourty Games"],
-        recent_form_metric.get_last_40_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "RecentFormLast40Corr.csv",
-        ["Team", "Last Fourty Games"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}".format(prefix) +
-            "recent_form_last_fourty_corrected.png")
-    ))
-
-    ### Strength of Schedule ###
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "StengthOfScheduleCorrected.csv",
-        ["Team", "Strength of Schedule Corrected"],
-        strength_of_schedule_metric.get_final_rating_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}".format(prefix) +
-            "StengthOfScheduleCorrected.csv",
-        ["Team", "Strength of Schedule Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Strength_of_Schedule/{}".format(prefix) +
-            "strenght_of_schedule_final.png")
-    ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_file(data_set["data_file_name"], data_set["title_args"],
+                data_set["data_dict"])
+            plotting_queue.put((plot_data_set, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
     
 
 def plot_combined_team_metrics(game_types : str="R") -> None:
@@ -747,20 +585,6 @@ def plot_combined_team_metrics(game_types : str="R") -> None:
         prefix = "Reg_Season_"
     else:
         prefix = "Post_Season_"
-    write_out_file(
-        "Output_Files/Team_Files/Instance_Files/{}RecentFormFinal.csv".format(
-            prefix
-        ),
-        ["Team", "Recent Form Rating"],
-        recent_form_metric.get_final_rating_dict())
-    plotting_queue.put((plot_data_set,
-        ("Output_Files/Team_Files/Instance_Files/{}RecentFormFinal.csv".format(
-            prefix
-        ),
-        ["Team", "Recent Form Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}recent_form_final.png".format(
-            prefix
-        ))))
     write_out_file(
         "Output_Files/Team_Files/Instance_Files/{}TotalRating.csv".format(
             prefix
@@ -782,52 +606,21 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
-    # clutch
-    update_trend_file(
-        "Output_Files/Team_Files/Trend_Files/{}ClutchRating.csv".format(
-            prefix
-        ),
-        clutch_metric.get_trend_rating_dict(), "Clutch Rating")
-    plotting_queue.put((plot_team_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/{}ClutchRating.csv".format(
-            prefix
-        ),
-        ["Rating Date", "Clutch Rating"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Clutch_Rating/{}clutch_rating_trend.png".format(
-            prefix
-        ))))
-    
-    # recent form
-    update_trend_file(
-        "Output_Files/Team_Files/Trend_Files/{}RecentForm.csv".format(
-            prefix
-        ),
-        recent_form_metric.get_trend_rating_dict(), "Recent Form")
-    plotting_queue.put((plot_team_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/{}RecentForm.csv".format(
-            prefix
-        ),
-        ["Rating Date", "Recent Form"], 1.1, -.1, sigmoid_ticks,
-        "Graphs/Teams/Recent_Form/{}recent_form_trend.png".format(
-            prefix
-        ))))
-    
-    # strength of schedule
-    update_trend_file(
-        "Output_Files/Team_Files/Trend_Files/{}StrengthOfSchedule.csv".format(
-            prefix
-        ),
-        strength_of_schedule_metric.get_trend_rating_dict(),
-        "Strength of Schedule")
-    plotting_queue.put((plot_team_trend_set,
-        ("Output_Files/Team_Files/Trend_Files/{}StrengthOfSchedule.csv".format(
-            prefix
-        ),
-        ["Rating Date", "Strength of Schedule"], 1.1, -.1, 
-        sigmoid_ticks, "Graphs/Teams/Strength_of_Schedule/" + 
-            "{}strength_of_schedule_trend.png".format(
-            prefix
-        ))))
+    # get data for each relevent metric
+    for metric in team_metrics:
+        arg_list = metric.get_trend_print_args(prefix)
+
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_file(data_set["data_file_name"], data_set["title_args"],
+                data_set["data_dict"])
+            plotting_queue.put((plot_data_set, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
     # absolute ranking
     update_trend_file(
@@ -1870,7 +1663,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # Goal Differential
         apply_sigmoid_correction(
-            goal_differential_metric.get_final_rating_dict(), True)
+            goal_differential_metric.get_final_rating_dict())
 
         # Penalty Kill
         apply_sigmoid_correction(
@@ -1910,6 +1703,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         combine_all_team_factors()
         
         if final_date:
+            print("Plot combined team metrics")
             plot_combined_team_metrics(game_types)
             
 

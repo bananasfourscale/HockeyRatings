@@ -60,3 +60,18 @@ class Penalty_Kill(Team_Metric):
             self.final_rating[team] = (
                 self.base_rating[team] / self.pk_chances[team]
             )
+
+    
+    def get_uncorrected_print_args(self, prefix : str="") -> list:
+        data_file_name = "{}_{}_base.csv".format(prefix, self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", self.name + "Base"],
+            "data_dict" : self.final_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + self.name),
+            "ascending_order" : True,
+        }
+        return [arg_dict]

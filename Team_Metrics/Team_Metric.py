@@ -107,3 +107,48 @@ class Team_Metric():
         self.trend_rating[date] = {}
         for team in self.final_rating.keys():
             self.trend_rating[date][team] = self.final_rating[team]
+
+
+    def get_uncorrected_print_args(self, prefix : str="") -> list:
+        data_file_name = "{}_{}_base.csv".format(prefix, self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", self.name + "Base"],
+            "data_dict" : self.final_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + self.name),
+            "ascending_order" : False,
+        }
+        return [arg_dict]
+    
+
+    def get_corrected_print_args(self, prefix : str="") -> list:
+        data_file_name = "{}_{}_corrected.csv".format(prefix, self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", self.name + "Corrected"],
+            "data_dict" : self.final_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + self.name),
+            "ascending_order" : False,
+        }
+        return [arg_dict]
+    
+
+    def get_trend_print_args(self, prefix : str="") -> list:
+        data_file_name = "{}_{}_trend.csv".format(prefix, self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", self.name + "Trend"],
+            "data_dict" : self.trend_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_trend.png".format(self.name,
+                    prefix + self.name),
+            "ascending_order" : False,
+        }
+        return [arg_dict]

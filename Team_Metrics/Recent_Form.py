@@ -3,11 +3,11 @@ from .Team_Metric import Team_Metric
 class Recent_Form(Team_Metric):
 
     # Class constants
-    LAST_10 = 0.35
-    LAST_20 = 0.25
-    LAST_40 = 0.15
-    TOTAL_STREAK = 0.15
-    LONGEST_STREAK = 0.10
+    LAST_10 = 0.50
+    LAST_20 = 0.20
+    LAST_40 = 0.10
+    TOTAL_STREAK = 0.12
+    LONGEST_STREAK = 0.08
 
 
     def __init__(self):
@@ -251,3 +251,166 @@ class Recent_Form(Team_Metric):
                 (self.last_40_rating[team] *
                     self.LAST_40)
             )
+
+    def get_base_print_args(self, prefix : str="") -> list:
+
+        # average streak
+        data_file_name = "{}_{}_base.csv".format(prefix, "average_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Average Streak Base"],
+            "data_dict" : self.total_streak_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + "average_streak"),
+            "ascending_order" : False,
+        }
+        arg_list = [arg_dict.copy()]
+
+        # longest streak
+        data_file_name = "{}_{}_base.csv".format(prefix, "longest_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Longest Streak Base"],
+            "data_dict" : self.longest_streak_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + "longest_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 40
+        data_file_name = "{}_{}_base.csv".format(prefix, "last_40_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 40 Streak Base"],
+            "data_dict" : self.last_40_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + "last_40_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 20
+        data_file_name = "{}_{}_base.csv".format(prefix, "last_20_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 20 Streak Base"],
+            "data_dict" : self.last_20_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + "last_20_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 10
+        data_file_name = "{}_{}_base.csv".format(prefix, "last_10_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 10 Streak Base"],
+            "data_dict" : self.last_10_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_base.png".format(self.name,
+                    prefix + "last_10_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        return arg_list
+    
+
+    def get_corrected_print_args(self, prefix : str="") -> list:
+        # average streak
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "average_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Average Streak Corrected"],
+            "data_dict" : self.total_streak_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "average_streak"),
+            "ascending_order" : False,
+        }
+        arg_list = [arg_dict.copy()]
+
+        # longest streak
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "longest_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Longest Streak Corrected"],
+            "data_dict" : self.longest_streak_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "longest_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 40
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "last_40_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 40 Streak Corrected"],
+            "data_dict" : self.last_40_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "last_40_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 20
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "last_20_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 20 Streak Corrected"],
+            "data_dict" : self.last_20_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "last_20_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 10
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "last_10_streak")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Last 10 Streak Corrected"],
+            "data_dict" : self.last_10_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "last_10_streak"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        # final rating
+        data_file_name = "{}_{}_corrected.csv".format(prefix, "final")
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
+            "title_args" : ["Team", "Final Corrected"],
+            "data_dict" : self.final_rating,
+            "graph_name" : 
+                "Graphs/Teams/{}/{}_corrected.png".format(self.name,
+                    prefix + "final"),
+            "ascending_order" : False,
+        }
+        arg_list.append(arg_dict.copy())
+
+        return arg_list
+
