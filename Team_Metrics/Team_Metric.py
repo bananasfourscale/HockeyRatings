@@ -143,8 +143,8 @@ class Team_Metric():
         data_file_name = "{}_{}_trend.csv".format(prefix, self.name)
         arg_dict = {
             "data_file_name" :
-                "Output_Files/Team_Files/Instance_Files/" + data_file_name,
-            "title_args" : ["Team", self.name + "Trend"],
+                "Output_Files/Team_Files/Trend_Files/" + data_file_name,
+            "title_args" : ["Rating Date", self.name + "_Trend"],
             "data_dict" : self.trend_rating,
             "graph_name" : 
                 "Graphs/Teams/{}/{}_trend.png".format(self.name,

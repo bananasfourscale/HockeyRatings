@@ -16,9 +16,3 @@ class Turnovers(Player_Metric):
                 )
             }
         return turnovers
-    
-
-    def apply_relative_scaling(self, relative_scalar : float=0.5,
-        metric : dict={}):
-
-        return super().apply_relative_scaling(relative_scalar, metric, False)

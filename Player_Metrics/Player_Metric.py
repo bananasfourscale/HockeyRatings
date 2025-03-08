@@ -107,13 +107,10 @@ class Player_Metric():
         external_scalar_metric : dict={}) -> None:
 
         for player in self.base_rating[position].keys():
-            if external_scalar_metric[player] == 0:
-                self.final_rating[position][player] = 0
-            else:
-                self.final_rating[position][player] = (
-                    self.base_rating[position][player] /
-                    external_scalar_metric[player]
-                )
+            self.final_rating[position][player] = (
+                self.base_rating[position][player] *
+                (1 + external_scalar_metric[player])
+            )
 
     
     def update_trend(self, date : str="") -> None:
@@ -125,3 +122,51 @@ class Player_Metric():
                 self.trend_rating[date][position][player] = (
                     self.final_rating[position][player]
                 )
+
+
+    def get_uncorrected_print_args(self, prefix : str="",
+        position : str="C") -> list:
+
+        if position == "C":
+            title_group = "Forward"
+        elif position == "D":
+            title_group = "Defensemen"
+        else:
+            title_group = "Goalies"
+        data_file_name = "{}_{}_{}_base.csv".format(prefix, title_group,
+            self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Player_Files/Instance_Files/" + data_file_name,
+            "title_args" : [title_group, self.name + "Base", "Team"],
+            "data_dict" : self.final_rating[position],
+            "graph_name" :
+                "Graphs/{}/{}/{}_base.png".format(title_group,
+                    self.name, prefix + self.name),
+            "ascending_order" : False,
+        }
+        return [arg_dict]
+    
+
+    def get_corrected_print_args(self, prefix : str="",
+        position : str="C") -> list:
+
+        if position == "C":
+            title_group = "Forward"
+        elif position == "D":
+            title_group = "Defensemen"
+        else:
+            title_group = "Goalies"
+        data_file_name = "{}_{}_{}_corrected.csv".format(prefix, title_group,
+            self.name)
+        arg_dict = {
+            "data_file_name" :
+                "Output_Files/Player_Files/Instance_Files/" + data_file_name,
+            "title_args" : [title_group, self.name + "Corrected", "Team"],
+            "data_dict" : self.final_rating[position],
+            "graph_name" :
+                "Graphs/{}/{}/{}_corrected.png".format(title_group,
+                    self.name, prefix + self.name),
+            "ascending_order" : False,
+        }
+        return [arg_dict]

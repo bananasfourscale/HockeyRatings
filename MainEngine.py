@@ -6,6 +6,7 @@ from enum import Enum
 import tkinter as tk
 from tkinter.ttk import *
 from copy import copy
+import os
 
 from Database_Parser import get_game_records
 
@@ -614,12 +615,11 @@ def plot_trend_team_metrics(game_types : str="R") -> None:
         # as a list thjat can be looped through with the same format for each
         # element
         for data_set in arg_list:
-            write_out_file(data_set["data_file_name"], data_set["title_args"],
-                data_set["data_dict"])
-            plotting_queue.put((plot_data_set, (
-                data_set["data_file_name"],
-                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
-                data_set["ascending_order"]
+            update_trend_file(data_set["data_file_name"],
+                data_set["data_dict"], metric.name + "_Trend")
+            plotting_queue.put((plot_team_trend_set, (
+                data_set["data_file_name"], data_set["title_args"], 1.1, -.1,
+                sigmoid_ticks, data_set["graph_name"]
             )))
 
     # absolute ranking
@@ -741,322 +741,60 @@ def plot_uncorrected_player_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
-    ### Goalies
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Utilization_Base.csv",
-        ["Goalie", "Utilization Base", "Team"],
-        utilization_metric.get_base_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Utilization_Base.csv",
-        ["Goalie", "Utilization Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Utilization/{}utilization_base.png".format(prefix))
-    ))
-    
-    # Goals Against
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Goals_Against_Base.csv",
-        ["Goalie", "Goals Against Avg Base", "Team"],
-        goals_against_metric.get_base_rating_dict("G"), goalie_teams,
-        False)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Goals_Against_Base.csv",
-        ["Goalie", "Goals Against Avg Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Goals_Against/{}goals_against_base.png".format(prefix),
-        True)
-    ))
-    
-    # Save Percentage
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Percentage_Weighted.csv",
-        ["Goalie", "Save Percentage Scaled", "Team"],
-        save_percentage_metric.get_base_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Percentage_Weighted.csv",
-        ["Goalie", "Save Percentage Scaled"], 0.0, 0.0, [],
-        "Graphs/Goalies/Save_Percentage/{}save_percentage_scaled.png".format(
-            prefix
-        ))
-    ))
-    
-    # Save Consistency
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Consistency_Base.csv",
-        ["Goalie", "Save Consistency Base", "Team"],
-        save_consistency_metric.get_base_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Consistency_Base.csv",
-        ["Goalie", "Save Consistency Base"], 0.0, 0.0, [],
-        "Graphs/Goalies/Save_Consistency/{}save_consistency_base.png".format(
-            prefix
-        ))
-    ))
-    
-    ### Forwards
-    # Blocks
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}Blocks_Base.csv".format(
-            prefix),
-        ["Forward", "Blocks Base", "Team"],
-        blocked_shots_metric.get_base_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Forward_Files/Instance_Files/{}Blocks_Base.csv".format(
-            prefix),
-        ["Forward", "Blocks Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Blocks/{}blocks_base.png".format(prefix)
-        )
-    ))
-    
-    # Contributing Games
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Base.csv",
-        ["Forward", "Contribution Base", "Team"],
-        contributing_games_metric.get_base_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Base.csv",
-        ["Forward", "Contribution Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Contribution/{}contribution_base.png".format(prefix))
-    ))
-    
-    # Discipline
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Base.csv",
-        ["Forward", "Discipline Base", "Team"],
-        discipline_metric.get_base_rating_dict("C"), forward_teams, False)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Base.csv",
-        ["Forward", "Discipline Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Discipline/{}discipline_base.png".format(prefix),
-        True)
-    ))
-    
-    # Hits
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}Hits_Base.csv".format(
-            prefix
-        ),
-        ["Forward", "Hits Base", "Team"],
-        hitting_metric.get_base_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}Hits_Base.csv".format(
-            prefix),
-        ["Forward", "Hits Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Hits/{}hits_base.png".format(prefix), False)))
-    
-    # Multipoint Games
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Base.csv",
-        ["Forward", "Multipoint Base", "Team"],
-        multipoint_game_metric.get_base_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Base.csv",
-        ["Forward", "Multipoint Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Multipoint/{}Multipoint_base.png".format(prefix),
-        False)
-    ))
-    
-    # Plus Minus
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Base.csv",
-        ["Forward", "Plus_Minus Base", "Team"],
-        plus_minus_metric.get_base_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Base.csv",
-        ["Forward", "Plus_Minus Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Plus_Minus/{}plus_minus_base.png".format(prefix),
-        False)
-    ))
-    
-    # Turnovers
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}Turnovers_Base.csv".format(
-            prefix
-        ),
-        ["Forward", "Turnovers Base", "Team"],
-        turnovers_metric.get_base_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Forward_Files/Instance_Files/{}Turnovers_Base.csv".format(
-            prefix
-        ),
-        ["Forward", "Turnovers Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Turnovers/{}takeaways_base.png".format(prefix),
-            False)
-    ))
-    
-    # Total Points
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Total_Points_Base.csv",
-        ["Forward", "Points Base", "Team"],
-        total_points_metric.get_base_rating_dict("C"), forward_teams,
-        True)
-    plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Total_Points_Base.csv",
-        ["Forward", "Points Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Total_Points/{}total_points_base.png".format(prefix),
-        False)
-    ))
-    
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "EvnUtilization_Base.csv",
-        ["Forward", "Even Strength Utilization Base", "Team"],
-        utilization_metric.get_base_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "EvnUtilization_Base.csv",
-        ["Forward", "Even Strength Utilization Base"], 0.0, 0.0, [],
-        "Graphs/Forward/Utilization/{}even_utilzation_base.png".format(prefix),
-        False)
-    ))
-    
-    ### Defensemen
-    # Blocks
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}Blocks_Base.csv".format(
-            prefix),
-        ["Defensemen", "Blocks Base", "Team"],
-        blocked_shots_metric.get_base_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Blocks_Base.csv",
-        ["Defensemen", "Blocks Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Blocks/{}blocks_base.png".format(prefix))
-    ))
+    # get data for each relevent metric
+    # Goalies
+    for metric in goalie_metrics_list:
+        arg_list = metric.get_uncorrected_print_args(prefix, "G")
 
-    # Contributing Games
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Base.csv",
-        ["Defensemen", "Contribution Base", "Team"],
-        contributing_games_metric.get_base_rating_dict("D"),
-        defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Base.csv",
-        ["Defensemen", "Contribution Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Contribution/{}contribution_base.png".format(prefix))
-    ))
-    
-    # Discipline
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Base.csv",
-        ["Defensemen", "Discipline Base", "Team"],
-        discipline_metric.get_base_rating_dict("D"), defensemen_teams,
-        False)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Base.csv",
-        ["Defensemen", "Discipline Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Discipline/{}discipline_base.png".format(prefix),
-        True)
-    ))
-    
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "EvnUtilization_Base.csv",
-        ["Defensemen", "Even Strength Utilization Base", "Team"],
-        utilization_metric.get_base_rating_dict("D"), defensemen_teams,
-        True)
-    plotting_queue.put((plot_player_ranking, 
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "EvnUtilization_Base.csv",
-        ["Defensemen", "Even Strength Utilization Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Utilization/{}".format(prefix) +
-            "even_utilzation_base.png",
-        False)
-    ))
-    
-    # Hits
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}Hits_Base.csv".format(
-            prefix),
-        ["Defensemen", "Hits Base", "Team"],
-        hitting_metric.get_base_rating_dict("D"), defensemen_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}Hits_Base.csv".format(
-            prefix),
-        ["Defensemen", "Hits Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Hits/{}hits_base.png".format(prefix), False)
-    ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], goalie_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
-    # Multipoint Games
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Base.csv",
-        ["Defensemen", "Multipoint Base", "Team"],
-        multipoint_game_metric.get_base_rating_dict("D"), defensemen_teams,
-        True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Base.csv",
-        ["Defensemen", "Multipoint Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Multipoint/{}Multipoint_base.png".format(prefix),
-        False)
-    ))
-    
-    # Plus Minus
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Base.csv",
-        ["Defensemen", "Plus_Minus Base", "Team"],
-        plus_minus_metric.get_base_rating_dict("D"), defensemen_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Base.csv",
-        ["Defensemen", "Plus_Minus Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Plus_Minus/{}plus_minus_base.png".format(prefix),
-        False)
-    ))
-    
-    # Points
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}Points_Base.csv".format(
-            prefix),
-        ["Defensemen", "Points Base", "Team"],
-        total_points_metric.get_base_rating_dict("D"), defensemen_teams,
-        True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Points_Base.csv",
-        ["Defensemen", "Points Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Total_Points/points_base.png".format(prefix),
-        False)
-    ))
-    
-    # Turnovers
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Base.csv",
-        ["Defensemen", "Turnovers Base", "Team"],
-        turnovers_metric.get_base_rating_dict("D"), defensemen_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Base.csv",
-        ["Defensemen", "Turnovers Base"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Turnovers/{}takeaways_base.png".format(prefix),
-        False)
-    ))
+    # Forwards
+    for metric in player_metrics_list:
+        arg_list = metric.get_uncorrected_print_args(prefix, "C")
+
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], forward_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
+
+    # Defense
+    for metric in player_metrics_list:
+        arg_list = metric.get_uncorrected_print_args(prefix, "D")
+
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], defensemen_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
 
 def plot_corrected_player_metrics(game_types : str="R") -> None:
@@ -1065,307 +803,60 @@ def plot_corrected_player_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
-    ### Goalies
-    # Goals Against
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Goals_Against_Corrected.csv",
-        ["Goalie", "Goals Against Avg Corrected", "Team"],
-        goals_against_metric.get_final_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Goals_Against_Corrected.csv",
-        ["Goalie", "Goals Against Avg Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Goals_Against/{}goals_against_corrected.png".format(
-            prefix))
-    ))
+    # get data for each relevent metric
+    # Goalies
+    for metric in goalie_metrics_list:
+        arg_list = metric.get_corrected_print_args(prefix, "G")
 
-    # Save Consistency
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Consistency_Corr.csv",
-        ["Goalie", "Save Consistency Corrected", "Team"],
-        save_consistency_metric.get_final_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Consistency_Corr.csv",
-        ["Goalie", "Save Consistency Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Save_Consistency/{}".format(prefix) +
-            "save_consistency_corrected.png")
-    ))
-    
-    # Save Percentage
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Percentage_Corrected.csv",
-        ["Goalie", "Save Percentage Corrected", "Team"],
-        save_percentage_metric.get_final_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Save_Percentage_Corrected.csv",
-        ["Goalie", "Save Percentage Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Save_Percentage/{}save_percentage_corrected.png".format(
-            prefix))
-        ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], goalie_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Utilization_Corr.csv",
-        ["Goalie", "Utilization Corrected", "Team"],
-        utilization_metric.get_final_rating_dict("G"), goalie_teams)
-    plotting_queue.put((plot_player_ranking, (
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
-            "Utilization_Corr.csv",
-        ["Goalie", "Utilization Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Utilization/{}utilization_corrected.png".format(prefix))
-    ))
+    # Forwards
+    for metric in player_metrics_list:
+        arg_list = metric.get_corrected_print_args(prefix, "C")
 
-    ### Forwards
-    # Blocks
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Blocks_Corrected.csv",
-        ["Forward", "Blocks Corrected", "Team"],
-        blocked_shots_metric.get_final_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Blocks_Corrected.csv",
-        ["Forward", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Blocks/{}blocks_corrected.png".format(prefix))
-    ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], forward_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
-    # Contributing Games
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Corrected.csv",
-        ["Forward", "Contribution Corrected", "Team"],
-        contributing_games_metric.get_final_rating_dict("C"),
-        forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Corrected.csv",
-        ["Forward", "Contribution Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Contribution/{}".format(prefix) +
-            "contribution_corrected.png")
-    ))
+    # Defense
+    for metric in player_metrics_list:
+        arg_list = metric.get_corrected_print_args(prefix, "D")
 
-    # Discipline
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Corrected.csv",
-        ["Forward", "Discipline Corrected", "Team"],
-        discipline_metric.get_final_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Corrected.csv",
-        ["Forward", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Discipline/{}discipline_corrected.png".format(prefix))
-    ))
-
-    # Hits
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}Hits_Corrected.csv".format(
-            prefix),
-        ["Forward", "Hits Corrected", "Team"],
-        hitting_metric.get_final_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Hits_Corrected.csv",
-        ["Forward", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Hits/{}hits_corrected.png".format(prefix))
-    ))
-
-    # Multipoint Games
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Corrected.csv",
-        ["Forward", "Multipoint Corrected", "Team"],
-        multipoint_game_metric.get_final_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Corrected.csv",
-        ["Forward", "Multipoint Corrected"], 0.0, 0.0, [],
-        "Graphs/Forward/Multipoint/{}multipoint_corrected.png".format(prefix),
-        False)
-    ))
-
-    # Plus Minus
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Corrected.csv",
-        ["Forward", "Plus_Minus Corrected", "Team"],
-        plus_minus_metric.get_final_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Corrected.csv",
-        ["Forward", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Plus_Minus/{}plus_minus_corrected.png".format(prefix))
-    ))
-
-    # Turnovers
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Corrected.csv",
-        ["Forward", "Turnovers Corrected", "Team"],
-        turnovers_metric.get_final_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Corrected.csv",
-        ["Forward", "Turnovers Corrected"], 0.0, 0.0, [],
-        "Graphs/Forward/Turnovers/{}takeaways_corrected.png".format(prefix),
-        False)
-    ))
-
-    # Total Points
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Total_Points_Corrected.csv",
-        ["Forward", "Points Corrected", "Team"],
-        total_points_metric.get_final_rating_dict("C"), forward_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "Total_Points_Corrected.csv",
-        ["Forward", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Total_Points/{}total_points_corrected.png".format(
-            prefix))))
-
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "UtilizationRating.csv",
-        ["Forward", "Utilization Rating", "Team"],
-        utilization_metric.get_final_rating_dict("C"), forward_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
-            "UtilizationRating.csv",
-        ["Forward", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Utilization/{}utilization_rating.png".format(prefix),
-        False)
-    ))
-
-    ### Defensemen
-    # Blocks
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Blocks_Corrected.csv",
-        ["Defensemen", "Blocks Corrected", "Team"],
-        blocked_shots_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Blocks_Corrected.csv",
-        ["Defensemen", "Blocks Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Blocks/{}blocks_corrected.png".format(prefix))
-    ))
-
-    # Contributing Games
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Corrected.csv",
-        ["Defensemen", "Contribution Corrected", "Team"],
-        contributing_games_metric.get_final_rating_dict("D"),
-        defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Contribution_Corrected.csv",
-        ["Defensemen", "Contribution Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Contribution/{}".format(prefix) +
-            "contribution_corrected.png")
-    ))
-
-    # Discipline
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Corrected.csv",
-        ["Defensemen", "Discipline Corrected", "Team"],
-        discipline_metric.get_final_rating_dict("D"),
-        defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Discipline_Corrected.csv",
-        ["Defensemen", "Discipline Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Discipline/{}discipline_corrected.png".format(
-            prefix))
-    ))
-
-    # Hits
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Hits_Corrected.csv",
-        ["Defensemen", "Hits Corrected", "Team"],
-        hitting_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Hits_Corrected.csv",
-        ["Defensemen", "Hits Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Hits/{}hits_corrected.png".format(prefix))))
-
-    # Multipoint Games
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Corrected.csv",
-        ["Defensemen", "Multipoint Corrected", "Team"],
-        multipoint_game_metric.get_final_rating_dict("D"), defensemen_teams, True)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Multipoint_Corrected.csv",
-        ["Defensemen", "Multipoint Corrected"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Multipoint/{}multipoint_corrected.png".format(
-            prefix),
-        False)
-    ))
-
-    # Plus Minus
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Corrected.csv",
-        ["Defensemen", "Plus_Minus Corrected", "Team"],
-        plus_minus_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Plus_Minus_Corrected.csv",
-        ["Defensemen", "Plus_Minus Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Plus_Minus/{}plus_minus_corrected.png".format(prefix))
-    ))
-
-    # Points
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Points_Corrected.csv",
-        ["Defensemen", "Points Corrected", "Team"],
-        total_points_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Points_Corrected.csv",
-        ["Defensemen", "Points Corrected"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Total_Points/{}points_corrected.png".format(prefix))
-    ))
-
-    # Turnovers
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Corrected.csv",
-        ["Defensemen", "Turnovers Corrected", "Team"],
-        turnovers_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "Turnovers_Corrected.csv",
-        ["Defensemen", "Turnovers Corrected"], 0.0, 0.0, [],
-        "Graphs/Defensemen/Turnovers/{}takeaways_corrected.png".format(prefix))
-    ))
-
-    # Utilization
-    write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "UtilizationRating.csv",
-        ["Defensemen", "Utilization Rating", "Team"],
-        utilization_metric.get_final_rating_dict("D"), defensemen_teams)
-    plotting_queue.put((plot_player_ranking,
-        ("Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
-            "UtilizationRating.csv",
-        ["Defensemen", "Utilization Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Utilization/{}utilization_rating.png".format(prefix))
-    ))
+        # some metrics need to print more than one set of data so it is returned
+        # as a list thjat can be looped through with the same format for each
+        # element
+        for data_set in arg_list:
+            write_out_player_file(data_set["data_file_name"],
+                data_set["title_args"], data_set["data_dict"], defensemen_teams,
+                not data_set["ascending_order"]
+            )
+            plotting_queue.put((plot_player_ranking, (
+                data_set["data_file_name"],
+                data_set["title_args"], 0.0, 0.0, [], data_set["graph_name"],
+                data_set["ascending_order"]
+            )))
 
 
 def plot_combined_player_metrics(game_types : str="R") -> None:
@@ -1374,38 +865,42 @@ def plot_combined_player_metrics(game_types : str="R") -> None:
     else:
         prefix = "Post_Season_"
 
+    # Goalies
     write_out_player_file(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
+        "Output_Files/Player_Files/Instance_Files/{}".format(prefix) +
             "Goalie_Total_Rating.csv",
         ["Goalie", "Total Rating", "Team"], goalie_total_rating, goalie_teams)
     plot_player_ranking(
-        "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
+        "Output_Files/Player_Files/Instance_Files/{}".format(prefix) +
             "Goalie_Total_Rating.csv".format(prefix),
         ["Goalie", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Goalies/Goalie_Total_Rating/{}goalie_total_rating.png".format(
-            prefix))
+        "Graphs/Goalies/total_rating/{}goalie_total_rating.png".format(prefix))
+    
+    # Forwards
     write_out_player_file(
-        "Output_Files/Forward_Files/Instance_Files/" +
+        "Output_Files/Player_Files/Instance_Files/" +
             "{}Forward_Total_Rating.csv".format(prefix),
         ["Forward", "Total Rating", "Team"], forward_total_rating,
         forward_teams)
     plot_player_ranking(
-        "Output_Files/Forward_Files/Instance_Files/" +
+        "Output_Files/Player_Files/Instance_Files/" +
             "{}Forward_Total_Rating.csv".format(prefix),
         ["Forward", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Forward/Forward_Total_Rating/{}forward_total_rating.png".format(
+        "Graphs/Forward/total_rating/{}forward_total_rating.png".format(
             prefix
     ))
+
+    # Defense
     write_out_player_file(
-        "Output_Files/Defensemen_Files/Instance_Files/" +
+        "Output_Files/Player_Files/Instance_Files/" +
             "{}Defensemen_Total_Rating.csv".format(prefix),
         ["Defensemen", "Total Rating", "Team"], defensemen_total_rating,
         defensemen_teams)
     plot_player_ranking(
-        "Output_Files/Defensemen_Files/Instance_Files/" +
+        "Output_Files/Player_Files/Instance_Files/" +
             "{}Defensemen_Total_Rating.csv".format(prefix),
         ["Defensemen", "Total Rating"], 1.0, 0.0, sigmoid_ticks,
-        "Graphs/Defensemen/Defensemen_Total_Rating/" +
+        "Graphs/Defensemen/total_rating/" +
             "{}defensemen_total_rating.png".format(prefix
     ))
 
@@ -1434,7 +929,7 @@ def combine_all_team_factors() -> None:
 
 def scale_all_goalie_data() -> None:
     utilization_metric.scale_rating("G",
-        utilization_metric.get_games_played_dict())
+        strength_of_schedule_metric.get_games_played_dict(), goalie_teams)
     apply_sigmoid_correction(utilization_metric.get_final_rating_dict("G"))
 
     discipline_metric.scale_rating("G",
@@ -1444,7 +939,7 @@ def scale_all_goalie_data() -> None:
         utilization_metric.get_final_rating_dict("G"))
     
     save_consistency_metric.scale_rating("G",
-        goals_against_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("G"))
 
     save_percentage_metric.scale_rating(
         {'game_time' : utilization_metric.get_base_rating_dict("G"),
@@ -1457,28 +952,29 @@ def scale_all_goalie_data() -> None:
 
 def scale_all_forward_data() -> None:
     utilization_metric.scale_rating("C",
-        utilization_metric.get_games_played_dict())
+        strength_of_schedule_metric.get_games_played_dict(), forward_teams)
     apply_sigmoid_correction(utilization_metric.get_final_rating_dict("C"))
 
     blocked_shots_metric.scale_rating("C",
-        shot_differential_metric.get_base_rating_dict(), forward_teams)
+        shot_differential_metric.get_final_rating_dict(), forward_teams)
 
     contributing_games_metric.scale_rating("C",
-        contributing_games_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("C"))
 
     discipline_metric.scale_rating("C",
         utilization_metric.get_final_rating_dict("C"))
 
-    hitting_metric.scale_rating("C", hitting_metric.get_games_played_dict())
+    hitting_metric.scale_rating("C",
+        utilization_metric.get_final_rating_dict("C"))
 
     multipoint_game_metric.scale_rating("C",
-        multipoint_game_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("C"))
 
     plus_minus_metric.scale_rating("C",
         utilization_metric.get_final_rating_dict("C"))
 
     total_points_metric.scale_rating("C",
-        total_points_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("C"))
 
     turnovers_metric.scale_rating("C",
         utilization_metric.get_final_rating_dict("C"))
@@ -1486,28 +982,29 @@ def scale_all_forward_data() -> None:
 
 def scale_all_defense_data() -> None:
     utilization_metric.scale_rating("D",
-        utilization_metric.get_games_played_dict())
+        strength_of_schedule_metric.get_games_played_dict(), defensemen_teams)
     apply_sigmoid_correction(utilization_metric.get_final_rating_dict("D"))
 
     blocked_shots_metric.scale_rating("D",
-        shot_differential_metric.get_base_rating_dict(), defensemen_teams)
+        shot_differential_metric.get_final_rating_dict(), defensemen_teams)
 
     contributing_games_metric.scale_rating("D",
-        contributing_games_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("D"))
 
     discipline_metric.scale_rating("D",
         utilization_metric.get_final_rating_dict("D"))
 
-    hitting_metric.scale_rating("D", hitting_metric.get_games_played_dict())
+    hitting_metric.scale_rating("D",
+        utilization_metric.get_final_rating_dict("D"))
 
     multipoint_game_metric.scale_rating("D",
-        multipoint_game_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("D"))
 
     plus_minus_metric.scale_rating("D",
         utilization_metric.get_final_rating_dict("D"))
 
     total_points_metric.scale_rating("D",
-        total_points_metric.get_games_played_dict())
+        utilization_metric.get_final_rating_dict("D"))
 
     turnovers_metric.scale_rating("D",
         utilization_metric.get_final_rating_dict("D"))
@@ -1553,6 +1050,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
     # we've grouped dates together by when trends should be updated to save
     # time, so now loop through those groups of ranking periods
+    start = time.time()
     for ranking_period in all_ranking_periods:
         print("{} -> {}".format(ranking_period[0], ranking_period[-1]))
         update_progress_text(
@@ -1637,8 +1135,12 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         for process in metric_process_list:
             process.join()
 
+        print("Data Parsing Time")
+        print_time_diff(start, time.time())
+
 ##################### TEAM RANKING PERIOD PROCESSING ###########################
         # call any cleanup calculations required
+        start = time.time()
         for metric in team_metrics:
             metric.scale_rating()
 
@@ -1701,6 +1203,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # combine all factors and plot the total rankings
         combine_all_team_factors()
+
+        print("Finalized Team Metrics")
+        print_time_diff(start, time.time())
         
         if final_date:
             print("Plot combined team metrics")
@@ -1739,6 +1244,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                 team_total_rating[team]
 
 ####################### PLAYER RANKING PERIOD PROCESSING #######################
+
+        start = time.time()
+
         ### Goalies ###
         scale_all_goalie_data()
 
@@ -1749,6 +1257,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         scale_all_defense_data()
 
         if final_date:
+            print("Plot Player data before correction")
             plot_uncorrected_player_metrics(game_types)
 
         # Goalies
@@ -1765,8 +1274,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             blocked_shots_metric.get_final_rating_dict("C"))
         apply_sigmoid_correction(
             contributing_games_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("C"),
-            True)
+        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("C"))
         apply_sigmoid_correction(hitting_metric.get_final_rating_dict("C"))
         apply_sigmoid_correction(
             multipoint_game_metric.get_final_rating_dict("C"))
@@ -1779,8 +1287,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             blocked_shots_metric.get_final_rating_dict("D"))
         apply_sigmoid_correction(
             contributing_games_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("D"),
-            True)
+        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("D"))
         apply_sigmoid_correction(hitting_metric.get_final_rating_dict("D"))
         apply_sigmoid_correction(
             multipoint_game_metric.get_final_rating_dict("D"))
@@ -1881,7 +1388,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     defensemen_total_rating[defensemen] * EYE_TEST_WEIGHT
                 )
         if final_date:
+            print("Plot Final Player Ratings")
             plot_combined_player_metrics(game_types)
+
+        print("Finalize Player Metrics")
+        print_time_diff(start, time.time())
 
         # now update the last ranking date to indicate we have new trends
         last_ranking_date = ranking_period[-1]
@@ -1889,6 +1400,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 ############################# END POST PROCESSING ##############################
         # Print out trend files
         if final_date:
+            start = time.time()
 
             ############## TEAMS ##############
             plot_trend_team_metrics(game_types)
@@ -2029,12 +1541,16 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
                     average_player_rating[team][1]
             
             # now plot all averge player metrics
-            plot_average_player_team_metrics(game_types)
+            # plot_average_player_team_metrics(game_types)
         parsed_dates += 1
         update_progress_bar((parsed_dates / len(all_ranking_periods))*100)
 
+        print("Final Recorded Date Finalization")
+        print_time_diff(start, time.time())
+
     # if the end of regular season add to year on year summaries
     if REG_SEASON_COMPLETE and final_date:
+        start = time.time()
 
         ############## TEAMS ################
         header_row = True
@@ -2085,7 +1601,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # open the total rating file for all teams and copy out the data
         print("Reading Out Goalie Total File")
         with open(
-            "Output_Files/Goalie_Files/Instance_Files/{}".format(prefix) +
+            "Output_Files/Player_Files/Instance_Files/{}".format(prefix) +
                 "Goalie_Total_Rating.csv",
             'r', newline='', encoding='utf-16') as csv_read_file:
             csv_reader = csv.reader(csv_read_file, delimiter='\t',
@@ -2102,7 +1618,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # now rewrite the data to a year on year trend file with extra headers
         print("Writing Out Goalie Updates")
         with open(
-            "Output_Files\Goalie_Files\Trend_Files\GoalieYearlyRanking.csv",
+            "Output_Files\Player_Files\Trend_Files\GoalieYearlyRanking.csv",
             'a+', newline='', encoding='utf-16') as csv_write_file:
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -2117,9 +1633,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # plot the updated year on year data
         plotting_queue.put((plot_player_trend_set,
-            ("Output_Files\Goalie_Files\Trend_Files\GoalieYearlyRanking.csv",
+            ("Output_Files\Player_Files\Trend_Files\GoalieYearlyRanking.csv",
             ["Season", "Total Rating", "Goalie"], 0.0, 0.0, sigmoid_ticks,
-            "Graphs/Goalies/Goalie_Total_Rating/year_on_year_score.png")))
+            "Graphs/Goalies/total_rating/year_on_year_score.png")))
         
         ### Forwards
         header_row = True
@@ -2128,7 +1644,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # open the total rating file for all teams and copy out the data
         print("Reading Out Forward Total File")
         with open(
-            "Output_Files/Forward_Files/Instance_Files/{}".format(prefix) +
+            "Output_Files/Player_Files/Instance_Files/{}".format(prefix) +
                 "Forward_Total_Rating.csv",
             'r', newline='', encoding='utf-16') as csv_read_file:
             csv_reader = csv.reader(csv_read_file, delimiter='\t',
@@ -2145,7 +1661,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # now rewrite the data to a year on year trend file with extra headers
         print("Writing Out Forward Updates")
         with open(
-            "Output_Files\Forward_Files\Trend_Files\ForwardYearlyRanking.csv",
+            "Output_Files\Player_Files\Trend_Files\ForwardYearlyRanking.csv",
             'a+', newline='', encoding='utf-16') as csv_write_file:
             csv_writer = csv.writer(csv_write_file, delimiter=',',
                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -2160,9 +1676,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # plot the updated year on year data
         plotting_queue.put((plot_player_trend_set,
-            ("Output_Files\Forward_Files\Trend_Files\ForwardYearlyRanking.csv",
+            ("Output_Files\Player_Files\Trend_Files\ForwardYearlyRanking.csv",
             ["Season", "Total Rating", "Forward"], 0.0, 0.0, sigmoid_ticks,
-            "Graphs/Forward/Forward_Total_Rating/year_on_year_score.png")))
+            "Graphs/Forward/total_rating/year_on_year_score.png")))
         
         ### Defensemen
         header_row = True
@@ -2171,7 +1687,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # open the total rating file for all teams and copy out the data
         print("Reading Out Defensemen Total File")
         with open(
-            "Output_Files/Defensemen_Files/Instance_Files/{}".format(prefix) +
+            "Output_Files/Player_Files/Instance_Files/{}".format(prefix) +
                 "Defensemen_Total_Rating.csv",
             'r', newline='', encoding='utf-16') as csv_read_file:
             csv_reader = csv.reader(csv_read_file, delimiter='\t',
@@ -2188,7 +1704,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         # now rewrite the data to a year on year trend file with extra headers
         print("Writing Out Defensemen Updates")
         with open(
-            "Output_Files\Defensemen_Files\Trend_Files" +
+            "Output_Files\Player_Files\Trend_Files" +
                 "\DefensemenYearlyRanking.csv",
             'a+', newline='', encoding='utf-16') as csv_write_file:
             csv_writer = csv.writer(csv_write_file, delimiter=',',
@@ -2204,13 +1720,17 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         # plot the updated year on year data
         plotting_queue.put((plot_player_trend_set,
-            ("Output_Files\Defensemen_Files\Trend_Files" +
+            ("Output_Files\Player_Files\Trend_Files" +
                 "\DefensemenYearlyRanking.csv",
             ["Season", "Total Rating", "Defenseman"], 0.0, 0.0, sigmoid_ticks,
-            "Graphs/Defensemen/Defensemen_Total_Rating/year_on_year_score.png")
+            "Graphs/Defensemen/total_rating/year_on_year_score.png")
         ))
+
+        print("Regular Seasons Completion Finalization")
+        print_time_diff(start, time.time())
         
     # stop all the running workers
+    start = time.time()
     print("Waiting for Plotters to finish their very hard work <3")
     for i in range(subprocess_count):
         plotting_queue.put('STOP')
@@ -2218,27 +1738,18 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         process.join()
 
     # remove all the instance files to save clutter
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Team_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Goalie_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Goalie_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() + "\Output_Files\Forward_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Forward_Files\Instance_Files\\" + file)
-    # for dir in \
-    #     os.walk(os.getcwd() +
-    #         "\Output_Files\Defensemen_Files\Instance_Files"):
-    #     for file in dir[2]:
-    #         os.remove(os.getcwd() +
-    #             "\Output_Files\Defensemen_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Team_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Team_Files\Instance_Files\\" + file)
+    for dir in \
+        os.walk(os.getcwd() + "\Output_Files\Player_Files\Instance_Files"):
+        for file in dir[2]:
+            os.remove(os.getcwd() +
+                "\Output_Files\Player_Files\Instance_Files\\" + file)
+    print("played game parser cleanup")
+    print_time_diff(start, time.time())
             
 
 def calculate_metric_share(home_rating, away_rating) -> list:
@@ -2570,8 +2081,7 @@ def gather_match_records():
     close_progress_frame()
 
 
-def run_main_engine():   
-    start = time.time()
+def run_main_engine():
     freeze_support()
 
     eye_test_file_name = get_widget('eye-test-entry').get()
@@ -2592,19 +2102,16 @@ def run_main_engine():
         print("Running Regular Season Post Process\n")
         run_played_game_parser_engine("R", regular_season_matches)
         close_progress_frame()
-    print_time_diff(start, time.time())
 
     # upcoming match parser
     if len(upcoming_matches) > 0:
         print("Running Regular Season Match Predicter")
         run_upcoming_game_parser_engine("R", upcoming_matches)
-    print_time_diff(start, time.time())
 
     # upcoming playoff games based on regular season for sample size reasons
     if len(upcoming_playoff_matches) > 0:
         print("Running Post Season Match Predicter")
         run_upcoming_game_parser_engine("P", upcoming_playoff_matches)
-    print_time_diff(start, time.time())
 
     # reset all stats to just isolate post season.
     for metric in team_metrics:

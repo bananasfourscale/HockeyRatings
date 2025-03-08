@@ -3,7 +3,7 @@ from .Player_Metric import Player_Metric
 class Blocked_Shots(Player_Metric):
 
     def __init__(self):
-        super().__init__('blocked_shots', 'shot_differential')
+        super().__init__('blocks', 'shot_differential')
 
 
     def get_data_set(self, players : dict={}) -> dict:
@@ -19,5 +19,5 @@ class Blocked_Shots(Player_Metric):
         for player in self.base_rating[position].keys():
             self.final_rating[position][player] = (
                 self.base_rating[position][player] /
-                external_scalar_metric[teams_dict[player]]
+                1 + external_scalar_metric[teams_dict[player]]
             )

@@ -24,16 +24,13 @@ class Utilization(Player_Metric):
         return utilization
     
 
-    # def add_match_data(self, data_set = ..., position = "C"):
-    #     connor_flag = False
-    #     if position == "G":
-    #         for goalie in data_set.keys():
-    #             if goalie == "Connor Hellebuyck":
-    #                 connor_flag = True
-    #                 print("game data")
-    #                 print(data_set[goalie][self.name])
-    #     super().add_match_data(data_set, position)
-    #     if connor_flag:
-    #         print("base total")
-    #         print(self.base_rating["G"]["Connor Hellebuyck"])
+    def scale_rating(self, position : str="C",
+        external_scalar_metric : dict={}, teams_dict : dict={}) -> None:
+        
+        for player in self.base_rating[position].keys():
+            self.final_rating[position][player] = (
+                self.base_rating[position][player] /
+                1 + external_scalar_metric[teams_dict[player]]
+            )
+
 
