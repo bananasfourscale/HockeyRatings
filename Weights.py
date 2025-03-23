@@ -81,7 +81,7 @@ divisions = {
 }
 
 
-VERSION_MAJOR = 7
+VERSION_MAJOR = 8
 VERSION_MINOR = 0
 
 EYE_TEST_WEIGHT = 0.01

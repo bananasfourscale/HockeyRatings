@@ -27,3 +27,11 @@ class Goals_Against(Player_Metric):
         metric : dict={}):
 
         return super().apply_relative_scaling(relative_scalar, metric, False)
+    
+
+    def get_correction_arg_list(self, position : str="C") -> list:
+        arg_dict = {
+            "component_score" : self.get_final_rating_dict(position),
+            "asccending" : True
+        }
+        return [arg_dict]

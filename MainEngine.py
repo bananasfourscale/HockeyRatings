@@ -1160,41 +1160,11 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             print("Plot Team data before correction")
             plot_uncorrected_team_metrics(game_types)
 
-        # Clutch Rating
-        apply_sigmoid_correction(clutch_metric.get_final_rating_dict())
-
-        # Goal Differential
-        apply_sigmoid_correction(
-            goal_differential_metric.get_final_rating_dict())
-
-        # Penalty Kill
-        apply_sigmoid_correction(
-            penalty_kill_metric.get_final_rating_dict())
-        
-        # Power Play
-        apply_sigmoid_correction(
-            power_play_metric.get_final_rating_dict())
-
-        # Recent Form
-        apply_sigmoid_correction(
-            recent_form_metric.get_streak_dict())
-        apply_sigmoid_correction(
-            recent_form_metric.get_longest_streak_dict())
-        apply_sigmoid_correction(
-            recent_form_metric.get_last_10_dict())
-        apply_sigmoid_correction(
-            recent_form_metric.get_last_20_dict())
-        apply_sigmoid_correction(
-            recent_form_metric.get_last_40_dict())
-        apply_sigmoid_correction(recent_form_metric.get_final_rating_dict())
-        
-        # Shot Differential
-        apply_sigmoid_correction(
-            shot_differential_metric.get_final_rating_dict())
-
-        # Strenght of Schedule
-        apply_sigmoid_correction(
-            strength_of_schedule_metric.get_final_rating_dict())
+        # apply sigmoid correction for each Team Metric
+        for metric in team_metrics:
+            for component in metric.get_correction_arg_list():
+                apply_sigmoid_correction(component["component_score"],
+                    component["asccending"])
 
         # write out any plots after sigmoid correction
         if final_date:
@@ -1206,11 +1176,9 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         print("Finalized Team Metrics")
         print_time_diff(start, time.time())
-        
         if final_date:
             print("Plot combined team metrics")
             plot_combined_team_metrics(game_types)
-            
 
         ### Update any trend sets if on ranking date ###
         for metric in team_metrics:
@@ -1255,46 +1223,27 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
 
         ### Defensemen ###
         scale_all_defense_data()
-
         if final_date:
             print("Plot Player data before correction")
             plot_uncorrected_player_metrics(game_types)
 
         # Goalies
-        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("G"))
-        apply_sigmoid_correction(
-            goals_against_metric.get_final_rating_dict("G"), True)
-        apply_sigmoid_correction(
-            save_consistency_metric.get_final_rating_dict("G"))
-        apply_sigmoid_correction(
-            save_percentage_metric.get_final_rating_dict("G"))
+        for metric in goalie_metrics_list:
+            for component in metric.get_correction_arg_list("G"):
+                apply_sigmoid_correction(component["component_score"],
+                    component["asccending"])
 
         # Forwards
-        apply_sigmoid_correction(
-            blocked_shots_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(
-            contributing_games_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(hitting_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(
-            multipoint_game_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(plus_minus_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(total_points_metric.get_final_rating_dict("C"))
-        apply_sigmoid_correction(turnovers_metric.get_final_rating_dict("C"))
+        for metric in player_metrics_list:
+            for component in metric.get_correction_arg_list("C"):
+                apply_sigmoid_correction(component["component_score"],
+                    component["asccending"])
 
         # Defensemen
-        apply_sigmoid_correction(
-            blocked_shots_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(
-            contributing_games_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(discipline_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(hitting_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(
-            multipoint_game_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(plus_minus_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(total_points_metric.get_final_rating_dict("D"))
-        apply_sigmoid_correction(turnovers_metric.get_final_rating_dict("D"))
-
+        for metric in player_metrics_list:
+            for component in metric.get_correction_arg_list("D"):
+                apply_sigmoid_correction(component["component_score"],
+                    component["asccending"])
         if final_date:
             print("Plot Player data after correction")
             plot_corrected_player_metrics(game_types)
@@ -1390,7 +1339,6 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
         if final_date:
             print("Plot Final Player Ratings")
             plot_combined_player_metrics(game_types)
-
         print("Finalize Player Metrics")
         print_time_diff(start, time.time())
 
@@ -1744,7 +1692,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             os.remove(os.getcwd() +
                 "\Output_Files\Team_Files\Instance_Files\\" + file)
     for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Player_Files\Instance_Files"):
+        os.walk(os.getcwd() + "\Output_Files\Player_Filesg\Instance_Files"):
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Player_Files\Instance_Files\\" + file)
@@ -2143,6 +2091,7 @@ def run_main_engine():
     REG_SEASON_COMPLETE = False
 
     # if playoffs have started then run post processing on those games
+    start = time.time()
     if len(playoff_matches) > 0 :
         print(len(playoff_matches))
         print("Running Post Season Post Process\n")
@@ -2150,7 +2099,6 @@ def run_main_engine():
 
     # if there are matches in the schedule that are still upcoming then process
     print_time_diff(start, time.time())
-    start = time.time()
 
 if __name__ == "__main__":
     REG_SEASON_COMPLETE = False

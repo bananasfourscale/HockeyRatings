@@ -124,6 +124,14 @@ class Team_Metric():
         return [arg_dict]
     
 
+    def get_correction_arg_list(self) -> list:
+        arg_dict = {
+            "component_score" : self.get_final_rating_dict(),
+            "asccending" : False
+        }
+        return [arg_dict]
+    
+
     def get_corrected_print_args(self, prefix : str="") -> list:
         data_file_name = "{}_{}_corrected.csv".format(prefix, self.name)
         arg_dict = {

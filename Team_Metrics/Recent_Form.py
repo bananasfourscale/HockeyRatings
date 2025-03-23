@@ -252,7 +252,7 @@ class Recent_Form(Team_Metric):
                     self.LAST_40)
             )
 
-    def get_base_print_args(self, prefix : str="") -> list:
+    def get_uncorrected_print_args(self, prefix : str="") -> list:
 
         # average streak
         data_file_name = "{}_{}_base.csv".format(prefix, "average_streak")
@@ -324,6 +324,53 @@ class Recent_Form(Team_Metric):
         }
         arg_list.append(arg_dict.copy())
 
+        return arg_list
+    
+
+    def get_correction_arg_list(self) -> list:
+        arg_list = []
+
+        # average streak
+        arg_dict = {
+            "component_score" : self.get_streak_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
+
+        # longest streak
+        arg_dict = {
+            "component_score" : self.get_longest_streak_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 10
+        arg_dict = {
+            "component_score" : self.get_last_10_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 20
+        arg_dict = {
+            "component_score" : self.get_last_20_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
+
+        # last 40
+        arg_dict = {
+            "component_score" : self.get_last_40_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
+
+        # final rating
+        arg_dict = {
+            "component_score" : self.get_final_rating_dict(),
+            "asccending" : False
+        }
+        arg_list.append(arg_dict.copy())
         return arg_list
     
 

@@ -75,3 +75,11 @@ class Penalty_Kill(Team_Metric):
             "ascending_order" : True,
         }
         return [arg_dict]
+    
+
+    def get_correction_arg_list(self) -> list:
+        arg_dict = {
+            "component_score" : self.get_final_rating_dict(),
+            "asccending" : True
+        }
+        return [arg_dict]
