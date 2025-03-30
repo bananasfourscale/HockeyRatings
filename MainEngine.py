@@ -1692,7 +1692,7 @@ def run_played_game_parser_engine(game_types : str="R", game_list : dict={}):
             os.remove(os.getcwd() +
                 "\Output_Files\Team_Files\Instance_Files\\" + file)
     for dir in \
-        os.walk(os.getcwd() + "\Output_Files\Player_Filesg\Instance_Files"):
+        os.walk(os.getcwd() + "\Output_Files\Player_Files\Instance_Files"):
         for file in dir[2]:
             os.remove(os.getcwd() +
                 "\Output_Files\Player_Files\Instance_Files\\" + file)
